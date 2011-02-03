@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+lib_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH.unshift(lib_dir) if File.directory?(lib_dir) && !$LOAD_PATH.include?(lib_dir)
+
+require 'rubygems'
+require 'hpcloud'
+
+HPCloud::CLI.start
