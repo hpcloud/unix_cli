@@ -69,12 +69,13 @@ module HPCloud
         puts "File not found at '#{from}'."
         return
       end
+      mime_type = get_mime_type(from)
       bucket, path = parse_bucket_resource(to)
       directory = connection.directories.get(bucket)
       if directory
         begin
-          directory.files.create(:key => path, :body => File.open(from))
-          puts "Copied #{to} => #{from}"
+          directory.files.create(:key => path, :body => File.open(from), 'Content-Type' => mime_type)
+          puts "Copied #{from} => #{to}"
         end
       else
         puts "You don't have a bucket '#{bucket}'."
@@ -107,6 +108,12 @@ module HPCloud
       response.body =~ /<Message>(.*)<\/Message>/
       return $1 if $1
       response.body
+    end
+    
+    def get_mime_type(file)
+      # this probably needs some security lovin'
+      full_mime = `file --mime -b #{file}`
+      full_mime.split(';')[0].chomp
     end
     
   end
