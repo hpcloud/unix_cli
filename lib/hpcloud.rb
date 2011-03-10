@@ -26,13 +26,18 @@ module HPCloud
     end
       
     desc "buckets:add <name>", "add a bucket"
-    define_method "buckets:add" do
-      puts "add a bucket"
+    define_method "buckets:add" do |name|
+      begin
+        connection.directories.create(:key => name)
+        puts "Created bucket '#{name}'"
+      rescue Excon::Errors::Conflict => error
+        puts parse_error(error.response)
+      end
     end
     
     desc "buckets:rm <name>", "remove a bucket"
-    define_method "buckets:rm" do
-      puts "remove bucket"
+    define_method "buckets:rm" do |name|
+      puts "remove bucket with #{name}"
     end
     
     private
