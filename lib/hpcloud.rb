@@ -1,11 +1,13 @@
+require "bundler/setup"
 require 'thor'
 require 'thor/group'
+require 'fog'
 
-require 'hpcloud/storage'
+#require 'hpcloud/storage'
 
 module HPCloud
   class CLI < Thor
-    
+        
     desc "buckets", "list available buckets"
     def buckets
       puts "bucket listing"
