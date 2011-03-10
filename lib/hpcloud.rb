@@ -63,6 +63,24 @@ module HPCloud
       end
     end
     
+    desc 'cp <resource> <resource>', "copy files from one resource to another"
+    def cp(from, to)
+      if !File.exists?(from)
+        puts "File not found at '#{from}'."
+        return
+      end
+      bucket, path = parse_bucket_resource(to)
+      directory = connection.directories.get(bucket)
+      if directory
+        begin
+          directory.files.create(:key => path, :body => File.open(from))
+          puts "Copied #{to} => #{from}"
+        end
+      else
+        puts "You don't have a bucket '#{bucket}'."
+      end
+    end
+    
     private
     
     def connection
@@ -71,6 +89,14 @@ module HPCloud
                                             :hp_account_id => ACCOUNT_ID,
                                             :host => HOST,
                                             :port => PORT )
+    end
+    
+    def parse_bucket_resource(resource)
+      bucket, *rest = resource.split('/')
+      #raise "No bucket resource in '#{resource}'." if bucket[0] != ':'
+      bucket = bucket[1..-1] if bucket[0] == ':'
+      path = rest.empty? ? nil : rest.join('/')
+      return bucket, path
     end
     
     def display_error_message(error)
