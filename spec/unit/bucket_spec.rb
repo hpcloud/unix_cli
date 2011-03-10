@@ -31,3 +31,19 @@ describe "Storage-side path detection" do
   end
   
 end
+
+describe 'Parsing bucket names' do
+  
+  context "when given a normal string" do
+    it 'should return the string' do
+      HPCloud::Bucket.parse_bucket_name('my_bucket').should eql('my_bucket')
+    end
+  end
+  
+  context "when given a resource string" do
+    it 'should return bucket name as a simple string' do
+      HPCloud::Bucket.parse_bucket_name(':my_bucket').should eql('my_bucket')
+    end
+  end
+  
+end

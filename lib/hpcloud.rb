@@ -30,6 +30,7 @@ module HPCloud
     desc "buckets:add <name>", "add a bucket"
     define_method "buckets:add" do |name|
       begin
+        name = Bucket.bucket_name_for_service(name)
         connection.directories.create(:key => name)
         puts "Created bucket '#{name}'."
       rescue Excon::Errors::Conflict => error
@@ -39,6 +40,7 @@ module HPCloud
     
     desc "buckets:rm <name>", "remove a bucket"
     define_method "buckets:rm" do |name|
+      name = Bucket.bucket_name_for_service(name)
       bucket = connection.directories.get(name)
       if bucket
         begin
@@ -53,6 +55,7 @@ module HPCloud
     desc 'ls <bucket>', "list bucket contents"
     def ls(name='')
       return buckets if name.empty?
+      name = Bucket.bucket_name_for_service(name)
       begin
         directory = connection.directories.get(name)
         if directory

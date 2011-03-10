@@ -12,5 +12,16 @@ module HPCloud
       end
     end
     
+    def self.bucket_name_for_service(bucket_string)
+      if bucket_string[0] == ':'
+        bucket_string[1..-1]
+      else
+        bucket_string
+      end
+    end
+    
+    def self.bucket_name_for_display(bucket_string)
+    end
+    
   end
 end
