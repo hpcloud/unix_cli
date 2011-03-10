@@ -48,6 +48,21 @@ module HPCloud
       end
     end
     
+    desc 'ls <bucket>', "list bucket contents"
+    def ls(name='')
+      return buckets if name.empty?
+      begin
+        directory = connection.directories.get(name)
+        if directory
+          directory.files.each { |file| puts file.key }
+        else
+          puts "You don't have a directory named '#{name}'"
+        end
+      rescue Excon::Errors::Forbidden => error
+        display_error_message(error)
+      end
+    end
+    
     private
     
     def connection
