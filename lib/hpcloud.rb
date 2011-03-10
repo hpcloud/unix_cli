@@ -45,6 +45,12 @@ module HPCloud
                                             :port => PORT )
     end
     
+    def parse_error(response)
+      response.body =~ /<Message>(.*)<\/Message>/
+      return $1 if $1
+      response.body
+    end
+    
   end
   
   
