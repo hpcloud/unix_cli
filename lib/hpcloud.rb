@@ -17,7 +17,12 @@ module HPCloud
         
     desc "buckets", "list available buckets"
     def buckets
-      puts "bucket listing"
+      buckets = connection.directories
+      if buckets.empty?
+        puts "You currently have no buckets, use `hpcloud add <name>` to create one."
+      else
+        buckets.each { |bucket| puts bucket.key }
+      end
     end
       
     desc "buckets:add <name>", "add a bucket"
