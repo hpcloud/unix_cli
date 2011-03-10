@@ -29,7 +29,7 @@ module HPCloud
     define_method "buckets:add" do |name|
       begin
         connection.directories.create(:key => name)
-        puts "Created bucket '#{name}'"
+        puts "Created bucket '#{name}'."
       rescue Excon::Errors::Conflict => error
         puts parse_error(error.response)
       end
@@ -37,7 +37,15 @@ module HPCloud
     
     desc "buckets:rm <name>", "remove a bucket"
     define_method "buckets:rm" do |name|
-      puts "remove bucket with #{name}"
+      bucket = connection.directories.get(name)
+      if bucket
+        begin
+          bucket.destroy
+          puts "Removed bucket '#{name}'."
+        end
+      else
+        puts "You don't have a bucket named '#{name}'."
+      end
     end
     
     private
