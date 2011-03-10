@@ -46,6 +46,8 @@ module HPCloud
         begin
           bucket.destroy
           puts "Removed bucket '#{name}'."
+        rescue Excon::Errors::Conflict => error
+          display_error_message(error)
         end
       else
         puts "You don't have a bucket named '#{name}'."
