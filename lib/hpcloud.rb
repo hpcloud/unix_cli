@@ -9,6 +9,8 @@ module HPCloud
   class CLI < Thor
     
     ## Constants
+    CANNED_ACLS = %w(private public-read public-read-write authenticated-read authenticated-read-write bucket-owner-read bucket-owner-full-control log-delivery-write)
+    
     ACCESS_ID = 'cecf0acbcf6add394cc526b93a0017e151a76fbb'
     SECRET_KEY = 'd8a8bf2d86ef9d2a9b258120858e3973608f41e6'
     ACCOUNT_ID = '1ba31f9b7a1adbb28cb1495e0fb2ac65ef82b34a'
@@ -76,6 +78,30 @@ module HPCloud
         begin
           directory.files.create(:key => path, :body => File.open(from), 'Content-Type' => mime_type)
           puts "Copied #{from} => #{to}"
+        end
+      else
+        puts "You don't have a bucket '#{bucket}'."
+      end
+    end
+    
+    desc 'acl <resource> <canned-acl>', "set a given resource to a canned ACL"
+    def acl(resource, acl)
+      unless CANNED_ACLS.include?(acl.downcase)
+        puts "Your ACL '#{acl}' is invalid.\nValid options are: #{CANNED_ACLS.join(', ')}."
+        return
+      end
+      bucket, path = parse_bucket_resource(resource)
+      directory = connection.directories.get(bucket)
+      if directory
+        file = directory.files.get(path)
+        if file
+          begin
+            file.acl = acl
+            file.save
+            puts "ACL for #{resource} updated to #{acl}"
+          end
+        else
+          puts "You don't have a file '#{file}'."
         end
       else
         puts "You don't have a bucket '#{bucket}'."
