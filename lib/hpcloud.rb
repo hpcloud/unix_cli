@@ -31,7 +31,7 @@ module HPCloud
         connection.directories.create(:key => name)
         puts "Created bucket '#{name}'."
       rescue Excon::Errors::Conflict => error
-        puts parse_error(error.response)
+        display_error_message(error)
       end
     end
     
@@ -56,6 +56,10 @@ module HPCloud
                                             :hp_account_id => ACCOUNT_ID,
                                             :host => HOST,
                                             :port => PORT )
+    end
+    
+    def display_error_message(error)
+      puts parse_error(error.response)
     end
     
     def parse_error(response)
