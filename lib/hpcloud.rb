@@ -3,7 +3,7 @@ require 'thor'
 require 'thor/group'
 require 'fog'
 
-#require 'hpcloud/storage'
+require 'hpcloud/bucket'
 
 module HPCloud
   class CLI < Thor
@@ -74,10 +74,11 @@ module HPCloud
       mime_type = get_mime_type(from)
       bucket, path = parse_bucket_resource(to)
       directory = connection.directories.get(bucket)
+      key = Bucket.storage_destination_path(path, from)
       if directory
         begin
-          directory.files.create(:key => path, :body => File.open(from), 'Content-Type' => mime_type)
-          puts "Copied #{from} => #{to}"
+          directory.files.create(:key => key, :body => File.open(from), 'Content-Type' => mime_type)
+          puts "Copied #{from} => :#{bucket}/#{key}"
         end
       else
         puts "You don't have a bucket '#{bucket}'."
@@ -123,6 +124,7 @@ module HPCloud
       #raise "No bucket resource in '#{resource}'." if bucket[0] != ':'
       bucket = bucket[1..-1] if bucket[0] == ':'
       path = rest.empty? ? nil : rest.join('/')
+      path << '/' if resource[-1] == '/'
       return bucket, path
     end
     
