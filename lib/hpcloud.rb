@@ -7,6 +7,13 @@ require 'fog'
 
 module HPCloud
   class CLI < Thor
+    
+    ## Constants
+    ACCESS_ID = 'cecf0acbcf6add394cc526b93a0017e151a76fbb'
+    SECRET_KEY = 'd8a8bf2d86ef9d2a9b258120858e3973608f41e6'
+    ACCOUNT_ID = '1ba31f9b7a1adbb28cb1495e0fb2ac65ef82b34a'
+    HOST = '16.49.184.31'
+    PORT = '9233'
         
     desc "buckets", "list available buckets"
     def buckets
@@ -21,6 +28,16 @@ module HPCloud
     desc "buckets:rm <name>", "remove a bucket"
     define_method "buckets:rm" do
       puts "remove bucket"
+    end
+    
+    private
+    
+    def connection
+      @connection ||= Fog::HP::Storage.new( :hp_access_id =>  ACCESS_ID,
+                                            :hp_secret_key => SECRET_KEY,
+                                            :hp_account_id => ACCOUNT_ID,
+                                            :host => HOST,
+                                            :port => PORT )
     end
     
   end
