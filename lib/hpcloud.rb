@@ -39,10 +39,14 @@ module HPCloud
     end
     
     desc "buckets:rm <name>", "remove a bucket"
+    method_option :force, :default => false, :type => :boolean, :aliases => '-f'
     define_method "buckets:rm" do |name|
       name = Bucket.bucket_name_for_service(name)
       bucket = connection.directories.get(name)
       if bucket
+        if options.force?
+          bucket.files.each { |file| file.destroy }
+        end
         begin
           bucket.destroy
           puts "Removed bucket '#{name}'."
