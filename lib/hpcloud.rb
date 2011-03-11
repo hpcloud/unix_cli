@@ -74,6 +74,11 @@ module HPCloud
       end
     end
     
+    desc 'touch <resource>', "create an empty object"
+    def touch(resource)
+      puts "touch an object"
+    end
+    
     desc 'cp <resource> <resource>', "copy files from one resource to another"
     def cp(from, to)
       if !File.exists?(from)
@@ -92,6 +97,21 @@ module HPCloud
       else
         puts "You don't have a bucket '#{bucket}'."
       end
+    end
+    
+    desc 'mv <resource> <resource>', 'move objects inside or between buckets'
+    def mv(from,to)
+      puts "move an object"
+    end
+    
+    desc 'rm <resource>', 'remove an object'
+    def rm(resource)
+      puts "remove an object"
+    end
+    
+    desc 'location <resource>', 'display the URI for a given resource'
+    def location(resource)
+      puts 'show a location'
     end
     
     desc 'acl <resource> <canned-acl>', "set a given resource to a canned ACL"
@@ -119,6 +139,11 @@ module HPCloud
       else
         puts "You don't have a bucket '#{bucket}'."
       end
+    end
+    
+    desc 'versioning <bucket>', 'show or modify versioning state for a bucket'
+    def versioning(new_state=nil)
+      puts "show versioning state"
     end
     
     private
