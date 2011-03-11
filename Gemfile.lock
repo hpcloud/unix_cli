@@ -1,6 +1,6 @@
 GIT
   remote: git@16.125.113.34:fog
-  revision: 42d582f111d770c2db76473677a34f3497d40d66
+  revision: da95e3e42b10b5f8305cb0f2f9c9f9cb42b74766
   branch: master
   specs:
     fog (0.3.31)
@@ -19,7 +19,7 @@ GEM
     builder (3.0.0)
     diff-lcs (1.1.2)
     excon (0.5.6)
-    formatador (0.0.16)
+    formatador (0.1.1)
     git (1.2.5)
     jeweler (1.5.2)
       bundler (~> 1.0.0)

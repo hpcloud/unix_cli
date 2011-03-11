@@ -2,6 +2,7 @@ source "http://rubygems.org"
 
 gem 'thor', '~> 0.14.6'
 gem 'fog', :git => 'git@16.125.113.34:fog', :branch => 'master'
+#gem 'fog', :path => '../fog'
 
 group :development do
   gem "rspec", "~> 2.4.0"
