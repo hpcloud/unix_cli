@@ -1,6 +1,16 @@
 module HPCloud
   class Bucket
     
+    # parse a bucket resource into bucket name and object key
+    def self.parse_resource(resource)
+      bucket, *rest = resource.split('/')
+      #raise "No bucket resource in '#{resource}'." if bucket[0] != ':'
+      bucket = bucket[1..-1] if bucket[0] == ':'
+      path = rest.empty? ? nil : rest.join('/')
+      path << '/' if resource[-1] == '/'
+      return bucket, path
+    end
+    
     # provide an absolute path for use as a storage key
     def self.storage_destination_path(destination_path, current_location)
       if destination_path.to_s.empty?

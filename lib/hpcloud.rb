@@ -21,7 +21,7 @@ module HPCloud
     def buckets
       buckets = connection.directories
       if buckets.empty?
-        puts "You currently have no buckets, use `hpcloud add <name>` to create one."
+        puts "You currently have no buckets, use `hpcloud buckets:add <name>` to create one."
       else
         buckets.each { |bucket| puts bucket.key }
       end
@@ -86,7 +86,7 @@ module HPCloud
         return
       end
       mime_type = get_mime_type(from)
-      bucket, path = parse_bucket_resource(to)
+      bucket, path = Bucket.parse_resource(to)
       directory = connection.directories.get(bucket)
       key = Bucket.storage_destination_path(path, from)
       if directory
@@ -111,7 +111,7 @@ module HPCloud
     
     desc 'location <resource>', 'display the URI for a given resource'
     def location(resource)
-      bucket, key = parse_bucket_resource(resource)
+      bucket, key = Bucket.parse_resource(resource)
       begin
         exists = connection.head_object(bucket, key)
         if exists
@@ -129,7 +129,7 @@ module HPCloud
         puts "Your ACL '#{acl}' is invalid.\nValid options are: #{CANNED_ACLS.join(', ')}."
         return
       end
-      bucket, path = parse_bucket_resource(resource)
+      bucket, path = Bucket.parse_resource(resource)
       directory = connection.directories.get(bucket)
       if directory
         file = directory.files.get(path)
@@ -162,15 +162,6 @@ module HPCloud
                                             :hp_account_id => ACCOUNT_ID,
                                             :host => HOST,
                                             :port => PORT )
-    end
-    
-    def parse_bucket_resource(resource)
-      bucket, *rest = resource.split('/')
-      #raise "No bucket resource in '#{resource}'." if bucket[0] != ':'
-      bucket = bucket[1..-1] if bucket[0] == ':'
-      path = rest.empty? ? nil : rest.join('/')
-      path << '/' if resource[-1] == '/'
-      return bucket, path
     end
     
     def display_error_message(error)
