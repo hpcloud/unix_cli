@@ -96,7 +96,8 @@ module HPCloud
     
     desc 'acl <resource> <canned-acl>', "set a given resource to a canned ACL"
     def acl(resource, acl)
-      unless CANNED_ACLS.include?(acl.downcase)
+      acl = acl.downcase
+      unless CANNED_ACLS.include?(acl)
         puts "Your ACL '#{acl}' is invalid.\nValid options are: #{CANNED_ACLS.join(', ')}."
         return
       end
@@ -106,12 +107,14 @@ module HPCloud
         file = directory.files.get(path)
         if file
           begin
-            file.acl = acl
-            file.save
+            connection.put_object_acl(bucket, path, acl)
+            # can't use model for now as doesn't preserve content-type
+            # file.acl = acl
+            # file.save
             puts "ACL for #{resource} updated to #{acl}"
           end
         else
-          puts "You don't have a file '#{file}'."
+          puts "You don't have a file '#{path}'."
         end
       else
         puts "You don't have a bucket '#{bucket}'."
