@@ -111,7 +111,15 @@ module HPCloud
     
     desc 'location <resource>', 'display the URI for a given resource'
     def location(resource)
-      puts 'show a location'
+      bucket, key = parse_bucket_resource(resource)
+      begin
+        exists = connection.head_object(bucket, key)
+        if exists
+          puts "http://#{HOST}:#{PORT}/#{bucket}/#{key}"
+        end
+      rescue Excon::Errors::NotFound => error
+        puts "No object exists at '#{bucket}/#{key}'."
+      end
     end
     
     desc 'acl <resource> <canned-acl>', "set a given resource to a canned ACL"
