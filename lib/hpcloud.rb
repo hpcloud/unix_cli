@@ -16,6 +16,12 @@ module HPCloud
     ACCOUNT_ID = '1ba31f9b7a1adbb28cb1495e0fb2ac65ef82b34a'
     HOST = '16.49.184.31'
     PORT = '9233'
+    
+    map 'create'          => 'add',
+        %w(rm delete del) => 'remove',
+        'mv'              => 'move',
+        'ls'              => 'list',
+        %w(buckets:rm buckets:delete buckets:del) => 'buckets:remove'
         
     desc "buckets", "list available buckets"
     def buckets
@@ -38,9 +44,9 @@ module HPCloud
       end
     end
     
-    desc "buckets:rm <name>", "remove a bucket"
+    desc "buckets:remove <name>", "remove a bucket"
     method_option :force, :default => false, :type => :boolean, :aliases => '-f'
-    define_method "buckets:rm" do |name|
+    define_method "buckets:remove" do |name|
       name = Bucket.bucket_name_for_service(name)
       bucket = connection.directories.get(name)
       if bucket
@@ -58,8 +64,8 @@ module HPCloud
       end
     end
     
-    desc 'ls <bucket>', "list bucket contents"
-    def ls(name='')
+    desc 'list <bucket>', "list bucket contents"
+    def list(name='')
       return buckets if name.empty?
       name = Bucket.bucket_name_for_service(name)
       begin
@@ -79,8 +85,9 @@ module HPCloud
       puts "touch an object"
     end
     
-    desc 'cp <resource> <resource>', "copy files from one resource to another"
-    def cp(from, to)
+    desc 'copy <resource> <resource>', "copy files from one resource to another"
+    long_desc 'So much more description...'
+    def copy(from, to)
       if !File.exists?(from)
         puts "File not found at '#{from}'."
         return
@@ -99,13 +106,14 @@ module HPCloud
       end
     end
     
-    desc 'mv <resource> <resource>', 'move objects inside or between buckets'
-    def mv(from,to)
+    desc 'move <resource> <resource>', 'move objects inside or between buckets'
+    def move(from,to)
       puts "move an object"
     end
     
-    desc 'rm <resource>', 'remove an object'
-    def rm(resource)
+    desc 'remove <resource>', 'remove an object'
+    
+    def remove(resource)
       puts "remove an object"
     end
     
@@ -181,8 +189,6 @@ module HPCloud
     end
     
   end
-  
-  
   
   # class Credentials < Thor
   #   desc "setup", "set up your credentials"
