@@ -12,6 +12,8 @@ module HPCloud
         put(from, to)
       elsif from_type == :object and Resource::LOCAL_TYPES.include?(to_type)
         fetch(from, to)
+      elsif from_type == :object and Resource::REMOTE_TYPES.include?(to_type)
+        clone(from, to)
       else
         puts "Not currently supported."
       end
@@ -63,6 +65,18 @@ module HPCloud
       end
       
       def clone(from, to)
+        bucket, path = Bucket.parse_resource(from)
+        bucket_to, path_to = Bucket.parse_resource(to)
+        begin
+          connection.copy_object(bucket, path, bucket_to, path_to)
+          puts "Copied #{from} => :#{bucket_to}/#{path_to}"
+        rescue Excon::Errors::NotFound => e
+          if connection.directories.get(bucket)
+            puts "The specified object does not exist."
+          else
+            puts "You don't have a bucket '#{bucket}'."
+          end
+        end
       end
       
     end

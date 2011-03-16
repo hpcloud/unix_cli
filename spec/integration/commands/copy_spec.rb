@@ -90,13 +90,67 @@ describe "Copy command" do
         get = @kvs.get_object('copy_remote_to_local', 'foo.txt')
         File.read('spec/tmp/foo.txt').should eql(get.body)
       end
-      
     end
     
     pending 'when cannot write file'
     
     after(:all) { purge_bucket('copy_remote_to_local') }
     
+  end
+  
+  context "copying remote object within a bucket" do
+    
+    before(:all) do
+      #create_bucket_with_files('copy_inside_bucket', 'foo.txt')
+      @kvs.put_bucket('copy_inside_bucket')
+      @kvs.put_object('copy_inside_bucket', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
+    end
+    
+    context "when bucket does not exist" do
+      it "should exit with bucket not found" do
+        response = capture(:stdout){ HPCloud::CLI.start(['copy', ':missing_bucket/foo.txt', ':missing_bucket/tmp/foo.txt']) }
+        response.should eql("You don't have a bucket 'missing_bucket'.\n")
+      end
+    end
+    
+    context "when object does not exist" do
+      it "should exit with object not found" do
+        response = capture(:stdout){ HPCloud::CLI.start(['copy', ':copy_inside_bucket/missing.txt', ':copy_inside_bucket/tmp/missing.txt']) }
+        response.should eql("The specified object does not exist.\n")
+      end
+    end
+    
+    context "when bucket and object exist" do
+      before(:all) do
+        @response = capture(:stdout){ HPCloud::CLI.start(['copy', ':copy_inside_bucket/foo.txt', ':copy_inside_bucket/new/foo.txt']) }
+        @get = @kvs.get_object('copy_inside_bucket', 'new/foo.txt')
+      end
+      
+      it "should exit with object copied" do
+        @response.should eql("Copied :copy_inside_bucket/foo.txt => :copy_inside_bucket/new/foo.txt\n")
+      end
+      
+      it "should create new object" do
+        @get.status.should eql(200)
+      end
+      
+      it "should preserve content-type" do
+        @get.headers['content-type'].should eql('text/plain')
+      end
+
+      it "should have same object body" do
+        @get.body.should eql(read_file('foo.txt'))
+      end
+    end
+    
+    pending "when new object cannot be written" do  
+    end
+    
+    after(:all) { purge_bucket('copy_inside_bucket') }
+    
+  end
+  
+  pending "copying a remote object to another bucket" do
   end
   
 end
