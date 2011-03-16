@@ -3,6 +3,7 @@ require 'thor'
 require 'thor/group'
 require 'fog'
 
+require 'hpcloud/resource'
 require 'hpcloud/bucket'
 
 module HPCloud
@@ -96,7 +97,7 @@ module HPCloud
         puts "File not found at '#{from}'."
         return
       end
-      mime_type = get_mime_type(from)
+      mime_type = Resource.get_mime_type(from)
       bucket, path = Bucket.parse_resource(to)
       directory = connection.directories.get(bucket)
       key = Bucket.storage_destination_path(path, from)
@@ -184,12 +185,6 @@ module HPCloud
       response.body =~ /<Message>(.*)<\/Message>/
       return $1 if $1
       response.body
-    end
-    
-    def get_mime_type(file)
-      # this probably needs some security lovin'
-      full_mime = `file --mime -b #{file}`
-      full_mime.split(';')[0].chomp
     end
     
   end
