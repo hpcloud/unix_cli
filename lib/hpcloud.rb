@@ -11,9 +11,12 @@ module HPCloud
     ## Constants
     CANNED_ACLS = %w(private public-read public-read-write authenticated-read authenticated-read-write bucket-owner-read bucket-owner-full-control log-delivery-write)
     
-    ACCESS_ID = 'cecf0acbcf6add394cc526b93a0017e151a76fbb'
-    SECRET_KEY = 'd8a8bf2d86ef9d2a9b258120858e3973608f41e6'
-    ACCOUNT_ID = '1ba31f9b7a1adbb28cb1495e0fb2ac65ef82b34a'
+    # export KVS_TEST_HOST=16.49.184.31
+    # build/opt-centos5-x86_64/bin/stout-mgr create-account -port 9233 "Unix CLI" "unix.cli@hp.com"
+    
+    ACCESS_ID = '0b861f6bb7295cc1f895a7f123ea2da83706466e'
+    SECRET_KEY = 'de7d34abec8191b2e97c2593e33da53cb1b2b1a5'
+    ACCOUNT_ID = 'b3ffd6019a70977c27b8ecb00d85c775af32705e'
     HOST = '16.49.184.31'
     PORT = '9233'
     
