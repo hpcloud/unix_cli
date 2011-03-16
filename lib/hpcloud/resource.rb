@@ -1,6 +1,9 @@
 module HPCloud
   class Resource
     
+    REMOTE_TYPES = [:bucket, :bucket_directory, :object]
+    LOCAL_TYPES = [:directory, :file]
+    
     def self.detect_type(resource)
       if resource[0] == ':'
         if resource[-1] == '/'

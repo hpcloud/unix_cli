@@ -48,4 +48,55 @@ describe "Copy command" do
     
   end
   
+  context "copying remote object to local filesystem" do
+    
+    before(:all) { create_bucket_with_files('copy_remote_to_local', 'foo.txt') }
+    
+    context "when bucket does not exist" do
+      it "should exit with bucket not found" do
+        response = capture(:stdout){ HPCloud::CLI.start(['copy', ':copy_blah/foo.txt', '/tmp/foo.txt']) }
+        response.should eql("You don't have a bucket 'copy_blah'.\n")
+      end
+    end
+    
+    context "when object does not exist" do
+      it "should exit with object not found" do
+        response = capture(:stdout){ HPCloud::CLI.start(['copy', ':copy_remote_to_local/foo2.txt', '/tmp/foo.txt']) }
+        response.should eql("The specified object does not exist.\n")
+      end 
+    end
+    
+    context "when local directory structure does not exist" do
+      it "should exit with directory not present" do
+        response = capture(:stdout){ HPCloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', '/blah/foo.txt']) }
+        response.should eql("No directory exists at '/blah'.\n")
+      end
+    end
+    
+    context "when local directory and object exist" do
+      before(:all) do
+        @response = capture(:stdout){ HPCloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/foo.txt']) }
+      end
+      
+      it "should describe copy" do
+        @response.should eql("Copied :copy_remote_to_local/foo.txt => spec/tmp/foo.txt\n")
+      end
+      
+      it "should create local file" do
+        should satisfy { File.exists?('spec/tmp/foo.txt') }
+      end
+      
+      it "should have same body as object" do
+        get = @kvs.get_object('copy_remote_to_local', 'foo.txt')
+        File.read('spec/tmp/foo.txt').should eql(get.body)
+      end
+      
+    end
+    
+    pending 'when cannot write file'
+    
+    after(:all) { purge_bucket('copy_remote_to_local') }
+    
+  end
+  
 end
