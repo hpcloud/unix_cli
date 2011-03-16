@@ -19,6 +19,7 @@ module HPCloud
     
     map 'create'          => 'add',
         %w(rm delete del) => 'remove',
+        'cp'              => 'copy',
         'mv'              => 'move',
         'ls'              => 'list',
         %w(buckets:rm buckets:delete buckets:del) => 'buckets:remove'
