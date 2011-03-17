@@ -11,3 +11,7 @@ group :development do
   gem "jeweler", "~> 1.5.2"
   gem "rcov", ">= 0"
 end
+
+group :ci do
+  gem 'ci_reporter', "~> 1.6.4"
+end
