@@ -42,3 +42,6 @@ pkg
 #
 # For vim:
 #*.swp
+
+# Continuous integration reports:
+ci/reports/*/*
