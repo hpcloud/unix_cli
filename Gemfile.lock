@@ -1,6 +1,6 @@
 GIT
   remote: git@16.125.113.34:fog
-  revision: da95e3e42b10b5f8305cb0f2f9c9f9cb42b74766
+  revision: ef57d62ddf420f03fb2d67d7c76da9e875046ee6
   branch: master
   specs:
     fog (0.3.31)
