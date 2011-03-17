@@ -1,2 +1,2 @@
-Copyright (c) 2011 Matt Sanders
+Copyright (c) 2011 Hewlett-Packard. Not for external release.
 
