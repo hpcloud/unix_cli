@@ -16,7 +16,7 @@ module HPCloud
     end
     
     def self.accounts_directory
-      home_directory + 'accounts/'
+      config_directory + 'accounts/'
     end
     
     def self.update_credentials(account, credentials)

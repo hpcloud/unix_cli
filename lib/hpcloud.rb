@@ -4,6 +4,7 @@ require 'thor/group'
 require 'fog'
 
 require 'hpcloud/version'
+require 'hpcloud/config'
 require 'hpcloud/resource'
 require 'hpcloud/bucket'
 
@@ -39,11 +40,19 @@ module HPCloud
       response.body
     end
     
+    ### Thor extensions
+    
+    def ask_with_default(statement, default, color = nil)
+      response = ask("#{statement} [#{default}]")
+      return response.empty? ? default : response
+    end
+    
   end
   
 end
 
 require 'hpcloud/commands/info'
+require 'hpcloud/commands/account'
 require 'hpcloud/commands/buckets'
 require 'hpcloud/commands/list'
 require 'hpcloud/commands/touch'

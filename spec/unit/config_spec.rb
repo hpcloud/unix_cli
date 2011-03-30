@@ -12,6 +12,16 @@ describe "Config directory naming" do
   end
 end
 
+describe "Accounts directory naming" do
+  it "should assemble properly" do
+    HPCloud::Config.accounts_directory.should eql(ENV['HOME'] + '/.hpcloud/accounts/')
+  end
+  
+  it "should include final slash" do
+    HPCloud::Config.accounts_directory[-1].should eql('/')
+  end
+end
+
 describe "Config directory setup" do
   
   before(:all) { setup_temp_home_directory } 
