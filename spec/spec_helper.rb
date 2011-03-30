@@ -92,5 +92,8 @@ RSpec.configure do |config|
     File.read(File.dirname(__FILE__) + "/fixtures/files/#{filename}")
   end
   
+  def read_account_file(filename)
+    File.read(File.dirname(__FILE__) + "/fixtures/accounts/#{filename}")
+  end
   
 end

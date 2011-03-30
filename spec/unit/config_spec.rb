@@ -88,6 +88,39 @@ describe "Writing an account file" do
   
 end
 
+describe "Credential detection" do
+  
+  before(:all) do
+    setup_temp_home_directory
+    HPCloud::Config.ensure_config_exists
+  end
+  
+  context "when default account exists" do
+    
+    before(:all) do
+      File.open(HPCloud::Config.accounts_directory + "default", 'w') do |file|
+        file.write(read_account_file('default'))
+      end
+    end
+    
+    pending "should detect default account file" do
+      
+    end
+    
+    it "should provide credentials from file"
+    
+  end
+  
+  context "when no account file exists" do
+    
+    before(:all) do
+      # remove any existing account files
+    end
+    
+  end
+  
+end
+
 private
 
 def setup_temp_home_directory

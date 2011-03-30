@@ -1,0 +1,7 @@
+--- 
+:credentials: 
+  :email: test@test.com
+  :access_id: 1234
+  :secret_key: 4567
+  :host: testhost.com
+  :port: 9232
