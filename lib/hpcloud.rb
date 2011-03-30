@@ -3,6 +3,7 @@ require 'thor'
 require 'thor/group'
 require 'fog'
 
+require 'hpcloud/version'
 require 'hpcloud/resource'
 require 'hpcloud/bucket'
 
@@ -42,6 +43,7 @@ module HPCloud
   
 end
 
+require 'hpcloud/commands/info'
 require 'hpcloud/commands/buckets'
 require 'hpcloud/commands/list'
 require 'hpcloud/commands/touch'
