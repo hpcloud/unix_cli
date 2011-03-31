@@ -10,7 +10,7 @@ module HPCloud
     def buckets
       buckets = connection.directories
       if buckets.empty?
-        puts "You currently have no buckets, use `hpcloud buckets:add <name>` to create one."
+        error "You currently have no buckets, use `hpcloud buckets:add <name>` to create one."
       else
         buckets.each { |bucket| puts bucket.key }
       end

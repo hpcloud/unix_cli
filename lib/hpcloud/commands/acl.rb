@@ -7,8 +7,7 @@ module HPCloud
     def acl(resource, acl)
       acl = acl.downcase
       unless CANNED_ACLS.include?(acl)
-        puts "Your ACL '#{acl}' is invalid.\nValid options are: #{CANNED_ACLS.join(', ')}."
-        return
+        error "Your ACL '#{acl}' is invalid.\nValid options are: #{CANNED_ACLS.join(', ')}."
       end
       bucket, path = Bucket.parse_resource(resource)
       directory = connection.directories.get(bucket)
@@ -23,10 +22,10 @@ module HPCloud
             puts "ACL for #{resource} updated to #{acl}"
           end
         else
-          puts "You don't have a file '#{path}'."
+          error "You don't have a file '#{path}'."
         end
       else
-        puts "You don't have a bucket '#{bucket}'."
+        error "You don't have a bucket '#{bucket}'."
       end
     end
     

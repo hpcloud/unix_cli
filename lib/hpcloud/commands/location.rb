@@ -9,10 +9,11 @@ module HPCloud
       begin
         exists = connection.head_object(bucket, key)
         if exists
-          puts "http://#{HOST}:#{PORT}/#{bucket}/#{key}"
+          config = Config.current_credentials
+          puts "http://#{config[:host]}:#{config[:port]}/#{bucket}/#{key}"
         end
       rescue Excon::Errors::NotFound => error
-        puts "No object exists at '#{bucket}/#{key}'."
+        error "No object exists at '#{bucket}/#{key}'."
       end
     end
     

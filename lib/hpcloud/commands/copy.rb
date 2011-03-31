@@ -15,7 +15,7 @@ module HPCloud
       elsif from_type == :object and Resource::REMOTE_TYPES.include?(to_type)
         clone(from, to)
       else
-        puts "Not currently supported."
+        error "Not currently supported."
       end
     end
     
@@ -24,7 +24,7 @@ module HPCloud
       def fetch(from, to)
         dir_path = File.dirname(to) #File.expand_path(file_path)
         if !Dir.exists?(dir_path)
-          puts "No directory exists at '#{dir_path}'."
+          error "No directory exists at '#{dir_path}'."
           return
         end
         bucket, path = Bucket.parse_resource(from)
@@ -38,16 +38,16 @@ module HPCloud
             end
             puts "Copied #{from} => #{to}"
           rescue Excon::Errors::NotFound => e
-            puts "The specified object does not exist."
+            error "The specified object does not exist."
           end
         else
-          puts "You don't have a bucket '#{bucket}'."
+          error "You don't have a bucket '#{bucket}'."
         end
       end
       
       def put(from, to)
         if !File.exists?(from)
-          puts "File not found at '#{from}'."
+          error "File not found at '#{from}'."
           return
         end
         mime_type = Resource.get_mime_type(from)
@@ -60,7 +60,7 @@ module HPCloud
             puts "Copied #{from} => :#{bucket}/#{key}"
           end
         else
-          puts "You don't have a bucket '#{bucket}'."
+          error "You don't have a bucket '#{bucket}'."
         end
       end
       
@@ -72,9 +72,9 @@ module HPCloud
           puts "Copied #{from} => :#{bucket_to}/#{path_to}"
         rescue Excon::Errors::NotFound => e
           if connection.directories.get(bucket)
-            puts "The specified object does not exist."
+            error "The specified object does not exist."
           else
-            puts "You don't have a bucket '#{bucket}'."
+            error "You don't have a bucket '#{bucket}'."
           end
         end
       end
