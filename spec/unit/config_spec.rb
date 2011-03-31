@@ -103,11 +103,12 @@ describe "Credential detection" do
       end
     end
     
-    pending "should detect default account file" do
-      
-    end
+    #it "should detect default account file"
     
-    it "should provide credentials from file"
+    it "should provide credentials from file" do
+      credentials = HPCloud::Config.current_credentials
+      credentials[:email].should eql('test@test.com')
+    end
     
   end
   

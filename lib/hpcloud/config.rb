@@ -19,6 +19,13 @@ module HPCloud
       config_directory + 'accounts/'
     end
     
+    def self.current_credentials
+      if File.exists?(accounts_directory + 'default')
+        return YAML::load(File.open(accounts_directory + 'default'))[:credentials]
+      end
+      nil
+    end
+    
     def self.update_credentials(account, credentials)
       ensure_config_exists
       write_account account, credentials
