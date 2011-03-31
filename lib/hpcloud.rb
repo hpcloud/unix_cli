@@ -30,7 +30,7 @@ module HPCloud
     # display error message embedded in a REST response
     def display_error_message(error, exit_status=nil)
       if exit_status === false # don't exit
-        puts parse_error(error.response)
+        $stderr.puts parse_error(error.response)
       else
         error parse_error(error.response), exit_status
       end
@@ -51,7 +51,7 @@ module HPCloud
     end
     
     def error(message, exit_status=nil)
-      puts message
+      $stderr.puts message
       exit exit_status || 1
     end
     
