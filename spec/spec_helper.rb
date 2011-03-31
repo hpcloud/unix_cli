@@ -97,3 +97,22 @@ RSpec.configure do |config|
   end
   
 end
+
+# Test-specific hacks of fundamental classes
+module HPCloud
+  class CLI < Thor
+  
+  private
+  
+  # override #connection not to look at account files, just use hardcoded
+  # test credentials.
+  def connection
+    Fog::HP::Storage.new( :hp_access_id =>  KVS_ACCESS_ID,
+                          :hp_secret_key => KVS_SECRET_KEY,
+                          :hp_account_id => KVS_ACCOUNT_ID,
+                          :host => KVS_HOST,
+                          :port => KVS_PORT )
+  end
+  
+  end
+end
