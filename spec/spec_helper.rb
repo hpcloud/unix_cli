@@ -21,7 +21,10 @@ RSpec.configure do |config|
     begin
       stream = stream.to_s
       eval "$#{stream} = StringIO.new"
-      yield
+      begin
+        yield
+      rescue SystemExit # catch any exit calls
+      end
       result = eval("$#{stream}").string
     ensure
       eval("$#{stream} = #{stream.upcase}")
