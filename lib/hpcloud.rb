@@ -47,6 +47,11 @@ module HPCloud
       return response.empty? ? default : response
     end
     
+    def error(message, exit_status=nil)
+      puts message
+      exit exit_status || 1
+    end
+    
   end
   
 end
