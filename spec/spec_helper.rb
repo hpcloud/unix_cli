@@ -29,7 +29,6 @@ RSpec.configure do |config|
     ensure
       eval("$#{stream} = #{stream.upcase}")
     end
-
     result
   end
   
