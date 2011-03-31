@@ -27,10 +27,16 @@ module HPCloud
       end
     end
     
-    def display_error_message(error)
-      puts parse_error(error.response)
+    # display error message embedded in a REST response
+    def display_error_message(error, exit_status=nil)
+      if exit_status === false # don't exit
+        puts parse_error(error.response)
+      else
+        error parse_error(error.response), exit_status
+      end
     end
     
+    # pull the error message out of an XML response
     def parse_error(response)
       response.body =~ /<Message>(.*)<\/Message>/
       return $1 if $1
