@@ -28,11 +28,13 @@ Jeweler::RubygemsDotOrgTasks.new
 
 require 'rspec/core'
 require 'rspec/core/rake_task'
+
+desc "Run specs"
+RSpec::Core::RakeTask.new do |t|
+  t.rspec_opts = '--color'
+end
+
 namespace :spec do
-  desc "Run specs"
-  RSpec::Core::RakeTask.new do |t|
-    t.rspec_opts = '--color'
-  end
 
   desc "Run specs verbosely"
   RSpec::Core::RakeTask.new('verbose') do |t|
@@ -51,7 +53,7 @@ RSpec::Core::RakeTask.new(:rcov) do |spec|
   spec.rcov = true
 end
 
-task :default => 'spec:spec'
+task :default => :spec
 
 require 'yard'
 YARD::Rake::YardocTask.new
