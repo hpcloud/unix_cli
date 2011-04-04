@@ -11,11 +11,11 @@ RSpec.configure do |config|
   
   # export KVS_TEST_HOST=16.49.184.31
   # build/opt-centos5-x86_64/bin/stout-mgr create-account -port 9233 "Unix CLI" "unix.cli@hp.com"
-  KVS_ACCESS_ID = '9cb90f0dcb0fe61380b971e68ed4efb11beb6bfc'
-  KVS_SECRET_KEY = 'b04517f6189f3695b9804d69cd6925715a531be5'
-  KVS_ACCOUNT_ID = '7725f6e048ceb766a546842adc07d22a22c5f930'
+  KVS_ACCESS_ID = '90c4f8e49f38515843dd52e4dad67273ed83f477'
+  KVS_SECRET_KEY = '1c9c7fc66b7d14eab1d00b9373a1f997ed3e53ef'
+  KVS_ACCOUNT_ID = '90dbd523fda1722c49ccdd951b12f9c6a6c1d7f7'
   KVS_HOST = '16.49.184.31'
-  KVS_PORT = '9232'
+  KVS_PORT = '9233'
   
   def capture(stream)
     begin
