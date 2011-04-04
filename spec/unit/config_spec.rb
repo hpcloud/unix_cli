@@ -44,6 +44,15 @@ describe "Config directory setup" do
         Dir.exists?(HPCloud::Config.accounts_directory).should be_true
       end
       
+      it "should create default config file" do
+        File.exists?(HPCloud::Config.config_directory + 'config.yml').should be_true
+      end
+      
+      it "should populate config file" do
+        yaml = YAML::load(File.open(HPCloud::Config.config_file))
+        yaml[:default_port].should eql('9232')
+      end
+      
     end
     
   end

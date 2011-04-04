@@ -3,8 +3,14 @@ require 'yaml'
 module HPCloud
   class Config
 
+    @@default_config = { :default_host => '16.49.184.31', :default_port => '9232', :keygen_pass => '' }
+
     def self.config_directory
       home_directory + "/.hpcloud/"
+    end
+    
+    def self.config_file
+      config_directory + 'config.yml'
     end
     
     def self.home_directory
@@ -35,7 +41,9 @@ module HPCloud
     def self.ensure_config_exists
       Dir.mkdir(config_directory) unless Dir.exists?(config_directory)
       Dir.mkdir(accounts_directory) unless Dir.exists?(accounts_directory)
-      # TODO: write default config file if not present
+      unless File.exists?(config_file)
+        File.open(config_file, 'w') { |file| file.write @@default_config.to_yaml }
+      end
     end
     
     def self.write_account(account_name, credentials)
