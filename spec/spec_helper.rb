@@ -98,6 +98,11 @@ RSpec.configure do |config|
     File.read(File.dirname(__FILE__) + "/fixtures/accounts/#{filename}")
   end
   
+  def read_fixture(type, filename)
+    dir_name = type.to_s + "s" # simple pluralize
+    File.read(File.dirname(__FILE__) + "/fixtures/#{dir_name}/#{filename}")
+  end
+  
 end
 
 # Test-specific hacks of fundamental classes

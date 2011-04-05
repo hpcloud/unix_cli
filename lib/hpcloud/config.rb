@@ -3,7 +3,7 @@ require 'yaml'
 module HPCloud
   class Config
 
-    @@default_config = { :default_host => '16.49.184.31', :default_port => '9232', :keygen_pass => '' }
+    @@default_config = { :default_host => '16.49.184.31', :default_port => '9232', :keygen_user => '', :keygen_pass => '' }
 
     def self.config_directory
       home_directory + "/.hpcloud/"
@@ -30,6 +30,20 @@ module HPCloud
         return YAML::load(File.open(accounts_directory + 'default'))[:credentials]
       end
       nil
+    end
+    
+    def self.settings
+      @@settings ||= 
+        if File.exists?(config_file)
+          YAML::load(File.open(config_file))
+        else
+          @@default_config
+        end
+    end
+    
+    # force checking for settings on next request
+    def self.flush_settings
+      @@settings = nil
     end
     
     def self.update_credentials(account, credentials)

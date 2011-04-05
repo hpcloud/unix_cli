@@ -131,6 +131,40 @@ describe "Credential detection" do
   
 end
 
+describe "Getting settings" do
+  
+  context "with no config file present" do
+    
+    before(:all) do
+      FileUtils.rm_rf(HPCloud::Config.config_directory)
+      HPCloud::Config.flush_settings
+    end
+    
+    it "should return default settings" do
+      HPCloud::Config.settings[:default_port].should eql('9232')
+    end
+    
+  end
+  
+  context "with config file present" do
+    
+    before(:all) do
+      setup_temp_home_directory
+      HPCloud::Config.ensure_config_exists
+      File.open(HPCloud::Config.config_file, 'w') do |file|
+        file.write(read_fixture(:config, 'personalized.yml'))
+      end
+      HPCloud::Config.flush_settings
+    end
+    
+    it "should return specified settings" do
+      HPCloud::Config.settings[:default_port].should eql('1234')
+    end
+    
+  end
+  
+end
+
 private
 
 def setup_temp_home_directory
