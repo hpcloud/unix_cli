@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   
   s.files = Dir.glob("{bin,lib}/**/**/*") + %w(LICENSE README.rdoc)
   s.extra_rdoc_files = [
-    "LICENSE.txt",
+    "LICENSE",
     "README.rdoc"
   ]
   
