@@ -32,9 +32,9 @@ Gem::Specification.new do |s|
   ]
   
   # Dependencies, this syntax requires RubyGems > 1.2.0
-  s.add_runtime_dependency('thor', ['~> 0.14.6'])
-  s.add_runtime_dependency('fog', ['0.3.31.2'])
-  s.add_development_dependency('rspec' ['~>2.4.0'])
+  s.add_runtime_dependency 'thor', '~>0.14.6'
+  s.add_runtime_dependency 'fog', '0.3.31.3'
+  s.add_development_dependency 'rspec', '~>2.4.0'
   
 end
 
