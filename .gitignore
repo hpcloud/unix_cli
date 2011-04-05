@@ -45,3 +45,5 @@ pkg
 
 # Continuous integration reports:
 ci/reports/*/*
+
+.idea
