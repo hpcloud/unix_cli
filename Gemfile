@@ -1,6 +1,7 @@
 source "http://rubygems.org"
 
 gemspec
+#gem 'fog', :path => '../fog'
 
 group :development do
   gem "yard", "~> 0.6.0"
