@@ -17,22 +17,27 @@ module HPCloud
       return @connection if @connection
       credentials = Config.current_credentials
       if credentials
-        @connection ||= Fog::HP::Storage.new( :hp_access_id =>  credentials[:access_id],
-                                              :hp_secret_key => credentials[:secret_key],
-                                              :hp_account_id => credentials[:email],
-                                              :host => credentials[:host],
-                                              :port => credentials[:port] )
+        @connection ||= connection_with(credentials)
       else
         error "Please run `hpcloud account:setup` to set up your account."
       end
     end
     
+    def connection_with(credentials)
+      Fog::HP::Storage.new( :hp_access_id =>  credentials[:access_id],
+                            :hp_secret_key => credentials[:secret_key],
+                            :hp_account_id => credentials[:email],
+                            :host => credentials[:host],
+                            :port => credentials[:port] )
+    end
+    
     # display error message embedded in a REST response
     def display_error_message(error, exit_status=nil)
+      error_message = error.respond_to?(:response) ? parse_error(error.response) : error.message
       if exit_status === false # don't exit
-        $stderr.puts parse_error(error.response)
+        $stderr.puts error_message
       else
-        error parse_error(error.response), exit_status
+        error error_message, exit_status
       end
     end
     
