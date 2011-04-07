@@ -31,6 +31,19 @@ module HPCloud
                             :port => credentials[:port] )
     end
     
+    # print some non-error output to the user
+    def display(message)
+      say message unless @silence_display
+    end
+    
+    # use as a block, will silence any output from #display while inside
+    def silence_display
+      current = @silence_display
+      @silence_display = true
+      yield
+      @silence_display = current # restore previous status
+    end
+    
     # display error message embedded in a REST response
     def display_error_message(error, exit_status=nil)
       error_message = error.respond_to?(:response) ? parse_error(error.response) : error.message
