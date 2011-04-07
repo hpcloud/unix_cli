@@ -1,15 +1,18 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe "#remove command" do
+describe "Remove command," do
   
   before(:all) do
     @kvs = storage_connection
   end
   
   context "removing an object from bucket" do
-    
-    before(:all) { create_bucket_with_files('my_bucket', 'foo.txt') }
-    
+
+    before(:all) do
+      purge_bucket('my_bucket')
+      create_bucket_with_files('my_bucket', 'foo.txt')
+    end
+
     context "when object does not exist" do
       it "should exit with object not found" do
         response = capture(:stderr){ HPCloud::CLI.start(['remove', ':my_bucket/nonexistant.txt']) }
@@ -26,25 +29,19 @@ describe "#remove command" do
     
     context "when object and bucket exist" do
       before(:all) do
-#        @kvs.put_bucket('my_bucket')
-#        @response = capture(:stdout){ HPCloud::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_bucket']) }
-#        @get = @kvs.get_object('my_bucket', 'foo.txt')
       end
-      
       it "should report success" do
-#        @response.should eql("Copied spec/fixtures/files/foo.txt => :my_bucket/foo.txt\n")
         response = capture(:stderr){ HPCloud::CLI.start(['remove', ':my_bucket/foo.txt']) }
-        response.should eql("\n")
+        response.should eql("Removed object ':my_bucket/foo.txt'.\n")
       end
-      
-
-      after(:all) { purge_bucket('my_bucket') }
     end
-    
+
+    after(:all) do
+    end
+
   end
   
-  pending "copying remote object to local filesystem" do
-
+  pending "when syntax is not correct" do
   end
   
 end
