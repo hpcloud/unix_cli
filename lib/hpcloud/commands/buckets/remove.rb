@@ -14,7 +14,7 @@ module HPCloud
         end
         begin
           bucket.destroy
-          puts "Removed bucket '#{name}'."
+          display "Removed bucket '#{name}'."
         rescue Excon::Errors::Conflict => error
           display_error_message(error)
         end

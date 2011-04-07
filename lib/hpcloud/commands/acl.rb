@@ -19,7 +19,7 @@ module HPCloud
             # can't use model for now as doesn't preserve content-type
             # file.acl = acl
             # file.save
-            puts "ACL for #{resource} updated to #{acl}"
+            display "ACL for #{resource} updated to #{acl}"
           end
         else
           error "You don't have a file '#{path}'."

@@ -3,7 +3,7 @@ module HPCloud
     
     desc 'touch <resource>', "create an empty object"
     def touch(resource)
-      puts "touch an object"
+      display "touch an object"
     end
     
   end

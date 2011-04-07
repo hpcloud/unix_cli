@@ -36,7 +36,7 @@ module HPCloud
             File.open(to, 'w') do |file|
               file.write get.body
             end
-            puts "Copied #{from} => #{to}"
+            display "Copied #{from} => #{to}"
           rescue Excon::Errors::NotFound => e
             error "The specified object does not exist."
           end
@@ -57,7 +57,7 @@ module HPCloud
         if directory
           begin
             directory.files.create(:key => key, :body => File.open(from), 'Content-Type' => mime_type)
-            puts "Copied #{from} => :#{bucket}/#{key}"
+            display "Copied #{from} => :#{bucket}/#{key}"
           end
         else
           error "You don't have a bucket '#{bucket}'."
@@ -69,7 +69,7 @@ module HPCloud
         bucket_to, path_to = Bucket.parse_resource(to)
         begin
           connection.copy_object(bucket, path, bucket_to, path_to)
-          puts "Copied #{from} => :#{bucket_to}/#{path_to}"
+          display "Copied #{from} => :#{bucket_to}/#{path_to}"
         rescue Excon::Errors::NotFound => e
           if connection.directories.get(bucket)
             error "The specified object does not exist."

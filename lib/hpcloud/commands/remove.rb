@@ -18,7 +18,7 @@ module HPCloud
         file = directory.files.get(path)
         if file
           file.destroy
-          puts "Removed object '#{resource}'."
+          display "Removed object '#{resource}'."
         else
           error "You don't have a object named '#{path}'."
         end

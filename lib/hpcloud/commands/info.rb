@@ -5,7 +5,7 @@ module HPCloud
     
     desc "info", "info about the hpcloud CLI"
     def info
-      puts "Version: #{VERSION}"
+      display "Version: #{VERSION}"
     end
     
   end

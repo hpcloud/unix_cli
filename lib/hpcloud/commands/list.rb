@@ -10,7 +10,7 @@ module HPCloud
       begin
         directory = connection.directories.get(name)
         if directory
-          directory.files.each { |file| puts file.key }
+          directory.files.each { |file| display file.key }
         else
           error "You don't have a bucket named '#{name}'"
         end

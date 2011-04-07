@@ -12,12 +12,11 @@ module HPCloud
         error 'Login and password must be specified to continue.' # would be nice to display help here
       end
       Net::SSH.start(options[:host], options[:login], :password => options[:password]) do |ssh|
-        puts "logged into #{ssh.exec!('hostname').chomp}..."
+        display "logged into #{ssh.exec!('hostname').chomp}..."
         ssh.exec!('KVS_TEST_HOST=16.49.184.31')
         keygen = %Q(build/opt-centos5-x86_64/bin/stout-mgr create-account -port #{options[:port]} "#{name}" "#{email}")
-        puts "Preparing keygen: #{keygen.split('/')[-1]}"
-        keys = ssh.exec!(keygen)
-        puts keys
+        display "Preparing keygen: #{keygen.split('/')[-1]}"
+        display ssh.exec!(keygen)
       end
     end
     

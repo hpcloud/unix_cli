@@ -13,7 +13,7 @@ module HPCloud
       credentials[:port] = ask_with_default 'Port:', 9232
       unless options['no-validate']
         begin
-          puts "Verifying your account..."
+          display "Verifying your account..."
           connection_with(credentials).get_service
         rescue Excon::Errors::Forbidden => e
           display_error_message(e)
@@ -23,7 +23,7 @@ module HPCloud
         end
       end
       Config.update_credentials :default, credentials
-      puts "Account credentials have been set up."
+      display "Account credentials have been set up."
     end
     
   end

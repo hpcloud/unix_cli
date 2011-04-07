@@ -3,7 +3,7 @@ module HPCloud
     
     desc 'versioning <bucket>', 'show or modify versioning state for a bucket'
     def versioning(new_state=nil)
-      puts "show versioning state"
+      display "show versioning state"
     end
 
   end
