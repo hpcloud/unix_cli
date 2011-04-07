@@ -5,7 +5,18 @@ module HPCloud
     
     desc 'move <resource> <resource>', 'move objects inside or between buckets'
     def move(from,to)
-      puts "move an object"
+      from_type = Resource.detect_type(from)
+      to_type   = Resource.detect_type(to)
+      if from_type != :object
+        error "Move is limited to objects within buckets. Please use 'hpcloud copy' instead."
+      else
+        silence_display do
+          copy(from, to)
+          remove(from)
+        end
+        # any errors will be handled by above functions
+        display "Moved #{from} => #{to}"
+      end
     end
     
   end
