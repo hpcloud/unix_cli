@@ -91,11 +91,11 @@ RSpec.configure do |config|
   end
 
   def read_file(filename)
-    File.read(File.dirname(__FILE__) + "/fixtures/files/#{filename}")
+    read_fixture(:file, filename)
   end
   
   def read_account_file(filename)
-    File.read(File.dirname(__FILE__) + "/fixtures/accounts/#{filename}")
+    read_fixture(:account, filename)
   end
   
   def read_fixture(type, filename)
