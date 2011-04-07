@@ -47,12 +47,12 @@ RSpec.configure do |config|
   # end
 
   # Delete any buckets this connection currently has
-  # def purge_buckets(connection = nil, verbose = false)
-  #   connection ||= storage_connection
-  #   connection.directories.each do |directory|
-  #     purge_bucket(directory.key, :connection => connection, :verbose => verbose)
-  #   end
-  # end
+  def purge_buckets(connection = nil, verbose = false)
+    connection ||= storage_connection
+    connection.directories.each do |directory|
+      purge_bucket(directory.key, :connection => connection, :verbose => verbose)
+    end
+  end
 
   # Delete a single bucket, regardless of files present
   def purge_bucket(bucket_name, options={})
