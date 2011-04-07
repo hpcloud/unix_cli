@@ -31,8 +31,15 @@ describe "Remove command," do
       before(:all) do
       end
       it "should report success" do
-        response = capture(:stderr){ HPCloud::CLI.start(['remove', ':my_bucket/foo.txt']) }
+        response = capture(:stdout){ HPCloud::CLI.start(['remove', ':my_bucket/foo.txt']) }
         response.should eql("Removed object ':my_bucket/foo.txt'.\n")
+      end
+    end
+
+    context "when syntax is not correct" do
+      it "should exit with message about bad syntax" do
+        response = capture(:stderr){ HPCloud::CLI.start(['remove', '/foo/foo']) }
+        response.should eql("Could not find resource '/foo/foo'. Correct syntax is :bucketname/objectname.\n")
       end
     end
 
@@ -40,8 +47,6 @@ describe "Remove command," do
     end
 
   end
-  
-  pending "when syntax is not correct" do
-  end
+
   
 end
