@@ -67,6 +67,7 @@ module HPCloud
       def clone(from, to)
         bucket, path = Bucket.parse_resource(from)
         bucket_to, path_to = Bucket.parse_resource(to)
+        path_to = Bucket.storage_destination_path(path_to, path)
         begin
           connection.copy_object(bucket, path, bucket_to, path_to)
           display "Copied #{from} => :#{bucket_to}/#{path_to}"
