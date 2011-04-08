@@ -83,7 +83,7 @@ describe "Copy command" do
       end
       
       it "should create local file" do
-        should satisfy { File.exists?('spec/tmp/foo.txt') }
+        File.exists?('spec/tmp/foo.txt').should be_true
       end
       
       it "should have same body as object" do
@@ -94,7 +94,10 @@ describe "Copy command" do
     
     pending 'when cannot write file'
     
-    after(:all) { purge_bucket('copy_remote_to_local') }
+    after(:all) do
+      purge_bucket('copy_remote_to_local')
+      File.unlink('spec/tmp/foo.txt')
+    end
     
   end
   
