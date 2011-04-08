@@ -73,8 +73,9 @@ module HPCloud
         rescue Excon::Errors::NotFound => e
           if !connection.directories.get(bucket)
             error "You don't have a bucket '#{bucket}'."
-          elsif bucket != bucket_to && !connection.directories.get(bucket_to)
-            error "You don't have a bucket '#{bucket_to}'."
+          elsif bucket != bucket_to #&& !connection.directories.get(bucket_to)
+            #error "You don't have a bucket '#{bucket_to}'."
+            error 'Copying between buckets is not yet supported.'
           else
             error "The specified object does not exist."
           end
