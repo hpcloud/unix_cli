@@ -48,7 +48,6 @@ module HPCloud
       def put(from, to)
         if !File.exists?(from)
           error "File not found at '#{from}'."
-          return
         end
         mime_type = Resource.get_mime_type(from)
         bucket, path = Bucket.parse_resource(to)
