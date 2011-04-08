@@ -4,6 +4,10 @@ describe "Get command," do
   
   before(:all) do
     @kvs = storage_connection
+    # change our working directory temporarily since command will drop a file there
+    Dir.mkdir('spec/tmp/current_path') unless Dir.exists?('spec/tmp/current_path')
+    @prior_dir = Dir.pwd
+    Dir.chdir(@prior_dir + '/spec/tmp/current_path')
   end
   
   context "getting an object from a bucket" do
@@ -35,20 +39,29 @@ describe "Get command," do
     end
 
     context "when object and bucket exist" do
+      
       before(:all) do
+        @response = capture(:stdout){ HPCloud::CLI.start(['get', ':my_bucket/foo.txt']) }
       end
+      
       it "should report success" do
-        response = capture(:stdout){ HPCloud::CLI.start(['get', ':my_bucket/foo.txt']) }
-        response.should eql("Copied :my_bucket/foo.txt => ./foo.txt\n")
-        File.exist?('./foo.txt').should eql true
+        @response.should eql("Copied :my_bucket/foo.txt => ./foo.txt\n")
       end
-#      after(:all) { remove_file './getfoo.txt' }
+      
+      it "should have created a file" do
+        File.exist?('foo.txt').should eql true
+      end
+
+      after(:all) do
+        File.unlink('foo.txt')
+      end
+      
     end
 
-
-    after(:all) do
-    end
-
+  end
+  
+  after(:all) do
+    Dir.chdir(@prior_dir)
   end
 
   
