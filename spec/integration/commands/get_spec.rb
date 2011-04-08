@@ -1,25 +1,21 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe "Get command" do
+describe "The get command" do
   
   before(:all) do
     @kvs = storage_connection
-    # change our working directory temporarily since command will drop a file there
-    Dir.mkdir('spec/tmp/current_path') unless Dir.exists?('spec/tmp/current_path')
-    @prior_dir = Dir.pwd
-    Dir.chdir(@prior_dir + '/spec/tmp/current_path')
   end
   
   context "getting an object from a bucket" do
 
     before(:all) do
-      purge_bucket('my_bucket')
-      create_bucket_with_files('my_bucket', 'foo.txt')
+      @kvs.put_bucket('get_bucket')
+      @kvs.put_object('get_bucket', 'highly_unusual_file_name.txt', read_file('foo.txt'))
     end
 
     context "when object does not exist" do
       it "should exit with object not found" do
-        response = capture(:stderr){ HPCloud::CLI.start(['get', ':my_bucket/nonexistant.txt']) }
+        response = capture(:stderr){ HPCloud::CLI.start(['get', ':get_bucket/nonexistant.txt']) }
         response.should eql("The specified object does not exist.\n")
       end
     end
@@ -41,27 +37,27 @@ describe "Get command" do
     context "when object and bucket exist" do
       
       before(:all) do
-        @response = capture(:stdout){ HPCloud::CLI.start(['get', ':my_bucket/foo.txt']) }
+        @response = capture(:stdout){ HPCloud::CLI.start(['get', ':get_bucket/highly_unusual_file_name.txt']) }
       end
       
       it "should report success" do
-        @response.should eql("Copied :my_bucket/foo.txt => ./foo.txt\n")
+        @response.should eql("Copied :get_bucket/highly_unusual_file_name.txt => ./highly_unusual_file_name.txt\n")
       end
       
       it "should have created a file" do
-        File.exist?('foo.txt').should eql true
+        File.exist?('highly_unusual_file_name.txt').should eql true
       end
 
       after(:all) do
-        File.unlink('foo.txt')
+        File.unlink('highly_unusual_file_name.txt')
       end
       
     end
 
-  end
-  
-  after(:all) do
-    Dir.chdir(@prior_dir)
+   after(:all) do
+     purge_bucket('get_bucket')
+   end
+
   end
 
   
