@@ -7,4 +7,9 @@ require 'rubygems'
 # require 'ruby-debug'
 require 'hpcloud'
 
+unless RUBY_VERSION >= '1.9.2'
+  puts "Ruby version 1.9.2 or greater is required."
+  exit
+end
+
 HPCloud::CLI.start
