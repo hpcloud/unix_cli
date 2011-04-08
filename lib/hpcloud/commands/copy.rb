@@ -71,10 +71,12 @@ module HPCloud
           connection.copy_object(bucket, path, bucket_to, path_to)
           display "Copied #{from} => :#{bucket_to}/#{path_to}"
         rescue Excon::Errors::NotFound => e
-          if connection.directories.get(bucket)
-            error "The specified object does not exist."
-          else
+          if !connection.directories.get(bucket)
             error "You don't have a bucket '#{bucket}'."
+          elsif bucket != bucket_to && !connection.directories.get(bucket_to)
+            error "You don't have a bucket '#{bucket_to}'."
+          else
+            error "The specified object does not exist."
           end
         end
       end
