@@ -1,10 +1,8 @@
 module HPCloud
   class CLI < Thor
     
-    CANNED_ACLS = %w(private public-read public-read-write authenticated-read authenticated-read-write bucket-owner-read bucket-owner-full-control log-delivery-write)
-    
-    desc 'acl <resource> <canned-acl>', "set a given resource to a canned ACL"
-    def acl(resource, acl)
+    desc 'acl:set <resource> <canned-acl>', "set a given resource to a canned ACL"
+    define_method 'acl:set' do |resource, acl|
       acl = acl.downcase
       unless CANNED_ACLS.include?(acl)
         error "Your ACL '#{acl}' is invalid.\nValid options are: #{CANNED_ACLS.join(', ')}."
