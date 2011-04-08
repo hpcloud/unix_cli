@@ -1,36 +1,20 @@
 module HPCloud
   class CLI < Thor
 
-    map %w(rm delete destroy del) => 'remove'
+    map %w(fetch) => 'get'
 
-    desc 'remove <resource>', 'remove an object'
-    def remove(resource)
+    desc 'get <resource>', 'fetch an object to local file system'
+    long_desc 'Copies the specified object to the current directory on your local file system. The file will retain the name it it saved with online.'
+    def get(resource)
       bucket, path = Bucket.parse_resource(resource)
       type = Resource.detect_type(resource)
 
-      directory = connection.directories.get(bucket)
-      if not directory
-        error "You don't have a bucket named '#{bucket}'"
-        return
-      end
-
-      if type == :object
-        file = directory.files.get(path)
-        if file
-          file.destroy
-          puts "Removed object '#{resource}'."
-        else
-          error "You don't have a object named '#{path}'."
-        end
-
-      elsif type == :bucket
-        confirm = ask_with_default "Are you sure you want to remove '#{resource}'", 'n'
-        if confirm[0].downcase == 'y'
-          send('buckets:remove', bucket)
-        end
-
+      if :object == type
+        copy(resource, "./#{path}")
+      elsif :bucket == type
+        error "You can get files, but not buckets."
       else
-          error "Could not find resource '#{resource}'. Correct syntax is :bucketname/objectname."
+        error "The object path '#{resource}' wasn't recognized.  Usage: 'hpcloud get :bucket_name/object_name'."
       end
     end
 
