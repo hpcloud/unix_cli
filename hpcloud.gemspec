@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   
   s.executables         = ["hpcloud"]
   # s.default_executable  = 'hpcloud'
+  s.required_ruby_version = '~>1.9.2'
   s.required_rubygems_version = '>= 1.2.0'
   
   s.require_paths = ["lib"]
