@@ -143,6 +143,26 @@ describe "Copy command" do
       end
     end
     
+    context "when target not absolutely specified" do
+      
+      before(:all) { @kvs.put_object('copy_inside_bucket', 'nested/file.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'}) }
+      
+      context "when bucket only" do
+        it "should show success message" do
+          response = capture(:stdout){ HPCloud::CLI.start(['copy', ':copy_inside_bucket/nested/file.txt', ':copy_inside_bucket']) }
+          response.should eql("Copied :copy_inside_bucket/nested/file.txt => :copy_inside_bucket/file.txt\n")
+        end
+      end
+      
+      context "when directory in bucket" do
+        it "should show success message" do
+          response = capture(:stdout){ HPCloud::CLI.start(['copy', ':copy_inside_bucket/nested/file.txt', ':copy_inside_bucket/nested_new/file.txt']) }
+          response.should eql("Copied :copy_inside_bucket/nested/file.txt => :copy_inside_bucket/nested_new/file.txt\n")
+        end
+      end
+      
+    end
+    
     pending "when new object cannot be written" do  
     end
     
@@ -151,6 +171,78 @@ describe "Copy command" do
   end
   
   pending "copying a remote object to another bucket" do
+    
+    before(:all) do
+      #create_bucket_with_files('copy_inside_bucket', 'foo.txt')
+      @kvs.put_bucket('copy_between_one')
+      @kvs.put_object('copy_between_one', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
+      @kvs.put_bucket('copy_between_two')
+    end
+    
+    context "when bucket does not exist" do
+      it "should exit with bucket not found" do
+        response = capture(:stderr){ HPCloud::CLI.start(['copy', ':missing_bucket/foo.txt', ':copy_between_two/tmp/foo.txt']) }
+        response.should eql("You don't have a bucket 'missing_bucket'.\n")
+      end
+    end
+    
+    context "when object does not exist" do
+      it "should exit with object not found" do
+        response = capture(:stderr){ HPCloud::CLI.start(['copy', ':copy_between_one/missing.txt', ':copy_between_two/tmp/missing.txt']) }
+        response.should eql("The specified object does not exist.\n")
+      end
+    end
+    
+    context "when new bucket does not exist" do
+      it "should exit with object not found" do
+        response = capture(:stderr){ HPCloud::CLI.start(['copy', ':copy_between_one/missing.txt', ':missing_bucket/tmp/missing.txt']) }
+        response.should eql("You don't have a bucket 'missing_bucket'.\n")
+      end
+    end
+    
+    pending "when target is not absolutely specified" do
+      
+      # context "when target is bucket" do
+      #   it "should give success message" do
+      #     response = capture(:stdout){ HPCloud::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two']) }
+      #     response.should eql("Copied: \n")
+      #   end
+      # end
+      
+      context "when target is directory on bucket" do
+        
+      end
+      
+    end
+    
+    context "when object is copied successfully" do
+      before(:all) do
+        @response = capture(:stdout){ HPCloud::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two/new/foo.txt']) }
+        @get = @kvs.get_object('copy_between_two', 'new/foo.txt')
+      end
+      
+      it "should exit with object copied" do
+        @response.should eql("Copied :copy_between_one/foo.txt => :copy_between_two/new/foo.txt\n")
+      end
+      
+      it "should create new object" do
+        @get.status.should eql(200)
+      end
+      
+      it "should preserve content-type" do
+        @get.headers['content-type'].should eql('text/plain')
+      end
+
+      it "should have same object body" do
+        @get.body.should eql(read_file('foo.txt'))
+      end
+    end
+    
+    after(:all) do
+      purge_bucket('copy_between_one')
+      purge_bucket('copy_between_two')
+    end
+    
   end
   
 end
