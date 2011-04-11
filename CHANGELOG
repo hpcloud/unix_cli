@@ -1,0 +1,17 @@
+v0.0.2 4/11/11
+==============
+- add 'remove' command
+- add 'move' command
+- add 'get' command
+- command renamed: 'acl' => 'acl:set'
+- new 'acl' command for viewing ACLs
+- README fixes
+- auto-validate new account setups
+- improve STDOUT output management
+- clarify that bucket to bucket support is pending (KVS bug #9805)
+- 'copy' command no longer needs absolute target when copying to a bucket
+- make ruby 1.9.2 an enforced requirement
+
+v0.0.1 4/6/11
+=============
+- initial release
