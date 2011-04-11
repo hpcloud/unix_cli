@@ -13,10 +13,10 @@ module HPCloud
       end
       Net::SSH.start(options[:host], options[:login], :password => options[:password]) do |ssh|
         display "logged into #{ssh.exec!('hostname').chomp}..."
-        ssh.exec!('KVS_TEST_HOST=16.49.184.31')
+        env_variable = 'KVS_TEST_HOST=16.49.184.31'
         keygen = %Q(build/opt-centos5-x86_64/bin/stout-mgr create-account -port #{options[:port]} "#{name}" "#{email}")
         display "Preparing keygen: #{keygen.split('/')[-1]}"
-        display ssh.exec!(keygen)
+        display ssh.exec!(env_variable && keygen)
       end
     end
     
