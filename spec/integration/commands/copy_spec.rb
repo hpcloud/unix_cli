@@ -40,7 +40,7 @@ describe "Copy command" do
       end
       
       it "should preserve content-type" do
-        @get.headers["content-type"].should eql('text/plain')
+        @get.headers["Content-Type"].should eql('text/plain')
       end
       
       after(:all) { purge_bucket('my_bucket') }
@@ -138,7 +138,7 @@ describe "Copy command" do
       end
       
       it "should preserve content-type" do
-        @get.headers['content-type'].should eql('text/plain')
+        @get.headers['Content-Type'].should eql('text/plain')
       end
 
       it "should have same object body" do
@@ -233,7 +233,7 @@ describe "Copy command" do
       end
       
       it "should preserve content-type" do
-        @get.headers['content-type'].should eql('text/plain')
+        @get.headers['Content-Type'].should eql('text/plain')
       end
 
       it "should have same object body" do
