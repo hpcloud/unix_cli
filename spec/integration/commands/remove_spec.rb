@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe "Remove command," do
+describe "Remove command" do
   
   before(:all) do
     @kvs = storage_connection

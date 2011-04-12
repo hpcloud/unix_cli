@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe "The get command" do
+describe "Get command" do
   
   before(:all) do
     @kvs = storage_connection
