@@ -12,14 +12,14 @@ describe "Move command" do
     
     context "when source bucket can't be found" do
       it "should display error message" do
-        response = capture(:stderr){ HPCloud::CLI.start(['move', ':missing_bucket/missing_file', ':missing_bucket/new/my_file']) }
+        response = capture(:stderr){ HP::Scalene::CLI.start(['move', ':missing_bucket/missing_file', ':missing_bucket/new/my_file']) }
         response.should eql("You don't have a bucket 'missing_bucket'.\n")
       end
     end
     
     context "when source file can't be found" do
       it "should display error message" do
-        response = capture(:stderr){ HPCloud::CLI.start(['move', ':move_source_bucket/missing_file', ':move_source_bucket/new/my_file']) }
+        response = capture(:stderr){ HP::Scalene::CLI.start(['move', ':move_source_bucket/missing_file', ':move_source_bucket/new/my_file']) }
         response.should eql("The specified object does not exist.\n")
       end
     end
@@ -31,7 +31,7 @@ describe "Move command" do
       
       before(:all) do
         @kvs.put_object('move_source_bucket', 'foo.txt', read_file('foo.txt'))
-        @response = capture(:stdout){ HPCloud::CLI.start(['move', ':move_source_bucket/foo.txt', ':move_source_bucket/new/foo.txt']) }
+        @response = capture(:stdout){ HP::Scalene::CLI.start(['move', ':move_source_bucket/foo.txt', ':move_source_bucket/new/foo.txt']) }
       end
       
       it "should have created new object at destination" do
@@ -58,21 +58,21 @@ describe "Move command" do
     
     context "when source bucket can't be found" do
       it "should display error message" do
-        response = capture(:stderr){ HPCloud::CLI.start(['move', ':missing_bucket/missing_file', ':move_target_bucket/new/my_file']) }
+        response = capture(:stderr){ HP::Scalene::CLI.start(['move', ':missing_bucket/missing_file', ':move_target_bucket/new/my_file']) }
         response.should eql("You don't have a bucket 'missing_bucket'.\n")
       end
     end
     
     context "when source file can't be found" do
       it "should display error message" do
-        response = capture(:stderr){ HPCloud::CLI.start(['move', ':move_source_bucket/missing', ':move_target_bucket']) }
+        response = capture(:stderr){ HP::Scalene::CLI.start(['move', ':move_source_bucket/missing', ':move_target_bucket']) }
         response.should eql("The object 'missing_bucket/missing_file' cannot be found.\n")
       end
     end
     
     # context "when target bucket can't be found" do
     #   it "should display error message" do
-    #     response = capture(:stderr){ HPCloud::CLI.start(['move', ':missing_bucket/missing_file', ':missing_bucket/new/my_file']) }
+    #     response = capture(:stderr){ HP::Scalene::CLI.start(['move', ':missing_bucket/missing_file', ':missing_bucket/new/my_file']) }
     #     response.should eql("You don't have a bucket 'missing_bucket'.\n")
     #   end
     # end
@@ -89,14 +89,14 @@ describe "Move command" do
     
     context "when source bucket can't be found" do
       it "should display error message" do
-        response = capture(:stderr){ HPCloud::CLI.start(['move', ':missing_bucket/missing_file', '/tmp/my_file']) }
+        response = capture(:stderr){ HP::Scalene::CLI.start(['move', ':missing_bucket/missing_file', '/tmp/my_file']) }
         response.should eql("You don't have a bucket 'missing_bucket'.\n")
       end
     end
     
     context "when source file can't be found" do
       it "should display error message" do
-        response = capture(:stderr){ HPCloud::CLI.start(['move', ':move_source_bucket/missing_file', '/tmp/my_file']) }
+        response = capture(:stderr){ HP::Scalene::CLI.start(['move', ':move_source_bucket/missing_file', '/tmp/my_file']) }
         response.should eql("The specified object does not exist.\n")
       end
     end
@@ -109,7 +109,7 @@ describe "Move command" do
       before(:all) do
         @kvs.put_object('move_source_bucket', 'foo.txt', read_file('foo.txt'))
         File.unlink('spec/tmp/newfoo.txt') if File.exists?('spec/tmp/newfoo.txt')
-        @response = capture(:stdout){ HPCloud::CLI.start(['move', ':move_source_bucket/foo.txt', 'spec/tmp/newfoo.txt']) }
+        @response = capture(:stdout){ HP::Scalene::CLI.start(['move', ':move_source_bucket/foo.txt', 'spec/tmp/newfoo.txt']) }
       end
       
       it "should have created new object at destination" do
@@ -134,8 +134,8 @@ describe "Move command" do
   
   context "Trying to move a non-object resource" do
     it "should give error message" do
-      response = capture(:stderr){ HPCloud::CLI.start(['move', 'spec/fixtures/files/foo.txt', ':my_bucket']) }
-      response.should eql("Move is limited to objects within buckets. Please use 'hpcloud copy' instead.\n")
+      response = capture(:stderr){ HP::Scalene::CLI.start(['move', 'spec/fixtures/files/foo.txt', ':my_bucket']) }
+      response.should eql("Move is limited to objects within buckets. Please use 'scalene copy' instead.\n")
     end
   end
   
