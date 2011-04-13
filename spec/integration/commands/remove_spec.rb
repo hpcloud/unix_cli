@@ -15,14 +15,14 @@ describe "Remove command" do
 
     context "when object does not exist" do
       it "should exit with object not found" do
-        response = capture(:stderr){ HPCloud::CLI.start(['remove', ':my_bucket/nonexistant.txt']) }
+        response = capture(:stderr){ HP::Scalene::CLI.start(['remove', ':my_bucket/nonexistant.txt']) }
         response.should eql("You don't have a object named 'nonexistant.txt'.\n")
       end
     end
     
     context "when bucket does not exist" do
       it "should exit with bucket not found" do
-        response = capture(:stderr){ HPCloud::CLI.start(['remove', ':nonexistant_bucket']) }
+        response = capture(:stderr){ HP::Scalene::CLI.start(['remove', ':nonexistant_bucket']) }
         response.should eql("You don't have a bucket named 'nonexistant_bucket'\n")
       end
     end
@@ -31,14 +31,14 @@ describe "Remove command" do
       before(:all) do
       end
       it "should report success" do
-        response = capture(:stdout){ HPCloud::CLI.start(['remove', ':my_bucket/foo.txt']) }
+        response = capture(:stdout){ HP::Scalene::CLI.start(['remove', ':my_bucket/foo.txt']) }
         response.should eql("Removed object ':my_bucket/foo.txt'.\n")
       end
     end
 
     context "when syntax is not correct" do
       it "should exit with message about bad syntax" do
-        response = capture(:stderr){ HPCloud::CLI.start(['remove', '/foo/foo']) }
+        response = capture(:stderr){ HP::Scalene::CLI.start(['remove', '/foo/foo']) }
         response.should eql("Could not find resource '/foo/foo'. Correct syntax is :bucketname/objectname.\n")
       end
     end

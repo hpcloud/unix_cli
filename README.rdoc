@@ -1,4 +1,4 @@
-= hpcloud
+= scalene
 
 Command line tools for managing and interacting with your HP Scalene services.
 

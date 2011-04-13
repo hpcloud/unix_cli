@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+lib_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH.unshift(lib_dir) if File.directory?(lib_dir) && !$LOAD_PATH.include?(lib_dir)
+
+ENV['SCALENE_CLI_NAME'] = File.basename($0)
+
+require 'rubygems'
+require 'scalene'
+
+unless RUBY_VERSION >= '1.9.2'
+  puts "Ruby version 1.9.2 or greater is required."
+  exit
+end
+
+HP::Scalene::CLI.start
