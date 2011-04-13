@@ -1,6 +1,4 @@
 #require "bundler/setup"
-require 'thor'
-require 'thor/group'
 require 'fog'
 
 require 'scalene/version'

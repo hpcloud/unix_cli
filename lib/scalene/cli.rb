@@ -1,3 +1,6 @@
+require 'thor'
+require 'thor/group'
+
 module HP
   module Scalene
     class CLI < Thor
