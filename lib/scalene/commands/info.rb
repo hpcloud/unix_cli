@@ -6,7 +6,7 @@ module HP
     
       desc "info", "info about the HP Scalene CLI"
       def info
-        display "Version: #{VERSION}"
+        display "version: #{VERSION}"
       end
     
     end
