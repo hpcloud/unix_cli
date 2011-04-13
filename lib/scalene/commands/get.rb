@@ -15,7 +15,7 @@ module HP
         elsif :bucket == type
           error "You can get files, but not buckets."
         else
-          error "The object path '#{resource}' wasn't recognized.  Usage: 'scalene get :bucket_name/object_name'."
+          error "The object path '#{resource}' wasn't recognized.  Usage: '#{selfname} get :bucket_name/object_name'."
         end
       end
 

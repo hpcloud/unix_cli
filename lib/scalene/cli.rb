@@ -13,7 +13,7 @@ module HP
         if credentials
           @connection ||= connection_with(credentials)
         else
-          error "Please run `scalene account:setup` to set up your account."
+          error "Please run `#{selfname} account:setup` to set up your account."
         end
       end
     
@@ -53,6 +53,11 @@ module HP
         response.body =~ /<Message>(.*)<\/Message>/
         return $1 if $1
         response.body
+      end
+      
+      # name of the running CLI script
+      def selfname
+        ENV['SCALENE_CLI_NAME'] || 'scalene'
       end
     
       ### Thor extensions

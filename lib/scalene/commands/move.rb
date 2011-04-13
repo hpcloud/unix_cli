@@ -9,7 +9,7 @@ module HP
         from_type = Resource.detect_type(from)
         to_type   = Resource.detect_type(to)
         if from_type != :object
-          error "Move is limited to objects within buckets. Please use 'scalene copy' instead."
+          error "Move is limited to objects within buckets. Please use '#{selfname} copy' instead."
         else
           silence_display do
             copy(from, to)

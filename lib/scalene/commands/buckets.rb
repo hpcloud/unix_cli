@@ -11,7 +11,7 @@ module HP
       def buckets
         buckets = connection.directories
         if buckets.empty?
-          display "You currently have no buckets, use `scalene buckets:add <name>` to create one."
+          display "You currently have no buckets, use `#{selfname} buckets:add <name>` to create one."
         else
           buckets.each { |bucket| display bucket.key }
         end
