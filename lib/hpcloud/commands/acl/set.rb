@@ -20,10 +20,10 @@ module HPCloud
             display "ACL for #{resource} updated to #{acl}"
           end
         else
-          error "You don't have a file '#{path}'."
+          error "You don't have a file '#{path}'.", :not_found
         end
       else
-        error "You don't have a bucket '#{bucket}'."
+        error "You don't have a bucket '#{bucket}'.", :not_found
       end
     end
     

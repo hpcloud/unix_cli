@@ -19,7 +19,7 @@ module HPCloud
           # TODO: print_table should be silenceable?
           print_table acls_for_table(acls)
         else
-          error 'ACL viewing is only supported for buckets and objects'
+          error 'ACL viewing is only supported for buckets and objects', ERRORS[:not_supported]
         end
       rescue Excon::Errors::NotFound, Excon::Errors::Forbidden => e
         display_error_message(e)

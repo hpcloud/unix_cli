@@ -1,6 +1,13 @@
 module HPCloud
   class CLI < Thor
-    
+
+    ERRORS = {  :general_error    => 1,
+                :not_supported    => 3,
+                :not_found        => 4,
+                :incorrect_usage  => 64,
+                :no_permission    => 77
+              }
+
     private
     
     def connection
@@ -9,7 +16,7 @@ module HPCloud
       if credentials
         @connection ||= connection_with(credentials)
       else
-        error "Please run `hpcloud account:setup` to set up your account."
+        error "Please run `hpcloud account:setup` to set up your account.", :incorrect_usage
       end
     end
     
@@ -59,6 +66,8 @@ module HPCloud
     end
     
     def error(message, exit_status=nil)
+      exit_status = ERRORS[exit_status]
+      #message += "(exit status #{exit_status})"   # debug only
       $stderr.puts message
       exit exit_status || 1
     end

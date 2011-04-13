@@ -12,7 +12,7 @@ module HPCloud
         if directory
           directory.files.each { |file| display file.key }
         else
-          error "You don't have a bucket named '#{name}'"
+          error "You don't have a bucket named '#{name}'",  :not_found
         end
       rescue Excon::Errors::Forbidden => error
         display_error_message(error)

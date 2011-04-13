@@ -13,7 +13,7 @@ module HPCloud
           display "http://#{config[:host]}:#{config[:port]}/#{bucket}/#{key}"
         end
       rescue Excon::Errors::NotFound => error
-        error "No object exists at '#{bucket}/#{key}'."
+        error "No object exists at '#{bucket}/#{key}'.", :not_found
       end
     end
     

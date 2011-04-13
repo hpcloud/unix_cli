@@ -10,7 +10,7 @@ module HPCloud
 
       directory = connection.directories.get(bucket)
       if not directory
-        error "You don't have a bucket named '#{bucket}'"
+        error "You don't have a bucket named '#{bucket}'", :not_found
         return
       end
 
@@ -20,7 +20,7 @@ module HPCloud
           file.destroy
           display "Removed object '#{resource}'."
         else
-          error "You don't have a object named '#{path}'."
+          error "You don't have a object named '#{path}'.", :not_found
         end
 
       elsif type == :bucket
@@ -30,7 +30,7 @@ module HPCloud
         end
 
       else
-          error "Could not find resource '#{resource}'. Correct syntax is :bucketname/objectname."
+          error "Could not find resource '#{resource}'. Correct syntax is :bucketname/objectname.", :not_found
       end
     end
 

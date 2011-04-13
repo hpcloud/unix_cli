@@ -12,9 +12,9 @@ module HPCloud
       if :object == type
         copy(resource, "./#{path}")
       elsif :bucket == type
-        error "You can get files, but not buckets."
+        error "You can get files, but not buckets.", :not_found
       else
-        error "The object path '#{resource}' wasn't recognized.  Usage: 'hpcloud get :bucket_name/object_name'."
+        error "The object path '#{resource}' wasn't recognized.  Usage: 'hpcloud get :bucket_name/object_name'.", :incorrect_usage
       end
     end
 

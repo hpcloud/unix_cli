@@ -8,7 +8,7 @@ module HPCloud
       from_type = Resource.detect_type(from)
       to_type   = Resource.detect_type(to)
       if from_type != :object
-        error "Move is limited to objects within buckets. Please use 'hpcloud copy' instead."
+        error "Move is limited to objects within buckets. Please use 'hpcloud copy' instead.", :incorrect_usage
       else
         silence_display do
           copy(from, to)

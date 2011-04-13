@@ -19,7 +19,7 @@ module HPCloud
           display_error_message(error)
         end
       else
-        error "You don't have a bucket named '#{name}'."
+        error "You don't have a bucket named '#{name}'.", :not_found
       end
     end
     

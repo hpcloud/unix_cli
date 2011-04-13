@@ -15,7 +15,7 @@ module HPCloud
       elsif from_type == :object and Resource::REMOTE_TYPES.include?(to_type)
         clone(from, to)
       else
-        error "Not currently supported."
+        error "Not currently supported.", :not_supported
       end
     end
     
@@ -24,7 +24,7 @@ module HPCloud
       def fetch(from, to)
         dir_path = File.dirname(to) #File.expand_path(file_path)
         if !Dir.exists?(dir_path)
-          error "No directory exists at '#{dir_path}'."
+          error "No directory exists at '#{dir_path}'.", :not_found
           return
         end
         bucket, path = Bucket.parse_resource(from)
@@ -38,16 +38,16 @@ module HPCloud
             end
             display "Copied #{from} => #{to}"
           rescue Excon::Errors::NotFound => e
-            error "The specified object does not exist."
+            error "The specified object does not exist.", :not_found
           end
         else
-          error "You don't have a bucket '#{bucket}'."
+          error "You don't have a bucket '#{bucket}'.", :not_found
         end
       end
       
       def put(from, to)
         if !File.exists?(from)
-          error "File not found at '#{from}'."
+          error "File not found at '#{from}'.", :not_found
         end
         mime_type = Resource.get_mime_type(from)
         bucket, path = Bucket.parse_resource(to)
@@ -59,7 +59,7 @@ module HPCloud
             display "Copied #{from} => :#{bucket}/#{key}"
           end
         else
-          error "You don't have a bucket '#{bucket}'."
+          error "You don't have a bucket '#{bucket}'.", :not_found
         end
       end
       
@@ -72,12 +72,12 @@ module HPCloud
           display "Copied #{from} => :#{bucket_to}/#{path_to}"
         rescue Excon::Errors::NotFound => e
           if !connection.directories.get(bucket)
-            error "You don't have a bucket '#{bucket}'."
+            error "You don't have a bucket '#{bucket}'.", :not_found
           elsif bucket != bucket_to #&& !connection.directories.get(bucket_to)
             #error "You don't have a bucket '#{bucket_to}'."
-            error 'Copying between buckets is not yet supported.'
+            error 'Copying between buckets is not yet supported.',  :not_supported
           else
-            error "The specified object does not exist."
+            error "The specified object does not exist.", :not_found
           end
         end
       end
