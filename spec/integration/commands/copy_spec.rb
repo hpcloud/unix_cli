@@ -7,8 +7,10 @@ describe "Copy command" do
   end
   
   context "copying local file to bucket" do
-    
-    before(:all) { purge_bucket('my_bucket') }
+    before(:all) do
+      purge_bucket('my_bucket')
+      @kvs.put_bucket('my_bucket')
+    end
     
     context "when local file does not exist" do
       it "should exit with file not found" do
@@ -17,16 +19,34 @@ describe "Copy command" do
       end
     end
     
+    context "when local file cannot be read" do
+      before(:all) do
+        File.chmod(0200, 'spec/fixtures/files/cantread.txt')
+      end
+      
+      it "should not be a readable file" do
+        File.readable?('spec/fixtures/files/cantread.txt').should be_false
+      end
+      
+      it "should show error message" do
+        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_bucket']) }
+        response.should eql("The selected file cannot be read.\n")
+      end
+      
+      after(:all) do
+        File.chmod(0644, 'spec/fixtures/files/cantread.txt')
+      end
+    end
+    
     context "when bucket does not exist" do
       it "should exit with bucket not found" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_bucket']) }
-        response.should eql("You don't have a bucket 'my_bucket'.\n")
+        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':missing_bucket']) }
+        response.should eql("You don't have a bucket 'missing_bucket'.\n")
       end
     end
     
     context "when file and bucket exist" do
       before(:all) do
-        @kvs.put_bucket('my_bucket')
         @response = capture(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_bucket']) }
         @get = @kvs.get_object('my_bucket', 'foo.txt')
       end
@@ -43,9 +63,9 @@ describe "Copy command" do
         @get.headers["Content-Type"].should eql('text/plain')
       end
       
-      after(:all) { purge_bucket('my_bucket') }
     end
     
+    after(:all) { purge_bucket('my_bucket') }
   end
   
   context "copying remote object to local filesystem" do

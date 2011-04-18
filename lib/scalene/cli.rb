@@ -9,7 +9,7 @@ module HP
                       :not_supported    => 3,
                       :not_found        => 4,
                       :incorrect_usage  => 64,
-                      :no_permission    => 77
+                      :permission_denied    => 77
                     }
     
       private
