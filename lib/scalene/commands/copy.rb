@@ -3,9 +3,15 @@ module HP
     class CLI < Thor
     
       map 'cp' => 'copy'
-    
+
       desc 'copy <resource> <resource>', "copy files from one resource to another"
-      long_desc 'So much more description...'
+      long_desc "Use this command to copy a file between a bucket and your \nfile system and vise versa.
+                You can also copy a file from one bucket to another bucket.\n\n
+                Examples:'scalene copy ./my_file.txt :my_bucket', 'scalene copy :my_bucket/my_file.txt ./'
+                \n\nAliases: 'cp'
+                \n\nNote: we don\'t yet support the ability to copy files \nwith a wildcard, i.e. '*.*',
+                or to copy entire directories to a bucket."
+
       def copy(from, to)
         from_type = Resource.detect_type(from)
         to_type   = Resource.detect_type(to)

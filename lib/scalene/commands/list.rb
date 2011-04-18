@@ -5,6 +5,11 @@ module HP
       map 'ls' => 'list'
     
       desc 'list <bucket>', "list bucket contents"
+      long_desc "Use the 'list' command to list the contents of a bucket.  When called without params ('scalene list'),
+                it will list your buckets at the top level.  Objects are listed in case-sensitive alphabetical order.
+                \n\nExamples: 'scalene list :my_bucket'
+                \n\nAliases: 'ls'
+                \n\nNote: 'Does not currently support listing details on individual files."
       def list(name='')
         return buckets if name.empty?
         name = Bucket.bucket_name_for_service(name)
