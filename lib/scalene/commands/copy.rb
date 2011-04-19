@@ -30,7 +30,7 @@ module HP
       
         def fetch(from, to)
           dir_path = File.dirname(to) #File.expand_path(file_path)
-          if !Dir.exists?(dir_path)
+          if !File.directory?(dir_path)
             error "No directory exists at '#{dir_path}'.", :not_found
             return
           end
