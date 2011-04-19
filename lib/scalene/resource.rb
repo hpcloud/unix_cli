@@ -6,15 +6,15 @@ module HP
       LOCAL_TYPES = [:directory, :file]
     
       def self.detect_type(resource)
-        if resource[0] == ':'
-          if resource[-1] == '/'
+        if resource[0,1] == ':'
+          if resource[-1,1] == '/'
             :bucket_directory
           elsif resource.index('/')
             :object
           else
             :bucket
           end
-        elsif resource[-1] == '/'
+        elsif resource[-1,1] == '/'
           :directory
         else
           :file

@@ -8,7 +8,7 @@ describe "Config directory naming" do
   end
   
   it "should include final slash" do
-    HP::Scalene::Config.config_directory[-1].should eql('/')
+    HP::Scalene::Config.config_directory[-1,1].should eql('/')
   end
 end
 
@@ -18,7 +18,7 @@ describe "Accounts directory naming" do
   end
   
   it "should include final slash" do
-    HP::Scalene::Config.accounts_directory[-1].should eql('/')
+    HP::Scalene::Config.accounts_directory[-1,1].should eql('/')
   end
 end
 
