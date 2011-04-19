@@ -5,11 +5,12 @@ module HP
       map %w(fetch) => 'get'
 
       desc 'get <resource>', 'fetch an object to local file system'
-      long_desc "Use the 'get' command to copy the specified object (file) from a bucket to the current directory on your local file system.
-                The file will retain its name.  This is a convenience command.
+      long_desc "Use the 'get' command to copy an object (file) from a bucket to the current directory on your local file system.
+                The file will retain its name.  This is a convenience command for 'copy'.
                 For example, the command 'scalene get :my_bucket/my_file.txt' is equivilant to calling
                 'scalene copy :my_bucket/my_file.txt ./my_file.txt'.
-                \n\nExample(s): 'scalene get :my_bucket/my_file.txt'
+                \n\nExamples: 'scalene get :my_bucket/my_file.txt'
+                \n\nAliases: 'fetch'
                 \n\nNote: 'get' currently supports fetching of files, but not entire buckets.
                     It does not yet support wildcards."
       def get(resource)
