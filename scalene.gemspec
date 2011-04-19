@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   # s.licenses = [""]
   
   s.executables         = ["scalene"]
-  s.required_ruby_version = '~>1.9.2'
+  s.required_ruby_version = '>= 1.8.5'
   s.required_rubygems_version = '>= 1.2.0'
   
   s.require_paths = ["lib"]

@@ -8,9 +8,9 @@ ENV['SCALENE_CLI_NAME'] = File.basename($0)
 require 'rubygems'
 require 'scalene'
 
-unless RUBY_VERSION >= '1.9.2'
-  puts "Ruby version 1.9.2 or greater is required."
-  exit
-end
+# unless RUBY_VERSION >= '1.9.2'
+#   puts "Ruby version 1.9.2 or greater is required."
+#   exit
+# end
 
 HP::Scalene::CLI.start
