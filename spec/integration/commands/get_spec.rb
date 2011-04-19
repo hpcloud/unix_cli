@@ -45,7 +45,7 @@ describe "Get command" do
       end
       
       it "should have created a file" do
-        File.exist?('highly_unusual_file_name.txt').should eql true
+        File.exist?('highly_unusual_file_name.txt').should be_true
       end
 
       after(:all) do
