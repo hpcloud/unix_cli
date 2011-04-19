@@ -37,11 +37,11 @@ describe "Config directory setup" do
       before(:all) { HP::Scalene::Config.ensure_config_exists }
       
       it "should create base config directory" do
-        Dir.exists?(HP::Scalene::Config.config_directory).should be_true
+        File.directory?(HP::Scalene::Config.config_directory).should be_true
       end
       
       it "should create accounts directory" do
-        Dir.exists?(HP::Scalene::Config.accounts_directory).should be_true
+        File.directory?(HP::Scalene::Config.accounts_directory).should be_true
       end
       
       it "should create default config file" do
@@ -169,5 +169,5 @@ private
 
 def setup_temp_home_directory
   HP::Scalene::Config.home_directory = File.expand_path(File.dirname(__FILE__) + '/../tmp/home')
-  Dir.mkdir(HP::Scalene::Config.home_directory) unless Dir.exists?(HP::Scalene::Config.home_directory)
+  Dir.mkdir(HP::Scalene::Config.home_directory) unless File.directory?(HP::Scalene::Config.home_directory)
 end

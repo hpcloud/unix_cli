@@ -54,8 +54,8 @@ module HP
     
       # Note: May want to port some of this to Thor's native actions eventually?
       def self.ensure_config_exists
-        Dir.mkdir(config_directory) unless Dir.exists?(config_directory)
-        Dir.mkdir(accounts_directory) unless Dir.exists?(accounts_directory)
+        Dir.mkdir(config_directory) unless File.directory?(config_directory)
+        Dir.mkdir(accounts_directory) unless File.directory?(accounts_directory)
         unless File.exists?(config_file)
           File.open(config_file, 'w') { |file| file.write @@default_config.to_yaml }
         end
