@@ -5,9 +5,13 @@ module HP
       map 'cp' => 'copy'
 
       desc 'copy <resource> <resource>', "copy files from one resource to another"
-      long_desc "Use this command to copy a file between a bucket and your \nfile system and vise versa.
-                You can also copy a file from one bucket to another bucket.\n\n
-                Examples:'scalene copy ./my_file.txt :my_bucket', 'scalene copy :my_bucket/my_file.txt ./'
+      long_desc "Copy a file between your file system and a bucket, inside a bucket or between buckets.
+                \n\nExamples:
+                \n\nscalene copy my_file.txt :my_bucket ==> Copy my_file.txt to a bucket named 'my_bucket'
+                \n\nscalene copy :my_bucket/file.txt new.txt ==> Copy file.txt from a bucket to local directory and save as new.txt
+                \n\nscalene copy :backup/file.txt :backup/old/file.txt ==> Copy file.txt to another location in the same bucket
+                \n\nscalene copy :one/file.txt :two/file.txt ==> Copy file.txt between buckets
+
                 \n\nAliases: 'cp'
                 \n\nNote: we don\'t yet support the ability to copy files \nwith a wildcard, i.e. '*.*',
                 or to copy entire directories to a bucket."

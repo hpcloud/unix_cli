@@ -8,6 +8,14 @@ module HP
       map 'buckets:list' => 'list'
     
       desc "buckets", "list available buckets"
+      long_desc "List the buckets in your storage account. Buckets are listed in alphabetical order.
+                \n\nExamples:
+                \n\nscalene buckets:list
+                \n\nscalene list
+
+                \n\nAliases: 'list'
+                \n\n"
+
       def buckets
         buckets = connection.directories
         if buckets.empty?
