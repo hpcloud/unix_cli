@@ -11,6 +11,7 @@ describe "Get command" do
     before(:all) do
       @kvs.put_bucket('get_bucket')
       @kvs.put_object('get_bucket', 'highly_unusual_file_name.txt', read_file('foo.txt'))
+      @kvs.put_object('get_bucket', 'folder/highly_unusual_file_name.txt', read_file('foo.txt'))
     end
 
     context "when object does not exist" do
@@ -34,16 +35,15 @@ describe "Get command" do
       end
     end
 
-    context "when object and bucket exist" do
-      
+    context "when object and bucket exist and object is at bucket level" do
       before(:all) do
         @response = capture(:stdout){ HP::Scalene::CLI.start(['get', ':get_bucket/highly_unusual_file_name.txt']) }
       end
-      
+
       it "should report success" do
-        @response.should eql("Copied :get_bucket/highly_unusual_file_name.txt => ./highly_unusual_file_name.txt\n")
+        @response.should eql("Copied :get_bucket/highly_unusual_file_name.txt => highly_unusual_file_name.txt\n")
       end
-      
+
       it "should have created a file" do
         File.exist?('highly_unusual_file_name.txt').should be_true
       end
@@ -51,7 +51,24 @@ describe "Get command" do
       after(:all) do
         File.unlink('highly_unusual_file_name.txt')
       end
-      
+    end
+
+    context "when object and bucket exist and object is in a nested folder" do
+      before(:all) do
+        @response = capture(:stdout){ HP::Scalene::CLI.start(['get', ':get_bucket/folder/highly_unusual_file_name.txt']) }
+      end
+
+      it "should report success" do
+        @response.should eql("Copied :get_bucket/folder/highly_unusual_file_name.txt => highly_unusual_file_name.txt\n")
+      end
+
+      it "should have created a file" do
+        File.exist?('highly_unusual_file_name.txt').should be_true
+      end
+
+      after(:all) do
+        File.unlink('highly_unusual_file_name.txt')
+      end
     end
 
    after(:all) do
