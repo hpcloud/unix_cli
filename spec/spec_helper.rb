@@ -15,18 +15,25 @@ RSpec.configure do |config|
   KVS_HOST = '16.49.184.32'
   KVS_PORT = '9242'
   
-  def capture(stream)
+  def capture_with_status(stream)
+    exit_status = 0
     begin
       stream = stream.to_s
       eval "$#{stream} = StringIO.new"
       begin
         yield
-      rescue SystemExit # catch any exit calls
+      rescue SystemExit => system_exit # catch any exit calls
+        exit_status = system_exit.status
       end
       result = eval("$#{stream}").string
     ensure
       eval("$#{stream} = #{stream.upcase}")
     end
+    return result, exit_status
+  end
+
+  def capture(stream)
+    result, status = capture_with_status(stream) {yield}
     result
   end
   
