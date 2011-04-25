@@ -15,6 +15,7 @@ module HP
                 \n\nAliases: 'rm', 'delete', 'destroy', 'del'
                 \n\nNote: We currently support the deletion of one file at a time.
                     We don\'t yet support the ability to delete multiple files with a wildcard, i.e. '*.*'"
+      method_option :force, :default => false, :type => :boolean, :aliases => '-f'
 
       def remove(resource)
         bucket, path = Bucket.parse_resource(resource)
@@ -36,8 +37,8 @@ module HP
           end
 
         elsif type == :bucket
-          confirm = ask_with_default "Are you sure you want to remove '#{resource}'", 'n'
-          if confirm[0].downcase == 'y'
+          confirm = ask_with_default "Are you sure you want to remove '#{resource}'", 'n' unless options.force?
+          if options.force? or confirm[0].downcase == 'y'
             send('buckets:remove', bucket)
           end
 
