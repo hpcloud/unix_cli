@@ -37,8 +37,7 @@ module HP
           end
 
         elsif type == :bucket
-          confirm = ask_with_default "Are you sure you want to remove '#{resource}'", 'n' unless options.force?
-          if options.force? or confirm[0].downcase == 'y'
+          if options.force? or yes?("Are you sure you want to remove the bucket '#{resource}'?")
             send('buckets:remove', bucket)
           end
 
