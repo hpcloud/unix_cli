@@ -18,7 +18,7 @@ module HP
         type = Resource.detect_type(resource)
 
         if :object == type
-          copy(resource, "#{File.basename(path)}")
+          copy(resource, File.basename(path))
         elsif :bucket == type
           error "You can get files, but not buckets."
         else
