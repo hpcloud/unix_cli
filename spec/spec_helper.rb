@@ -33,8 +33,7 @@ RSpec.configure do |config|
   end
 
   def capture(stream)
-    result, status = capture_with_status(stream) {yield}
-    result
+    capture_with_status(stream){ yield }[0]
   end
   
   # Create a new Storage service connection - maybe memoize later
