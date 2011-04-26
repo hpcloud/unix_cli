@@ -5,7 +5,8 @@ module HP
   module Scalene
     class CLI < Thor
     
-      ERROR_TYPES = { :general_error    => 1,
+      ERROR_TYPES = { :success          => 0,
+                      :general_error    => 1,
                       :not_supported    => 3,
                       :not_found        => 4,
                       :incorrect_usage  => 64,
