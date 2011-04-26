@@ -17,7 +17,7 @@ describe "Remove command" do
       it "should exit with object not found" do
         response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['remove', ':my_bucket/nonexistant.txt']) }
         response.should eql("You don't have a object named 'nonexistant.txt'.\n")
-        exit_status.should eql(4)
+        exit_status.should be_exit(4)
       end
     end
     

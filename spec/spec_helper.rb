@@ -107,7 +107,13 @@ RSpec.configure do |config|
     dir_name = type.to_s + "s" # simple pluralize
     File.read(File.dirname(__FILE__) + "/fixtures/#{dir_name}/#{filename}")
   end
-  
+
+  RSpec::Matchers.define :be_exit do |expected|
+    match do |actual|
+      actual == expected
+    end
+  end
+
 end
 
 # Test-specific hacks of fundamental classes
