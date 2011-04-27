@@ -124,7 +124,7 @@ RSpec.configure do |config|
     end
     failure_message_for_should_not do |actual|
       message = "expected that exit status #{actual} would not be #{expected}"
-      message = "#{message} (#{HP::Scalene::CLI::ERROR_TYPES[expected]})"
+      message = "#{message} (#{HP::Scalene::CLI::ERROR_TYPES[expected]})" if expected.is_a?(Symbol)
       message
     end
   end
