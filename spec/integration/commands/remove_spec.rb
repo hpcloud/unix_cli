@@ -17,7 +17,7 @@ describe "Remove command" do
       it "should exit with object not found" do
         response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['remove', ':my_bucket/nonexistant.txt']) }
         response.should eql("You don't have a object named 'nonexistant.txt'.\n")
-        exit_status.should be_exit(4)
+        exit_status.should be_exit(:not_found)
       end
     end
     
@@ -25,7 +25,7 @@ describe "Remove command" do
       it "should exit with bucket not found" do
         response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['remove', ':nonexistant_bucket']) }
         response.should eql("You don't have a bucket named 'nonexistant_bucket'\n")
-        exit_status.should eql(4)
+        exit_status.should be_exit(:not_found)
       end
     end
     
@@ -35,7 +35,7 @@ describe "Remove command" do
       it "should report success" do
         response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['remove', ':my_bucket/foo.txt']) }
         response.should eql("Removed object ':my_bucket/foo.txt'.\n")
-        exit_status.should eql(0)
+        exit_status.should be_exit(:success)
       end
     end
 
@@ -43,7 +43,7 @@ describe "Remove command" do
       it "should exit with message about bad syntax" do
         response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['remove', '/foo/foo']) }
         response.should eql("Could not find resource '/foo/foo'. Correct syntax is :bucketname/objectname.\n")
-        exit_status.should eql(64)
+        exit_status.should be_exit(:incorrect_usage)
       end
     end
 

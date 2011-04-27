@@ -14,8 +14,9 @@ describe "Copy command" do
     
     context "when local file does not exist" do
       it "should exit with file not found" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', 'foo.txt', ':my_bucket']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'foo.txt', ':my_bucket']) }
         response.should eql("File not found at 'foo.txt'.\n")
+        exit_status.should be_exit(:not_found)
       end
     end
     
@@ -29,8 +30,9 @@ describe "Copy command" do
       end
       
       it "should show error message" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_bucket']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_bucket']) }
         response.should eql("The selected file cannot be read.\n")
+        exit_status.should be_exit(:permission_denied)
       end
       
       after(:all) do
@@ -40,8 +42,9 @@ describe "Copy command" do
     
     context "when bucket does not exist" do
       it "should exit with bucket not found" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':missing_bucket']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':missing_bucket']) }
         response.should eql("You don't have a bucket 'missing_bucket'.\n")
+        exit_status.should be_exit(:not_found)
       end
     end
     
@@ -74,22 +77,25 @@ describe "Copy command" do
     
     context "when bucket does not exist" do
       it "should exit with bucket not found" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_blah/foo.txt', '/tmp/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_blah/foo.txt', '/tmp/foo.txt']) }
         response.should eql("You don't have a bucket 'copy_blah'.\n")
+        exit_status.should be_exit(:not_found)
       end
     end
     
     context "when object does not exist" do
       it "should exit with object not found" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo2.txt', '/tmp/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo2.txt', '/tmp/foo.txt']) }
         response.should eql("The specified object does not exist.\n")
+        exit_status.should be_exit(:not_found)
       end 
     end
     
     context "when local directory structure does not exist" do
       it "should exit with directory not present" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', '/blah/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', '/blah/foo.txt']) }
         response.should eql("No directory exists at '/blah'.\n")
+        exit_status.should be_exit(:not_found)
       end
     end
     
@@ -131,15 +137,17 @@ describe "Copy command" do
     
     context "when bucket does not exist" do
       it "should exit with bucket not found" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', ':missing_bucket/foo.txt', ':missing_bucket/tmp/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':missing_bucket/foo.txt', ':missing_bucket/tmp/foo.txt']) }
         response.should eql("You don't have a bucket 'missing_bucket'.\n")
+        exit_status.should be_exit(:not_found)
       end
     end
     
     context "when object does not exist" do
       it "should exit with object not found" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/missing.txt', ':copy_inside_bucket/tmp/missing.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/missing.txt', ':copy_inside_bucket/tmp/missing.txt']) }
         response.should eql("The specified object does not exist.\n")
+        exit_status.should be_exit(:not_found)
       end
     end
     
@@ -172,15 +180,17 @@ describe "Copy command" do
       
       context "when bucket only" do
         it "should show success message" do
-          response = capture(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/nested/file.txt', ':copy_inside_bucket']) }
+          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/nested/file.txt', ':copy_inside_bucket']) }
           response.should eql("Copied :copy_inside_bucket/nested/file.txt => :copy_inside_bucket/file.txt\n")
+          exit_status.should be_exit(:success)
         end
       end
       
       context "when directory in bucket" do
         it "should show success message" do
-          response = capture(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/nested/file.txt', ':copy_inside_bucket/nested_new/file.txt']) }
+          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/nested/file.txt', ':copy_inside_bucket/nested_new/file.txt']) }
           response.should eql("Copied :copy_inside_bucket/nested/file.txt => :copy_inside_bucket/nested_new/file.txt\n")
+          exit_status.should be_exit(:success)
         end
       end
       
@@ -204,22 +214,25 @@ describe "Copy command" do
     
     context "when bucket does not exist" do
       it "should exit with bucket not found" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', ':missing_bucket/foo.txt', ':copy_between_two/tmp/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':missing_bucket/foo.txt', ':copy_between_two/tmp/foo.txt']) }
         response.should eql("You don't have a bucket 'missing_bucket'.\n")
+        exit_status.should be_exit(:not_found)
       end
     end
     
     context "when object does not exist" do
       it "should exit with object not found" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_between_one/missing.txt', ':copy_between_two/tmp/missing.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_between_one/missing.txt', ':copy_between_two/tmp/missing.txt']) }
         response.should eql("The specified object does not exist.\n")
+        exit_status.should be_exit(:not_found)
       end
     end
     
     context "when new bucket does not exist" do
       it "should exit with object not found" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_between_one/missing.txt', ':missing_bucket/tmp/missing.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_between_one/missing.txt', ':missing_bucket/tmp/missing.txt']) }
         response.should eql("You don't have a bucket 'missing_bucket'.\n")
+        exit_status.should be_exit(:not_found)
       end
     end
     
