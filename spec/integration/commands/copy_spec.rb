@@ -50,12 +50,13 @@ describe "Copy command" do
     
     context "when file and bucket exist" do
       before(:all) do
-        @response = capture(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_bucket']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_bucket']) }
         @get = @kvs.get_object('my_bucket', 'foo.txt')
       end
       
       it "should report success" do
         @response.should eql("Copied spec/fixtures/files/foo.txt => :my_bucket/foo.txt\n")
+        @exit_status.should be_exit(:success)
       end
       
       it "should copy file to bucket" do
@@ -101,11 +102,12 @@ describe "Copy command" do
     
     context "when local directory and object exist" do
       before(:all) do
-        @response = capture(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/foo.txt']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/foo.txt']) }
       end
       
       it "should describe copy" do
         @response.should eql("Copied :copy_remote_to_local/foo.txt => spec/tmp/foo.txt\n")
+        @exit_status.should be_exit(:success)
       end
       
       it "should create local file" do
@@ -153,12 +155,13 @@ describe "Copy command" do
     
     context "when bucket and object exist" do
       before(:all) do
-        @response = capture(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/foo.txt', ':copy_inside_bucket/new/foo.txt']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/foo.txt', ':copy_inside_bucket/new/foo.txt']) }
         @get = @kvs.get_object('copy_inside_bucket', 'new/foo.txt')
       end
       
       it "should exit with object copied" do
         @response.should eql("Copied :copy_inside_bucket/foo.txt => :copy_inside_bucket/new/foo.txt\n")
+        @exit_status.should be_exit(:success)
       end
       
       it "should create new object" do
@@ -253,12 +256,13 @@ describe "Copy command" do
     
     context "when object is copied successfully" do
       before(:all) do
-        @response = capture(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two/new/foo.txt']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two/new/foo.txt']) }
         @get = @kvs.get_object('copy_between_two', 'new/foo.txt')
       end
       
       it "should exit with object copied" do
         @response.should eql("Copied :copy_between_one/foo.txt => :copy_between_two/new/foo.txt\n")
+        @exit_status.should be_exit(:success)
       end
       
       it "should create new object" do
