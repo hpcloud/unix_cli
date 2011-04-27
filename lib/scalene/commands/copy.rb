@@ -58,7 +58,7 @@ module HP
       
         def put(from, to)
           if !File.exists?(from)
-            error "File not found at '#{from}'."
+            error "File not found at '#{from}'.", :not_found
           end
           mime_type = Resource.get_mime_type(from)
           bucket, path = Bucket.parse_resource(to)
