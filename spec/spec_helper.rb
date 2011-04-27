@@ -110,7 +110,22 @@ RSpec.configure do |config|
 
   RSpec::Matchers.define :be_exit do |expected|
     match do |actual|
-      actual == expected
+      if expected.is_a?(Symbol)
+        actual == HP::Scalene::CLI::ERROR_TYPES[expected]
+      else
+        actual == expected
+      end
+    end
+
+    failure_message_for_should do |actual|
+      message = "expected that exit status #{actual} would be #{expected}"
+      message = "#{message} (#{HP::Scalene::CLI::ERROR_TYPES[expected]})" if expected.is_a?(Symbol)
+      message
+    end
+    failure_message_for_should_not do |actual|
+      message = "expected that exit status #{actual} would not be #{expected}"
+      message = "#{message} (#{HP::Scalene::CLI::ERROR_TYPES[expected]})"
+      message
     end
   end
 
