@@ -18,24 +18,22 @@ module HP
         unless CANNED_ACLS.include?(acl)
           error "Your ACL '#{acl}' is invalid.\nValid options are: #{CANNED_ACLS.join(', ')}."
         end
+        type = Resource.detect_type(resource)
         bucket, path = Bucket.parse_resource(resource)
-        directory = connection.directories.get(bucket)
-        if directory
-          file = directory.files.get(path)
-          if file
-            begin
-              connection.put_object_acl(bucket, path, acl)
-              # can't use model for now as doesn't preserve content-type
-              # file.acl = acl
-              # file.save
-              display "ACL for #{resource} updated to #{acl}"
-            end
+        begin
+          if type == :object
+            connection.put_object_acl(bucket, path, acl)
+            display "ACL for #{resource} updated to #{acl}"
+          elsif type == :bucket
+            connection.put_bucket_acl(bucket, acl)
+            display "ACL for #{resource} updated to #{acl}"
           else
-            error "You don't have a file '#{path}'.", :not_found
+            error 'Setting ACLs is only supported for buckets and objects', :not_supported
           end
-        else
-          error "You don't have a bucket '#{bucket}'.", :not_found
+        rescue Excon::Errors::NotFound, Excon::Errors::Forbidden => e
+          display_error_message(e)
         end
+
       end
     
     end
