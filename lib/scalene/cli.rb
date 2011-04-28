@@ -1,5 +1,6 @@
 require 'thor'
 require 'thor/group'
+require 'scalene/thor_ext/thor'
 
 module HP
   module Scalene
