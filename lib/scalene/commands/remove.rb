@@ -4,18 +4,19 @@ module HP
 
       map %w(rm delete destroy del) => 'remove'
 
-      desc 'remove <resource>', 'remove an object'
-      long_desc "Remove an object or bucket. To remove a bucket, it must be empty.  If you want to remove
-                a non-empty bucket, use 'scalene buckets:remove' using the -f flag.  See
-                'scalene help buckets:remove for information.
-                \n\nExamples:
-                \n\nscalene remove :my_bucket/my_file.txt ==> Delete the file 'my_file.txt'
-                \n\nscalene rm :my_bucket ==> Delete the empty bucket called 'my_bucket'
-
-                \n\nAliases: 'rm', 'delete', 'destroy', 'del'
-                \n\nNote: We currently support the deletion of one file at a time.
-                    We don\'t yet support the ability to delete multiple files with a wildcard, i.e. '*.*'"
-      method_option :force, :default => false, :type => :boolean, :aliases => '-f'
+      desc 'remove <object/bucket>', 'remove an object or bucket'
+      long_desc <<-DESC
+  Remove an object. If the specified target is a bucket, behavior is
+  identical to calling `buckets:remove`.
+        
+Examples:
+  scalene remove :my_bucket/my_file.txt   # Delete object 'my_file.txt'
+  scalene remove :my_bucket               # Delete bucket 'my_bucket'
+        
+Aliases: rm, delete, destroy, del
+      DESC
+      method_option :force, :default => false, :type => :boolean, :aliases => '-f', 
+                    :desc => 'Do not confirm removal, remove non-empty buckets.'
 
       def remove(resource)
         bucket, path = Bucket.parse_resource(resource)
