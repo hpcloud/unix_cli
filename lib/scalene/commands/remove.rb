@@ -42,7 +42,8 @@ module HP
           end
 
         else
-            error "Could not find resource '#{resource}'. Correct syntax is :bucketname/objectname.", :incorrect_usage
+          error "Could not find resource '#{resource}'. Correct syntax is :bucketname/objectname.", 
+                :incorrect_usage
         end
       end
 
