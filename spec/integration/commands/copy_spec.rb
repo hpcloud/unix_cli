@@ -99,7 +99,7 @@ describe "Copy command" do
         exit_status.should be_exit(:not_found)
       end
     end
-    
+
     context "when local directory and object exist" do
       before(:all) do
         @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/foo.txt']) }
@@ -118,13 +118,38 @@ describe "Copy command" do
         get = @kvs.get_object('copy_remote_to_local', 'foo.txt')
         File.read('spec/tmp/foo.txt').should eql(get.body)
       end
+
+      after(:all) do
+        File.unlink('spec/tmp/foo.txt')
+      end
+
+    end
+
+    context "when target is local directory" do
+      before(:all) do
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/']) }
+      end
+
+      it "should describe copy" do
+        @response.should eql("Copied :copy_remote_to_local/foo.txt => spec/tmp/foo.txt\n")
+        @exit_status.should be_exit(:success)
+      end
+
+      it "should create local file" do
+        File.exists?('spec/tmp/foo.txt').should be_true
+      end
+
+      after(:all) do
+        File.unlink('spec/tmp/foo.txt')
+      end
+
     end
     
     pending 'when cannot write file'
     
     after(:all) do
       purge_bucket('copy_remote_to_local')
-      File.unlink('spec/tmp/foo.txt')
+      #File.unlink('spec/tmp/foo.txt')
     end
     
   end
@@ -176,6 +201,8 @@ describe "Copy command" do
         @get.body.should eql(read_file('foo.txt'))
       end
     end
+
+
     
     context "when target not absolutely specified" do
       
