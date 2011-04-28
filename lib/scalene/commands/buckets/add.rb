@@ -3,13 +3,15 @@ module HP
     class CLI < Thor
     
       desc "buckets:add <name>", "add a bucket"
-      long_desc "Add a new bucket to your storage account, with the specified name.
-                  You can specify the bucket name with or without the preceding colon, i.e. 'my_bucket' or ':my_bucket'.
-                \n\nExamples:
-                \n\nscalene bucket:add my_bucket ==> Creates a new bucket called 'my_bucket'
+      long_desc <<-DESC
+  Add a new bucket to your storage account. Bucket name can be specified with 
+  or without the preceding colon: 'my_bucket' or ':my_bucket'.
 
-                \n\nAliases: none
-                \n\nNote: "
+Examples:
+  scalene bucket:add :my_bucket  # Creates a new bucket called 'my_bucket'
+
+Aliases: none
+      DESC
       define_method "buckets:add" do |name|
         begin
           name = Bucket.bucket_name_for_service(name)
