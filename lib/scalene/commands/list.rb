@@ -6,7 +6,7 @@ module HP
     
       desc 'list <bucket>', "list bucket contents"
       long_desc <<-DESC
-List the contents of a specified bucket.
+  List the contents of a specified bucket.
 
 Examples:
   scalene list :my_bucket  # list files in bucket 'my_bucket'
