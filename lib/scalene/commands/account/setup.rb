@@ -3,19 +3,18 @@ module HP
     class CLI < Thor
     
       desc 'account:setup', "set up or modify your credentials"
-      long_desc "Setup or modify your account credientials.  This is generally the first step
-                in the process of using the Scalene command-line interface.  Begin by retrieving your keys
-                from the HP Scalene web site.  This command will ask you to enter your access_id and your secret_key.
-                You can also set or modify the host and port of the HP endpoint.  You can re-run this commmand
-                to modify your keys or other settings.
-                \n\nExamples:
-                \n\nscalene account:setup ==> Establishes your creds with HP Scalene CLI
-                \n\nscalene account:setup --no-validate ==> Set/modify creds without calling the service to verify
-
-                \n\nAliases: none
-                \n\nNote: "
+      long_desc <<-DESC
+  Setup or modify your account credientials. This is generally the first step 
+  in the process of using the Scalene command-line interface. 
+  
+  You will need your Access ID and Secret Key from the HP Scalene web site to 
+  set up your account. Optionally you can specify your own endpoint to access, 
+  but in most cases you will want to use the default.  
+  
+  You can re-run this commmand to modify your settings.
+      DESC
       method_option 'no-validate', :type => :boolean, :default => false, 
-                    :desc => "Don't validate account during setup"
+                    :desc => "Don't verify account settings during setup"
       define_method "account:setup" do
         credentials = {}
         credentials[:email] = ask 'Account email address:'
