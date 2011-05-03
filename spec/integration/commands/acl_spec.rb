@@ -62,10 +62,10 @@ describe "Acl commands" do
         @response.should include("FULL_CONTROL")
       end
       it "should have READ permissions for AuthenticatedUsers group" do
-        @response.should include("http://acs.hpkvs.hp.com/groups/global/AuthenticatedUsers  READ")
+        @response.should include("http://acs.amazonaws.com/groups/global/AuthenticatedUsers  READ")
       end
       it "should have WRITE permissions for AuthenticatedUsers group" do
-        @response.should include("http://acs.hpkvs.hp.com/groups/global/AuthenticatedUsers  WRITE")
+        @response.should include("http://acs.amazonaws.com/groups/global/AuthenticatedUsers  WRITE")
       end
     end
     context "when viewing the ACL for an object" do
@@ -77,10 +77,10 @@ describe "Acl commands" do
         @response.should include("FULL_CONTROL")
       end
       it "should have READ permissions for AuthenticatedUsers group" do
-        @response.should include("http://acs.hpkvs.hp.com/groups/global/AuthenticatedUsers  READ")
+        @response.should include("http://acs.amazonaws.com/groups/global/AuthenticatedUsers  READ")
       end
       it "should have WRITE permissions for AuthenticatedUsers group" do
-        @response.should include("http://acs.hpkvs.hp.com/groups/global/AuthenticatedUsers  WRITE")
+        @response.should include("http://acs.amazonaws.com/groups/global/AuthenticatedUsers  WRITE")
       end
     end
   end
