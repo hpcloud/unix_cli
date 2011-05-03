@@ -64,10 +64,11 @@ module HP
           if !File.exists?(from)
             error "File not found at '#{from}'.", :not_found
           end
-          mime_type = Resource.get_mime_type(from)
+          mime_type = Resource.get_mime_type("'#{from}'")
           bucket, path = Bucket.parse_resource(to)
           directory = connection.directories.get(bucket)
           key = Bucket.storage_destination_path(path, from)
+          key.sub!(" ", "_")
           if directory
             begin
               directory.files.create(:key => key, :body => File.open(from), 'Content-Type' => mime_type)
