@@ -107,6 +107,11 @@ RSpec.configure do |config|
     dir_name = type.to_s + "s" # simple pluralize
     File.read(File.dirname(__FILE__) + "/fixtures/#{dir_name}/#{filename}")
   end
+  
+  def setup_temp_home_directory
+    HP::Scalene::Config.home_directory = File.expand_path(File.dirname(__FILE__) + '/tmp/home')
+    Dir.mkdir(HP::Scalene::Config.home_directory) unless File.directory?(HP::Scalene::Config.home_directory)
+  end
 
   RSpec::Matchers.define :be_exit do |expected|
     match do |actual|
