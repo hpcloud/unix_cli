@@ -6,6 +6,8 @@ describe "account:setup command" do
   
   context "without existing account" do
   
+    before(:all) { remove_account_files }
+  
     it "should ask for email address"
     
     it "should ask for account id"
@@ -16,9 +18,7 @@ describe "account:setup command" do
     
     it "should provide default endpoint"
     
-    it "should validate account" do
-      
-    end
+    it "should validate account"
     
     context "when successful" do
       
@@ -29,6 +29,9 @@ describe "account:setup command" do
   end
   
   pending 'with existing account' do
+    
+    before(:all) { setup_account_file(:default) }
+    
   end
   
 end

@@ -11,4 +11,12 @@ RSpec.configure do |config|
     HP::Scalene::Config.reset_home_directory
   end
   
+  def remove_config_directory
+    FileUtils.rm_rf(HP::Scalene::Config.config_directory)
+  end
+  
+  def remove_account_files
+    FileUtils.rm_rf(HP::Scalene::Config.accounts_directory + "*")
+  end
+  
 end

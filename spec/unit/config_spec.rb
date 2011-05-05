@@ -32,9 +32,7 @@ describe "Config directory setup" do
 
   context "with no config directory present" do
     
-    before(:all) do
-      FileUtils.rm_rf(HP::Scalene::Config.config_directory)
-    end
+    before(:all) { remove_config_directory } 
     
     context "running ensure config" do
       
@@ -140,7 +138,7 @@ describe "Getting settings" do
   context "with no config file present" do
     
     before(:all) do
-      FileUtils.rm_rf(HP::Scalene::Config.config_directory)
+      remove_config_directory
       HP::Scalene::Config.flush_settings
     end
     
