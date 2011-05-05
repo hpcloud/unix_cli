@@ -3,6 +3,9 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rspec'
 require 'scalene'
 
+require 'helpers/connections'
+require 'helpers/io'
+
 RSpec.configure do |config|
   
   # export KVS_TEST_HOST=16.49.184.31
@@ -14,37 +17,6 @@ RSpec.configure do |config|
   KVS_ACCOUNT_ID = '807902568678'
   KVS_HOST = '16.49.184.32'
   KVS_PORT = '9242'
-  
-  def capture_with_status(stream)
-    exit_status = 0
-    begin
-      stream = stream.to_s
-      eval "$#{stream} = StringIO.new"
-      begin
-        yield
-      rescue SystemExit => system_exit # catch any exit calls
-        exit_status = system_exit.status
-      end
-      result = eval("$#{stream}").string
-    ensure
-      eval("$#{stream} = #{stream.upcase}")
-    end
-    return result, exit_status
-  end
-
-  def capture(stream)
-    capture_with_status(stream){ yield }[0]
-  end
-  
-  # Create a new Storage service connection - maybe memoize later
-  def storage_connection
-    Fog::Storage.new( :provider => 'HPScalene',
-                      :hp_access_id =>  KVS_ACCESS_ID,
-                      :hp_secret_key => KVS_SECRET_KEY,
-                      :hp_account_id => KVS_ACCOUNT_ID,
-                      :host => KVS_HOST,
-                      :port => KVS_PORT )
-  end
 
   # Generate a unique bucket name
   # def bucket_name(seed=random_string(5))
@@ -113,45 +85,6 @@ RSpec.configure do |config|
     Dir.mkdir(HP::Scalene::Config.home_directory) unless File.directory?(HP::Scalene::Config.home_directory)
   end
 
-  RSpec::Matchers.define :be_exit do |expected|
-    match do |actual|
-      if expected.is_a?(Symbol)
-        actual == HP::Scalene::CLI::ERROR_TYPES[expected]
-      else
-        actual == expected
-      end
-    end
-
-    failure_message_for_should do |actual|
-      message = "expected that exit status #{actual} would be #{expected}"
-      message = "#{message} (#{HP::Scalene::CLI::ERROR_TYPES[expected]})" if expected.is_a?(Symbol)
-      message
-    end
-    failure_message_for_should_not do |actual|
-      message = "expected that exit status #{actual} would not be #{expected}"
-      message = "#{message} (#{HP::Scalene::CLI::ERROR_TYPES[expected]})"
-      message
-    end
-  end
 
 end
 
-# Test-specific hacks of fundamental classes
-module HP::Scalene
-  class CLI < Thor
-  
-  private
-  
-  # override #connection not to look at account files, just use hardcoded
-  # test credentials.
-  def connection
-    Fog::Storage.new( :provider => 'HPScalene',
-                      :hp_access_id =>  KVS_ACCESS_ID,
-                      :hp_secret_key => KVS_SECRET_KEY,
-                      :hp_account_id => KVS_ACCOUNT_ID,
-                      :host => KVS_HOST,
-                      :port => KVS_PORT )
-  end
-  
-  end
-end
