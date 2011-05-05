@@ -21,6 +21,10 @@ module HP
       def self.home_directory=(dir)
         @@home_dir = dir # allow overload for testing
       end
+      
+      def self.reset_home_directory
+        @@home_dir = nil
+      end
     
       def self.accounts_directory
         config_directory + 'accounts/'

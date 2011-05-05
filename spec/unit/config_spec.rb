@@ -3,6 +3,8 @@ require 'fileutils'
 require 'yaml'
 
 describe "Config directory naming" do
+  before(:all) { reset_config_home_directory }
+  
   it "should assemble properly" do
     HP::Scalene::Config.config_directory.should eql(ENV['HOME'] + '/.scalene/')
   end
@@ -13,6 +15,8 @@ describe "Config directory naming" do
 end
 
 describe "Accounts directory naming" do
+  before(:all) { reset_config_home_directory }
+  
   it "should assemble properly" do
     HP::Scalene::Config.accounts_directory.should eql(ENV['HOME'] + '/.scalene/accounts/')
   end

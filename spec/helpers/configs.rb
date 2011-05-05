@@ -7,4 +7,8 @@ RSpec.configure do |config|
     Dir.mkdir(HP::Scalene::Config.home_directory) unless File.directory?(HP::Scalene::Config.home_directory)
   end
   
+  def reset_config_home_directory
+    HP::Scalene::Config.reset_home_directory
+  end
+  
 end
