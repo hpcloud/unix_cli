@@ -5,17 +5,17 @@ module HP
   module Scalene
     class CLI < Thor
     
-      map 'buckets:list' => 'list'
+      map 'buckets:list' => 'buckets'
     
       desc "buckets", "list available buckets"
-      long_desc "List the buckets in your storage account. Buckets are listed in alphabetical order.
-                \n\nExamples:
-                \n\nscalene buckets:list
-                \n\nscalene list
+      long_desc <<-DESC
+  List the buckets in your storage account.
+  
+Examples:
+  scalene buckets
 
-                \n\nAliases: 'list'
-                \n\n"
-
+Aliases: buckets:list
+      DESC
       def buckets
         buckets = connection.directories
         if buckets.empty?

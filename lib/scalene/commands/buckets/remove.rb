@@ -5,17 +5,18 @@ module HP
       map %w(buckets:rm buckets:delete buckets:del) => 'buckets:remove'
     
       desc "buckets:remove <name>", "remove a bucket"
-      long_desc "Remove a bucket.  By default this command only deletes an empty bucket.
-                  Use the -f force flag to also delete the files the bucket contains.
-                  Be careful with this flag or you could have a really bad day.
-                  You can specify the bucket name with or without the preceding colon, i.e. 'my_bucket' or ':my_bucket'.
-                \n\nExamples:
-                \n\nscalene bucket:remove my_bucket ==> Deletes an empty bucket called 'my_bucket'
-                \n\nscalene bucket:rm :my_bucket -f ==> Deletes a bucket called 'my_bucket'and all the files in it
+      long_desc <<-DESC
+  Remove a bucket. By default this command will only remove a bucket if it 
+  empty. The --force flag will allow you to delete non-empty buckets. 
+  Be careful with this flag or you could have a really bad day.
 
-                \n\nAliases: 'buckets:rm', 'buckets:delete', 'buckets:del'
-                \n\nNote: "
-      method_option :force, :default => false, :type => :boolean, :aliases => '-f'
+Examples:
+  scalene bucket:remove :my_bucket          # delete 'my_bucket' if empty
+  scalene bucket:remove :my_bucket --force  # delete regardless of contents
+
+Aliases: buckets:rm, buckets:delete, buckets:del
+      DESC
+      method_option :force, :default => false, :type => :boolean, :aliases => '-f', :desc => 'Force removal of non-empty bucket'
       define_method "buckets:remove" do |name|
         name = Bucket.bucket_name_for_service(name)
         bucket = connection.directories.get(name)
