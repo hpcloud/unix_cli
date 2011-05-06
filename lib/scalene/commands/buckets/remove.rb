@@ -19,7 +19,11 @@ Aliases: buckets:rm, buckets:delete, buckets:del
       method_option :force, :default => false, :type => :boolean, :aliases => '-f', :desc => 'Force removal of non-empty bucket'
       define_method "buckets:remove" do |name|
         name = Bucket.bucket_name_for_service(name)
-        bucket = connection.directories.get(name)
+        begin
+          bucket = connection.directories.get(name)
+        rescue Excon::Errors::Forbidden => error
+          display_error_message(error)
+        end
         if bucket
           if options.force?
             bucket.files.each { |file| file.destroy }
@@ -27,7 +31,7 @@ Aliases: buckets:rm, buckets:delete, buckets:del
           begin
             bucket.destroy
             display "Removed bucket '#{name}'."
-          rescue Excon::Errors::Conflict => error
+          rescue Excon::Errors::Conflict, Excon::Errors::Forbidden => error
             display_error_message(error)
           end
         else
