@@ -33,12 +33,16 @@ module HP
       no_tasks do
       
         def fetch(from, to)
+          bucket, path = Bucket.parse_resource(from)
+          if File.directory?(to)
+            to = to.chop if to[-1] == '/'
+            to = "#{to}/#{File.basename(path)}"
+          end
           dir_path = File.dirname(to) #File.expand_path(file_path)
           if !File.directory?(dir_path)
             error "No directory exists at '#{dir_path}'.", :not_found
             return
           end
-          bucket, path = Bucket.parse_resource(from)
           # TODO - ensure expansion to file_destination_path
           directory = connection.directories.get(bucket)
           if directory
@@ -60,10 +64,11 @@ module HP
           if !File.exists?(from)
             error "File not found at '#{from}'.", :not_found
           end
-          mime_type = Resource.get_mime_type(from)
+          mime_type = Resource.get_mime_type("'#{from}'")
           bucket, path = Bucket.parse_resource(to)
           directory = connection.directories.get(bucket)
           key = Bucket.storage_destination_path(path, from)
+          key.sub!(" ", "_")
           if directory
             begin
               directory.files.create(:key => key, :body => File.open(from), 'Content-Type' => mime_type)
