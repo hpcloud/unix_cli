@@ -21,8 +21,8 @@ module HP
         credentials[:email] = ask 'Account email address:'
         credentials[:access_id] = ask 'Access ID:'
         credentials[:secret_key] = ask 'Secret key:'
-        credentials[:host] = ask_with_default 'Host:', '16.49.184.31'
-        credentials[:port] = ask_with_default 'Port:', 9232
+        credentials[:api_endpoint] = ask_with_default 'API endpoint:', 
+                                      Config.settings[:default_api_endpoint]
         unless options['no-validate']
           begin
             display "Verifying your account..."

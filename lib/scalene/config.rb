@@ -4,7 +4,8 @@ module HP
   module Scalene
     class Config
 
-      @@default_config = { :default_host => '16.49.184.31', :default_port => '9232', :keygen_user => '', :keygen_pass => '' }
+      @@default_config = {  :default_api_endpoint => '16.49.184.31:9232', 
+                            :keygen_user => '', :keygen_pass => '' }
 
       def self.config_directory
         home_directory + "/.scalene/"
