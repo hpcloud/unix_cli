@@ -9,12 +9,6 @@ describe "Acl commands" do
   end
 
   context "Acl:set command (setting acls)" do
-    context "when syntax is not correct" do
-      it "should exit with message about bad syntax" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['acl:set', '/foo/foo']) }
-        response.should eql("\"acl:set\" was called incorrectly. Call as \"rspec acl:set <resource> <canned-acl>\".\n")
-      end
-    end
     context "when resource is not correct" do
       it "should exit with message about not supported resource" do
         response = capture(:stderr){ HP::Scalene::CLI.start(['acl:set', '/foo/foo', 'private']) }
@@ -41,12 +35,6 @@ describe "Acl commands" do
     end
   end
   context "Acl command (viewing acls)" do
-    context "when syntax is not correct" do
-      it "should exit with message about bad syntax" do
-        response = capture(:stderr){ HP::Scalene::CLI.start(['acl']) }
-        response.should eql("\"acl\" was called incorrectly. Call as \"rspec acl <resource>\".\n")
-      end
-    end
     context "when resource is not correct" do
       it "should exit with message about not supported resource" do
         response = capture(:stderr){ HP::Scalene::CLI.start(['acl', '/foo/foo']) }
