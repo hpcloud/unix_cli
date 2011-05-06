@@ -48,7 +48,11 @@ Note: Copying multiple files at once will be supported in a future release.
             return
           end
           # TODO - ensure expansion to file_destination_path
-          directory = connection.directories.get(bucket)
+          begin
+            directory = connection.directories.get(bucket)
+          rescue Excon::Errors::Forbidden => e
+            error "You don't have permission to access the bucket '#{bucket}'.", :permission_denied
+          end
           if directory
             begin
               get = connection.get_object(bucket, path)
