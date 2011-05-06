@@ -62,6 +62,8 @@ Note: Copying multiple files at once will be supported in a future release.
               display "Copied #{from} => #{to}"
             rescue Excon::Errors::NotFound => e
               error "The specified object does not exist.", :not_found
+            rescue Excon::Errors::Forbidden => e
+              display_error_message(e)
             end
           else
             error "You don't have a bucket '#{bucket}'.", :not_found

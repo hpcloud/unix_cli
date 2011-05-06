@@ -29,7 +29,11 @@ Aliases: rm, delete, destroy, del
         end
 
         if type == :object
-          file = directory.files.get(path)
+          begin
+            file = directory.files.get(path)
+          rescue Excon::Errors::Forbidden => error
+            display_error_message(error)
+          end
           if file
             file.destroy
             display "Removed object '#{resource}'."
