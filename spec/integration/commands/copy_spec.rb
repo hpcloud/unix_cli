@@ -51,7 +51,7 @@ describe "Copy command" do
     context "when file and bucket exist" do
       before(:all) do
         @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_bucket']) }
-        @get = @kvs.get_object('my_bucket', 'foo.txt')
+        @head = @kvs.head_object('my_bucket', 'foo.txt')
       end
       
       it "should report success" do
@@ -60,11 +60,11 @@ describe "Copy command" do
       end
       
       it "should copy file to bucket" do
-        @get.status.should eql(200)
+        @head.status.should eql(200)
       end
       
       it "should preserve content-type" do
-        @get.headers["Content-Type"].should eql('text/plain')
+        @head.headers["Content-Type"].should eql('text/plain')
       end
       
     end
