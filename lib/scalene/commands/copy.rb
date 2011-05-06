@@ -76,7 +76,11 @@ Note: Copying multiple files at once will be supported in a future release.
           end
           mime_type = Resource.get_mime_type("'#{from}'")
           bucket, path = Bucket.parse_resource(to)
-          directory = connection.directories.get(bucket)
+          begin
+            directory = connection.directories.get(bucket)
+          rescue Excon::Errors::Forbidden => e
+            display_error_message(e)
+          end
           key = Bucket.storage_destination_path(path, from)
           key.sub!(" ", "_")
           if directory
