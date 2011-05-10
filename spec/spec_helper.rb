@@ -4,7 +4,10 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 if ENV['SPEC_CODE_COVERAGE'] and RUBY_VERSION[2,1] == '9'
   puts "Using simplecov..."
   require 'simplecov'
-  SimpleCov.start
+  SimpleCov.start do
+    add_filter "/spec/"
+    add_group "Commands", "/lib/scalene/commands"
+  end
 end
 
 require 'rspec'
