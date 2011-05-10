@@ -47,10 +47,11 @@ namespace :jenkins do
     task :rspec => [:pre_ci, 'ci:setup:rspec']
     task :pre_ci do
       ENV['SPEC_CODE_COVERAGE'] = 'true'
-      ENV["CI_REPORTS"] = 'ci/reports/rspec'
+      ENV['CI_REPORTS'] = 'ci/reports/rspec'
       gem 'ci_reporter'
       require 'ci/reporter/rake/rspec'
       rm_rf 'ci/reports/html/index.html'
+      rm_rf 'coverage'
     end
   end
   
