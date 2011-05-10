@@ -1,5 +1,12 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
+
+if ENV['CODE_COVERAGE'] and RUBY_VERSION[2,1] == '9'
+  puts "Using simplecov..."
+  require 'simplecov'
+  SimpleCov.start
+end
+
 require 'rspec'
 require 'scalene'
 
