@@ -89,6 +89,8 @@ Note: Copying multiple files at once will be supported in a future release.
               display "Copied #{from} => :#{bucket}/#{key}"
             rescue Errno::EACCES => e
               error 'The selected file cannot be read.', :permission_denied
+            rescue Excon::Errors::Forbidden => e
+              error 'Permission denied', :permission_denied
             end
           else
             error "You don't have a bucket '#{bucket}'.", :not_found

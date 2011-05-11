@@ -25,11 +25,13 @@ RSpec.configure do |config|
   # build/opt-centos5-x86_64/bin/stout-mgr create-account -port 9233 "Unix CLI" "unix.cli@hp.com"
   #
   # http://16.49.184.32:9242/kvs/keygen.html
-  KVS_ACCESS_ID = 'd00605fe9bddb1bf8d18d1a2ce35a2f437b200b8'
-  KVS_SECRET_KEY = '2123c1444cb9e6263c2b049a897db970f96346bd'
-  KVS_ACCOUNT_ID = '736985540040'
+  KVS_ACCESS_ID = '0fe012e5db618a083e6386464718f1e4327a1918'
+  KVS_SECRET_KEY = '11e36dbbcb2d9a17397d1df3f37f7f4e7275b39d'
+  KVS_ACCOUNT_ID = '145197220011'
   KVS_HOST = '16.49.184.32'
   KVS_PORT = '9242'
-
+  SEC_KVS_ACCESS_ID = '92adebfc85cfc2800ea7bea7ae16045c276c4ec2'
+  SEC_KVS_SECRET_KEY = '682c572b82d86071919d86e6c12f43d067da92fb'
+  SEC_KVS_ACCOUNT_ID = '529285467718'
 end
 

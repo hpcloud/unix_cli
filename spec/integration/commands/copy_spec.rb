@@ -47,6 +47,25 @@ describe "Copy command" do
         exit_status.should be_exit(:not_found)
       end
     end
+
+    context "when bucket is public-read but remote file cannot be overwritten" do
+      before(:all) do
+        @kvs_other_user = storage_connection(:secondary)
+        @kvs_other_user.put_bucket('public_read_bucket')
+        @kvs_other_user.put_bucket_acl('public_read_bucket', 'public-read')
+        @kvs_other_user.put_object('public_read_bucket', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
+      end
+
+      it "should exit with permission denied" do
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':public_read_bucket/foot.txt']) }
+        response.should eql("Permission denied\n")
+        exit_status.should be_exit(:permission_denied)
+      end
+
+      after(:all) do
+        purge_bucket('public_read_bucket', {:connection => @kvs_other_user})
+      end
+    end
     
     context "when file and bucket exist" do
       before(:all) do
