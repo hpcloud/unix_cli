@@ -160,7 +160,7 @@ describe "Getting settings" do
     end
     
     it "should return specified settings" do
-      HP::Scalene::Config.settings[:default_api_endpoint].should eql('192.168.1.1:1234')
+      HP::Scalene::Config.settings[:api_endpoint].should eql('192.168.1.1:1234')
     end
     
   end
