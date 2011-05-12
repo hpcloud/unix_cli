@@ -52,7 +52,7 @@ describe "Config directory setup" do
       
       it "should populate config file" do
         yaml = YAML::load(File.open(HP::Scalene::Config.config_file))
-        yaml[:default_port].should eql('9232')
+        yaml[:default_api_endpoint].should eql('16.49.184.32:9242')
       end
       
     end
@@ -143,7 +143,7 @@ describe "Getting settings" do
     end
     
     it "should return default settings" do
-      HP::Scalene::Config.settings[:default_port].should eql('9232')
+      HP::Scalene::Config.settings[:default_api_endpoint].should eql('16.49.184.32:9242')
     end
     
   end
@@ -160,7 +160,7 @@ describe "Getting settings" do
     end
     
     it "should return specified settings" do
-      HP::Scalene::Config.settings[:default_port].should eql('1234')
+      HP::Scalene::Config.settings[:default_api_endpoint].should eql('192.168.1.1:1234')
     end
     
   end
