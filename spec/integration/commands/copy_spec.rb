@@ -50,22 +50,36 @@ describe "Copy command" do
     
     context "when file and bucket exist" do
       before(:all) do
-        @response = capture(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_bucket']) }
-        @get = @kvs.get_object('my_bucket', 'foo.txt')
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_bucket']) }
+        @head = @kvs.head_object('my_bucket', 'foo.txt')
       end
       
       it "should report success" do
         @response.should eql("Copied spec/fixtures/files/foo.txt => :my_bucket/foo.txt\n")
+        @exit_status.should be_exit(:success)
       end
       
       it "should copy file to bucket" do
-        @get.status.should eql(200)
+        @head.status.should eql(200)
       end
       
       it "should preserve content-type" do
-        @get.headers["Content-Type"].should eql('text/plain')
+        @head.headers["Content-Type"].should eql('text/plain')
       end
       
+    end
+
+    context "when local file has spaces in name" do
+      before(:all) do
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/with space.txt', ':my_bucket']) }
+        @get = @kvs.get_object('my_bucket', 'with_space.txt')
+      end
+
+      it "should report success" do
+        @response.should eql("Copied spec/fixtures/files/with space.txt => :my_bucket/with_space.txt\n")
+        @exit_status.should be_exit(:success)
+      end
+
     end
     
     after(:all) { purge_bucket('my_bucket') }
@@ -98,14 +112,15 @@ describe "Copy command" do
         exit_status.should be_exit(:not_found)
       end
     end
-    
+
     context "when local directory and object exist" do
       before(:all) do
-        @response = capture(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/foo.txt']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/foo.txt']) }
       end
       
       it "should describe copy" do
         @response.should eql("Copied :copy_remote_to_local/foo.txt => spec/tmp/foo.txt\n")
+        @exit_status.should be_exit(:success)
       end
       
       it "should create local file" do
@@ -116,13 +131,38 @@ describe "Copy command" do
         get = @kvs.get_object('copy_remote_to_local', 'foo.txt')
         File.read('spec/tmp/foo.txt').should eql(get.body)
       end
+
+      after(:all) do
+        File.unlink('spec/tmp/foo.txt')
+      end
+
+    end
+
+    context "when target is local directory" do
+      before(:all) do
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/']) }
+      end
+
+      it "should describe copy" do
+        @response.should eql("Copied :copy_remote_to_local/foo.txt => spec/tmp/foo.txt\n")
+        @exit_status.should be_exit(:success)
+      end
+
+      it "should create local file" do
+        File.exists?('spec/tmp/foo.txt').should be_true
+      end
+
+      after(:all) do
+        File.unlink('spec/tmp/foo.txt')
+      end
+
     end
     
     pending 'when cannot write file'
     
     after(:all) do
       purge_bucket('copy_remote_to_local')
-      File.unlink('spec/tmp/foo.txt')
+      #File.unlink('spec/tmp/foo.txt')
     end
     
   end
@@ -153,12 +193,13 @@ describe "Copy command" do
     
     context "when bucket and object exist" do
       before(:all) do
-        @response = capture(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/foo.txt', ':copy_inside_bucket/new/foo.txt']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/foo.txt', ':copy_inside_bucket/new/foo.txt']) }
         @get = @kvs.get_object('copy_inside_bucket', 'new/foo.txt')
       end
       
       it "should exit with object copied" do
         @response.should eql("Copied :copy_inside_bucket/foo.txt => :copy_inside_bucket/new/foo.txt\n")
+        @exit_status.should be_exit(:success)
       end
       
       it "should create new object" do
@@ -173,6 +214,8 @@ describe "Copy command" do
         @get.body.should eql(read_file('foo.txt'))
       end
     end
+
+
     
     context "when target not absolutely specified" do
       
@@ -253,12 +296,13 @@ describe "Copy command" do
     
     context "when object is copied successfully" do
       before(:all) do
-        @response = capture(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two/new/foo.txt']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two/new/foo.txt']) }
         @get = @kvs.get_object('copy_between_two', 'new/foo.txt')
       end
       
       it "should exit with object copied" do
         @response.should eql("Copied :copy_between_one/foo.txt => :copy_between_two/new/foo.txt\n")
+        @exit_status.should be_exit(:success)
       end
       
       it "should create new object" do

@@ -5,17 +5,21 @@ module HP
       map 'cp' => 'copy'
 
       desc 'copy <resource> <resource>', "copy files from one resource to another"
-      long_desc "Copy a file between your file system and a bucket, inside a bucket or between buckets.
-                \n\nExamples:
-                \n\nscalene copy my_file.txt :my_bucket ==> Copy my_file.txt to a bucket named 'my_bucket'
-                \n\nscalene copy :my_bucket/file.txt new.txt ==> Copy file.txt from a bucket to local directory and save as new.txt
-                \n\nscalene copy :backup/file.txt :backup/old/file.txt ==> Copy file.txt to another location in the same bucket
-                \n\nscalene copy :one/file.txt :two/file.txt ==> Copy file.txt between buckets
+      long_desc <<-DESC
+  Copy a file between your file system and a bucket, inside a bucket, or 
+  between buckets.
 
-                \n\nAliases: 'cp'
-                \n\nNote: we don\'t yet support the ability to copy files \nwith a wildcard, i.e. '*.*',
-                or to copy entire directories to a bucket."
+Examples:
+  scalene copy my_file.txt :my_bucket       # Copy file to bucket 'my_bucket'
+  scalene copy :my_bucket/file.txt file.txt # Copy file.txt to local file
+  scalene copy :logs/today :logs/old/weds   # Copy inside a bucket
+  scalene copy :one/file.txt :two/file.txt  # Copy file.txt between buckets
 
+Aliases: cp
+
+Note: Copying multiple files at once will be supported in a future release.
+  Copying between buckets is disabled pending resolution of a KVS bug.
+      DESC
       def copy(from, to)
         from_type = Resource.detect_type(from)
         to_type   = Resource.detect_type(to)
@@ -33,14 +37,22 @@ module HP
       no_tasks do
       
         def fetch(from, to)
+          bucket, path = Bucket.parse_resource(from)
+          if File.directory?(to)
+            to = to.chop if to[-1] == '/'
+            to = "#{to}/#{File.basename(path)}"
+          end
           dir_path = File.dirname(to) #File.expand_path(file_path)
           if !File.directory?(dir_path)
             error "No directory exists at '#{dir_path}'.", :not_found
             return
           end
-          bucket, path = Bucket.parse_resource(from)
           # TODO - ensure expansion to file_destination_path
-          directory = connection.directories.get(bucket)
+          begin
+            directory = connection.directories.get(bucket)
+          rescue Excon::Errors::Forbidden => e
+            error "You don't have permission to access the bucket '#{bucket}'.", :permission_denied
+          end
           if directory
             begin
               get = connection.get_object(bucket, path)
@@ -50,6 +62,8 @@ module HP
               display "Copied #{from} => #{to}"
             rescue Excon::Errors::NotFound => e
               error "The specified object does not exist.", :not_found
+            rescue Excon::Errors::Forbidden => e
+              display_error_message(e)
             end
           else
             error "You don't have a bucket '#{bucket}'.", :not_found
@@ -60,10 +74,15 @@ module HP
           if !File.exists?(from)
             error "File not found at '#{from}'.", :not_found
           end
-          mime_type = Resource.get_mime_type(from)
+          mime_type = Resource.get_mime_type("'#{from}'")
           bucket, path = Bucket.parse_resource(to)
-          directory = connection.directories.get(bucket)
+          begin
+            directory = connection.directories.get(bucket)
+          rescue Excon::Errors::Forbidden => e
+            display_error_message(e)
+          end
           key = Bucket.storage_destination_path(path, from)
+          key.sub!(" ", "_")
           if directory
             begin
               directory.files.create(:key => key, :body => File.open(from), 'Content-Type' => mime_type)

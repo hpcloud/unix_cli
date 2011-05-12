@@ -1,15 +1,16 @@
 require 'thor'
 require 'thor/group'
+require 'scalene/thor_ext/thor'
 
 module HP
   module Scalene
     class CLI < Thor
     
-      ERROR_TYPES = { :success          => 0,
-                      :general_error    => 1,
-                      :not_supported    => 3,
-                      :not_found        => 4,
-                      :incorrect_usage  => 64,
+      ERROR_TYPES = { :success              => 0,
+                      :general_error        => 1,
+                      :not_supported        => 3,
+                      :not_found            => 4,
+                      :incorrect_usage      => 64,
                       :permission_denied    => 77
                     }
     

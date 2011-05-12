@@ -21,6 +21,12 @@ namespace :spec do
   RSpec::Core::RakeTask.new('html') do |t|
     t.rspec_opts = '--color --format html'
   end
+  
+  desc "Run specs and generate code coverage"
+  task :coverage do
+    ENV['SPEC_CODE_COVERAGE'] = 'true'
+    Rake::Task['spec'].invoke
+  end
 
 end
 
@@ -40,10 +46,12 @@ namespace :jenkins do
   namespace :setup do
     task :rspec => [:pre_ci, 'ci:setup:rspec']
     task :pre_ci do
-      ENV["CI_REPORTS"] = 'ci/reports/rspec'
+      ENV['SPEC_CODE_COVERAGE'] = 'true'
+      ENV['CI_REPORTS'] = 'ci/reports/rspec'
       gem 'ci_reporter'
       require 'ci/reporter/rake/rspec'
       rm_rf 'ci/reports/html/index.html'
+      rm_rf 'coverage'
     end
   end
   

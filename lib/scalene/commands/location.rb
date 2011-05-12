@@ -4,12 +4,17 @@ module HP
     
       map 'loc' => 'location'
     
-      desc 'location <resource>', 'display the URI for a given resource'
-      long_desc "Print the URI of the specified object.
-                The URL will have the form of 'http://<host>:<port>/<bucket>/<object>.
-                \n\nExamples: 'scalene location :my_bucket/my_file.txt'
-                \n\nAliases: 'loc'
-                \n\nNote: Supported for objects, not for buckets."
+      desc 'location <object/bucket>', 'display the URI for a given resource'
+      long_desc <<-DESC
+  Print the URI of the specified object or bucket. 
+
+Examples: 
+  scalene location :my_bucket/file.txt
+
+Aliases: loc
+
+Note: Bucket support not yet available.
+      DESC
       def location(resource)
         bucket, key = Bucket.parse_resource(resource)
         begin
