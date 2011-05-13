@@ -57,7 +57,7 @@ describe "Copy command" do
       end
 
       it "should exit with permission denied" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':public_read_bucket/foot.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':public_read_bucket/foo.txt']) }
         response.should eql("Permission denied\n")
         exit_status.should be_exit(:permission_denied)
       end

@@ -15,14 +15,18 @@ Examples:
         
 Aliases: rm, delete, destroy, del
       DESC
-      method_option :force, :default => false, :type => :boolean, :aliases => '-f', 
+      method_option :force, :default => false, :type => :boolean, :aliases => '-f',
                     :desc => 'Do not confirm removal, remove non-empty buckets.'
 
       def remove(resource)
         bucket, path = Bucket.parse_resource(resource)
         type = Resource.detect_type(resource)
 
-        directory = connection.directories.get(bucket)
+        begin
+          directory = connection.directories.get(bucket)
+        rescue Excon::Errors::Forbidden => error
+          error "Access Denied.", :permission_denied
+        end
         if not directory
           error "You don't have a bucket named '#{bucket}'", :not_found
           return
@@ -47,7 +51,7 @@ Aliases: rm, delete, destroy, del
           end
 
         else
-          error "Could not find resource '#{resource}'. Correct syntax is :bucketname/objectname.", 
+          error "Could not find resource '#{resource}'. Correct syntax is :bucketname/objectname.",
                 :incorrect_usage
         end
       end

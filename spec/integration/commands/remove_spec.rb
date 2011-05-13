@@ -1,11 +1,11 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe "Remove command" do
-  
+
   before(:all) do
     @kvs = storage_connection
   end
-  
+
   context "removing an object from bucket" do
 
     before(:all) do
@@ -20,7 +20,7 @@ describe "Remove command" do
         exit_status.should be_exit(:not_found)
       end
     end
-    
+
     context "when bucket does not exist" do
       it "should exit with bucket not found" do
         response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['remove', ':nonexistant_bucket']) }
@@ -28,7 +28,25 @@ describe "Remove command" do
         exit_status.should be_exit(:not_found)
       end
     end
-    
+
+    context "when removing an object that isn't controlled by the user" do
+      before(:all) do
+        @kvs_other_user = storage_connection(:secondary)
+        @kvs_other_user.put_bucket('notmybucket')
+        @kvs_other_user.put_object('notmybucket', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
+      end
+
+      it "should exit with access denied" do
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['rm', ':notmybucket/foo.txt']) }
+        response.should eql("Access Denied.\n")
+        exit_status.should be_exit(:permission_denied)
+      end
+
+      after(:all) do
+        purge_bucket('notmybucket', {:connection => @kvs_other_user})
+      end
+    end
+
     context "when object and bucket exist" do
       before(:all) do
       end
@@ -52,5 +70,5 @@ describe "Remove command" do
 
   end
 
-  
+
 end
