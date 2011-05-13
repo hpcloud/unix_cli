@@ -1,3 +1,20 @@
+v0.0.3 4/11/11
+==============
+- rebranded to 'scalene' gem
+- ruby 1.8.7 compatibility
+- extended help with examples now available for all commands
+- added standard exit status codes for easier scripting
+- bugfixes for certain nested filenames that would previously fail
+- acl and acl:set commands now work with buckets as well as files
+- remove command now behaves properly when run on a bucket with --force
+- improved handling of operations where permissions are denied
+- many more error cases covered
+- host and port combined to a single endpoint option for account setup
+- account:generate command removed
+- key script is smarter about detecting its own name
+- fix for KVS Content-Type header changes
+- increased test coverage
+
 v0.0.2 4/11/11
 ==============
 - add 'remove' command
