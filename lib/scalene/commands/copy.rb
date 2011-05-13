@@ -39,7 +39,7 @@ Note: Copying multiple files at once will be supported in a future release.
         def fetch(from, to)
           bucket, path = Bucket.parse_resource(from)
           if File.directory?(to)
-            to = to.chop if to[-1] == '/'
+            to = to.chop if to[-1,1] == '/'
             to = "#{to}/#{File.basename(path)}"
           end
           dir_path = File.dirname(to) #File.expand_path(file_path)
