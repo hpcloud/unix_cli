@@ -80,6 +80,10 @@ class CLITester
     capture_with_status(:stdout){ HP::Scalene::CLI.start([@command_name, *@args]) }[1]
   end
   
+  def stdout_and_exit_status
+    capture_with_status(:stdout){ HP::Scalene::CLI.start([@command_name, *@args]) }
+  end
+  
   def stderr_and_exit_status
     capture_with_status(:stderr){ HP::Scalene::CLI.start([@command_name, *@args]) }
   end
