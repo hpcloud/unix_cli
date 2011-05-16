@@ -29,7 +29,6 @@ Aliases: rm, delete, destroy, del
         end
         if not directory
           error "You don't have a bucket named '#{bucket}'", :not_found
-          return
         end
 
         if type == :object
