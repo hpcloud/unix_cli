@@ -22,7 +22,7 @@ Aliases: buckets:rm, buckets:delete, buckets:del
         begin
           bucket = connection.directories.get(name)
         rescue Excon::Errors::Forbidden => error
-          display_error_message(error)
+          display_error_message(error, :permission_denied)
         end
         if bucket
           if options.force?
