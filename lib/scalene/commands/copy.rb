@@ -64,7 +64,7 @@ Note: Copying multiple files at once will be supported in a future release.
               error "The specified object does not exist.", :not_found
             rescue Errno::EACCES
               error "You don't have permission to write the target file.", :permission_denied
-            rescue Errno::ENOENT
+            rescue Errno::ENOENT, Errno::EISDIR
               error "The target directory is invalid.", :permission_denied
             rescue Excon::Errors::Forbidden => e
               display_error_message(e)
