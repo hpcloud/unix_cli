@@ -10,7 +10,8 @@ describe "Acl command (viewing acls)" do
   
   context "when resource is not correct" do
     it "should exit with message about not supported resource" do
-      response = capture(:stderr){ HP::Scalene::CLI.start(['acl', '/foo/foo']) }
+      # response = capture(:stderr){ HP::Scalene::CLI.start(['acl', '/foo/foo']) }
+      response = cli_command('acl /foo/foo').stderr
       response.should eql("ACL viewing is only supported for buckets and objects\n")
     end
   end
@@ -18,7 +19,8 @@ describe "Acl command (viewing acls)" do
   context "when viewing the ACL for a bucket" do
     before (:all) do
       @kvs.put_bucket_acl('acl_bucket', 'authenticated-read-write')
-      @response = capture(:stdout){ HP::Scalene::CLI.start(['acl', ':acl_bucket']) }
+      # @response = capture(:stdout){ HP::Scalene::CLI.start(['acl', ':acl_bucket']) }
+      @response = cli_command('acl :acl_bucket')
     end
     it "should have FULL_CONTROL permissions" do
       @response.should include("FULL_CONTROL")
@@ -34,7 +36,8 @@ describe "Acl command (viewing acls)" do
   context "when viewing the ACL for an object" do
     before (:all) do
       @kvs.put_object_acl('acl_bucket', 'foo.txt','authenticated-read-write')
-      @response = capture(:stdout){ HP::Scalene::CLI.start(['acl', ':acl_bucket/foo.txt']) }
+      # @response = capture(:stdout){ HP::Scalene::CLI.start(['acl', ':acl_bucket/foo.txt']) }
+      @response = cli_command('acl :acl_bucket/foo.txt')
     end
     it "should have FULL_CONTROL permissions" do
       @response.should include("FULL_CONTROL")

@@ -14,7 +14,8 @@ describe "Copy command" do
     
     context "when local file does not exist" do
       it "should exit with file not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'foo.txt', ':my_bucket']) }
+        # response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'foo.txt', ':my_bucket']) }
+        response, exit_status = cli_command('copy foo.txt :my_bucket').stderr_and_exit_status
         response.should eql("File not found at 'foo.txt'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -30,7 +31,8 @@ describe "Copy command" do
       end
       
       it "should show error message" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_bucket']) }
+        # response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_bucket']) }
+        response, exit_status = cli_command('copy spec/fixtures/files/cantread.txt :my_bucket').stderr_and_exit_status
         response.should eql("The selected file cannot be read.\n")
         exit_status.should be_exit(:permission_denied)
       end
