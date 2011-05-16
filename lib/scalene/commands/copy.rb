@@ -82,7 +82,7 @@ Note: Copying multiple files at once will be supported in a future release.
             display_error_message(e)
           end
           key = Bucket.storage_destination_path(path, from)
-          key.sub!(" ", "_")
+          key.gsub!(" ", "_")
           if directory
             begin
               directory.files.create(:key => key, :body => File.open(from), 'Content-Type' => mime_type)
