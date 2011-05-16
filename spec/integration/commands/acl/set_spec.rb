@@ -11,7 +11,7 @@ describe "Acl:set command" do
   context "when resource is not correct" do
     it "should exit with message about not supported resource" do
       response = capture(:stderr){ HP::Scalene::CLI.start(['acl:set', '/foo/foo', 'private']) }
-      response.should eql("Setting ACLs is only supported for buckets and objects\n")
+      response.should eql("Setting ACLs is only supported for buckets and objects.\n")
     end
   end
   
@@ -25,14 +25,14 @@ describe "Acl:set command" do
   context "when setting the ACL for a bucket" do
     it "should report success" do
       response = capture(:stdout){ HP::Scalene::CLI.start(['acl:set', ':acl_bucket', 'authenticated-read']) }
-      response.should eql("ACL for :acl_bucket updated to authenticated-read\n")
+      response.should eql("ACL for :acl_bucket updated to authenticated-read.\n")
     end
   end
   
   context "when setting the ACL for an object" do
     it "should report success" do
       response = capture(:stdout){ HP::Scalene::CLI.start(['acl:set', ':acl_bucket/foo.txt', 'authenticated-read']) }
-      response.should eql("ACL for :acl_bucket/foo.txt updated to authenticated-read\n")
+      response.should eql("ACL for :acl_bucket/foo.txt updated to authenticated-read.\n")
     end
   end
   

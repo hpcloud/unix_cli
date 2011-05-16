@@ -29,12 +29,12 @@ Note: Custom ACLs will be supported in a future release.
         begin
           if type == :object
             connection.put_object_acl(bucket, path, acl)
-            display "ACL for #{resource} updated to #{acl}"
+            display "ACL for #{resource} updated to #{acl}."
           elsif type == :bucket
             connection.put_bucket_acl(bucket, acl)
-            display "ACL for #{resource} updated to #{acl}"
+            display "ACL for #{resource} updated to #{acl}."
           else
-            error 'Setting ACLs is only supported for buckets and objects', :not_supported
+            error 'Setting ACLs is only supported for buckets and objects.', :not_supported
           end
         rescue Excon::Errors::NotFound, Excon::Errors::Forbidden => e
           display_error_message(e)
