@@ -17,11 +17,15 @@ Examples:
 Aliases: buckets:list
       DESC
       def buckets
-        buckets = connection.directories
-        if buckets.empty?
-          display "You currently have no buckets, use `#{selfname} buckets:add <name>` to create one."
-        else
-          buckets.each { |bucket| display bucket.key }
+        begin
+          buckets = connection.directories
+          if buckets.empty?
+            display "You currently have no buckets, use `#{selfname} buckets:add <name>` to create one."
+          else
+            buckets.each { |bucket| display bucket.key }
+          end
+        rescue Excon::Errors::Forbidden => error
+          display_error_message(error)
         end
       end
     
