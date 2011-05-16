@@ -179,18 +179,37 @@ describe "Copy command" do
     
     context 'when cannot write file' do
       
-      before(:all) do
-        Dir.mkdir('spec/tmp/unwriteable') unless File.directory?('spec/tmp/unwriteable')
-        File.chmod(0000, 'spec/tmp/unwriteable')
-        @response, @exit = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/unwriteable/']) }
+      context "when location is unwritable" do
+        before(:all) do
+          Dir.mkdir('spec/tmp/unwriteable') unless File.directory?('spec/tmp/unwriteable')
+          File.chmod(0000, 'spec/tmp/unwriteable')
+          @response, @exit = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/unwriteable/']) }
+        end
+
+        it "should show failure message" do
+          @response.should eql("You don't have permission to write the target file.\n")
+        end
+
+        it "should have correct exit status" do
+          @exit.should be_exit(:permission_denied)
+        end
       end
-      
-      it "should show failure message" do
-        @response.should eql("You don't have permission to write the target file.\n")
-      end
-      
-      it "should have correct exit status" do
-        @exit.should be_exit(:permission_denied)
+
+      context "when location does not exist" do
+        
+        before(:all) do
+          Dir.rmdir('spec/tmp/nonexistant') if File.directory?('spec/tmp/nonexistant')
+          @response, @exit = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/nonexistant/']) }
+        end
+
+        it "should show failure message" do
+          @response.should eql("The target directory is invalid.\n")
+        end
+
+        it "should have correct exit status" do
+          @exit.should be_exit(:permission_denied)
+        end
+        
       end
       
     end
