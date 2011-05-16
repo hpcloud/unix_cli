@@ -21,7 +21,7 @@ Note: Bucket support not yet available.
           exists = connection.head_object(bucket, key)
           if exists
             config = Config.current_credentials
-            display "http://#{config[:host]}:#{config[:port]}/#{bucket}/#{key}"
+            display "http://#{config[:api_endpoint]}/#{bucket}/#{key}"
           end
         rescue Excon::Errors::NotFound => error
           error "No object exists at '#{bucket}/#{key}'."
