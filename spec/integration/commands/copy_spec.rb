@@ -233,8 +233,6 @@ describe "Copy command" do
         @get.body.should eql(read_file('foo.txt'))
       end
     end
-
-
     
     context "when target not absolutely specified" do
       
