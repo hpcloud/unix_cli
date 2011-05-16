@@ -177,7 +177,23 @@ describe "Copy command" do
 
     end
     
-    pending 'when cannot write file'
+    context 'when cannot write file' do
+      
+      before(:all) do
+        Dir.mkdir('spec/tmp/unwriteable') unless File.directory?('spec/tmp/unwriteable')
+        File.chmod(0000, 'spec/tmp/unwriteable')
+        @response, @exit = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/unwriteable/']) }
+      end
+      
+      it "should show failure message" do
+        @response.should eql("You don't have permission to write the target file.\n")
+      end
+      
+      it "should have correct exit status" do
+        @exit.should be_exit(:permission_denied)
+      end
+      
+    end
     
     after(:all) do
       purge_bucket('copy_remote_to_local')

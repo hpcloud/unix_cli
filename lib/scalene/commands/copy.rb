@@ -62,6 +62,8 @@ Note: Copying multiple files at once will be supported in a future release.
               display "Copied #{from} => #{to}"
             rescue Excon::Errors::NotFound => e
               error "The specified object does not exist.", :not_found
+            rescue Errno::EACCES
+              error "You don't have permission to write the target file.", :permission_denied
             rescue Excon::Errors::Forbidden => e
               display_error_message(e)
             end
