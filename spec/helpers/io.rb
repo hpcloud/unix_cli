@@ -1,7 +1,7 @@
 
 RSpec.configure do |config|
   
-  def cli_command(string)
+  def run_command(string)
     name, *args = string.split(' ')
     CLITester.new(name, args)
   end
@@ -74,6 +74,10 @@ class CLITester
   
   def stderr
     capture(:stderr){ HP::Scalene::CLI.start([@command_name, *@args]) }
+  end
+  
+  def exit_status
+    capture_with_status(:stdout){ HP::Scalene::CLI.start([@command_name, *@args]) }[1]
   end
   
   def stderr_and_exit_status
