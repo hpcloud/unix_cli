@@ -21,9 +21,9 @@ class Thor
       if task.long_description
         shell.say "Description:"
         shell.say task.long_description
-      elsif nil and task.long_description
-        shell.say "Description:"
-        shell.print_wrapped(task.long_description, :ident => 2)
+      # elsif nil and task.long_description
+      #   shell.say "Description:"
+      #   shell.print_wrapped(task.long_description, :ident => 2)
       else
         shell.say task.description
       end
