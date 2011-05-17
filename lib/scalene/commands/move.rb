@@ -15,9 +15,6 @@ Examples:
   scalene move :my_bucket/file.txt :other_bucket/file.txt
 
 Aliases: mv
-
-Note: Moving between buckets is pending a bugfix in the KSV system and is
-  temporarily disabled in the CLI.
       DESC
       def move(from,to)
         from_type = Resource.detect_type(from)

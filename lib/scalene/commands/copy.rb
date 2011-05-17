@@ -18,7 +18,6 @@ Examples:
 Aliases: cp
 
 Note: Copying multiple files at once will be supported in a future release.
-  Copying between buckets is disabled pending resolution of a KVS bug.
       DESC
       def copy(from, to)
         from_type = Resource.detect_type(from)
@@ -111,9 +110,8 @@ Note: Copying multiple files at once will be supported in a future release.
           rescue Excon::Errors::NotFound => e
             if !connection.directories.get(bucket)
               error "You don't have a bucket '#{bucket}'.", :not_found
-            elsif bucket != bucket_to #&& !connection.directories.get(bucket_to)
-              #error "You don't have a bucket '#{bucket_to}'."
-              error 'Copying between buckets is not yet supported.', :not_supported
+            elsif bucket != bucket_to && !connection.directories.get(bucket_to)
+              error "You don't have a bucket '#{bucket_to}'.", :not_found
             else
               error "The specified object does not exist.", :not_found
             end
