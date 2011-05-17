@@ -16,11 +16,11 @@ Aliases: loc
       DESC
       def location(resource)
         bucket, key = Bucket.parse_resource(resource)
+        config = Config.current_credentials
         
         if bucket and key
           begin
             if connection.head_object(bucket, key)
-              config = Config.current_credentials
               display "http://#{config[:api_endpoint]}/#{bucket}/#{key}"
             end
           rescue Excon::Errors::NotFound => error
@@ -30,7 +30,6 @@ Aliases: loc
         elsif bucket
           begin
             if connection.head_bucket(bucket)
-              config = Config.current_credentials
               display "http://#{config[:api_endpoint]}/#{bucket}/"
             end
           rescue Excon::Errors::NotFound => error
