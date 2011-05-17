@@ -10,21 +10,35 @@ module HP
 
 Examples: 
   scalene location :my_bucket/file.txt
+  scalene location :my_bucket
 
 Aliases: loc
-
-Note: Bucket support not yet available.
       DESC
       def location(resource)
         bucket, key = Bucket.parse_resource(resource)
-        begin
-          exists = connection.head_object(bucket, key)
-          if exists
-            config = Config.current_credentials
-            display "http://#{config[:api_endpoint]}/#{bucket}/#{key}"
+        
+        if bucket and key
+          begin
+            if connection.head_object(bucket, key)
+              config = Config.current_credentials
+              display "http://#{config[:api_endpoint]}/#{bucket}/#{key}"
+            end
+          rescue Excon::Errors::NotFound => error
+            error "No object exists at '#{bucket}/#{key}'.", :not_found
           end
-        rescue Excon::Errors::NotFound => error
-          error "No object exists at '#{bucket}/#{key}'."
+        
+        elsif bucket
+          begin
+            if connection.head_bucket(bucket)
+              config = Config.current_credentials
+              display "http://#{config[:api_endpoint]}/#{bucket}/"
+            end
+          rescue Excon::Errors::NotFound => error
+            error "No bucket named '#{bucket}' exists.", :not_found
+          end
+        
+        else
+          error "Invalid format, see `help location`.", :incorrect_usage
         end
       end
     
