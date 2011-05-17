@@ -13,6 +13,7 @@ end
 require 'rspec'
 require 'scalene'
 
+require 'helpers/macros'
 require 'helpers/fixtures'
 require 'helpers/connections'
 require 'helpers/io'
