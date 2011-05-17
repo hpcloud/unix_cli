@@ -4,6 +4,7 @@ describe 'location command' do
   
   before(:all) do
     @kvs = storage_connection
+    @other = storage_connection(:secondary)
   end
   
   context "run on missing bucket" do
@@ -35,9 +36,38 @@ describe 'location command' do
     
   end
   
-  pending "run without permission for bucket"
+  context "run without permission for bucket" do
+    
+    before(:all) do
+      @other.put_bucket('someone_elses')
+      @response, @exit = run_command('location :someone_elses').stderr_and_exit_status
+    end
+    
+    it "should display error message" do
+      @response.should eql("Access Denied.\n")
+    end
+    its_exit_status_should_be(:permission_denied)
+    
+    after(:all) { purge_bucket('someone_elses', :connection => @other) }
+  end
   
-  pending "run without permissions for object"
+  context "run without permissions for object" do
+    
+    before(:all) do
+      @other.put_bucket('someone_elses')
+      @other.put_bucket_acl('someone_elses', 'public-read')
+      @other.put_object('someone_elses', 'foo.txt', read_file('foo.txt'))
+      @response, @exit = run_command('location :someone_elses/foo.txt').stderr_and_exit_status
+    end
+    
+    it "should display error message" do
+      @response.should eql("Access Denied.\n")
+    end
+    its_exit_status_should_be(:permission_denied)
+    
+    after(:all) { purge_bucket('someone_elses', :connection => @other) }
+    
+  end
   
   context "run with permissions on bucket" do
     

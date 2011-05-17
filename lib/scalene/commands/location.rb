@@ -18,26 +18,30 @@ Aliases: loc
         bucket, key = Bucket.parse_resource(resource)
         config = Config.current_credentials
         
-        if bucket and key
-          begin
-            if connection.head_object(bucket, key)
-              display "http://#{config[:api_endpoint]}/#{bucket}/#{key}"
+        begin
+          if bucket and key
+            begin
+              if connection.head_object(bucket, key)
+                display "http://#{config[:api_endpoint]}/#{bucket}/#{key}"
+              end
+            rescue Excon::Errors::NotFound => error
+              error "No object exists at '#{bucket}/#{key}'.", :not_found
             end
-          rescue Excon::Errors::NotFound => error
-            error "No object exists at '#{bucket}/#{key}'.", :not_found
-          end
         
-        elsif bucket
-          begin
-            if connection.head_bucket(bucket)
-              display "http://#{config[:api_endpoint]}/#{bucket}/"
+          elsif bucket
+            begin
+              if connection.head_bucket(bucket)
+                display "http://#{config[:api_endpoint]}/#{bucket}/"
+              end
+            rescue Excon::Errors::NotFound => error
+              error "No bucket named '#{bucket}' exists.", :not_found
             end
-          rescue Excon::Errors::NotFound => error
-            error "No bucket named '#{bucket}' exists.", :not_found
-          end
         
-        else
-          error "Invalid format, see `help location`.", :incorrect_usage
+          else
+            error "Invalid format, see `help location`.", :incorrect_usage
+          end
+        rescue Excon::Errors::Forbidden => error
+          error 'Access Denied.', :permission_denied
         end
       end
     
