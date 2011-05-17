@@ -36,5 +36,19 @@ RSpec.configure do |config|
   SEC_KVS_ACCESS_ID = '92adebfc85cfc2800ea7bea7ae16045c276c4ec2'
   SEC_KVS_SECRET_KEY = '682c572b82d86071919d86e6c12f43d067da92fb'
   SEC_KVS_ACCOUNT_ID = '529285467718'
+  MOCKING_ENABLED = ENV['ENABLE_CLI_MOCKING'] || false
+
+  if MOCKING_ENABLED
+    puts "==========================================================="
+    puts "Running tests in mocking mode..."
+    puts "BEWARE: It is an experimental attempt. Many tests may fail."
+    puts "==========================================================="
+    # Enable mocking
+    Fog.mock!
+  else
+    puts "==========================================================="
+    puts "Running tests against KVS http://#{KVS_HOST}:#{KVS_PORT}..."
+    puts "==========================================================="
+  end
 end
 
