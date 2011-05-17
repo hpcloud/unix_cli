@@ -43,11 +43,12 @@ describe 'location command' do
     
     before(:all) do
       @kvs.put_bucket('my_location_bucket')
+      HP::Scalene::Config.stub(:current_credentials).and_return({:api_endpoint => "endpoint.scalene.hp"})
       @response, @exit = run_command('location :my_location_bucket').stdout_and_exit_status
     end
     
     it "should return location" do
-      @response.should eql("http://16.49.184.32:9242/my_location_bucket/\n")
+      @response.should eql("http://endpoint.scalene.hp/my_location_bucket/\n")
     end
     its_exit_status_should_be(:success)
     
@@ -60,11 +61,12 @@ describe 'location command' do
     before(:all) do
       @kvs.put_bucket('my_location_bucket')
       @kvs.put_object('my_location_bucket', 'tiny.txt', read_file('foo.txt'))
+      HP::Scalene::Config.stub(:current_credentials).and_return({:api_endpoint => "endpoint.scalene.hp"})
       @response, @exit = run_command('location :my_location_bucket/tiny.txt').stdout_and_exit_status
     end
     
     it "should return location" do
-      @response.should eql("http://16.49.184.32:9242/my_location_bucket/tiny.txt\n")
+      @response.should eql("http://endpoint.scalene.hp/my_location_bucket/tiny.txt\n")
     end
     its_exit_status_should_be(:success)
     
