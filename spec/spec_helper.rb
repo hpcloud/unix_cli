@@ -11,6 +11,8 @@ if ENV['SPEC_CODE_COVERAGE'] and RUBY_VERSION[2,1] == '9'
 end
 
 require 'rspec'
+require 'rspec/mocks/standalone'
+
 require 'scalene'
 
 require 'helpers/macros'
