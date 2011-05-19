@@ -93,11 +93,11 @@ describe "Copy command" do
     context "when local file has spaces in name" do
       before(:all) do
         @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/with space.txt', ':my_bucket']) }
-        @get = @kvs.get_object('my_bucket', 'with_space.txt')
+        @get = @kvs.get_object('my_bucket', 'with space.txt')
       end
 
       it "should report success" do
-        @response.should eql("Copied spec/fixtures/files/with space.txt => :my_bucket/with_space.txt\n")
+        @response.should eql("Copied spec/fixtures/files/with space.txt => :my_bucket/with space.txt\n")
         @exit_status.should be_exit(:success)
       end
 
