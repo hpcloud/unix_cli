@@ -48,9 +48,7 @@ RSpec.configure do |config|
     # Enable mocking
     Fog.mock!
   else
-    puts "==========================================================="
     puts "Running tests against KVS http://#{KVS_HOST}:#{KVS_PORT}..."
-    puts "==========================================================="
   end
 end
 
