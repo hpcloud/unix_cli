@@ -1,6 +1,7 @@
 
 RSpec.configure do |config|
   
+  # run a CLI command - returned object is a CLITester instance, can be mined for output
   def run_command(string)
     name, *args = string.split(' ')
     CLITester.new(name, args)
