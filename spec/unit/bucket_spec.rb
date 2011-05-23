@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Storage-side path detection" do
@@ -96,6 +98,40 @@ describe 'Parsing bucket resources' do
     it 'should return directory path' do
       @path.should eql('files/stuff/')
     end
+  end
+  
+end
+
+describe "Validating bucket names for virtual host" do
+  
+  before(:all) { @bucket = HP::Scalene::Bucket }
+  
+  it "should not allow empty strings" do
+    @bucket.valid_virtualhost?('').should be_false
+  end
+  
+  it "should not allow uppercase characters" do
+    @bucket.valid_virtualhost?('UPPER').should be_false
+  end
+  
+  it "should not allow funky characters" do
+    @bucket.valid_virtualhost?('yøgürt').should be_false
+  end
+  
+  it "should not allow strings that start with -" do
+    @bucket.valid_virtualhost?('-mybucket').should be_false
+  end
+  
+  it "should not allow strings that end with -" do
+    @bucket.valid_virtualhost?('mybucket-').should be_false
+  end
+  
+  it "should not allow strings longer than 63 characters" do
+    @bucket.valid_virtualhost?('x' * 64).should be_false
+  end
+  
+  it "should return true for valid names" do
+    @bucket.valid_virtualhost?('my-bucket').should be_true
   end
   
 end

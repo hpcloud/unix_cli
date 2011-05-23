@@ -34,6 +34,18 @@ module HP
       def self.bucket_name_for_display(bucket_string)
       end
     
+      # is bucket_name a valid virtualhost name?
+      def self.valid_virtualhost?(bucket_name)
+        if (1..63).include?(bucket_name.length)
+          if bucket_name =~ /^[a-z0-9-]*$/
+            if bucket_name[0,1] != '-' and bucket_name[-1,1] != '-'
+              return true 
+            end
+          end
+        end
+        false
+      end
+    
     end
   end
 end
