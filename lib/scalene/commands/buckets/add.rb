@@ -12,14 +12,25 @@ Examples:
 
 Aliases: none
       DESC
+      method_option :force, :default => false, :type => :boolean, :aliases => '-f', :desc => "Don't prompt if bucket name is not valid virtual host."
       define_method "buckets:add" do |name|
         begin
           name = Bucket.bucket_name_for_service(name)
-          connection.directories.create(:key => name)
-          display "Created bucket '#{name}'."
+          if acceptable_name?(name, options)
+            connection.directories.create(:key => name)
+            display "Created bucket '#{name}'."
+          end
         rescue Excon::Errors::Conflict => error
-          display_error_message(error)
-        end
+          display_error_message(error, :permission_denied)
+        rescue Excon::Errors::NotFound => error
+          error 'The bucket name specified is invalid. Please see API documentation for valid naming guidelines.', :permission_denied
+        end 
+      end
+      
+      private
+      
+      def acceptable_name?(name, options)
+        Bucket.valid_virtualhost?(name) or options[:force] or yes?('Specified bucket name is not a valid virtalhost, continue anyway?')
       end
     
     end
