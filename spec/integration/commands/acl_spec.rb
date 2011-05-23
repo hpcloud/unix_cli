@@ -18,32 +18,32 @@ describe "Acl command (viewing acls)" do
   context "when viewing the ACL for a bucket" do
     before (:all) do
       @kvs.put_bucket_acl('acl_bucket', 'authenticated-read-write')
-      @stdout = run_command('acl :acl_bucket').stdout
+      @response = run_command('acl :acl_bucket')
     end
     it "should have FULL_CONTROL permissions" do
-      @stdout.should include("FULL_CONTROL")
+      @response.should include("FULL_CONTROL")
     end
     it "should have READ permissions for AuthenticatedUsers group" do
-      @stdout.should match("http://acs.amazonaws.com/groups/global/AuthenticatedUsers.*READ")
+      @response.should include("http://acs.amazonaws.com/groups/global/AuthenticatedUsers  READ")
     end
     it "should have WRITE permissions for AuthenticatedUsers group" do
-      @stdout.should match("http://acs.amazonaws.com/groups/global/AuthenticatedUsers.*WRITE")
+      @response.should include("http://acs.amazonaws.com/groups/global/AuthenticatedUsers  WRITE")
     end
   end
   
   context "when viewing the ACL for an object" do
     before (:all) do
       @kvs.put_object_acl('acl_bucket', 'foo.txt','authenticated-read-write')
-      @stdout = run_command('acl :acl_bucket/foo.txt').stdout
+      @response = run_command('acl :acl_bucket/foo.txt')
     end
     it "should have FULL_CONTROL permissions" do
-      @stdout.should include("FULL_CONTROL")
+      @response.should include("FULL_CONTROL")
     end
     it "should have READ permissions for AuthenticatedUsers group" do
-      @stdout.should match("http://acs.amazonaws.com/groups/global/AuthenticatedUsers.*READ")
+      @response.should include("http://acs.amazonaws.com/groups/global/AuthenticatedUsers  READ")
     end
     it "should have WRITE permissions for AuthenticatedUsers group" do
-      @stdout.should match("http://acs.amazonaws.com/groups/global/AuthenticatedUsers.*WRITE")
+      @response.should include("http://acs.amazonaws.com/groups/global/AuthenticatedUsers  WRITE")
     end
   end
   
