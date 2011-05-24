@@ -1,4 +1,19 @@
-v0.0.3 4/11/11
+v0.0.4 5/23/11
+==============
+- copy command can now copy between buckets
+- location command can now be called on buckets as well as objects
+- buckets:add command now checks for valid virtualhost naming, warns if not
+- improve error handling when listing buckets with invalid credentials
+- improve error handling when copying a file to unwriteable local location
+- improve error handling when copying a file to a local directory that doesn't exist
+- improve error handling when calling location on buckets/objects without permissions
+- improve error handling when trying to create a bucket with an invalid name
+- fix breaker in location command
+- fix substitution of underscores for spaces in file names during copy
+- fix some incorrect exit statuses
+- testing improvements
+
+v0.0.3 5/13/11
 ==============
 - rebranded to 'scalene' gem
 - ruby 1.8.7 compatibility
