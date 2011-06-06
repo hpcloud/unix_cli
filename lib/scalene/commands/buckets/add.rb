@@ -30,7 +30,7 @@ Aliases: none
       private
       
       def acceptable_name?(name, options)
-        Bucket.valid_virtualhost?(name) or options[:force] or yes?('Specified bucket name is not a valid virtalhost, continue anyway?')
+        Bucket.valid_virtualhost?(name) or options[:force] or yes?('Specified bucket name is not a valid virtualhost, continue anyway?')
       end
     
     end

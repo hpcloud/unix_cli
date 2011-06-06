@@ -63,7 +63,7 @@ describe "buckets:add command" do
   context "when creating a bucket whose name is valid, but not valid virtual host" do
     
     it "should present interactive prompt to verify behavior" do
-      $stdout.should_receive(:print).with('Specified bucket name is not a valid virtalhost, continue anyway? ')
+      $stdout.should_receive(:print).with('Specified bucket name is not a valid virtualhost, continue anyway? ')
       $stdin.should_receive(:gets).and_return('n')
       begin
         cli.send('buckets:add', 'UPPERCASE')
