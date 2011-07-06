@@ -4,10 +4,10 @@ module HP
     
       desc 'account:setup', "set up or modify your credentials"
       long_desc <<-DESC
-  Setup or modify your account credientials. This is generally the first step 
+  Setup or modify your account credentials. This is generally the first step
   in the process of using the Scalene command-line interface. 
   
-  You will need your Access ID and Secret Key from the HP Scalene web site to 
+  You will need your Username and Password from the HP Scalene web site to
   set up your account. Optionally you can specify your own endpoint to access, 
   but in most cases you will want to use the default.  
   
@@ -17,15 +17,14 @@ module HP
                     :desc => "Don't verify account settings during setup"
       define_method "account:setup" do
         credentials = {}
-        credentials[:email] = ask 'Account email address:'
-        credentials[:access_id] = ask 'Access ID:'
-        credentials[:secret_key] = ask 'Secret key:'
+        credentials[:username] = ask 'Username:'
+        credentials[:password] = ask 'Password:'
         credentials[:api_endpoint] = ask_with_default 'API endpoint:', 
                                       Config.settings[:default_api_endpoint]
         unless options['no-validate']
           begin
             display "Verifying your account..."
-            connection_with(credentials).get_service
+            connection_with(credentials).get_containers
           rescue Excon::Errors::Forbidden => e
             display_error_message(e)
           # remove once this is handled more globally

@@ -22,7 +22,7 @@ Aliases: none
           end
         rescue Excon::Errors::Conflict => error
           display_error_message(error, :permission_denied)
-        rescue Excon::Errors::NotFound => error
+        rescue Fog::HP::Storage::NotFound => error
           error 'The bucket name specified is invalid. Please see API documentation for valid naming guidelines.', :permission_denied
         end 
       end

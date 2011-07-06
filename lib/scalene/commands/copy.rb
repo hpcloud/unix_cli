@@ -58,7 +58,7 @@ Note: Copying multiple files at once will be supported in a future release.
                 file.write get.body
               end
               display "Copied #{from} => #{to}"
-            rescue Excon::Errors::NotFound => e
+            rescue Fog::HP::Storage::NotFound => e
               error "The specified object does not exist.", :not_found
             rescue Errno::EACCES
               error "You don't have permission to write the target file.", :permission_denied
@@ -103,9 +103,10 @@ Note: Copying multiple files at once will be supported in a future release.
           bucket_to, path_to = Bucket.parse_resource(to)
           path_to = Bucket.storage_destination_path(path_to, path)
           begin
-            connection.copy_object(bucket, path, bucket_to, path_to)
+            #### connection.copy_object(bucket, path, bucket_to, path_to)
+            connection.put_object(bucket_to, path_to, nil, {'X-Copy-From' => "/#{bucket}/#{path}" })
             display "Copied #{from} => :#{bucket_to}/#{path_to}"
-          rescue Excon::Errors::NotFound => e
+          rescue Fog::HP::Storage::NotFound => e
             if !connection.directories.get(bucket)
               error "You don't have a bucket '#{bucket}'.", :not_found
             elsif bucket != bucket_to && !connection.directories.get(bucket_to)

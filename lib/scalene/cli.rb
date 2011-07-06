@@ -29,12 +29,13 @@ module HP
       def connection_with(credentials)
         host, port = credentials[:api_endpoint].split(':')
         port ||= 80 # provide a default port
-        Fog::Storage.new( :provider => 'HPScalene',
-                          :hp_access_id =>  credentials[:access_id],
-                          :hp_secret_key => credentials[:secret_key],
-                          :hp_account_id => credentials[:email],
-                          :host => host,
-                          :port => port )
+        Fog::Storage.new( :provider     => 'HP',
+                          :hp_host      => host,
+                          :hp_port      => port,
+                          :hp_auth_path => credentials[:auth_path],
+                          :hp_password  => credentials[:password],
+                          :hp_username  => credentials[:username] )
+
       end
     
       # print some non-error output to the user

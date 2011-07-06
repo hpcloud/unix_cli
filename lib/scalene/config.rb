@@ -4,7 +4,7 @@ module HP
   module Scalene
     class Config
 
-      @@default_config = { :default_api_endpoint => '16.49.184.32:9242' }
+      @@default_config = { :default_api_endpoint => 'agpa-ge1.csbu.hpl.hp.com' }
 
       def self.config_directory
         home_directory + "/.scalene/"
