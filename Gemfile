@@ -1,8 +1,8 @@
 source "http://rubygems.org"
-source "http://16.125.113.34:8808/"
+#source "http://16.125.113.34:8808/"
 
 gemspec
-#gem 'fog', :path => '../fog'
+gem 'fog', :path => '~/projects/ruby_fog_os'
 
 group :development do
   gem "yard", "~> 0.6.0"
