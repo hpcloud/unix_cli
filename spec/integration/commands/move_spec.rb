@@ -4,8 +4,8 @@ describe "Move command" do
   
   before(:all) do
     @kvs = storage_connection
-    @kvs.put_bucket('move_source_bucket')
-    @kvs.put_bucket('move_target_bucket')
+    @kvs.put_container('move_source_bucket')
+    @kvs.put_container('move_target_bucket')
   end
   
   context "Moving an object inside of a bucket" do
@@ -43,7 +43,7 @@ describe "Move command" do
       it "should have removed source object" do
         lambda {
           @kvs.head_object('move_source_bucket', 'foo.txt')
-        }.should raise_error(Excon::Errors::NotFound)
+        }.should raise_error(Fog::HP::Storage::NotFound)
       end
       
       it "should display success message" do
@@ -55,7 +55,7 @@ describe "Move command" do
     
   end
   
-  pending "Moving an object between buckets" do
+  context "Moving an object between buckets" do
     
     before(:all) { @kvs.put_object('move_source_bucket', 'foo.txt', read_file('foo.txt')) }
     
@@ -70,7 +70,7 @@ describe "Move command" do
     context "when source file can't be found" do
       it "should display error message" do
         response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['move', ':move_source_bucket/missing', ':move_target_bucket']) }
-        response.should eql("The object 'missing_bucket/missing_file' cannot be found.\n")
+        response.should eql("The specified object does not exist.\n")
         exit_status.should be_exit(:not_found)
       end
     end
@@ -126,7 +126,7 @@ describe "Move command" do
       it "should have removed source object" do
         lambda {
           @kvs.head_object('move_source_bucket', 'foo.txt')
-        }.should raise_error(Excon::Errors::NotFound)
+        }.should raise_error(Fog::HP::Storage::NotFound)
       end
       
       it "should display success message" do

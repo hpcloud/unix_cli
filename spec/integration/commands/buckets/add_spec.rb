@@ -24,17 +24,18 @@ describe "buckets:add command" do
     its_exit_status_should_be(:success)
     
     it "should have created the bucket" do
-      resp = @kvs.head_bucket('my-added-bucket').status.should eql(200)
+      resp = @kvs.head_container('my-added-bucket').status.should eql(204)
     end
     
     after(:all) { purge_bucket('my-added-bucket') }
     
   end
-  
-  context "when creating a bucket which already exists" do
+
+  #### It is not an exception to create a bucket whic already exists in Swift
+  pending "when creating a bucket which already exists" do
     
     before(:all) do
-      @kvs.put_bucket('already-a-bucket')
+      @kvs.put_container('already-a-bucket')
       @response, @exit = run_command('buckets:add already-a-bucket').stderr_and_exit_status
     end
     

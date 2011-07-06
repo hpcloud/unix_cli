@@ -52,7 +52,7 @@ describe "Config directory setup" do
       
       it "should populate config file" do
         yaml = YAML::load(File.open(HP::Scalene::Config.config_file))
-        yaml[:default_api_endpoint].should eql('16.49.184.32:9242')
+        yaml[:default_api_endpoint].should eql("agpa-ge1.csbu.hpl.hp.com")
       end
       
     end
@@ -143,7 +143,7 @@ describe "Getting settings" do
     end
     
     it "should return default settings" do
-      HP::Scalene::Config.settings[:default_api_endpoint].should eql('16.49.184.32:9242')
+      HP::Scalene::Config.settings[:default_api_endpoint].should eql('agpa-ge1.csbu.hpl.hp.com')
     end
     
   end

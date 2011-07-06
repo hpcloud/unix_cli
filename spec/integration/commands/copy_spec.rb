@@ -8,8 +8,8 @@ describe "Copy command" do
   
   context "copying local file to bucket" do
     before(:all) do
-      purge_bucket('my_bucket')
-      @kvs.put_bucket('my_bucket')
+      #purge_bucket('my_bucket')
+      @kvs.put_container('my_bucket')
     end
     
     context "when local file does not exist" do
@@ -50,11 +50,11 @@ describe "Copy command" do
       end
     end
 
-    context "when bucket is public-read but remote file cannot be overwritten" do
+    pending "when bucket is public-read but remote file cannot be overwritten" do
       before(:all) do
         @kvs_other_user = storage_connection(:secondary)
-        @kvs_other_user.put_bucket('public_read_bucket')
-        @kvs_other_user.put_bucket_acl('public_read_bucket', 'public-read')
+        @kvs_other_user.put_container('public_read_bucket')
+        #### @kvs_other_user.put_bucket_acl('public_read_bucket', 'public-read')
         @kvs_other_user.put_object('public_read_bucket', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
       end
 
@@ -85,7 +85,7 @@ describe "Copy command" do
       end
       
       it "should preserve content-type" do
-        @head.headers["Content-Type"].should eql('text/plain')
+        @head.headers["Content-Type"].should eql('text/plain; charset=UTF-8')
       end
       
     end
@@ -227,7 +227,7 @@ describe "Copy command" do
     
     before(:all) do
       #create_bucket_with_files('copy_inside_bucket', 'foo.txt')
-      @kvs.put_bucket('copy_inside_bucket')
+      @kvs.put_container('copy_inside_bucket')
       @kvs.put_object('copy_inside_bucket', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
     end
     
@@ -263,7 +263,7 @@ describe "Copy command" do
       end
       
       it "should preserve content-type" do
-        @get.headers['Content-Type'].should eql('text/plain')
+        @get.headers['Content-Type'].should eql('application/json')
       end
 
       it "should have same object body" do
@@ -300,13 +300,13 @@ describe "Copy command" do
     
   end
   
-  pending "copying a remote object to another bucket" do
+  context "copying a remote object to another bucket" do
     
     before(:all) do
       #create_bucket_with_files('copy_inside_bucket', 'foo.txt')
-      @kvs.put_bucket('copy_between_one')
+      @kvs.put_container('copy_between_one')
       @kvs.put_object('copy_between_one', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
-      @kvs.put_bucket('copy_between_two')
+      @kvs.put_container('copy_between_two')
     end
     
     context "when bucket does not exist" do
@@ -333,21 +333,28 @@ describe "Copy command" do
       end
     end
     
-    pending "when target is not absolutely specified" do
-      
-      # context "when target is bucket" do
-      #   it "should give success message" do
-      #     response = capture(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two']) }
-      #     response.should eql("Copied: \n")
-      #   end
-      # end
-      
-      context "when target is directory on bucket" do
-        
+    context "when target is not absolutely specified" do
+
+      before(:all) { @kvs.put_object('copy_between_one', 'nested/file.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'}) }
+
+      context "when bucket only" do
+        it "should show success message" do
+          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two']) }
+          response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two/file.txt\n")
+          exit_status.should be_exit(:success)
+        end
       end
-      
+
+      context "when directory in bucket" do
+        it "should show success message" do
+          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two/nested_new/file.txt']) }
+          response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two/nested_new/file.txt\n")
+          exit_status.should be_exit(:success)
+        end
+      end
+
     end
-    
+
     context "when object is copied successfully" do
       before(:all) do
         @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two/new/foo.txt']) }
@@ -364,7 +371,7 @@ describe "Copy command" do
       end
       
       it "should preserve content-type" do
-        @get.headers['Content-Type'].should eql('text/plain')
+        @get.headers['Content-Type'].should eql('application/json')
       end
 
       it "should have same object body" do

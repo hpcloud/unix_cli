@@ -4,7 +4,7 @@ describe "Get command" do
   
   before(:all) do
     @kvs = storage_connection
-    @kvs.put_bucket('get_bucket')
+    @kvs.put_container('get_bucket')
     @kvs.put_object('get_bucket', 'highly_unusual_file_name.txt', read_file('foo.txt'))
     @kvs.put_object('get_bucket', 'folder/highly_unusual_file_name.txt', read_file('foo.txt'))
   end

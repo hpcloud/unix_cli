@@ -32,14 +32,19 @@ describe "Remove command" do
     context "when removing an object that isn't controlled by the user" do
       before(:all) do
         @kvs_other_user = storage_connection(:secondary)
-        @kvs_other_user.put_bucket('notmybucket')
+        @kvs_other_user.put_container('notmybucket')
         @kvs_other_user.put_object('notmybucket', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
+        @response, @exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['rm', ':notmybucket/foo.txt']) }
       end
 
+      #### Swift does not have acls, so it just cannot see the bucket
       it "should exit with access denied" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['rm', ':notmybucket/foo.txt']) }
-        response.should eql("Access Denied.\n")
-        exit_status.should be_exit(:permission_denied)
+        @response.should eql("You don't have a bucket named 'notmybucket'\n")
+      end
+
+      #### Swift does not have acls, so it just cannot see the bucket
+      pending "should exit with denied status" do
+        @exit_status.should be_exit(:permission_denied)
       end
 
       after(:all) do

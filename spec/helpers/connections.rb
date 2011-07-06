@@ -5,19 +5,19 @@ RSpec.configure do |config|
   # Create a new Storage service connection - maybe memoize later
   def storage_connection(user = :primary)
     if user == :primary
-      Fog::Storage.new( :provider => 'HPScalene',
-                        :hp_access_id =>  KVS_ACCESS_ID,
-                        :hp_secret_key => KVS_SECRET_KEY,
-                        :hp_account_id => KVS_ACCOUNT_ID,
-                        :host => KVS_HOST,
-                        :port => KVS_PORT )
+      Fog::Storage.new( :provider     => 'HP',
+                        :hp_host      => OS_STORAGE_HOST,
+                        :hp_port      => OS_STORAGE_PORT,
+                        :hp_auth_path => OS_STORAGE_AUTH_PATH,
+                        :hp_password  => OS_STORAGE_ACCOUNT_PASSWORD,
+                        :hp_username  => OS_STORAGE_ACCOUNT_USERNAME )
     elsif user == :secondary
-      Fog::Storage.new( :provider => 'HPScalene',
-                        :hp_access_id =>  SEC_KVS_ACCESS_ID,
-                        :hp_secret_key => SEC_KVS_SECRET_KEY,
-                        :hp_account_id => SEC_KVS_ACCOUNT_ID,
-                        :host => KVS_HOST,
-                        :port => KVS_PORT )
+      Fog::Storage.new( :provider     => 'HP',
+                        :hp_host      => OS_STORAGE_HOST,
+                        :hp_port      => OS_STORAGE_PORT,
+                        :hp_auth_path => OS_STORAGE_AUTH_PATH,
+                        :hp_password  => OS_STORAGE_SEC_ACCOUNT_PASSWORD,
+                        :hp_username  => OS_STORAGE_SEC_ACCOUNT_USERNAME )
     end
   end
   
@@ -34,12 +34,12 @@ module HP::Scalene
   # override #connection not to look at account files, just use hardcoded
   # test credentials.
   def connection
-    Fog::Storage.new( :provider => 'HPScalene',
-                      :hp_access_id =>  KVS_ACCESS_ID,
-                      :hp_secret_key => KVS_SECRET_KEY,
-                      :hp_account_id => KVS_ACCOUNT_ID,
-                      :host => KVS_HOST,
-                      :port => KVS_PORT )
+    Fog::Storage.new( :provider     => 'HP',
+                      :hp_host      => OS_STORAGE_HOST,
+                      :hp_port      => OS_STORAGE_PORT,
+                      :hp_auth_path => OS_STORAGE_AUTH_PATH,
+                      :hp_password  => OS_STORAGE_ACCOUNT_PASSWORD,
+                      :hp_username  => OS_STORAGE_ACCOUNT_USERNAME )
   end
   
   end
