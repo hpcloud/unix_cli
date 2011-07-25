@@ -6,28 +6,28 @@ describe "Storage-side path detection" do
 
   context "when given absolute path" do
     it 'should return that path' do
-      path = HP::Scalene::Container.storage_destination_path('blah/archive.zip', '/tmp/archive.zip')
+      path = HP::Cloud::Container.storage_destination_path('blah/archive.zip', '/tmp/archive.zip')
       path.should eql('blah/archive.zip')
     end
   end
   
   context "when given no path" do
     it 'should return original filename' do
-      path = HP::Scalene::Container.storage_destination_path('', '/tmp/archive.zip')
+      path = HP::Cloud::Container.storage_destination_path('', '/tmp/archive.zip')
       path.should eql('archive.zip')
     end
   end
   
   context "when given a nil" do
     it 'should return original filename' do
-      path = HP::Scalene::Container.storage_destination_path(nil, '/tmp/archive.zip')
+      path = HP::Cloud::Container.storage_destination_path(nil, '/tmp/archive.zip')
       path.should eql('archive.zip')
     end
   end
   
   context "when given a directory path" do
     it 'should return original filename appended to directory path' do
-      path = HP::Scalene::Container.storage_destination_path('myfiles/', '/tmp/archive.zip')
+      path = HP::Cloud::Container.storage_destination_path('myfiles/', '/tmp/archive.zip')
       path.should eql('myfiles/archive.zip')
     end
   end
@@ -38,13 +38,13 @@ describe 'Parsing container names' do
   
   context "when given a normal string" do
     it 'should return the string' do
-      HP::Scalene::Container.container_name_for_service('my_container').should eql('my_container')
+      HP::Cloud::Container.container_name_for_service('my_container').should eql('my_container')
     end
   end
   
   context "when given a resource string" do
     it 'should return container name as a simple string' do
-      HP::Scalene::Container.container_name_for_service(':my_container').should eql('my_container')
+      HP::Cloud::Container.container_name_for_service(':my_container').should eql('my_container')
     end
   end
   
@@ -54,7 +54,7 @@ describe 'Parsing container resources' do
   
   context "when given a container-only resource" do
     before(:all) do
-      @container, @path = HP::Scalene::Container.parse_resource(':my_container')
+      @container, @path = HP::Cloud::Container.parse_resource(':my_container')
     end
     it 'should return container name' do
       @container.should eql('my_container')
@@ -66,7 +66,7 @@ describe 'Parsing container resources' do
   
   context 'when given a container-only string' do
     before(:all) do
-      @container, @path = HP::Scalene::Container.parse_resource('my_container')
+      @container, @path = HP::Cloud::Container.parse_resource('my_container')
     end
     it 'should return container name' do
       @container.should eql('my_container')
@@ -78,7 +78,7 @@ describe 'Parsing container resources' do
   
   context 'when given a resource with an object path' do
     before(:all) do
-      @container, @path = HP::Scalene::Container.parse_resource(':my_container/files/stuff/foo.txt')
+      @container, @path = HP::Cloud::Container.parse_resource(':my_container/files/stuff/foo.txt')
     end
     it 'should return container name' do
       @container.should eql('my_container')
@@ -90,7 +90,7 @@ describe 'Parsing container resources' do
   
   context 'when given a resource with a directory path' do 
     before(:all) do
-      @container, @path = HP::Scalene::Container.parse_resource(':my_container/files/stuff/')
+      @container, @path = HP::Cloud::Container.parse_resource(':my_container/files/stuff/')
     end
     it 'should return container name' do
       @container.should eql('my_container')
@@ -104,7 +104,7 @@ end
 
 describe "Validating container names for virtual host" do
   
-  before(:all) { @container = HP::Scalene::Container }
+  before(:all) { @container = HP::Cloud::Container }
   
   it "should not allow empty strings" do
     @container.valid_virtualhost?('').should be_false

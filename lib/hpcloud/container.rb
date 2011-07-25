@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class Container
     
       # parse a container resource into container name and object key

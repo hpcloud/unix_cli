@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
 
       map %w(fetch) => 'get'
@@ -9,7 +9,7 @@ module HP
   Copy an object from a container to your current directory.
 
 Examples: 
-  scalene get :my_container/file.txt
+  hpcloud get :my_container/file.txt
 
 Aliases: fetch
       DESC

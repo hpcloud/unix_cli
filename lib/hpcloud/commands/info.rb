@@ -1,10 +1,10 @@
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       map '--version' => 'info'
     
-      desc "info", "info about the HP Scalene CLI"
+      desc "info", "info about the HP Cloud CLI"
       def info
         display "version: #{VERSION}"
       end

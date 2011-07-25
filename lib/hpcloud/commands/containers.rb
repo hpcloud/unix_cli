@@ -1,8 +1,8 @@
-require 'scalene/commands/containers/add'
-require 'scalene/commands/containers/remove'
+require 'hpcloud/commands/containers/add'
+require 'hpcloud/commands/containers/remove'
 
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       map 'containers:list' => 'containers'
@@ -12,7 +12,7 @@ module HP
   List the containers in your storage account.
   
 Examples:
-  scalene containers
+  hpcloud containers
 
 Aliases: containers:list
       DESC

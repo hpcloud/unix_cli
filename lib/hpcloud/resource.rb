@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class Resource
     
       REMOTE_TYPES = [:container, :container_directory, :object]

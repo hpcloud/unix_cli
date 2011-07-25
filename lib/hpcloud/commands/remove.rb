@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
 
       map %w(rm delete destroy del) => 'remove'
@@ -10,8 +10,8 @@ module HP
   identical to calling `containers:remove`.
         
 Examples:
-  scalene remove :my_container/my_file.txt   # Delete object 'my_file.txt'
-  scalene remove :my_container               # Delete container 'my_container'
+  hpcloud remove :my_container/my_file.txt   # Delete object 'my_file.txt'
+  hpcloud remove :my_container               # Delete container 'my_container'
         
 Aliases: rm, delete, destroy, del
       DESC

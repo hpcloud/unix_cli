@@ -73,12 +73,12 @@ describe 'location command' do
 #
 #    before(:all) do
 #      @hp_svc.put_container('my_location_container')
-#      HP::Scalene::Config.stub(:current_credentials).and_return({:api_endpoint => "endpoint.scalene.hp"})
+#      HP::Cloud::Config.stub(:current_credentials).and_return({:api_endpoint => "endpoint.hpcloud.hp"})
 #      @response, @exit = run_command('location :my_location_container').stdout_and_exit_status
 #    end
 #
 #    it "should return location" do
-#      @response.should eql("http://endpoint.scalene.hp/my_location_container/\n")
+#      @response.should eql("http://endpoint.hpcloud.hp/my_location_container/\n")
 #    end
 #    its_exit_status_should_be(:success)
 #
@@ -91,12 +91,12 @@ describe 'location command' do
 #    before(:all) do
 #      @hp_svc.put_container('my_location_container')
 #      @hp_svc.put_object('my_location_container', 'tiny.txt', read_file('foo.txt'))
-#      HP::Scalene::Config.stub(:current_credentials).and_return({:api_endpoint => "endpoint.scalene.hp"})
+#      HP::Cloud::Config.stub(:current_credentials).and_return({:api_endpoint => "endpoint.hpcloud.hp"})
 #      @response, @exit = run_command('location :my_location_container/tiny.txt').stdout_and_exit_status
 #    end
 #
 #    it "should return location" do
-#      @response.should eql("http://endpoint.scalene.hp/my_location_container/tiny.txt\n")
+#      @response.should eql("http://endpoint.hpcloud.hp/my_location_container/tiny.txt\n")
 #    end
 #    its_exit_status_should_be(:success)
 #

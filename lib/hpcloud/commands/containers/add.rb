@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       desc "containers:add <name>", "add a container"
@@ -8,7 +8,7 @@ module HP
   or without the preceding colon: 'my_container' or ':my_container'.
 
 Examples:
-  scalene container:add :my_container  # Creates a new container called 'my_container'
+  hpcloud container:add :my_container  # Creates a new container called 'my_container'
 
 Aliases: none
       DESC

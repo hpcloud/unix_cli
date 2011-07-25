@@ -1,7 +1,7 @@
-require 'scalene/commands/acl/set'
+require 'hpcloud/commands/acl/set'
 
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       CANNED_ACLS = %w(private public-read public-read-write authenticated-read authenticated-read-write container-owner-read container-owner-full-control log-delivery-write)
@@ -11,8 +11,8 @@ module HP
   View the Access Control List (ACL) for a container or object.
 
 Examples:
-  scalene acl :my_container/my_file.txt  # Get ACL for object 'my_file.txt'
-  scalene acl :my_container'             # Get ACL for container 'my_container'
+  hpcloud acl :my_container/my_file.txt  # Get ACL for object 'my_file.txt'
+  hpcloud acl :my_container'             # Get ACL for container 'my_container'
 
 Aliases: none
       DESC

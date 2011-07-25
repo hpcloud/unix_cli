@@ -14,7 +14,7 @@ describe "Copy command" do
     
     context "when local file does not exist" do
       it "should exit with file not found" do
-        # response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'foo.txt', ':my_container']) }
+        # response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'foo.txt', ':my_container']) }
         response, exit_status = run_command('copy foo.txt :my_container').stderr_and_exit_status
         response.should eql("File not found at 'foo.txt'.\n")
         exit_status.should be_exit(:not_found)
@@ -31,7 +31,7 @@ describe "Copy command" do
       end
       
       it "should show error message" do
-        # response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_container']) }
+        # response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_container']) }
         response, exit_status = run_command('copy spec/fixtures/files/cantread.txt :my_container').stderr_and_exit_status
         response.should eql("The selected file cannot be read.\n")
         exit_status.should be_exit(:permission_denied)
@@ -44,7 +44,7 @@ describe "Copy command" do
     
     context "when container does not exist" do
       it "should exit with container not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':missing_container']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':missing_container']) }
         response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -59,7 +59,7 @@ describe "Copy command" do
       end
 
       it "should exit with permission denied" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':public_read_container/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':public_read_container/foo.txt']) }
         response.should eql("Permission denied\n")
         exit_status.should be_exit(:permission_denied)
       end
@@ -71,7 +71,7 @@ describe "Copy command" do
     
     context "when file and container exist" do
       before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_container']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_container']) }
         @head = @hp_svc.head_object('my_container', 'foo.txt')
       end
       
@@ -92,7 +92,7 @@ describe "Copy command" do
 
     context "when local file has spaces in name" do
       before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/with space.txt', ':my_container']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/with space.txt', ':my_container']) }
         @get = @hp_svc.get_object('my_container', 'with space.txt')
       end
 
@@ -112,7 +112,7 @@ describe "Copy command" do
     
     context "when container does not exist" do
       it "should exit with container not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_blah/foo.txt', '/tmp/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_blah/foo.txt', '/tmp/foo.txt']) }
         response.should eql("You don't have a container 'copy_blah'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -120,7 +120,7 @@ describe "Copy command" do
     
     context "when object does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo2.txt', '/tmp/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo2.txt', '/tmp/foo.txt']) }
         response.should eql("The specified object does not exist.\n")
         exit_status.should be_exit(:not_found)
       end 
@@ -128,7 +128,7 @@ describe "Copy command" do
     
     context "when local directory structure does not exist" do
       it "should exit with directory not present" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', '/blah/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', '/blah/foo.txt']) }
         response.should eql("No directory exists at '/blah'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -136,7 +136,7 @@ describe "Copy command" do
 
     context "when local directory and object exist" do
       before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/foo.txt']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/foo.txt']) }
       end
       
       it "should describe copy" do
@@ -161,7 +161,7 @@ describe "Copy command" do
 
     context "when target is local directory" do
       before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/']) }
       end
 
       it "should describe copy" do
@@ -185,7 +185,7 @@ describe "Copy command" do
         before(:all) do
           Dir.mkdir('spec/tmp/unwriteable') unless File.directory?('spec/tmp/unwriteable')
           File.chmod(0000, 'spec/tmp/unwriteable')
-          @response, @exit = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/unwriteable/']) }
+          @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/unwriteable/']) }
         end
 
         it "should show failure message" do
@@ -201,7 +201,7 @@ describe "Copy command" do
         
         before(:all) do
           Dir.rmdir('spec/tmp/nonexistant') if File.directory?('spec/tmp/nonexistant')
-          @response, @exit = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/nonexistant/']) }
+          @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/nonexistant/']) }
         end
 
         it "should show failure message" do
@@ -233,7 +233,7 @@ describe "Copy command" do
     
     context "when container does not exist" do
       it "should exit with container not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':missing_container/foo.txt', ':missing_container/tmp/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':missing_container/foo.txt', ':missing_container/tmp/foo.txt']) }
         response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -241,7 +241,7 @@ describe "Copy command" do
     
     context "when object does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_inside_container/missing.txt', ':copy_inside_container/tmp/missing.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/missing.txt', ':copy_inside_container/tmp/missing.txt']) }
         response.should eql("The specified object does not exist.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -249,7 +249,7 @@ describe "Copy command" do
     
     context "when container and object exist" do
       before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_container/foo.txt', ':copy_inside_container/new/foo.txt']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/foo.txt', ':copy_inside_container/new/foo.txt']) }
         @get = @hp_svc.get_object('copy_inside_container', 'new/foo.txt')
       end
       
@@ -277,7 +277,7 @@ describe "Copy command" do
       
       context "when container only" do
         it "should show success message" do
-          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_container/nested/file.txt', ':copy_inside_container']) }
+          response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/nested/file.txt', ':copy_inside_container']) }
           response.should eql("Copied :copy_inside_container/nested/file.txt => :copy_inside_container/file.txt\n")
           exit_status.should be_exit(:success)
         end
@@ -285,7 +285,7 @@ describe "Copy command" do
       
       context "when directory in container" do
         it "should show success message" do
-          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_container/nested/file.txt', ':copy_inside_container/nested_new/file.txt']) }
+          response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/nested/file.txt', ':copy_inside_container/nested_new/file.txt']) }
           response.should eql("Copied :copy_inside_container/nested/file.txt => :copy_inside_container/nested_new/file.txt\n")
           exit_status.should be_exit(:success)
         end
@@ -311,7 +311,7 @@ describe "Copy command" do
     
     context "when container does not exist" do
       it "should exit with container not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':missing_container/foo.txt', ':copy_between_two/tmp/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':missing_container/foo.txt', ':copy_between_two/tmp/foo.txt']) }
         response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -319,7 +319,7 @@ describe "Copy command" do
     
     context "when object does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_between_one/missing.txt', ':copy_between_two/tmp/missing.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_between_one/missing.txt', ':copy_between_two/tmp/missing.txt']) }
         response.should eql("The specified object does not exist.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -327,7 +327,7 @@ describe "Copy command" do
     
     context "when new container does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_between_one/missing.txt', ':missing_container/tmp/missing.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_between_one/missing.txt', ':missing_container/tmp/missing.txt']) }
         response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -339,7 +339,7 @@ describe "Copy command" do
 
       context "when container only" do
         it "should show success message" do
-          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two']) }
+          response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two']) }
           response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two/file.txt\n")
           exit_status.should be_exit(:success)
         end
@@ -347,7 +347,7 @@ describe "Copy command" do
 
       context "when directory in container" do
         it "should show success message" do
-          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two/nested_new/file.txt']) }
+          response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two/nested_new/file.txt']) }
           response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two/nested_new/file.txt\n")
           exit_status.should be_exit(:success)
         end
@@ -357,7 +357,7 @@ describe "Copy command" do
 
     context "when object is copied successfully" do
       before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two/new/foo.txt']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two/new/foo.txt']) }
         @get = @hp_svc.get_object('copy_between_two', 'new/foo.txt')
       end
       

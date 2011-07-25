@@ -6,11 +6,11 @@ describe "Config directory naming" do
   before(:all) { reset_config_home_directory }
   
   it "should assemble properly" do
-    HP::Scalene::Config.config_directory.should eql(ENV['HOME'] + '/.scalene/')
+    HP::Cloud::Config.config_directory.should eql(ENV['HOME'] + '/.hpcloud/')
   end
   
   it "should include final slash" do
-    HP::Scalene::Config.config_directory[-1,1].should eql('/')
+    HP::Cloud::Config.config_directory[-1,1].should eql('/')
   end
 end
 
@@ -18,11 +18,11 @@ describe "Accounts directory naming" do
   before(:all) { reset_config_home_directory }
   
   it "should assemble properly" do
-    HP::Scalene::Config.accounts_directory.should eql(ENV['HOME'] + '/.scalene/accounts/')
+    HP::Cloud::Config.accounts_directory.should eql(ENV['HOME'] + '/.hpcloud/accounts/')
   end
   
   it "should include final slash" do
-    HP::Scalene::Config.accounts_directory[-1,1].should eql('/')
+    HP::Cloud::Config.accounts_directory[-1,1].should eql('/')
   end
 end
 
@@ -36,23 +36,23 @@ describe "Config directory setup" do
     
     context "running ensure config" do
       
-      before(:all) { HP::Scalene::Config.ensure_config_exists }
+      before(:all) { HP::Cloud::Config.ensure_config_exists }
       
       it "should create base config directory" do
-        File.directory?(HP::Scalene::Config.config_directory).should be_true
+        File.directory?(HP::Cloud::Config.config_directory).should be_true
       end
       
       it "should create accounts directory" do
-        File.directory?(HP::Scalene::Config.accounts_directory).should be_true
+        File.directory?(HP::Cloud::Config.accounts_directory).should be_true
       end
       
       it "should create default config file" do
-        File.exists?(HP::Scalene::Config.config_directory + 'config.yml').should be_true
+        File.exists?(HP::Cloud::Config.config_directory + 'config.yml').should be_true
       end
       
       it "should populate config file" do
-        yaml = YAML::load(File.open(HP::Scalene::Config.config_file))
-        yaml[:default_api_endpoint].should eql("agpa-ge1.csbu.hpl.hp.com")
+        yaml = YAML::load(File.open(HP::Cloud::Config.config_file))
+        yaml[:default_auth_uri].should eql("http://agpa-ge1.csbu.hpl.hp.com/auth/v1.0")
       end
       
     end
@@ -65,7 +65,7 @@ describe "Writing an account file" do
   
   before(:all) do
     setup_temp_home_directory
-    HP::Scalene::Config.ensure_config_exists
+    HP::Cloud::Config.ensure_config_exists
   end
   
   context "when account does not exist yet" do
@@ -74,20 +74,20 @@ describe "Writing an account file" do
 
       before(:all) do
         credentials = {:email => 'test@test.com', :account_id => '1234', :secret_key => 'foo'}
-        HP::Scalene::Config.write_account(:default, credentials)
+        HP::Cloud::Config.write_account(:default, credentials)
       end
 
       it "should create a file using account name" do
-        File.exists?(HP::Scalene::Config.accounts_directory + 'default')
+        File.exists?(HP::Cloud::Config.accounts_directory + 'default')
       end
       
       it "should have nested credentials" do
-        yaml = YAML::load(File.open(HP::Scalene::Config.accounts_directory + 'default'))
+        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
         yaml.should have_key(:credentials)
       end
       
       it "should have written credential fields" do
-        yaml = YAML::load(File.open(HP::Scalene::Config.accounts_directory + 'default'))
+        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
         yaml[:credentials][:email].should eql('test@test.com')
         yaml[:credentials][:account_id].should eql('1234')
         yaml[:credentials][:secret_key].should eql('foo')
@@ -103,13 +103,13 @@ describe "Credential detection" do
   
   before(:all) do
     setup_temp_home_directory
-    HP::Scalene::Config.ensure_config_exists
+    HP::Cloud::Config.ensure_config_exists
   end
   
   context "when default account exists" do
     
     before(:all) do
-      File.open(HP::Scalene::Config.accounts_directory + "default", 'w') do |file|
+      File.open(HP::Cloud::Config.accounts_directory + "default", 'w') do |file|
         file.write(read_account_file('default'))
       end
     end
@@ -117,7 +117,7 @@ describe "Credential detection" do
     #it "should detect default account file"
     
     it "should provide credentials from file" do
-      credentials = HP::Scalene::Config.current_credentials
+      credentials = HP::Cloud::Config.current_credentials
       credentials[:email].should eql('test@test.com')
     end
     
@@ -139,11 +139,11 @@ describe "Getting settings" do
     
     before(:all) do
       remove_config_directory
-      HP::Scalene::Config.flush_settings
+      HP::Cloud::Config.flush_settings
     end
     
     it "should return default settings" do
-      HP::Scalene::Config.settings[:default_api_endpoint].should eql('agpa-ge1.csbu.hpl.hp.com')
+      HP::Cloud::Config.settings[:default_auth_uri].should eql('http://agpa-ge1.csbu.hpl.hp.com/auth/v1.0')
     end
     
   end
@@ -152,15 +152,15 @@ describe "Getting settings" do
     
     before(:all) do
       setup_temp_home_directory
-      HP::Scalene::Config.ensure_config_exists
-      File.open(HP::Scalene::Config.config_file, 'w') do |file|
+      HP::Cloud::Config.ensure_config_exists
+      File.open(HP::Cloud::Config.config_file, 'w') do |file|
         file.write(read_fixture(:config, 'personalized.yml'))
       end
-      HP::Scalene::Config.flush_settings
+      HP::Cloud::Config.flush_settings
     end
     
     it "should return specified settings" do
-      HP::Scalene::Config.settings[:api_endpoint].should eql('192.168.1.1:1234')
+      HP::Cloud::Config.settings[:auth_uri].should eql('http://agpa-ge1.csbu.hpl.hp.com/auth/v1.0')
     end
     
   end

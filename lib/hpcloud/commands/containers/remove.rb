@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       map %w(containers:rm containers:delete containers:del) => 'containers:remove'
@@ -11,8 +11,8 @@ module HP
   Be careful with this flag or you could have a really bad day.
 
 Examples:
-  scalene container:remove :my_container          # delete 'my_container' if empty
-  scalene container:remove :my_container --force  # delete regardless of contents
+  hpcloud container:remove :my_container          # delete 'my_container' if empty
+  hpcloud container:remove :my_container --force  # delete regardless of contents
 
 Aliases: containers:rm, containers:delete, containers:del
       DESC

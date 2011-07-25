@@ -11,7 +11,7 @@ describe "Get command" do
 
   context "when object does not exist" do
     it "should exit with object not found" do
-      response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['get', ':get_container/nonexistant.txt']) }
+      response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['get', ':get_container/nonexistant.txt']) }
       response.should eql("The specified object does not exist.\n")
       exit_status.should be_exit(:not_found)
     end
@@ -19,7 +19,7 @@ describe "Get command" do
   
   context "when container does not exist" do
     it "should exit with container not found" do
-      response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['get', ':nonexistant_container/foo.txt']) }
+      response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['get', ':nonexistant_container/foo.txt']) }
       response.should eql("You don't have a container 'nonexistant_container'.\n")
       exit_status.should be_exit(:not_found)
     end
@@ -27,15 +27,15 @@ describe "Get command" do
 
   context "when syntax is not correct" do
     it "should exit with message about bad syntax" do
-      response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['get', '/foo/foo']) }
-      response.should eql("The object path '/foo/foo' wasn't recognized.  Usage: 'scalene get :container_name/object_name'.\n")
+      response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['get', '/foo/foo']) }
+      response.should eql("The object path '/foo/foo' wasn't recognized.  Usage: 'hpcloud get :container_name/object_name'.\n")
       exit_status.should be_exit(:incorrect_usage)
     end
   end
 
   context "when object and container exist and object is at container level" do
     before(:all) do
-      @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['get', ':get_container/highly_unusual_file_name.txt']) }
+      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['get', ':get_container/highly_unusual_file_name.txt']) }
     end
 
     it "should report success" do
@@ -54,7 +54,7 @@ describe "Get command" do
 
   context "when object and container exist and object is in a nested folder" do
     before(:all) do
-      @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['get', ':get_container/folder/highly_unusual_file_name.txt']) }
+      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['get', ':get_container/folder/highly_unusual_file_name.txt']) }
     end
 
     it "should report success" do

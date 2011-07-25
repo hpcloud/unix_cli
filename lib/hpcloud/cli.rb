@@ -1,9 +1,9 @@
 require 'thor'
 require 'thor/group'
-require 'scalene/thor_ext/thor'
+require 'hpcloud/thor_ext/thor'
 
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       ERROR_TYPES = { :success              => 0,
@@ -27,14 +27,10 @@ module HP
       end
     
       def connection_with(credentials)
-        host, port = credentials[:api_endpoint].split(':')
-        port ||= 80 # provide a default port
-        Fog::Storage.new( :provider     => 'HP',
-                          :hp_host      => host,
-                          :hp_port      => port,
-                          :hp_auth_path => credentials[:auth_path],
-                          :hp_password  => credentials[:password],
-                          :hp_username  => credentials[:username] )
+        Fog::Storage.new( :provider       => 'HP',
+                          :hp_account_id  => credentials[:hp_account_id],
+                          :hp_secret_key  => credentials[:hp_secret_key],
+                          :hp_auth_uri    => credentials[:hp_auth_uri] )
 
       end
     
@@ -70,7 +66,7 @@ module HP
       
       # name of the running CLI script
       def selfname
-        ENV['SCALENE_CLI_NAME'] || 'scalene'
+        ENV['HPCLOUD_CLI_NAME'] || 'hpcloud'
       end
     
       ### Thor extensions

@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       desc 'acl:set <resource> <acl>', "set a given resource to a canned ACL"
@@ -12,8 +12,8 @@ module HP
   container-owner-full-control, log-delivery-write.
 
 Examples:
-  scalene acl:set :my_container/file public-read  # Set 'file' ACL to public-read
-  scalene acl:set :my_container private           # Set 'my_container' ACL private
+  hpcloud acl:set :my_container/file public-read  # Set 'file' ACL to public-read
+  hpcloud acl:set :my_container private           # Set 'my_container' ACL private
 
 Aliases: none
 

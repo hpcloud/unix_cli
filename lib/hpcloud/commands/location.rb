@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       map 'loc' => 'location'
@@ -9,8 +9,8 @@ module HP
   Print the URI of the specified object or container.
 
 Examples: 
-  scalene location :my_container/file.txt
-  scalene location :my_container
+  hpcloud location :my_container/file.txt
+  hpcloud location :my_container
 
 Aliases: loc
       DESC

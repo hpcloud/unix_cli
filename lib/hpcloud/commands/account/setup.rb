@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       desc 'account:setup', "set up or modify your credentials"
@@ -17,10 +17,10 @@ module HP
                     :desc => "Don't verify account settings during setup"
       define_method "account:setup" do
         credentials = {}
-        credentials[:username] = ask 'Username:'
-        credentials[:password] = ask 'Password:'
-        credentials[:api_endpoint] = ask_with_default 'API endpoint:', 
-                                      Config.settings[:default_api_endpoint]
+        credentials[:account_id] = ask 'Account Key:'
+        credentials[:secret_key] = ask 'Secret Key:'
+        credentials[:auth_uri] = ask_with_default 'API Auth Uri:',
+                                      Config.settings[:default_auth_uri]
         unless options['no-validate']
           begin
             display "Verifying your account..."

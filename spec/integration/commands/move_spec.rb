@@ -12,7 +12,7 @@ describe "Move command" do
     
     context "when source container can't be found" do
       it "should display error message" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['move', ':missing_container/missing_file', ':missing_container/new/my_file']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['move', ':missing_container/missing_file', ':missing_container/new/my_file']) }
         response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -20,7 +20,7 @@ describe "Move command" do
     
     context "when source file can't be found" do
       it "should display error message" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['move', ':move_source_container/missing_file', ':move_source_container/new/my_file']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['move', ':move_source_container/missing_file', ':move_source_container/new/my_file']) }
         response.should eql("The specified object does not exist.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -33,7 +33,7 @@ describe "Move command" do
       
       before(:all) do
         @hp_svc.put_object('move_source_container', 'foo.txt', read_file('foo.txt'))
-        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['move', ':move_source_container/foo.txt', ':move_source_container/new/foo.txt']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['move', ':move_source_container/foo.txt', ':move_source_container/new/foo.txt']) }
       end
       
       it "should have created new object at destination" do
@@ -61,7 +61,7 @@ describe "Move command" do
     
     context "when source container can't be found" do
       it "should display error message" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['move', ':missing_container/missing_file', ':move_target_container/new/my_file']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['move', ':missing_container/missing_file', ':move_target_container/new/my_file']) }
         response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -69,7 +69,7 @@ describe "Move command" do
     
     context "when source file can't be found" do
       it "should display error message" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['move', ':move_source_container/missing', ':move_target_container']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['move', ':move_source_container/missing', ':move_target_container']) }
         response.should eql("The specified object does not exist.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -77,7 +77,7 @@ describe "Move command" do
     
     # context "when target container can't be found" do
     #   it "should display error message" do
-    #     response = capture(:stderr){ HP::Scalene::CLI.start(['move', ':missing_container/missing_file', ':missing_container/new/my_file']) }
+    #     response = capture(:stderr){ HP::Cloud::CLI.start(['move', ':missing_container/missing_file', ':missing_container/new/my_file']) }
     #     response.should eql("You don't have a container 'missing_container'.\n")
     #   end
     # end
@@ -94,7 +94,7 @@ describe "Move command" do
     
     context "when source container can't be found" do
       it "should display error message" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['move', ':missing_container/missing_file', '/tmp/my_file']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['move', ':missing_container/missing_file', '/tmp/my_file']) }
         response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -102,7 +102,7 @@ describe "Move command" do
     
     context "when source file can't be found" do
       it "should display error message" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['move', ':move_source_container/missing_file', '/tmp/my_file']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['move', ':move_source_container/missing_file', '/tmp/my_file']) }
         response.should eql("The specified object does not exist.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -116,7 +116,7 @@ describe "Move command" do
       before(:all) do
         @hp_svc.put_object('move_source_container', 'foo.txt', read_file('foo.txt'))
         File.unlink('spec/tmp/newfoo.txt') if File.exists?('spec/tmp/newfoo.txt')
-        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['move', ':move_source_container/foo.txt', 'spec/tmp/newfoo.txt']) }
+        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['move', ':move_source_container/foo.txt', 'spec/tmp/newfoo.txt']) }
       end
       
       it "should have created new object at destination" do
@@ -142,8 +142,8 @@ describe "Move command" do
   
   context "Trying to move a non-object resource" do
     it "should give error message" do
-      response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['move', 'spec/fixtures/files/foo.txt', ':my_container']) }
-      response.should eql("Move is limited to objects within containers. Please use 'scalene copy' instead.\n")
+      response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['move', 'spec/fixtures/files/foo.txt', ':my_container']) }
+      response.should eql("Move is limited to objects within containers. Please use 'hpcloud copy' instead.\n")
       exit_status.should be_exit(:incorrect_usage)
     end
   end

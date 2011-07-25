@@ -37,7 +37,7 @@ RSpec.configure do |config|
   RSpec::Matchers.define :be_exit do |expected|
     match do |actual|
       if expected.is_a?(Symbol)
-        actual == HP::Scalene::CLI::ERROR_TYPES[expected]
+        actual == HP::Cloud::CLI::ERROR_TYPES[expected]
       else
         actual == expected
       end
@@ -45,12 +45,12 @@ RSpec.configure do |config|
 
     failure_message_for_should do |actual|
       message = "expected that exit status #{actual} would be #{expected}"
-      message = "#{message} (#{HP::Scalene::CLI::ERROR_TYPES[expected]})" if expected.is_a?(Symbol)
+      message = "#{message} (#{HP::Cloud::CLI::ERROR_TYPES[expected]})" if expected.is_a?(Symbol)
       message
     end
     failure_message_for_should_not do |actual|
       message = "expected that exit status #{actual} would not be #{expected}"
-      message = "#{message} (#{HP::Scalene::CLI::ERROR_TYPES[expected]})" if expected.is_a?(Symbol)
+      message = "#{message} (#{HP::Cloud::CLI::ERROR_TYPES[expected]})" if expected.is_a?(Symbol)
       message
     end
   end
@@ -70,23 +70,23 @@ class CLITester
   # end
   
   def stdout
-    capture(:stdout){ HP::Scalene::CLI.start([@command_name, *@args]) }
+    capture(:stdout){ HP::Cloud::CLI.start([@command_name, *@args]) }
   end
   
   def stderr
-    capture(:stderr){ HP::Scalene::CLI.start([@command_name, *@args]) }
+    capture(:stderr){ HP::Cloud::CLI.start([@command_name, *@args]) }
   end
   
   def exit_status
-    capture_with_status(:stdout){ HP::Scalene::CLI.start([@command_name, *@args]) }[1]
+    capture_with_status(:stdout){ HP::Cloud::CLI.start([@command_name, *@args]) }[1]
   end
   
   def stdout_and_exit_status
-    capture_with_status(:stdout){ HP::Scalene::CLI.start([@command_name, *@args]) }
+    capture_with_status(:stdout){ HP::Cloud::CLI.start([@command_name, *@args]) }
   end
   
   def stderr_and_exit_status
-    capture_with_status(:stderr){ HP::Scalene::CLI.start([@command_name, *@args]) }
+    capture_with_status(:stderr){ HP::Cloud::CLI.start([@command_name, *@args]) }
   end
   
   def to_s

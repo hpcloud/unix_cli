@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       map 'ls' => 'list'
@@ -9,8 +9,8 @@ module HP
   List the contents of a specified container.
 
 Examples:
-  scalene list :my_container  # list files in container 'my_container'
-  scalene list             # list all containers
+  hpcloud list :my_container  # list files in container 'my_container'
+  hpcloud list             # list all containers
 
 Aliases: ls
 

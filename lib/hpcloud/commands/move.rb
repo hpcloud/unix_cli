@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       map 'mv' => 'move'
@@ -11,8 +11,8 @@ module HP
   local filesystem see `copy`.
 
 Examples:
-  scalene move :my_container/file.txt :my_container/old/backup.txt
-  scalene move :my_container/file.txt :other_container/file.txt
+  hpcloud move :my_container/file.txt :my_container/old/backup.txt
+  hpcloud move :my_container/file.txt :other_container/file.txt
 
 Aliases: mv
       DESC

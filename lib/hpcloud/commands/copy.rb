@@ -1,5 +1,5 @@
 module HP
-  module Scalene
+  module Cloud
     class CLI < Thor
     
       map 'cp' => 'copy'
@@ -10,10 +10,10 @@ module HP
   between containers.
 
 Examples:
-  scalene copy my_file.txt :my_container       # Copy file to container 'my_container'
-  scalene copy :my_container/file.txt file.txt # Copy file.txt to local file
-  scalene copy :logs/today :logs/old/weds   # Copy inside a container
-  scalene copy :one/file.txt :two/file.txt  # Copy file.txt between containers
+  hpcloud copy my_file.txt :my_container       # Copy file to container 'my_container'
+  hpcloud copy :my_container/file.txt file.txt # Copy file.txt to local file
+  hpcloud copy :logs/today :logs/old/weds   # Copy inside a container
+  hpcloud copy :one/file.txt :two/file.txt  # Copy file.txt between containers
 
 Aliases: cp
 

@@ -6,14 +6,14 @@ if ENV['SPEC_CODE_COVERAGE'] and RUBY_VERSION[2,1] == '9'
   require 'simplecov'
   SimpleCov.start do
     add_filter "/spec/"
-    add_group "Commands", "/lib/scalene/commands"
+    add_group "Commands", "/lib/hpcloud/commands"
   end
 end
 
 require 'rspec'
 require 'rspec/mocks/standalone'
 
-require 'scalene'
+require 'hpcloud'
 
 require 'helpers/macros'
 require 'helpers/fixtures'

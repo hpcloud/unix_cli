@@ -22,7 +22,7 @@ RSpec.configure do |config|
 end
 
 # Test-specific hacks of fundamental classes
-module HP::Scalene
+module HP::Cloud
   class CLI < Thor
   
   private

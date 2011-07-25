@@ -1,13 +1,13 @@
 require 'yaml'
 
 module HP
-  module Scalene
+  module Cloud
     class Config
 
-      @@default_config = { :default_api_endpoint => 'agpa-ge1.csbu.hpl.hp.com' }
+      @@default_config = { :default_auth_uri => 'http://agpa-ge1.csbu.hpl.hp.com/auth/v1.0' }
 
       def self.config_directory
-        home_directory + "/.scalene/"
+        home_directory + "/.hpcloud/"
       end
     
       def self.config_file

@@ -2,23 +2,23 @@
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
-require 'scalene/version'
+require 'hpcloud/version'
 
 Gem::Specification.new do |s|
   
-  s.name      = 'scalene'
-  s.version   = HP::Scalene::VERSION
+  s.name      = 'hpcloud'
+  s.version   = HP::Cloud::VERSION
   # s.date      = '2011-04-05'
 
-  s.summary       = 'HP Scalene CLI'
-  s.description   = 'Useful command-line tools for managing your HP Scalene services'
+  s.summary       = 'HP Cloud CLI'
+  s.description   = 'Useful command-line tools for managing your HP Cloud services'
   
-  s.authors   = ["Matt Sanders"]
-  s.email     = 'matt.sanders@hp.com'
+  s.authors   = ["Matt Sanders", "Rupak Ganguly"]
+  s.email     = %w{matt.sanders@hp.com rupak.ganguly@hp.com}
   # s.homepage  = '' #TODO
   # s.licenses = [""]
   
-  s.executables         = ["scalene"]
+  s.executables         = ["hpcloud"]
   s.required_ruby_version = '>= 1.8.5'
   s.required_rubygems_version = '>= 1.2.0'
   

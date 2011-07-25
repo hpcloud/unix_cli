@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "containers:add command" do
 
   def cli
-    @cli ||= HP::Scalene::CLI.new
+    @cli ||= HP::Cloud::CLI.new
   end
 
   before(:all) do
