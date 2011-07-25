@@ -2,6 +2,8 @@
 .bundle
 .DS_Store
 Gemfile.lock
+.idea
+atlassian-ide-plugin.xml
 
 # docs
 rdoc
@@ -20,5 +22,4 @@ coverage
 
 # Continuous integration reports:
 ci/reports/*/*
-.idea
 
