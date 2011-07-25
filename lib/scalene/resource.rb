@@ -2,17 +2,17 @@ module HP
   module Scalene
     class Resource
     
-      REMOTE_TYPES = [:bucket, :bucket_directory, :object]
+      REMOTE_TYPES = [:container, :container_directory, :object]
       LOCAL_TYPES = [:directory, :file]
     
       def self.detect_type(resource)
         if resource[0,1] == ':'
           if resource[-1,1] == '/'
-            :bucket_directory
+            :container_directory
           elsif resource.index('/')
             :object
           else
-            :bucket
+            :container
           end
         elsif resource[-1,1] == '/'
           :directory

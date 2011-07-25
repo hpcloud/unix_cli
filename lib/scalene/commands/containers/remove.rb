@@ -18,7 +18,7 @@ Aliases: containers:rm, containers:delete, containers:del
       DESC
       method_option :force, :default => false, :type => :boolean, :aliases => '-f', :desc => 'Force removal of non-empty container'
       define_method "containers:remove" do |name|
-        name = Bucket.container_name_for_service(name)
+        name = Container.container_name_for_service(name)
         begin
           container = connection.directories.get(name)
         rescue Excon::Errors::Forbidden => error

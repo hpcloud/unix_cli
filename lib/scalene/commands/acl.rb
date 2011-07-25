@@ -4,32 +4,32 @@ module HP
   module Scalene
     class CLI < Thor
     
-      CANNED_ACLS = %w(private public-read public-read-write authenticated-read authenticated-read-write bucket-owner-read bucket-owner-full-control log-delivery-write)
+      CANNED_ACLS = %w(private public-read public-read-write authenticated-read authenticated-read-write container-owner-read container-owner-full-control log-delivery-write)
     
-      desc 'acl <object/bucket>', "view the ACL for an object or bucket"
+      desc 'acl <object/container>', "view the ACL for an object or container"
       long_desc <<-DESC 
-  View the Access Control List (ACL) for a bucket or object.
+  View the Access Control List (ACL) for a container or object.
 
 Examples:
-  scalene acl :my_bucket/my_file.txt  # Get ACL for object 'my_file.txt'
-  scalene acl :my_bucket'             # Get ACL for bucket 'my_bucket'
+  scalene acl :my_container/my_file.txt  # Get ACL for object 'my_file.txt'
+  scalene acl :my_container'             # Get ACL for container 'my_container'
 
 Aliases: none
       DESC
       def acl(resource)
         type = Resource.detect_type(resource)
-        bucket, key = Bucket.parse_resource(resource)
+        container, key = Container.parse_resource(resource)
         begin
           if type == :object
-            acls = connection.get_object_acl(bucket, key).body["AccessControlList"]
+            acls = connection.get_object_acl(container, key).body["AccessControlList"]
             # TODO: print_table should be silenceable?
             print_table acls_for_table(acls)
-          elsif type == :bucket
-            acls = connection.get_bucket_acl(bucket).body["AccessControlList"]
+          elsif type == :container
+            acls = connection.get_container_acl(container).body["AccessControlList"]
             # TODO: print_table should be silenceable?
             print_table acls_for_table(acls)
           else
-            error 'ACL viewing is only supported for buckets and objects', :not_supported
+            error 'ACL viewing is only supported for containers and objects', :not_supported
           end
         rescue Excon::Errors::NotFound, Excon::Errors::Forbidden => e
           display_error_message(e)

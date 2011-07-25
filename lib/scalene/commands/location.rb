@@ -4,37 +4,37 @@ module HP
     
       map 'loc' => 'location'
     
-      desc 'location <object/bucket>', 'display the URI for a given resource'
+      desc 'location <object/container>', 'display the URI for a given resource'
       long_desc <<-DESC
-  Print the URI of the specified object or bucket. 
+  Print the URI of the specified object or container.
 
 Examples: 
-  scalene location :my_bucket/file.txt
-  scalene location :my_bucket
+  scalene location :my_container/file.txt
+  scalene location :my_container
 
 Aliases: loc
       DESC
       def location(resource)
-        bucket, key = Bucket.parse_resource(resource)
+        container, key = Container.parse_resource(resource)
         config = Config.current_credentials
         
         begin
-          if bucket and key
+          if container and key
             begin
-              if connection.head_object(bucket, key)
-                display "http://#{config[:api_endpoint]}/#{bucket}/#{key}"
+              if connection.head_object(container, key)
+                display "http://#{config[:api_endpoint]}/#{container}/#{key}"
               end
             rescue Excon::Errors::NotFound => error
-              error "No object exists at '#{bucket}/#{key}'.", :not_found
+              error "No object exists at '#{container}/#{key}'.", :not_found
             end
         
-          elsif bucket
+          elsif container
             begin
-              if connection.head_bucket(bucket)
-                display "http://#{config[:api_endpoint]}/#{bucket}/"
+              if connection.head_container(container)
+                display "http://#{config[:api_endpoint]}/#{container}/"
               end
             rescue Excon::Errors::NotFound => error
-              error "No bucket named '#{bucket}' exists.", :not_found
+              error "No container named '#{container}' exists.", :not_found
             end
         
           else

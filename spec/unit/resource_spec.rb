@@ -20,21 +20,21 @@ describe "Resource detection" do
     end
   end
   
-  context "when bucket" do
-    it "should return :bucket" do
-      HP::Scalene::Resource.detect_type(':my_bucket').should eql(:bucket)
+  context "when container" do
+    it "should return :container" do
+      HP::Scalene::Resource.detect_type(':my_container').should eql(:container)
     end
   end
   
   context "when full object path" do
     it "should return :object" do
-      HP::Scalene::Resource.detect_type(':my_bucket/blah/archive.zip').should eql(:object)
+      HP::Scalene::Resource.detect_type(':my_container/blah/archive.zip').should eql(:object)
     end
   end
   
   context "when object directory path" do
-    it "should return :bucket_directory" do
-      HP::Scalene::Resource.detect_type(':my_bucket/blah/').should eql(:bucket_directory)
+    it "should return :container_directory" do
+      HP::Scalene::Resource.detect_type(':my_container/blah/').should eql(:container_directory)
     end
   end
   

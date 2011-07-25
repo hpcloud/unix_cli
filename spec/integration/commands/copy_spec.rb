@@ -3,19 +3,19 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe "Copy command" do
   
   before(:all) do
-    @kvs = storage_connection
+    @hp_svc = storage_connection
   end
   
-  context "copying local file to bucket" do
+  context "copying local file to container" do
     before(:all) do
-      #purge_bucket('my_bucket')
-      @kvs.put_container('my_bucket')
+      #purge_container('my_container')
+      @hp_svc.put_container('my_container')
     end
     
     context "when local file does not exist" do
       it "should exit with file not found" do
-        # response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'foo.txt', ':my_bucket']) }
-        response, exit_status = run_command('copy foo.txt :my_bucket').stderr_and_exit_status
+        # response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'foo.txt', ':my_container']) }
+        response, exit_status = run_command('copy foo.txt :my_container').stderr_and_exit_status
         response.should eql("File not found at 'foo.txt'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -31,8 +31,8 @@ describe "Copy command" do
       end
       
       it "should show error message" do
-        # response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_bucket']) }
-        response, exit_status = run_command('copy spec/fixtures/files/cantread.txt :my_bucket').stderr_and_exit_status
+        # response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_container']) }
+        response, exit_status = run_command('copy spec/fixtures/files/cantread.txt :my_container').stderr_and_exit_status
         response.should eql("The selected file cannot be read.\n")
         exit_status.should be_exit(:permission_denied)
       end
@@ -42,45 +42,45 @@ describe "Copy command" do
       end
     end
     
-    context "when bucket does not exist" do
-      it "should exit with bucket not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':missing_bucket']) }
-        response.should eql("You don't have a bucket 'missing_bucket'.\n")
+    context "when container does not exist" do
+      it "should exit with container not found" do
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':missing_container']) }
+        response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
     end
 
-    pending "when bucket is public-read but remote file cannot be overwritten" do
+    pending "when container is public-read but remote file cannot be overwritten" do
       before(:all) do
-        @kvs_other_user = storage_connection(:secondary)
-        @kvs_other_user.put_container('public_read_bucket')
-        #### @kvs_other_user.put_bucket_acl('public_read_bucket', 'public-read')
-        @kvs_other_user.put_object('public_read_bucket', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
+        @hp_svc_other_user = storage_connection(:secondary)
+        @hp_svc_other_user.put_container('public_read_container')
+        #### @hp_svc_other_user.put_container_acl('public_read_container', 'public-read')
+        @hp_svc_other_user.put_object('public_read_container', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
       end
 
       it "should exit with permission denied" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':public_read_bucket/foo.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':public_read_container/foo.txt']) }
         response.should eql("Permission denied\n")
         exit_status.should be_exit(:permission_denied)
       end
 
       after(:all) do
-        purge_bucket('public_read_bucket', {:connection => @kvs_other_user})
+        purge_container('public_read_container', {:connection => @hp_svc_other_user})
       end
     end
     
-    context "when file and bucket exist" do
+    context "when file and container exist" do
       before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_bucket']) }
-        @head = @kvs.head_object('my_bucket', 'foo.txt')
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_container']) }
+        @head = @hp_svc.head_object('my_container', 'foo.txt')
       end
       
       it "should report success" do
-        @response.should eql("Copied spec/fixtures/files/foo.txt => :my_bucket/foo.txt\n")
+        @response.should eql("Copied spec/fixtures/files/foo.txt => :my_container/foo.txt\n")
         @exit_status.should be_exit(:success)
       end
       
-      it "should copy file to bucket" do
+      it "should copy file to container" do
         @head.status.should eql(200)
       end
       
@@ -92,28 +92,28 @@ describe "Copy command" do
 
     context "when local file has spaces in name" do
       before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/with space.txt', ':my_bucket']) }
-        @get = @kvs.get_object('my_bucket', 'with space.txt')
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', 'spec/fixtures/files/with space.txt', ':my_container']) }
+        @get = @hp_svc.get_object('my_container', 'with space.txt')
       end
 
       it "should report success" do
-        @response.should eql("Copied spec/fixtures/files/with space.txt => :my_bucket/with space.txt\n")
+        @response.should eql("Copied spec/fixtures/files/with space.txt => :my_container/with space.txt\n")
         @exit_status.should be_exit(:success)
       end
 
     end
     
-    after(:all) { purge_bucket('my_bucket') }
+    after(:all) { purge_container('my_container') }
   end
   
   context "copying remote object to local filesystem" do
     
-    before(:all) { create_bucket_with_files('copy_remote_to_local', 'foo.txt') }
+    before(:all) { create_container_with_files('copy_remote_to_local', 'foo.txt') }
     
-    context "when bucket does not exist" do
-      it "should exit with bucket not found" do
+    context "when container does not exist" do
+      it "should exit with container not found" do
         response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_blah/foo.txt', '/tmp/foo.txt']) }
-        response.should eql("You don't have a bucket 'copy_blah'.\n")
+        response.should eql("You don't have a container 'copy_blah'.\n")
         exit_status.should be_exit(:not_found)
       end
     end
@@ -149,7 +149,7 @@ describe "Copy command" do
       end
       
       it "should have same body as object" do
-        get = @kvs.get_object('copy_remote_to_local', 'foo.txt')
+        get = @hp_svc.get_object('copy_remote_to_local', 'foo.txt')
         File.read('spec/tmp/foo.txt').should eql(get.body)
       end
 
@@ -217,44 +217,44 @@ describe "Copy command" do
     end
     
     after(:all) do
-      purge_bucket('copy_remote_to_local')
+      purge_container('copy_remote_to_local')
       #File.unlink('spec/tmp/foo.txt')
     end
     
   end
   
-  context "copying remote object within a bucket" do
+  context "copying remote object within a container" do
     
     before(:all) do
-      #create_bucket_with_files('copy_inside_bucket', 'foo.txt')
-      @kvs.put_container('copy_inside_bucket')
-      @kvs.put_object('copy_inside_bucket', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
+      #create_container_with_files('copy_inside_container', 'foo.txt')
+      @hp_svc.put_container('copy_inside_container')
+      @hp_svc.put_object('copy_inside_container', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
     end
     
-    context "when bucket does not exist" do
-      it "should exit with bucket not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':missing_bucket/foo.txt', ':missing_bucket/tmp/foo.txt']) }
-        response.should eql("You don't have a bucket 'missing_bucket'.\n")
+    context "when container does not exist" do
+      it "should exit with container not found" do
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':missing_container/foo.txt', ':missing_container/tmp/foo.txt']) }
+        response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
     end
     
     context "when object does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/missing.txt', ':copy_inside_bucket/tmp/missing.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_inside_container/missing.txt', ':copy_inside_container/tmp/missing.txt']) }
         response.should eql("The specified object does not exist.\n")
         exit_status.should be_exit(:not_found)
       end
     end
     
-    context "when bucket and object exist" do
+    context "when container and object exist" do
       before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/foo.txt', ':copy_inside_bucket/new/foo.txt']) }
-        @get = @kvs.get_object('copy_inside_bucket', 'new/foo.txt')
+        @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_container/foo.txt', ':copy_inside_container/new/foo.txt']) }
+        @get = @hp_svc.get_object('copy_inside_container', 'new/foo.txt')
       end
       
       it "should exit with object copied" do
-        @response.should eql("Copied :copy_inside_bucket/foo.txt => :copy_inside_bucket/new/foo.txt\n")
+        @response.should eql("Copied :copy_inside_container/foo.txt => :copy_inside_container/new/foo.txt\n")
         @exit_status.should be_exit(:success)
       end
       
@@ -273,20 +273,20 @@ describe "Copy command" do
     
     context "when target not absolutely specified" do
       
-      before(:all) { @kvs.put_object('copy_inside_bucket', 'nested/file.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'}) }
+      before(:all) { @hp_svc.put_object('copy_inside_container', 'nested/file.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'}) }
       
-      context "when bucket only" do
+      context "when container only" do
         it "should show success message" do
-          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/nested/file.txt', ':copy_inside_bucket']) }
-          response.should eql("Copied :copy_inside_bucket/nested/file.txt => :copy_inside_bucket/file.txt\n")
+          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_container/nested/file.txt', ':copy_inside_container']) }
+          response.should eql("Copied :copy_inside_container/nested/file.txt => :copy_inside_container/file.txt\n")
           exit_status.should be_exit(:success)
         end
       end
       
-      context "when directory in bucket" do
+      context "when directory in container" do
         it "should show success message" do
-          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_bucket/nested/file.txt', ':copy_inside_bucket/nested_new/file.txt']) }
-          response.should eql("Copied :copy_inside_bucket/nested/file.txt => :copy_inside_bucket/nested_new/file.txt\n")
+          response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_inside_container/nested/file.txt', ':copy_inside_container/nested_new/file.txt']) }
+          response.should eql("Copied :copy_inside_container/nested/file.txt => :copy_inside_container/nested_new/file.txt\n")
           exit_status.should be_exit(:success)
         end
       end
@@ -296,23 +296,23 @@ describe "Copy command" do
     pending "when new object cannot be written" do  
     end
     
-    after(:all) { purge_bucket('copy_inside_bucket') }
+    after(:all) { purge_container('copy_inside_container') }
     
   end
   
-  context "copying a remote object to another bucket" do
+  context "copying a remote object to another container" do
     
     before(:all) do
-      #create_bucket_with_files('copy_inside_bucket', 'foo.txt')
-      @kvs.put_container('copy_between_one')
-      @kvs.put_object('copy_between_one', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
-      @kvs.put_container('copy_between_two')
+      #create_container_with_files('copy_inside_container', 'foo.txt')
+      @hp_svc.put_container('copy_between_one')
+      @hp_svc.put_object('copy_between_one', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
+      @hp_svc.put_container('copy_between_two')
     end
     
-    context "when bucket does not exist" do
-      it "should exit with bucket not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':missing_bucket/foo.txt', ':copy_between_two/tmp/foo.txt']) }
-        response.should eql("You don't have a bucket 'missing_bucket'.\n")
+    context "when container does not exist" do
+      it "should exit with container not found" do
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':missing_container/foo.txt', ':copy_between_two/tmp/foo.txt']) }
+        response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
     end
@@ -325,19 +325,19 @@ describe "Copy command" do
       end
     end
     
-    context "when new bucket does not exist" do
+    context "when new container does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_between_one/missing.txt', ':missing_bucket/tmp/missing.txt']) }
-        response.should eql("You don't have a bucket 'missing_bucket'.\n")
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['copy', ':copy_between_one/missing.txt', ':missing_container/tmp/missing.txt']) }
+        response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
     end
     
     context "when target is not absolutely specified" do
 
-      before(:all) { @kvs.put_object('copy_between_one', 'nested/file.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'}) }
+      before(:all) { @hp_svc.put_object('copy_between_one', 'nested/file.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'}) }
 
-      context "when bucket only" do
+      context "when container only" do
         it "should show success message" do
           response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two']) }
           response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two/file.txt\n")
@@ -345,7 +345,7 @@ describe "Copy command" do
         end
       end
 
-      context "when directory in bucket" do
+      context "when directory in container" do
         it "should show success message" do
           response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two/nested_new/file.txt']) }
           response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two/nested_new/file.txt\n")
@@ -358,7 +358,7 @@ describe "Copy command" do
     context "when object is copied successfully" do
       before(:all) do
         @response, @exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two/new/foo.txt']) }
-        @get = @kvs.get_object('copy_between_two', 'new/foo.txt')
+        @get = @hp_svc.get_object('copy_between_two', 'new/foo.txt')
       end
       
       it "should exit with object copied" do
@@ -380,8 +380,8 @@ describe "Copy command" do
     end
     
     after(:all) do
-      purge_bucket('copy_between_one')
-      purge_bucket('copy_between_two')
+      purge_container('copy_between_one')
+      purge_container('copy_between_two')
     end
     
   end

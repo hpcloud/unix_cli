@@ -3,61 +3,61 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe "Remove command" do
 
   before(:all) do
-    @kvs = storage_connection
+    @hp_svc = storage_connection
   end
 
-  context "removing an object from bucket" do
+  context "removing an object from container" do
 
     before(:all) do
-      purge_bucket('my_bucket')
-      create_bucket_with_files('my_bucket', 'foo.txt')
+      purge_container('my_container')
+      create_container_with_files('my_container', 'foo.txt')
     end
 
     context "when object does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['remove', ':my_bucket/nonexistant.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['remove', ':my_container/nonexistant.txt']) }
         response.should eql("You don't have a object named 'nonexistant.txt'.\n")
         exit_status.should be_exit(:not_found)
       end
     end
 
-    context "when bucket does not exist" do
-      it "should exit with bucket not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['remove', ':nonexistant_bucket']) }
-        response.should eql("You don't have a bucket named 'nonexistant_bucket'\n")
+    context "when container does not exist" do
+      it "should exit with container not found" do
+        response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['remove', ':nonexistant_container']) }
+        response.should eql("You don't have a container named 'nonexistant_container'\n")
         exit_status.should be_exit(:not_found)
       end
     end
 
     context "when removing an object that isn't controlled by the user" do
       before(:all) do
-        @kvs_other_user = storage_connection(:secondary)
-        @kvs_other_user.put_container('notmybucket')
-        @kvs_other_user.put_object('notmybucket', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
-        @response, @exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['rm', ':notmybucket/foo.txt']) }
+        @hp_svc_other_user = storage_connection(:secondary)
+        @hp_svc_other_user.put_container('notmycontainer')
+        @hp_svc_other_user.put_object('notmycontainer', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
+        @response, @exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['rm', ':notmycontainer/foo.txt']) }
       end
 
-      #### Swift does not have acls, so it just cannot see the bucket
+      #### Swift does not have acls, so it just cannot see the container
       it "should exit with access denied" do
-        @response.should eql("You don't have a bucket named 'notmybucket'\n")
+        @response.should eql("You don't have a container named 'notmycontainer'\n")
       end
 
-      #### Swift does not have acls, so it just cannot see the bucket
+      #### Swift does not have acls, so it just cannot see the container
       pending "should exit with denied status" do
         @exit_status.should be_exit(:permission_denied)
       end
 
       after(:all) do
-        purge_bucket('notmybucket', {:connection => @kvs_other_user})
+        purge_container('notmycontainer', {:connection => @hp_svc_other_user})
       end
     end
 
-    context "when object and bucket exist" do
+    context "when object and container exist" do
       before(:all) do
       end
       it "should report success" do
-        response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['remove', ':my_bucket/foo.txt']) }
-        response.should eql("Removed object ':my_bucket/foo.txt'.\n")
+        response, exit_status = capture_with_status(:stdout){ HP::Scalene::CLI.start(['remove', ':my_container/foo.txt']) }
+        response.should eql("Removed object ':my_container/foo.txt'.\n")
         exit_status.should be_exit(:success)
       end
     end
@@ -65,7 +65,7 @@ describe "Remove command" do
     context "when syntax is not correct" do
       it "should exit with message about bad syntax" do
         response, exit_status = capture_with_status(:stderr){ HP::Scalene::CLI.start(['remove', '/foo/foo']) }
-        response.should eql("Could not find resource '/foo/foo'. Correct syntax is :bucketname/objectname.\n")
+        response.should eql("Could not find resource '/foo/foo'. Correct syntax is :containername/objectname.\n")
         exit_status.should be_exit(:incorrect_usage)
       end
     end

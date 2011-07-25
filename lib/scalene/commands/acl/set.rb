@@ -5,15 +5,15 @@ module HP
       desc 'acl:set <resource> <acl>', "set a given resource to a canned ACL"
       long_desc <<-DESC
   Set the Access Control List (ACL) for the specified resource, either a 
-  bucket or object.
+  container or object.
                  
   The supported ACL options include: private, public-read, public-read-write, 
-  authenticated-read, authenticated-read-write, bucket-owner-read, 
-  bucket-owner-full-control, log-delivery-write.
+  authenticated-read, authenticated-read-write, container-owner-read,
+  container-owner-full-control, log-delivery-write.
 
 Examples:
-  scalene acl:set :my_bucket/file public-read  # Set 'file' ACL to public-read
-  scalene acl:set :my_bucket private           # Set 'my_bucket' ACL private
+  scalene acl:set :my_container/file public-read  # Set 'file' ACL to public-read
+  scalene acl:set :my_container private           # Set 'my_container' ACL private
 
 Aliases: none
 
@@ -25,16 +25,16 @@ Note: Custom ACLs will be supported in a future release.
           error "Your ACL '#{acl}' is invalid.\nValid options are: #{CANNED_ACLS.join(', ')}."
         end
         type = Resource.detect_type(resource)
-        bucket, path = Bucket.parse_resource(resource)
+        container, path = Container.parse_resource(resource)
         begin
           if type == :object
-            connection.put_object_acl(bucket, path, acl)
+            connection.put_object_acl(container, path, acl)
             display "ACL for #{resource} updated to #{acl}."
-          elsif type == :bucket
-            connection.put_bucket_acl(bucket, acl)
+          elsif type == :container
+            connection.put_container_acl(container, acl)
             display "ACL for #{resource} updated to #{acl}."
           else
-            error 'Setting ACLs is only supported for buckets and objects.', :not_supported
+            error 'Setting ACLs is only supported for containers and objects.', :not_supported
           end
         rescue Excon::Errors::NotFound, Excon::Errors::Forbidden => e
           display_error_message(e)
