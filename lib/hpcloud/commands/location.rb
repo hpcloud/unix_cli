@@ -22,7 +22,7 @@ Aliases: loc
           if container and key
             begin
               if connection.head_object(container, key)
-                display "http://#{config[:api_endpoint]}/#{container}/#{key}"
+                display "http://#{config[:auth_uri]}/#{container}/#{key}"
               end
             rescue Excon::Errors::NotFound => error
               error "No object exists at '#{container}/#{key}'.", :not_found
@@ -31,7 +31,7 @@ Aliases: loc
           elsif container
             begin
               if connection.head_container(container)
-                display "http://#{config[:api_endpoint]}/#{container}/"
+                display "http://#{config[:auth_uri]}/#{container}/"
               end
             rescue Excon::Errors::NotFound => error
               error "No container named '#{container}' exists.", :not_found

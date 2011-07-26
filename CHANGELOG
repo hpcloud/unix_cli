@@ -1,3 +1,9 @@
+v0.0.6 7/25/11
+==============
+- Rebranded to 'hpcloud' gem and bumped version
+- Removed ACL, Versioning and Location commands
+- Updated the account setup to use new settings
+
 v0.0.5 7/5/11
 ==============
 - Upgraded to work with OpenStack Swift API version 1.1 (Cactus Release)

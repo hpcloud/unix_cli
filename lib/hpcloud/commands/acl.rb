@@ -3,11 +3,11 @@ require 'hpcloud/commands/acl/set'
 module HP
   module Cloud
     class CLI < Thor
-    
+
       CANNED_ACLS = %w(private public-read public-read-write authenticated-read authenticated-read-write container-owner-read container-owner-full-control log-delivery-write)
-    
+
       desc 'acl <object/container>', "view the ACL for an object or container"
-      long_desc <<-DESC 
+      long_desc <<-DESC
   View the Access Control List (ACL) for a container or object.
 
 Examples:
@@ -35,9 +35,9 @@ Aliases: none
           display_error_message(e)
         end
       end
-    
+
       private
-    
+
       # [{"Grantee"=>{"ID"=>"d1fac2d218a6de21ee37b7fc83783360c399f448"}, "Permission"=>"FULL_CONTROL"}]
       def acls_for_table(acls)
         table = []
@@ -48,7 +48,7 @@ Aliases: none
         end
         table
       end
-    
+
     end
   end
 end

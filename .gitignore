@@ -4,6 +4,7 @@
 Gemfile.lock
 .idea
 atlassian-ide-plugin.xml
+*.gem
 
 # docs
 rdoc
