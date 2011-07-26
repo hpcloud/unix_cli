@@ -73,7 +73,7 @@ describe "Writing an account file" do
     context "(default account)" do
 
       before(:all) do
-        credentials = {:email => 'test@test.com', :account_id => '1234', :secret_key => 'foo'}
+        credentials = {:account_id => 'account:user', :secret_key => 'foo', :auth_uri => 'http://192.168.1.1:8888/auth/v1.0'}
         HP::Cloud::Config.write_account(:default, credentials)
       end
 
@@ -88,9 +88,9 @@ describe "Writing an account file" do
       
       it "should have written credential fields" do
         yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
-        yaml[:credentials][:email].should eql('test@test.com')
-        yaml[:credentials][:account_id].should eql('1234')
+        yaml[:credentials][:account_id].should eql('account:user')
         yaml[:credentials][:secret_key].should eql('foo')
+        yaml[:credentials][:auth_uri].should eql('http://192.168.1.1:8888/auth/v1.0')
       end
 
     end
@@ -118,7 +118,7 @@ describe "Credential detection" do
     
     it "should provide credentials from file" do
       credentials = HP::Cloud::Config.current_credentials
-      credentials[:email].should eql('test@test.com')
+      credentials[:auth_uri].should eql('http://192.168.1.1:8888/auth/v1.0')
     end
     
   end

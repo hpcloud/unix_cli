@@ -1,7 +1,5 @@
---- 
-:credentials: 
-  :email: test@test.com
-  :access_id: 1234
-  :secret_key: 4567
-  :host: testhost.com
-  :port: 9232
+---
+:credentials:
+  :account_id: account:user
+  :secret_key: foo
+  :auth_uri: http://192.168.1.1:8888/auth/v1.0

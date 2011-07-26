@@ -28,9 +28,9 @@ module HP
     
       def connection_with(credentials)
         Fog::Storage.new( :provider       => 'HP',
-                          :hp_account_id  => credentials[:hp_account_id],
-                          :hp_secret_key  => credentials[:hp_secret_key],
-                          :hp_auth_uri    => credentials[:hp_auth_uri] )
+                          :hp_account_id  => credentials[:account_id],
+                          :hp_secret_key  => credentials[:secret_key],
+                          :hp_auth_uri    => credentials[:auth_uri] )
 
       end
     
