@@ -1,4 +1,4 @@
-#require "bundler/setup"
+require "bundler/setup"
 require 'fog'
 
 require 'hpcloud/version'
@@ -20,3 +20,6 @@ require 'hpcloud/commands/remove'
 #require 'hpcloud/commands/location'
 #require 'hpcloud/commands/versioning'
 require 'hpcloud/commands/get'
+
+require 'hpcloud/commands/servers'
+
