@@ -1,5 +1,5 @@
 require 'hpcloud/commands/servers/add'
-#require 'hpcloud/commands/servers/remove'
+require 'hpcloud/commands/servers/remove'
 
 module HP
   module Cloud
