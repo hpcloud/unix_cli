@@ -8,7 +8,7 @@ module HP
   or without the preceding colon: 'my_container' or ':my_container'.
 
 Examples:
-  hpcloud container:add :my_container  # Creates a new container called 'my_container'
+  hpcloud containers:add :my_container  # Creates a new container called 'my_container'
 
 Aliases: none
       DESC
