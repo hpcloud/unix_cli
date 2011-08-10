@@ -36,7 +36,21 @@ module HP
         end
         nil
       end
-    
+
+      def self.storage_credentials
+        if current_credentials
+          return current_credentials[:storage]
+        end
+        nil
+      end
+
+      def self.compute_credentials
+        if current_credentials
+          return current_credentials[:compute]
+        end
+        nil
+      end
+
       def self.settings
         @@settings ||= 
           if File.exists?(config_file)

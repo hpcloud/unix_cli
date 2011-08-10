@@ -73,7 +73,9 @@ describe "Writing an account file" do
     context "(default account)" do
 
       before(:all) do
-        credentials = {:account_id => 'account:user', :secret_key => 'foo', :auth_uri => 'http://192.168.1.1:8888/auth/v1.0'}
+        credentials = {:storage => {:account_id => 'account:user', :secret_key => 'foo', :auth_uri => 'http://192.168.1.1:8888/auth/v1.0'},
+                       :compute => {:account_id => 'user', :secret_key => 'bar', :auth_uri => 'http://192.168.1.1:8888/v1.0'}
+                      }
         HP::Cloud::Config.write_account(:default, credentials)
       end
 
@@ -85,12 +87,26 @@ describe "Writing an account file" do
         yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
         yaml.should have_key(:credentials)
       end
-      
-      it "should have written credential fields" do
+      it "should have nested credentials for storage" do
         yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
-        yaml[:credentials][:account_id].should eql('account:user')
-        yaml[:credentials][:secret_key].should eql('foo')
-        yaml[:credentials][:auth_uri].should eql('http://192.168.1.1:8888/auth/v1.0')
+        yaml[:credentials].should have_key(:storage)
+      end
+      it "should have nested credentials for compute" do
+        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
+        yaml[:credentials].should have_key(:compute)
+      end
+
+      it "should have written storage related credential fields" do
+        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
+        yaml[:credentials][:storage][:account_id].should eql('account:user')
+        yaml[:credentials][:storage][:secret_key].should eql('foo')
+        yaml[:credentials][:storage][:auth_uri].should eql('http://192.168.1.1:8888/auth/v1.0')
+      end
+      it "should have written compute related credential fields" do
+        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
+        yaml[:credentials][:compute][:account_id].should eql('user')
+        yaml[:credentials][:compute][:secret_key].should eql('bar')
+        yaml[:credentials][:compute][:auth_uri].should eql('http://192.168.1.1:8888/v1.0')
       end
 
     end
@@ -116,11 +132,19 @@ describe "Credential detection" do
     
     #it "should detect default account file"
     
-    it "should provide credentials from file" do
+    it "should provide credentials for storage from file" do
       credentials = HP::Cloud::Config.current_credentials
-      credentials[:auth_uri].should eql('http://192.168.1.1:8888/auth/v1.0')
+      credentials[:storage][:account_id].should eql('account:user')
+      credentials[:storage][:secret_key].should eql('foo')
+      credentials[:storage][:auth_uri].should eql('http://192.168.1.1:8888/auth/v1.0')
     end
     
+    it "should provide credentials for compute from file" do
+      credentials = HP::Cloud::Config.current_credentials
+      credentials[:compute][:account_id].should eql('user')
+      credentials[:compute][:secret_key].should eql('bar')
+      credentials[:compute][:auth_uri].should eql('http://192.168.1.1:8888/v1.0')
+    end
   end
   
   context "when no account file exists" do
