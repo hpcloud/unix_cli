@@ -1,4 +1,4 @@
-#require 'hpcloud/commands/servers/add'
+require 'hpcloud/commands/servers/add'
 #require 'hpcloud/commands/servers/remove'
 
 module HP
@@ -22,7 +22,9 @@ Aliases: servers:list
           if servers.empty?
             display "You currently have no servers, use `#{selfname} servers:add <name>` to create one."
           else
-            servers.each { |server| display server.id }
+            #servers.each { |server| display server.id }
+            servers.table([:id, :availability_zone, :groups, :flavor_id, :image_id, :created_at, :private_ip_address, :public_ip_address, :state])
+                          #,["Id", "Zone", "Groups", "Flavor", "Image", "Created Date", "Private IP", "Public IP", "State"])
           end
         rescue Excon::Errors::Forbidden => error
           display_error_message(error)
