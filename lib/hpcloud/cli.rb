@@ -15,22 +15,50 @@ module HP
                     }
     
       private
-    
-      def connection
-        return @connection if @connection
-        credentials = Config.current_credentials
-        if credentials
-          @connection ||= connection_with(credentials)
+      def connection(service = :storage)
+        if service == :storage
+          storage_connection
         else
-          error "Please run `#{selfname} account:setup` to set up your account."
+          compute_connection
         end
       end
-    
-      def connection_with(credentials)
-        Fog::Storage.new( :provider       => 'HP',
-                          :hp_account_id  => credentials[:account_id],
-                          :hp_secret_key  => credentials[:secret_key],
-                          :hp_auth_uri    => credentials[:auth_uri] )
+
+      def storage_connection
+        return @storage_connection if @storage_connection
+        storage_credentials = Config.storage_credentials
+        if storage_credentials
+          @storage_connection ||= connection_with(:storage, storage_credentials)
+        else
+          error "Please run `#{selfname} account:setup` to set up your storage account."
+        end
+      end
+
+      def compute_connection
+        return @compute_connection if @compute_connection
+        compute_credentials = Config.compute_credentials
+        if compute_credentials
+          @compute_connection ||= connection_with(:compute, compute_credentials)
+        else
+          error "Please run `#{selfname} account:setup` to set up your compute account."
+        end
+      end
+
+      def connection_with(service = :storage, service_credentials)
+        if service == :storage
+          Fog::Storage.new( :provider       => 'HP',
+                            :hp_account_id  => service_credentials[:account_id],
+                            :hp_secret_key  => service_credentials[:secret_key],
+                            :hp_auth_uri    => service_credentials[:auth_uri] )
+        else
+          #Fog::Compute.new( :provider       => 'HP',
+          #                  :hp_account_id  => service_credentials[:account_id],
+          #                  :hp_secret_key  => service_credentials[:secret_key],
+          #                  :hp_auth_uri    => service_credentials[:auth_uri] )
+          Fog::Compute.new( :provider       => 'AWS',
+                            :aws_access_key_id  => service_credentials[:account_id],
+                            :aws_secret_access_key  => service_credentials[:secret_key],
+                            :endpoint    => service_credentials[:auth_uri] )
+        end
 
       end
     
