@@ -60,19 +60,17 @@ namespace :jenkins do
   namespace :setup do
     task :rspec => [:pre_ci, 'ci:setup:rspec']
     task :pre_ci do
-      ENV['SPEC_CODE_COVERAGE'] = 'true'
-      ENV['CI_REPORTS'] = 'ci/reports/rspec'
+      ENV['CI_REPORTS'] = 'jenkins/reports/rspec'
       gem 'ci_reporter'
       require 'ci/reporter/rake/rspec'
-      rm_rf 'ci/reports/html/index.html'
-      rm_rf 'coverage'
+      rm_rf 'jenkins/reports/html/index.html'
     end
   end
   
   # Hijack RSpec options with our own triple formatter.
   desc ''
   RSpec::Core::RakeTask.new('spec:special') do |t|
-    t.rspec_opts = %Q{--color --require "#{File.dirname(__FILE__)}/ci/triple_formatter.rb"}
+    t.rspec_opts = %Q{--color --require "#{File.dirname(__FILE__)}/jenkins/triple_formatter.rb"}
   end
 end
 
