@@ -26,7 +26,7 @@ Aliases: none
                                             :availability_zone => avlzone,
                                             :groups => groups)
           server.save
-          display "Created server '#{name}' of flavor '#{flavor}', using image '#{image}' in availability zone ompute_."
+          display "Created server '#{name}'."
         rescue Excon::Errors::Conflict => error
           display_error_message(error, :permission_denied)
         rescue Fog::HP::Storage::NotFound => error
