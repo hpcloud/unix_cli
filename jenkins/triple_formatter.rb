@@ -11,6 +11,6 @@ require 'ci/reporter/rspec'
 
 config = RSpec.configuration
 #config.color_enabled = true
-html_formatter = RSpec::Core::Formatters::HtmlFormatter.new(File.open("ci/reports/html/index.html", "w"))
+html_formatter = RSpec::Core::Formatters::HtmlFormatter.new(File.open("jenkins/reports/html/index.html", "w"))
 ci_formatter = CI::Reporter::RSpec.new(config.output)
 config.instance_variable_set(:@reporter, RSpec::Core::Reporter.new(html_formatter, ci_formatter))
