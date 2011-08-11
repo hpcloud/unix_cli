@@ -1,6 +1,6 @@
-= scalene
+= hpcloud
 
-Command line tools for managing and interacting with your HP Scalene services.
+Command line tools for managing and interacting with your HP Cloud services.
 
 == Copyright
 
