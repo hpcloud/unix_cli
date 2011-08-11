@@ -5,6 +5,7 @@ Gemfile.lock
 .idea
 atlassian-ide-plugin.xml
 *.gem
+.bundle
 
 # docs
 rdoc
@@ -22,5 +23,5 @@ tmtags
 coverage
 
 # Continuous integration reports:
-ci/reports/*/*
-
+jenkins/reports/rspec/*
+jenkins/reports/html/index.html
