@@ -7,7 +7,7 @@ module HP
 
       map 'servers:list' => 'servers'
 
-      desc "servers", "list available servers"
+      desc "servers", "list of available servers"
       long_desc <<-DESC
   List the servers in your compute account.
 
