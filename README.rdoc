@@ -1,7 +1,141 @@
-= hpcloud
+= Unix Command Line Interface
 
-Command line tools for managing and interacting with your HP Cloud services.
+The Unix Command Line Interface is a tool which allows Unix or Mac users to manage their HP Cloud Services from the command line.
 
-== Copyright
+== System Requirements
+
+The current version of the CLI requires Ruby 1.9.2 or 1.8.7 and a recent version of rubygems (generally included with the ruby package).
+
+== Installation
+
+For the moment you will need to add our internal gem server to your list of gem sources.
+
+  gem sources -a <insert gemserver when available>
+
+You can confirm that the source has been added correctly by listing your gem sources:
+
+  gem sources
+
+Now install the hpcloud gem:
+
+  gem install hpcloud
+
+You should see the gem and its dependencies being installed on your system. Once installation is complete you can set up your account:
+
+  hpcloud account:setup
+
+To upgrade your installation:
+
+  gem update hpcloud
+
+To remove the library:
+
+  gem uninstall hpcloud
+
+Note: If you are a regular user of rubygems you may want to uninstall our source after installing the library as having it on your list may interfere with the installation of other gems.
+
+= In-Command Help
+
+You can get a list of commands at any time by calling the hpcloud command without any arguments:
+
+  hpcloud
+
+Each command has help built in which includes specific examples of use, aliases you can use and more. To see help for a specific command use:
+
+  hpcloud help <command>
+
+If you want to check which version of the tool you have installed:
+
+  hpcloud info
+
+= Examples of Use
+
+== HP Cloud Object Storage Services
+
+To add a new container:
+
+  hpcloud container:add demorama
+  # => Created container 'demorama'.
+
+
+To list existing container:
+
+  hpcloud list
+  # => demorama
+  # => demorama2
+
+or
+
+  hpcloud container
+  # => demorama
+  # => demorama2
+
+To add or copy objects to a container:
+
+  hpcloud copy simple.txt :demorama
+  # => Copied simple.txt => :demorama/simple.txt
+
+To copy objects from a container to the local file system:
+
+  hpcloud copy :demorama/simple.txt ./simple.txt
+  # => Copied :demorama/simple.txt => ./simple.txt
+
+To copy objects between container:
+
+  hpcloud copy :demorama/simple.txt :demorama2
+  # => Copied :demorama/simple.txt => :demorama2/simple.txt
+
+  hpcloud copy :demorama/simple.txt :demorama2/simpler.txt
+  # => Copied :demorama/simple.txt => :demorama2/simpler.txt
+
+To list the contents of a container:
+
+  hpcloud list demorama
+  # => simple.txt
+
+To get an object to the local file system:
+
+  hpcloud get :demorama2/simpler.txt
+  # => Copied :demorama2/simpler.txt => simpler.txt
+
+To move objects from a container to the local file system:
+
+  hpcloud move :demorama/simple.txt ./simple.txt
+  # => Moved :demorama/simple.txt => ./simple.txt
+
+To move objects between container:
+
+  hpcloud move :demorama2/simpler.txt :demorama
+  # => Moved :demorama2/simple.txt => :demorama
+
+  hpcloud move :demorama/simple.txt :demorama2/even_simpler.txt
+  # => Moved :demorama/simple.txt => :demorama2/even_simpler.txt
+
+To get a location for an existing container:
+
+  hpcloud location demorama
+  # => http://16.49.184.32:9242/demorama/
+
+To get a location for an existing object:
+
+  hpcloud location demorama/simple.txt
+  # => http://16.49.184.32:9242/demorama/simple.txt
+
+To remove an object from a container:
+
+  hpcloud remove :demorama2/even_simpler.txt
+  # => Removed object ':demorama2/even_simpler.txt'.
+
+To remove a container if empty:
+
+  hpcloud container:remove :demorama2
+  # => Removed container 'demorama2'.
+
+To force removal of a container even if there are files in it:
+
+  hpcloud container:remove :demorama --force
+  # => Removed container 'demorama'.
+
+= Copyright
 
 Copyright (c) 2011 Hewlett-Packard. Not for external release.
