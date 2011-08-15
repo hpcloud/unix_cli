@@ -11,8 +11,8 @@ module HP
   Be careful with this flag or you could have a really bad day.
 
 Examples:
-  hpcloud container:remove :my_container          # delete 'my_container' if empty
-  hpcloud container:remove :my_container --force  # delete regardless of contents
+  hpcloud containers:remove :my_container          # delete 'my_container' if empty
+  hpcloud containers:remove :my_container --force  # delete regardless of contents
 
 Aliases: containers:rm, containers:delete, containers:del
       DESC
