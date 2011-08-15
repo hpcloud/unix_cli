@@ -8,7 +8,7 @@ module HP
   or without the preceding colon: 'my_container' or ':my_container'.
 
 Examples:
-  hpcloud container:add :my_container  # Creates a new container called 'my_container'
+  hpcloud containers:add :my_container  # Creates a new container called 'my_container'
 
 Aliases: none
       DESC
@@ -16,9 +16,13 @@ Aliases: none
       define_method "containers:add" do |name|
         begin
           name = Container.container_name_for_service(name)
-          if acceptable_name?(name, options)
-            connection.directories.create(:key => name)
-            display "Created container '#{name}'."
+          if connection.directories.get(name)
+            display "Container '#{name}' already exists."
+          else
+            if acceptable_name?(name, options)
+              connection.directories.create(:key => name)
+              display "Created container '#{name}'."
+            end
           end
         rescue Excon::Errors::Conflict => error
           display_error_message(error, :permission_denied)
