@@ -24,4 +24,5 @@ require 'hpcloud/commands/get'
 require 'hpcloud/commands/servers'
 require 'hpcloud/commands/flavors'
 require 'hpcloud/commands/images'
+require 'hpcloud/commands/keypairs'
 
