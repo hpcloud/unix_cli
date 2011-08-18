@@ -23,14 +23,14 @@ describe "servers:remove command" do
     end
 
     ### server deletes take time to get it off the list
-    pending "should not list in servers" do
+    it "should not list in servers" do
       servers = @hp_svc.servers.map {|s| s.id}
       servers.should_not include(@new_server_id)
     end
 
     it "should not exist" do
       server = get_server(@hp_svc, @new_server_id)
-      server.id.should_not eql(@new_server_id)
+      server.should be_nil
     end
 
   end
