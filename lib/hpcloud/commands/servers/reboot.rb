@@ -17,9 +17,7 @@ Aliases: none
         begin
           # setup connection for compute service
           compute_connection = connection(:compute)
-          #server = compute_connection.servers.get(id)
-          compute_connection.servers.filters = {'instance-id' => ["#{id}"]}
-          server = compute_connection.servers.first
+          server = compute_connection.servers.select {|s| s.id == id}.first
         rescue Excon::Errors::Forbidden => error
           display_error_message(error, :permission_denied)
         end
