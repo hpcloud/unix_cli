@@ -1,3 +1,7 @@
+require 'hpcloud/commands/keypairs/import'
+require 'hpcloud/commands/keypairs/add'
+require 'hpcloud/commands/keypairs/remove'
+
 module HP
   module Cloud
     class CLI < Thor
@@ -19,7 +23,7 @@ Aliases: keypairs:list
           if keypairs.empty?
             display "You currently have no keypairs to use."
           else
-            keypairs.table([:name, :fingerprint])
+            keypairs.table([:name, :fingerprint, :private_key])
           end
         rescue Excon::Errors::Forbidden => error
           display_error_message(error)
