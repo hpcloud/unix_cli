@@ -7,6 +7,7 @@ gem 'hpfog', :path => '~/projects/ruby_fog_os'
 
 group :development do
   gem "yard", "~> 0.6.0"
+  gem "watchr"
 end
 
 group :test do
