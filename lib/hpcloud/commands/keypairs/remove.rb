@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      map %w(keypairs:delete keypairs:del) => 'servers:remove'
+      map %w(keypairs:delete keypairs:del) => 'keypairs:remove'
 
       desc "keypairs:remove <key_name>", "remove a key pair by name"
       long_desc <<-DESC
