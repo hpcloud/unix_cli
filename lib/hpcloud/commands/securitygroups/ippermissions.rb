@@ -1,4 +1,5 @@
 require 'hpcloud/ip_permissions'
+require 'hpcloud/commands/securitygroups/ippermissions/add'
 
 module HP
   module Cloud
