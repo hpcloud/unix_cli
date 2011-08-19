@@ -2,21 +2,21 @@ module HP
   module Cloud
     class CLI < Thor
 
-      map %w(securitygroups:ippermissions:authorize) => 'securitygroups:ippermissions:remove'
+      map %w(securitygroups:ippermissions:revoke, securitygroups:ippermissions:delete securitygroups:ippermissions:del) => 'securitygroups:ippermissions:remove'
 
-      desc "securitygroups:ippermissions:add <sec_group_name> <ip_protocol> <port_range> <ip_address>", "add an IP permission to the security group"
+      desc "securitygroups:ippermissions:remove <sec_group_name> <ip_protocol> <port_range> <ip_address>", "remove an IP permission from the security group"
       long_desc <<-DESC
-  Add an IP permission to the security group. If <ip_protocol> is specified as 'icmp', then <port_range> is set to -1..-1.
+  Remove an IP permission from the security group. If <ip_protocol> is specified as 'icmp', then <port_range> is set to -1..-1.
   If <ip_address> is not specified, then it defaults to '0.0.0.0/0'.
 
 Examples:
-  hpcloud securitygroups:ippermissions:add mysggroup tcp 22..22
-  hpcloud securitygroups:ippermissions:add mysggroup icmp
-  hpcloud securitygroups:ippermissions:add mysggroup tcp 80..80 "111.111.111.111/1"
+  hpcloud securitygroups:ippermissions:remove mysggroup tcp 22..22
+  hpcloud securitygroups:ippermissions:remove mysggroup icmp
+  hpcloud securitygroups:ippermissions:remove mysggroup tcp 80..80 "111.111.111.111/1"
 
-Aliases: securitygroups:ippermissions:authorize
+Aliases: securitygroups:ippermissions:revoke, securitygroups:ippermissions:delete securitygroups:ippermissions:del
       DESC
-      define_method "securitygroups:ippermissions:add" do |sec_group_name, ip_protocol, port_range_str=nil, ip_address=nil|
+      define_method "securitygroups:ippermissions:remove" do |sec_group_name, ip_protocol, port_range_str=nil, ip_address=nil|
         begin
           compute_connection = connection(:compute)
           security_group = compute_connection.security_groups.select {|sg| sg.name == sec_group_name}.first
@@ -30,8 +30,8 @@ Aliases: securitygroups:ippermissions:authorize
                 port_range = port_range_str.split('..').inject { |s,e| s.to_i..e.to_i }
               end
             end
-            security_group.authorize_port_range(port_range, {:cidr_ip => ip_address, :ip_protocol => ip_protocol})
-            display "Created IP permission for security group '#{sec_group_name}'."
+            security_group.revoke_port_range(port_range, {:cidr_ip => ip_address, :ip_protocol => ip_protocol})
+            display "Removed IP permission for security group '#{sec_group_name}'."
           else
             error "You don't have a security group '#{sec_group_name}'.", :not_found
           end
