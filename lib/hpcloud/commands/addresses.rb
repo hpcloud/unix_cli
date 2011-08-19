@@ -1,4 +1,5 @@
 require 'hpcloud/commands/addresses/add'
+require 'hpcloud/commands/addresses/remove'
 
 module HP
   module Cloud

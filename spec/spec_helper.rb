@@ -23,6 +23,7 @@ require 'helpers/configs'
 require 'helpers/containers'
 require 'helpers/servers'
 require 'helpers/keypairs'
+require 'helpers/addresses'
 
 RSpec.configure do |config|
   
