@@ -7,12 +7,13 @@ module HP
   Add a key pair by specifying the fingerprint and private key data.
 
 Examples:
+  hpcloud keypairs:add mykey
   hpcloud keypairs:add mykey c1:db:b5:bc:8b:b9:0f:33:62:53:de:80:6e:ae:67:66
   hpcloud keypairs:add mykey c1:db:b5:bc:8b:b9:0f:33:62:53:de:80:6e:ae:67:66 'private key data'
 
 Aliases: none
       DESC
-      define_method "keypairs:add" do |key_name, fingerprint, private_key=nil|
+      define_method "keypairs:add" do |key_name, fingerprint=nil, private_key=nil|
         begin
           compute_connection = connection(:compute)
           keypair = compute_connection.key_pairs.create(:name => key_name, :fingerprint => fingerprint, :private_key => private_key)
