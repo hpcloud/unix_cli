@@ -1,3 +1,5 @@
+require 'hpcloud/commands/securitygroups/add'
+require 'hpcloud/commands/securitygroups/remove'
 require 'hpcloud/commands/securitygroups/ippermissions'
 
 module HP
