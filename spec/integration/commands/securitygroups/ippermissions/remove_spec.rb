@@ -9,6 +9,7 @@ describe "securitygroups:ippermissions:remove command" do
       @security_group = compute_connection.security_groups.new(:name => 'delsecgroup', :description => 'sec group desc')
       @security_group.save
     end
+
     context "tcp with port range" do
       before(:all) do
         ### setup an ip permission
