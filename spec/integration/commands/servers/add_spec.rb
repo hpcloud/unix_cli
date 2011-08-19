@@ -10,19 +10,18 @@ describe "servers:add command" do
   end
 
   ### Till we can get back the server id that is created, it cannot be deleted, hence marked pending
-  pending "when creating server with name, image and defaults" do
+  context "when creating server with name, image and defaults" do
     before(:all) do
       @response, @exit = run_command('servers:add fog-test-server ami-00000005').stdout_and_exit_status
-      ### Need to somehow get back the server id after it is created
-      #@new_server_id
+      @new_server_id = @response.scan(/'([^']+)/)[0][0]
     end
 
-    pending "should show success message" do
-      @response.should include("Created server 'fog-test-server'.\n")
+    it "should show success message" do
+      @response.should include("Created server fog-test-server")
     end
     its_exit_status_should_be(:success)
 
-    pending "should list in servers" do
+    it "should list in servers" do
       servers = @hp_svc.servers.map {|s| s.id}
       servers.should include(@new_server_id)
     end

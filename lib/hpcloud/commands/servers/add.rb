@@ -25,11 +25,9 @@ Aliases: none
                                             :availability_zone => avlzone,
                                             :groups => groups)
           server.save
-          display "Created server '#{name}'."
-        rescue Excon::Errors::Conflict => error
+          display "Created server #{name} with id '#{server.id}'."
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
           display_error_message(error, :permission_denied)
-        rescue Fog::HP::Storage::NotFound => error
-          error 'The server name specified is invalid. Please see API documentation for valid naming guidelines.', :permission_denied
         end
         # display list of servers
         servers = compute_connection.servers
