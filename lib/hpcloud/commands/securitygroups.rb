@@ -1,3 +1,5 @@
+require 'hpcloud/commands/securitygroups/ippermissions'
+
 module HP
   module Cloud
     class CLI < Thor
