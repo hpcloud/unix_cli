@@ -1,3 +1,5 @@
+require 'hpcloud/commands/addresses/add'
+
 module HP
   module Cloud
     class CLI < Thor
