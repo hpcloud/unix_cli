@@ -111,6 +111,26 @@ To move objects between container:
   hpcloud move :demorama/simple.txt :demorama2/even_simpler.txt
   # => Moved :demorama/simple.txt => :demorama2/even_simpler.txt
 
+To get an ACL for an existing container:
+
+  hpcloud acl :demorama
+  # => private
+
+To get an ACL for an existing object:
+
+  hpcloud acl :demorama/simple.txt
+  # => private
+
+To set an ACL for an existing container:
+
+  hpcloud acl:set :demorama public-read
+  # => ACL for :demorama updated to public-read.
+
+To set an ACL for an existing object:
+
+  hpcloud acl:set :demorama/simple.txt public-read
+  # => ACL for :demorama/simple.txt updated to public-read.
+
 To get a location for an existing container:
 
   hpcloud location demorama
