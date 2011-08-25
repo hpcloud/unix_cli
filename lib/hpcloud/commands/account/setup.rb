@@ -11,14 +11,14 @@ module HP
   set up your account. Optionally you can specify your own endpoint to access, 
   but in most cases you will want to use the default.  
   
-  You can re-run this commmand to modify your settings.
+  You can re-run this command to modify your settings.
       DESC
       method_option 'no-validate', :type => :boolean, :default => false, 
                     :desc => "Don't verify account settings during setup"
       define_method "account:setup" do
         credentials = {}
-        credentials[:account_id] = ask 'Account Key:'
-        credentials[:secret_key] = ask 'Secret Key:'
+        credentials[:account_id] = ask 'Account ID:'
+        credentials[:secret_key] = ask 'Account Key:'
         credentials[:auth_uri] = ask_with_default 'API Auth Uri:',
                                       Config.settings[:default_auth_uri]
         unless options['no-validate']
