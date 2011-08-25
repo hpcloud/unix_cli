@@ -7,13 +7,11 @@ module HP
   Set the Access Control List (ACL) for the specified resource, either a 
   container or object.
                  
-  The supported ACL options include: private, public-read, public-read-write, 
-  authenticated-read, authenticated-read-write, container-owner-read,
-  container-owner-full-control, log-delivery-write.
+  The supported ACL options include: private, public-read.
 
 Examples:
   hpcloud acl:set :my_container/file public-read  # Set 'file' ACL to public-read
-  hpcloud acl:set :my_container private           # Set 'my_container' ACL private
+  hpcloud acl:set :my_container private           # Set 'my_container' ACL to private
 
 Aliases: none
 
@@ -25,14 +23,31 @@ Note: Custom ACLs will be supported in a future release.
           error "Your ACL '#{acl}' is invalid.\nValid options are: #{CANNED_ACLS.join(', ')}."
         end
         type = Resource.detect_type(resource)
-        container, path = Container.parse_resource(resource)
+        container, key = Container.parse_resource(resource)
         begin
+          dir = connection.directories.get(container)
           if type == :object
-            connection.put_object_acl(container, path, acl)
-            display "ACL for #{resource} updated to #{acl}."
+            if dir
+              file = dir.files.get(key)
+              if file
+                # since setting acl at object level is not supported, so just making parent directory public
+                dir.acl = acl
+                dir.save
+                display "ACL for #{resource} updated to #{acl}."
+              else
+                error "No object exists at '#{container}/#{key}'.", :not_found
+              end
+            else
+              error "No object exists at '#{container}/#{key}'.", :not_found
+            end
           elsif type == :container
-            connection.put_container_acl(container, acl)
-            display "ACL for #{resource} updated to #{acl}."
+            if dir
+              dir.acl = acl
+              dir.save
+              display "ACL for #{resource} updated to #{acl}."
+            else
+              error "No container named '#{container}' exists.", :not_found
+            end
           else
             error 'Setting ACLs is only supported for containers and objects.', :not_supported
           end
