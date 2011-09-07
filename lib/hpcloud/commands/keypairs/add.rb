@@ -13,12 +13,18 @@ Examples:
 
 Aliases: none
       DESC
+      method_option :output, :default => false, :type => :boolean, :aliases => '-o', :desc => 'Save the key pair to a file in the current folder.'
       define_method "keypairs:add" do |key_name, fingerprint=nil, private_key=nil|
         begin
           compute_connection = connection(:compute)
           keypair = compute_connection.key_pairs.create(:name => key_name, :fingerprint => fingerprint, :private_key => private_key)
-          display keypair.private_key
-          display "Created key pair '#{key_name}'."
+          if options.output?
+            keypair.write("./#{keypair.name}.pem")
+            display "Created key pair '#{key_name}' and saved it in a file at './#{keypair.name}.pem'."
+          else
+            display keypair.private_key
+            display "Created key pair '#{key_name}'."
+          end
         rescue Fog::AWS::Compute::Error
           display "Key pair '#{key_name}' already exists."
         rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
