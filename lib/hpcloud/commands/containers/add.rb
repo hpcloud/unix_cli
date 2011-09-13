@@ -19,11 +19,14 @@ Aliases: none
           if connection.directories.get(name)
             display "Container '#{name}' already exists."
           else
-            if acceptable_name?(name, options)
-              connection.directories.create(:key => name)
-              display "Created container '#{name}'."
+            # bail if the name does not conform to overall guidelines
+            if Container.valid_name?(name)
+              if acceptable_name?(name, options)
+                connection.directories.create(:key => name)
+                display "Created container '#{name}'."
+              end
             else
-              error 'The container name specified is invalid. Please see API documentation for valid naming guidelines.', :permission_denied
+              error "The container name specified is invalid. Please see API documentation for valid naming guidelines.", :permission_denied
             end
           end
         rescue Excon::Errors::Conflict => error
@@ -36,12 +39,7 @@ Aliases: none
       private
       
       def acceptable_name?(name, options)
-        # bail if the name does not conform to overall guidelines
-        if Container.valid_name?(name)
-          Container.valid_virtualhost?(name) or options[:force] or yes?('Specified container name is not a valid virtualhost, continue anyway?')
-        else
-          false
-        end
+        Container.valid_virtualhost?(name) or options[:force] or yes?('Specified container name is not a valid virtualhost, continue anyway?')
       end
     
     end

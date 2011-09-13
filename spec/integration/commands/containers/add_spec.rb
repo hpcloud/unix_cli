@@ -60,7 +60,6 @@ describe "containers:add command" do
   end
   
   context "when creating a container whose name is valid, but not valid virtual host" do
-    
     it "should present interactive prompt to verify behavior" do
       $stdout.should_receive(:print).with('Specified container name is not a valid virtualhost, continue anyway? ')
       $stdin.should_receive(:gets).and_return('n')
@@ -70,7 +69,6 @@ describe "containers:add command" do
         exit_status = system_exit.status
       end
     end
-    
   end
 
 end
