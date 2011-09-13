@@ -42,6 +42,8 @@ describe "containers:add command" do
       @response.should eql("Container 'already-a-container' already exists.\n")
     end
 
+    after(:all) { purge_container('already-a-container') }
+
   end
   
   context "when creating a container with invalid characters in the name" do
