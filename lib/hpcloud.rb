@@ -1,4 +1,4 @@
-require "bundler/setup"
+#require "bundler/setup"
 require 'fog'
 
 require 'hpcloud/version'
