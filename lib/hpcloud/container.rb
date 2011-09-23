@@ -45,6 +45,16 @@ module HP
         end
         false
       end
+
+      # is container name valid - cannot be more than 256 bytes and cannot contain / char
+      def self.valid_name?(container_name)
+        if (1..256).include?(container_name.length)
+          unless (container_name.include?('/'))
+            return true
+          end
+        end
+        false
+      end
     
     end
   end

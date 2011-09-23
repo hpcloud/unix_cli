@@ -1,3 +1,19 @@
+v0.0.9 9/22/11
+==============
+- Add container name validation to container:add command
+- Update to use 'hpfog' library v0.0.9
+- Cleanup Rake tasks and basic housekeeping
+
+v0.0.8 8/29/11
+==============
+- Update README with documentation and examples
+- Update documentation for acl commands
+- Add acl:set command to set acls
+- Add acl command to get acls
+- Fix for location command
+- Update to use 'hpfog' library v0.0.8
+- Fix minor issues
+
 v0.0.7 8/12/11
 ==============
 - Fix minor issues

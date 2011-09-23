@@ -4,7 +4,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      CANNED_ACLS = %w(private public-read public-read-write authenticated-read authenticated-read-write container-owner-read container-owner-full-control log-delivery-write)
+      CANNED_ACLS = %w(private public-read)
 
       desc 'acl <object/container>', "view the ACL for an object or container"
       long_desc <<-DESC
@@ -12,41 +12,41 @@ module HP
 
 Examples:
   hpcloud acl :my_container/my_file.txt  # Get ACL for object 'my_file.txt'
-  hpcloud acl :my_container'             # Get ACL for container 'my_container'
+  hpcloud acl :my_container              # Get ACL for container 'my_container'
 
 Aliases: none
       DESC
       def acl(resource)
+        acls = "private"
         type = Resource.detect_type(resource)
         container, key = Container.parse_resource(resource)
         begin
+          dir = connection.directories.get(container)
           if type == :object
-            acls = connection.get_object_acl(container, key).body["AccessControlList"]
-            # TODO: print_table should be silenceable?
-            print_table acls_for_table(acls)
+            if dir
+              file = dir.files.get(key)
+              if file
+                acls = file.directory.public? ? "public-read" : "private"
+                display acls
+              else
+                error "No object exists at '#{container}/#{key}'.", :not_found
+              end
+            else
+              error "No object exists at '#{container}/#{key}'.", :not_found
+            end
           elsif type == :container
-            acls = connection.get_container_acl(container).body["AccessControlList"]
-            # TODO: print_table should be silenceable?
-            print_table acls_for_table(acls)
+            if dir
+              acls = dir.public? ? "public-read" : "private"
+              display acls
+            else
+              error "No container named '#{container}' exists.", :not_found
+            end
           else
-            error 'ACL viewing is only supported for containers and objects', :not_supported
+            error "ACL viewing is only supported for containers and objects. See `help acl`.", :not_supported
           end
         rescue Excon::Errors::NotFound, Excon::Errors::Forbidden => e
           display_error_message(e)
         end
-      end
-
-      private
-
-      # [{"Grantee"=>{"ID"=>"d1fac2d218a6de21ee37b7fc83783360c399f448"}, "Permission"=>"FULL_CONTROL"}]
-      def acls_for_table(acls)
-        table = []
-        acls.each do |permission_set|
-          permission_set["Grantee"].each do |key, grantee|
-            table << [grantee, permission_set["Permission"]]
-          end
-        end
-        table
       end
 
     end

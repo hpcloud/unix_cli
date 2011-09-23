@@ -20,23 +20,24 @@ Aliases: loc
         
         begin
           if container and key
-            begin
-              if connection.head_object(container, key)
-                display "http://#{config[:auth_uri]}/#{container}/#{key}"
+            dir = connection.directories.get(container)
+            if dir
+              file = dir.files.get(key)
+              if file
+                display "#{file.public_url}"
+              else
+                error "No object exists at '#{container}/#{key}'.", :not_found
               end
-            rescue Excon::Errors::NotFound => error
+            else
               error "No object exists at '#{container}/#{key}'.", :not_found
             end
-        
           elsif container
-            begin
-              if connection.head_container(container)
-                display "http://#{config[:auth_uri]}/#{container}/"
-              end
-            rescue Excon::Errors::NotFound => error
+            dir = connection.directories.get(container)
+            if dir
+              display "#{dir.public_url}"
+            else
               error "No container named '#{container}' exists.", :not_found
             end
-        
           else
             error "Invalid format, see `help location`.", :incorrect_usage
           end

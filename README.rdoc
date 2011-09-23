@@ -8,31 +8,34 @@ The current version of the CLI requires Ruby 1.9.2 or 1.8.7 and a recent version
 
 == Installation
 
-For the moment you will need to add our internal gem server to your list of gem sources.
+1) Start by installing the software, HP Cloud Unix CLI depends on:
 
-  gem sources -a <insert gemserver when available>
+- HP Cloud Ruby Fog Binding[http://manage.hpcloud.com/pages/build/bindings/fog]
 
-You can confirm that the source has been added correctly by listing your gem sources:
+2) Download the HP Cloud Services Unix CLI gem[http://manage.hpcloud.com/downloads/hpcloudcli.tar] and unpack it into a local directory.
 
-  gem sources
+3) 'cd' into the directory, you downloaded the gem into during Step 2) and type:
 
-Now install the hpcloud gem:
+  gem install hpcloud-<version>.gem
 
-  gem install hpcloud
+where <version> is the version number of the downloaded and unpacked gem file, for example 0.0.8
 
-You should see the gem and its dependencies being installed on your system. Once installation is complete you can set up your account:
+You should see the gem and its dependencies being installed on your system. To verify installation, simply type:
+
+  hpcloud
+
+If you see a listing of available commands, your installation was successful.
+
+4) Once installation is complete you can set up your account:
 
   hpcloud account:setup
 
-To upgrade your installation:
+That’s it! Try out the usage examples below.
 
-  gem update hpcloud
-
-To remove the library:
+If you should ever need to remove the CLI:
 
   gem uninstall hpcloud
 
-Note: If you are a regular user of rubygems you may want to uninstall our source after installing the library as having it on your list may interfere with the installation of other gems.
 
 = In-Command Help
 
@@ -110,6 +113,26 @@ To move objects between container:
 
   hpcloud move :demorama/simple.txt :demorama2/even_simpler.txt
   # => Moved :demorama/simple.txt => :demorama2/even_simpler.txt
+
+To get an ACL for an existing container:
+
+  hpcloud acl :demorama
+  # => private
+
+To get an ACL for an existing object:
+
+  hpcloud acl :demorama/simple.txt
+  # => private
+
+To set an ACL for an existing container:
+
+  hpcloud acl:set :demorama public-read
+  # => ACL for :demorama updated to public-read.
+
+To set an ACL for an existing object:
+
+  hpcloud acl:set :demorama/simple.txt public-read
+  # => ACL for :demorama/simple.txt updated to public-read.
 
 To get a location for an existing container:
 

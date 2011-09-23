@@ -16,9 +16,18 @@ Aliases: none
       define_method "containers:add" do |name|
         begin
           name = Container.container_name_for_service(name)
-          if acceptable_name?(name, options)
-            connection.directories.create(:key => name)
-            display "Created container '#{name}'."
+          if connection.directories.get(name)
+            display "Container '#{name}' already exists."
+          else
+            # bail if the name does not conform to overall guidelines
+            if Container.valid_name?(name)
+              if acceptable_name?(name, options)
+                connection.directories.create(:key => name)
+                display "Created container '#{name}'."
+              end
+            else
+              error "The container name specified is invalid. Please see API documentation for valid naming guidelines.", :permission_denied
+            end
           end
         rescue Excon::Errors::Conflict => error
           display_error_message(error, :permission_denied)

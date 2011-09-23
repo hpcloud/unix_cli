@@ -30,20 +30,6 @@ namespace :spec do
 
 end
 
-###### Tasks for Las Vegas Data Center ######
-desc "Run specs for storage against the LV data center"
-namespace :vegas do
-  task ['spec'] do
-    ENV['OS_STORAGE_HOST'] = "15.184.3.19"
-    ENV['OS_STORAGE_PORT'] = "8080"
-    ENV['OS_STORAGE_ACCOUNT_USERNAME'] = "account1:user1"
-    ENV['OS_STORAGE_ACCOUNT_PASSWORD'] = "pass1"
-    ENV['OS_STORAGE_SEC_ACCOUNT_USERNAME'] = "account2:user2"
-    ENV['OS_STORAGE_SEC_ACCOUNT_PASSWORD'] = "pass2"
-    Rake::Task['spec'].invoke
-  end
-end
-
 # RSpec::Core::RakeTask.new(:rcov) do |spec|
 #   spec.pattern = 'spec/**/*_spec.rb'
 #   spec.rcov = true

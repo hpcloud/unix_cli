@@ -30,11 +30,12 @@ RSpec.configure do |config|
   
   MOCKING_ENABLED = ENV['ENABLE_CLI_MOCKING'] || false
 
-  OS_STORAGE_AUTH_URL         = ENV['OS_STORAGE_AUTH_URL']  || "http://swift.nv1.devex.me:8080/auth/v1.0"
-  OS_STORAGE_ACCOUNT_USERNAME = ENV['OS_STORAGE_ACCOUNT_USERNAME']  || "dev_26879407200539:dev_77550147347364" # fog_tester1@test.com/FogTest123
-  OS_STORAGE_ACCOUNT_PASSWORD = ENV['OS_STORAGE_ACCOUNT_PASSWORD']  || "CuLqhwVWLaxXkFDYjPFUGNYAgsq4qu7c4U5"
-  OS_STORAGE_SEC_ACCOUNT_USERNAME = ENV['OS_STORAGE_SEC_ACCOUNT_USERNAME']  || "dev_31963196353900:dev_40709621046377"  # fog_tester2@test.com/FogTest123
-  OS_STORAGE_SEC_ACCOUNT_PASSWORD = ENV['OS_STORAGE_SEC_ACCOUNT_PASSWORD']  || "rhAz1B5ALIjzV1kuaduIwxY4T5t0awrFA7o"
+  ### set these env. vars with appropriate data manually.
+  OS_STORAGE_AUTH_URL         = ENV['OS_STORAGE_AUTH_URL'] || "https://objects.hpcloudsvc.com/auth/v1.0"
+  OS_STORAGE_ACCOUNT_USERNAME = ENV['OS_STORAGE_ACCOUNT_USERNAME'] || "your <access key 1>"
+  OS_STORAGE_ACCOUNT_PASSWORD = ENV['OS_STORAGE_ACCOUNT_PASSWORD'] || "<your secret key 1>"
+  OS_STORAGE_SEC_ACCOUNT_USERNAME = ENV['OS_STORAGE_SEC_ACCOUNT_USERNAME'] || "<your access key 2>"
+  OS_STORAGE_SEC_ACCOUNT_PASSWORD = ENV['OS_STORAGE_SEC_ACCOUNT_PASSWORD'] || "<your secret key 2>"
 
   OS_COMPUTE_AUTH_URL         = ENV['OS_COMPUTE_AUTH_URL']  || "http://15.184.4.165:8774/v1.0" # "http://15.9.138.42:8774/v1.1"
   OS_COMPUTE_ACCOUNT_USERNAME = ENV['OS_COMPUTE_ACCOUNT_USERNAME']  || "rupak3" #"user10"
@@ -47,7 +48,6 @@ RSpec.configure do |config|
   if MOCKING_ENABLED
     puts "==========================================================="
     puts "Running tests in mocking mode..."
-    puts "BEWARE: It is an experimental attempt. Many tests may fail."
     puts "==========================================================="
     # Enable mocking
     Fog.mock!

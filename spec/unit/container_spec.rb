@@ -133,5 +133,19 @@ describe "Validating container names for virtual host" do
   it "should return true for valid names" do
     @container.valid_virtualhost?('my-bucket').should be_true
   end
-  
+
+end
+
+describe "Validating container names as per naming guidelines" do
+
+  before(:all) { @container = HP::Cloud::Container }
+
+  it "should not allow more than 256 bytes" do
+    @container.valid_name?('A'*257).should be_false
+  end
+
+  it "should not allow / character" do
+    @container.valid_name?('/').should be_false
+  end
+
 end

@@ -31,21 +31,19 @@ describe "containers:add command" do
     
   end
 
-  #### It is not an exception to create a container whic already exists in Swift
-  pending "when creating a container which already exists" do
+  context "when creating a container which already exists" do
     
     before(:all) do
       @hp_svc.put_container('already-a-container')
-      @response, @exit = run_command('containers:add already-a-container').stderr_and_exit_status
+      @response, @exit = run_command('containers:add already-a-container').stdout_and_exit_status
     end
     
-    it "should show error message" do
-      @response.should eql("The requested container name is not available. The container namespace is shared by all users of the system. Please select a different name and try again.\n")
+    it "should show exists message" do
+      @response.should eql("Container 'already-a-container' already exists.\n")
     end
-    its_exit_status_should_be(:permission_denied)
-    
+
     after(:all) { purge_container('already-a-container') }
-    
+
   end
   
   context "when creating a container with invalid characters in the name" do
@@ -62,7 +60,6 @@ describe "containers:add command" do
   end
   
   context "when creating a container whose name is valid, but not valid virtual host" do
-    
     it "should present interactive prompt to verify behavior" do
       $stdout.should_receive(:print).with('Specified container name is not a valid virtualhost, continue anyway? ')
       $stdin.should_receive(:gets).and_return('n')
@@ -72,7 +69,6 @@ describe "containers:add command" do
         exit_status = system_exit.status
       end
     end
-    
   end
 
 end
