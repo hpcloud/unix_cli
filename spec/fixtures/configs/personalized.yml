@@ -1,3 +1,3 @@
 --- 
-:auth_uri: "http://agpa-ge1.csbu.hpl.hp.com/auth/v1.0"
-
+:default_storage_auth_uri: https://region-a.geo-1.objects.hpcloudsvc.com/auth/v1.0/
+:default_compute_auth_uri: https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v1.1/

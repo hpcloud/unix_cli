@@ -18,5 +18,23 @@ RSpec.configure do |config|
   def remove_account_files
     FileUtils.rm_rf(HP::Cloud::Config.accounts_directory + "*")
   end
-  
+
+  def setup_account_file(account)
+    # create account file
+    File.open(HP::Cloud::Config.accounts_directory + account.to_s, 'w') do |file|
+      file.write(read_account_file(account.to_s))
+    end
+    # update both credentials
+    credentials = {:storage => {:account_id => 'account1:user1', :secret_key => 'foo1', :auth_uri => 'http://192.168.1.1:9999/auth/v1.0'},
+                   :compute => {:account_id => 'user1', :secret_key => 'bar1', :auth_uri => 'http://192.168.1.1:9999/v1.0'}
+                  }
+    HP::Cloud::Config.update_credentials(account, credentials)
+  end
+
+  def reset_account_settings(account)
+    # reset account settings from fixture
+    File.open(HP::Cloud::Config.accounts_directory + account.to_s, 'w') do |file|
+      file.write(read_account_file(account.to_s))
+    end
+  end
 end
