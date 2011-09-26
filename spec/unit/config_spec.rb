@@ -52,7 +52,8 @@ describe "Config directory setup" do
       
       it "should populate config file" do
         yaml = YAML::load(File.open(HP::Cloud::Config.config_file))
-        yaml[:default_auth_uri].should eql("http://agpa-ge1.csbu.hpl.hp.com/auth/v1.0")
+        yaml[:default_storage_auth_uri].should eql("https://region-a.geo-1.objects.hpcloudsvc.com/auth/v1.0/")
+        yaml[:default_compute_auth_uri].should eql("https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v1.1/")
       end
       
     end
@@ -112,6 +113,82 @@ describe "Writing an account file" do
     end
     
   end
+end
+
+describe "Modifying an account file" do
+
+  before(:all) do
+    setup_temp_home_directory
+    HP::Cloud::Config.ensure_config_exists
+  end
+
+  context "when default account exists" do
+
+    context "and both storage and compute credentials are modified" do
+      before(:all) do
+        # setup default account settings
+        setup_account_file(:default)
+      end
+      it "should have updated storage related credential fields" do
+        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
+        yaml[:credentials][:storage][:account_id].should eql('account1:user1')
+        yaml[:credentials][:storage][:secret_key].should eql('foo1')
+        yaml[:credentials][:storage][:auth_uri].should eql('http://192.168.1.1:9999/auth/v1.0')
+      end
+      it "should have updated compute related credential fields" do
+        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
+        yaml[:credentials][:compute][:account_id].should eql('user1')
+        yaml[:credentials][:compute][:secret_key].should eql('bar1')
+        yaml[:credentials][:compute][:auth_uri].should eql('http://192.168.1.1:9999/v1.0')
+      end
+
+    end
+    context "and only storage credentials are modified" do
+      before(:all) do
+        # reset default account settings
+        reset_account_settings(:default)
+        # only update storage creds
+        credentials = {:storage => {:account_id => 'account1:user1', :secret_key => 'foo1', :auth_uri => 'http://192.168.1.1:9999/auth/v1.0'} }
+        HP::Cloud::Config.update_credentials(:default, credentials)
+      end
+      it "should have updated storage related credential fields" do
+        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
+        yaml[:credentials][:storage][:account_id].should eql('account1:user1')
+        yaml[:credentials][:storage][:secret_key].should eql('foo1')
+        yaml[:credentials][:storage][:auth_uri].should eql('http://192.168.1.1:9999/auth/v1.0')
+      end
+      it "should not update compute related credential fields" do
+        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
+        yaml[:credentials][:compute][:account_id].should eql('user')
+        yaml[:credentials][:compute][:secret_key].should eql('bar')
+        yaml[:credentials][:compute][:auth_uri].should eql('http://192.168.1.1:8888/v1.0')
+      end
+
+    end
+    context "and only compute credentials are modified" do
+      before(:all) do
+        # reset default account settings
+        reset_account_settings(:default)
+        # only update compute creds
+        credentials = {:compute => {:account_id => 'user1', :secret_key => 'bar1', :auth_uri => 'http://192.168.1.1:9999/v1.0'} }
+        HP::Cloud::Config.update_credentials(:default, credentials)
+      end
+      it "should have not updated storage related credential fields" do
+        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
+        yaml[:credentials][:storage][:account_id].should eql('account:user')
+        yaml[:credentials][:storage][:secret_key].should eql('foo')
+        yaml[:credentials][:storage][:auth_uri].should eql('http://192.168.1.1:8888/auth/v1.0')
+      end
+      it "should update compute related credential fields" do
+        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
+        yaml[:credentials][:compute][:account_id].should eql('user1')
+        yaml[:credentials][:compute][:secret_key].should eql('bar1')
+        yaml[:credentials][:compute][:auth_uri].should eql('http://192.168.1.1:9999/v1.0')
+      end
+
+    end
+
+  end
   
 end
 
@@ -166,10 +243,13 @@ describe "Getting settings" do
       HP::Cloud::Config.flush_settings
     end
     
-    it "should return default settings" do
-      HP::Cloud::Config.settings[:default_auth_uri].should eql('http://agpa-ge1.csbu.hpl.hp.com/auth/v1.0')
+    it "should return default settings for storage service" do
+      HP::Cloud::Config.settings[:default_storage_auth_uri].should eql('https://region-a.geo-1.objects.hpcloudsvc.com/auth/v1.0/')
     end
-    
+    it "should return default settings for compute service" do
+      HP::Cloud::Config.settings[:default_compute_auth_uri].should eql('https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v1.1/')
+    end
+
   end
   
   context "with config file present" do
@@ -183,10 +263,13 @@ describe "Getting settings" do
       HP::Cloud::Config.flush_settings
     end
     
-    it "should return specified settings" do
-      HP::Cloud::Config.settings[:auth_uri].should eql('http://agpa-ge1.csbu.hpl.hp.com/auth/v1.0')
+    it "should return specified settings for storage" do
+      HP::Cloud::Config.settings[:default_storage_auth_uri].should eql('https://region-a.geo-1.objects.hpcloudsvc.com/auth/v1.0/')
     end
-    
+    it "should return specified settings for compute" do
+      HP::Cloud::Config.settings[:default_compute_auth_uri].should eql('https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v1.1/')
+    end
+
   end
   
 end
