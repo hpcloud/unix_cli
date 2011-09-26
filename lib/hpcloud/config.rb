@@ -4,7 +4,9 @@ module HP
   module Cloud
     class Config
 
-      @@default_config = { :default_auth_uri => 'http://agpa-ge1.csbu.hpl.hp.com/auth/v1.0' }
+      @@default_config = { :default_storage_auth_uri => 'https://region-a.geo-1.objects.hpcloudsvc.com/auth/v1.0/',
+                           :default_compute_auth_uri => 'https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v1.1/',
+                         }
 
       def self.config_directory
         home_directory + "/.hpcloud/"
@@ -67,7 +69,11 @@ module HP
     
       def self.update_credentials(account, credentials)
         ensure_config_exists
-        write_account account, credentials
+        if account_exists?(account)
+          update_account account, credentials
+        else
+          write_account account, credentials
+        end
       end
     
       # Note: May want to port some of this to Thor's native actions eventually?
@@ -85,7 +91,21 @@ module HP
           file.write contents.to_yaml
         end
       end
-    
+
+      def self.account_exists?(account_name)
+        File.exists?(accounts_directory + account_name.to_s)
+      end
+
+      def self.update_account(account_name, credentials)
+        creds = YAML::load(File.open("#{accounts_directory}#{account_name.to_s.downcase.gsub(' ', '_')}"))
+        # only update the creds that are set
+        creds[:credentials][:storage] = credentials[:storage] if credentials.has_key?(:storage)
+        creds[:credentials][:compute] = credentials[:compute] if credentials.has_key?(:compute)
+        File.open("#{accounts_directory}#{account_name.to_s.downcase.gsub(' ', '_')}", 'w') do |file|
+          file.write creds.to_yaml
+        end
+      end
+
     end
   end
 end
