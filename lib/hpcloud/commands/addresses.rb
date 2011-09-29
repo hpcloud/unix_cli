@@ -27,6 +27,14 @@ Aliases: addresses:list
           end
         rescue Excon::Errors::Forbidden => error
           display_error_message(error)
+        rescue Fog::AWS::Compute::Error => error
+          # Hack to fix the lack of correct exception being raised, to enable better user experience
+          error_message = error.respond_to?(:response) ? parse_error(error.response) : error.message
+          if error_message_includes?(error, "FloatingIpNotFoundForProject")
+            display "You currently have no addresses, use `#{selfname} addresses:add` to create one."
+          else
+            display_error_message(error)
+          end
         end
       end
 
