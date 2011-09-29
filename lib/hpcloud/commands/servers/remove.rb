@@ -24,9 +24,16 @@ Aliases: servers:delete, servers:del
         if (server && server.id == id)
           begin
             # disassociate server from address, and release address
+            begin
             server.addresses.each do |addr|
               addr.server = nil
               addr.destroy
+            end
+            rescue Fog::AWS::Compute::Error => error
+              # Hack to fix the lack of correct exception being raised, to enable better user experience
+              unless error_message_includes?(error, "FloatingIpNotFoundForProject")
+                display_error_message(error)
+              end
             end
             # now delete the server
             server.destroy
