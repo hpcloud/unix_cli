@@ -45,7 +45,7 @@ describe "securitygroups:ippermissions:add command" do
 
       it "should report ip permission exists if created again" do
         @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['securitygroups:ippermissions:add', 'mysecgroup', 'tcp', '22..22']) }
-        @response.should eql("ApiError => This rule already exists in group mysecgroup\n")
+        @response.should include("This rule already exists in group\n")
       end
 
       after(:all) do
