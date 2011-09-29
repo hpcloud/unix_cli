@@ -21,14 +21,16 @@ describe "addresses:remove command" do
     end
 
     it "should not list in addresses" do
-      addresses = @hp_svc.addresses.map {|a| a.public_ip}
-      addresses.should_not include(@public_ip)
+      lambda {
+        addresses = @hp_svc.addresses.map {|a| a.public_ip}
+      }.should raise_error(Fog::AWS::Compute::Error)
     end
 
     it "should not exist" do
-      address = get_address(@hp_svc, @public_ip)
-        address.should be_nil
-  end
+      lambda {
+        address = get_address(@hp_svc, @public_ip)
+      }.should raise_error(Fog::AWS::Compute::Error)
+    end
 
   end
 end
