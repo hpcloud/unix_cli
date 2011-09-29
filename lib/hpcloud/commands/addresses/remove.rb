@@ -22,6 +22,16 @@ Aliases: addresses:delete, addresses:release, addresses:del
         end
         if (address && address.public_ip == public_ip)
           begin
+            begin
+              # Disassociate any server from this address
+              address.server = nil
+            rescue Fog::AWS::Compute::Error => error
+              # Hack to fix the lack of correct exception being raised, to enable better user experience
+              unless error_message_includes?(error, "Address is not associated")
+                display_error_message(error)
+              end
+            end
+            # Release the address
             address.destroy
             display "Removed address '#{public_ip}'."
           rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error

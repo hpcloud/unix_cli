@@ -27,8 +27,8 @@ describe "addresses:remove command" do
 
     it "should not exist" do
       address = get_address(@hp_svc, @public_ip)
-      address.should be_nil
-    end
+        address.should be_nil
+  end
 
   end
 end
