@@ -22,6 +22,10 @@ RSpec.configure do |config|
                       :aws_access_key_id     => EC2_COMPUTE_ACCOUNT_USERNAME,
                       :aws_secret_access_key => EC2_COMPUTE_ACCOUNT_PASSWORD,
                       :endpoint              => EC2_COMPUTE_AUTH_URL )
+    #Fog::Compute.new( :provider               => 'HP',
+    #                  :hp_account_id          => OS_COMPUTE_ACCOUNT_USERNAME,
+    #                  :hp_secret_key          => OS_COMPUTE_ACCOUNT_PASSWORD,
+    #                  :hp_auth_uri            => OS_COMPUTE_AUTH_URL )
   end
 
   
@@ -46,6 +50,10 @@ module HP::Cloud
                           :aws_access_key_id     => EC2_COMPUTE_ACCOUNT_USERNAME,
                           :aws_secret_access_key => EC2_COMPUTE_ACCOUNT_PASSWORD,
                           :endpoint              => EC2_COMPUTE_AUTH_URL )
+        #Fog::Compute.new( :provider               => 'HP',
+        #                  :hp_account_id          => OS_COMPUTE_ACCOUNT_USERNAME,
+        #                  :hp_secret_key          => OS_COMPUTE_ACCOUNT_PASSWORD,
+        #                  :hp_auth_uri            => OS_COMPUTE_AUTH_URL )
       end
     end
   
