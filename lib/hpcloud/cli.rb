@@ -94,7 +94,13 @@ module HP
         return $1 if $1
         response.body
       end
-      
+
+      # check to see if an error includes a particular text fragment
+      def error_message_includes?(error, text)
+        error_message = error.respond_to?(:response) ? parse_error(error.response) : error.message
+        error_message.include?(text)
+      end
+
       # name of the running CLI script
       def selfname
         ENV['HPCLOUD_CLI_NAME'] || 'hpcloud'
