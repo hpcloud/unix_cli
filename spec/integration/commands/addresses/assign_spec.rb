@@ -45,8 +45,9 @@ describe "addresses:assign command" do
   end
 
   after(:all) do
-    address = @hp_svc.addresses.select {|a| a.public_ip == @public_ip}.first
-    address.destroy if address
+    address = get_address(@hp_svc, @public_ip)
+    address.server = nil if address # diassociate any server
+    address.destroy if address # release the address
     server = get_server(@hp_svc, @new_server_id)
     server.destroy if server
   end
