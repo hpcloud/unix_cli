@@ -1,11 +1,11 @@
 module HP
   module Cloud
     FLAVORS = [
-      { :bits => 32, :cores =>   1,  :disk => 0,    :id =>  'm1.tiny',    :name => 'Tiny Instance',        :ram => 256},
-      { :bits => 32, :cores =>   1,  :disk => 20,   :id =>  'm1.small',   :name => 'Small Instance',       :ram => 1024},
-      { :bits => 32, :cores =>   2,  :disk => 40,   :id =>  'm1.medium',  :name => 'Medium Instance',      :ram => 2048},
-      { :bits => 64, :cores =>   4,  :disk => 80,   :id =>  'm1.large',   :name => 'Large Instance',       :ram => 4096},
-      { :bits => 64, :cores =>   8,  :disk => 160,  :id =>  'm1.xlarge',  :name => 'Extra Large Instance', :ram => 16384}
+      { :bits => 32, :cores =>   1,  :disk => 0,    :id =>  '1',  :name => 'm1.tiny',   :ram => 512},
+      { :bits => 32, :cores =>   1,  :disk => 20,   :id =>  '2',  :name => 'm1.small',  :ram => 2048},
+      { :bits => 32, :cores =>   2,  :disk => 40,   :id =>  '3',  :name => 'm1.medium', :ram => 4096},
+      { :bits => 64, :cores =>   4,  :disk => 80,   :id =>  '4',  :name => 'm1.large',  :ram => 8192},
+      { :bits => 64, :cores =>   8,  :disk => 160,  :id =>  '5',  :name => 'm1.xlarge', :ram => 16384}
     ]
 
     class Flavors
