@@ -43,7 +43,7 @@ describe "Move command" do
       it "should have removed source object" do
         lambda {
           @hp_svc.head_object('move_source_container', 'foo.txt')
-        }.should raise_error(Fog::HP::Storage::NotFound)
+        }.should raise_error(Fog::Storage::HP::NotFound)
       end
       
       it "should display success message" do
@@ -126,7 +126,7 @@ describe "Move command" do
       it "should have removed source object" do
         lambda {
           @hp_svc.head_object('move_source_container', 'foo.txt')
-        }.should raise_error(Fog::HP::Storage::NotFound)
+        }.should raise_error(Fog::Storage::HP::NotFound)
       end
       
       it "should display success message" do

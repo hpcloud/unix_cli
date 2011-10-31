@@ -58,7 +58,7 @@ Note: Copying multiple files at once will be supported in a future release.
                 file.write get.body
               end
               display "Copied #{from} => #{to}"
-            rescue Fog::HP::Storage::NotFound => e
+            rescue Fog::Storage::HP::NotFound => e
               error "The specified object does not exist.", :not_found
             rescue Errno::EACCES
               error "You don't have permission to write the target file.", :permission_denied
@@ -106,7 +106,7 @@ Note: Copying multiple files at once will be supported in a future release.
             #### connection.copy_object(container, path, container_to, path_to)
             connection.put_object(container_to, path_to, nil, {'X-Copy-From' => "/#{container}/#{path}" })
             display "Copied #{from} => :#{container_to}/#{path_to}"
-          rescue Fog::HP::Storage::NotFound => e
+          rescue Fog::Storage::HP::NotFound => e
             if !connection.directories.get(container)
               error "You don't have a container '#{container}'.", :not_found
             elsif container != container_to && !connection.directories.get(container_to)

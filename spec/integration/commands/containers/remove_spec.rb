@@ -58,7 +58,7 @@ describe "containers:remove command" do
     end
     
     it "should remove container" do
-      lambda{ @hp_svc.get_container('container_to_remove') }.should raise_error(Fog::HP::Storage::NotFound)
+      lambda{ @hp_svc.get_container('container_to_remove') }.should raise_error(Fog::Storage::HP::NotFound)
     end
     
     it "should have success exit status" do

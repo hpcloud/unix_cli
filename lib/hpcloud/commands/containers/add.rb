@@ -31,7 +31,7 @@ Aliases: none
           end
         rescue Excon::Errors::Conflict => error
           display_error_message(error, :permission_denied)
-        rescue Fog::HP::Storage::NotFound => error
+        rescue Fog::Storage::HP::NotFound => error
           error 'The container name specified is invalid. Please see API documentation for valid naming guidelines.', :permission_denied
         end 
       end
