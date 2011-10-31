@@ -40,10 +40,8 @@ RSpec.configure do |config|
   OS_COMPUTE_AUTH_URL         = ENV['OS_COMPUTE_AUTH_URL']  || "https://compute.hpcloudsvc.com/v1.1/"
   OS_COMPUTE_ACCOUNT_USERNAME = ENV['OS_COMPUTE_ACCOUNT_USERNAME']  || "<your <access key>"
   OS_COMPUTE_ACCOUNT_PASSWORD = ENV['OS_COMPUTE_ACCOUNT_PASSWORD']  || "<your secret key>"
-
-  EC2_COMPUTE_AUTH_URL         = ENV['EC2_COMPUTE_AUTH_URL']  || "https://compute.hpcloudsvc.com/services/Cloud/"
-  EC2_COMPUTE_ACCOUNT_USERNAME = ENV['EC2_COMPUTE_ACCOUNT_USERNAME']  || "<your <access key>"
-  EC2_COMPUTE_ACCOUNT_PASSWORD = ENV['EC2_COMPUTE_ACCOUNT_PASSWORD']  || "<your secret key>"
+  OS_COMPUTE_BASE_IMAGE_ID    = 7
+  OS_COMPUTE_BASE_FLAVOR_ID   = 1
 
   if MOCKING_ENABLED
     puts "==========================================================="
@@ -53,7 +51,7 @@ RSpec.configure do |config|
     Fog.mock!
   else
     puts "Running tests against HP OpenStack Storage (Swift) instance: #{OS_STORAGE_AUTH_URL}..."
-    puts "and HP OpenStack (EC2 compatibility) Compute (Nova) instance: #{EC2_COMPUTE_AUTH_URL}..."
+    puts "and HP OpenStack (EC2 compatibility) Compute (Nova) instance: #{OS_COMPUTE_AUTH_URL}..."
   end
 end
 
