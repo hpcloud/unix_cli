@@ -51,14 +51,10 @@ module HP
                               :hp_secret_key  => service_credentials[:secret_key],
                               :hp_auth_uri    => service_credentials[:auth_uri] )
           else
-            #Fog::Compute.new( :provider       => 'HP',
-            #                  :hp_account_id  => service_credentials[:account_id],
-            #                  :hp_secret_key  => service_credentials[:secret_key],
-            #                  :hp_auth_uri    => service_credentials[:auth_uri] )
-            Fog::Compute.new( :provider       => 'AWS',
-                              :aws_access_key_id  => service_credentials[:account_id],
-                              :aws_secret_access_key  => service_credentials[:secret_key],
-                              :endpoint    => service_credentials[:auth_uri] )
+            Fog::Compute.new( :provider       => 'HP',
+                              :hp_account_id  => service_credentials[:account_id],
+                              :hp_secret_key  => service_credentials[:secret_key],
+                              :hp_auth_uri    => service_credentials[:auth_uri] )
           end
         rescue
           display("Error connecting to the service endpoint at: #{service_credentials[:auth_uri]}. ")
