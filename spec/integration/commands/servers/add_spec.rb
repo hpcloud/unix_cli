@@ -12,7 +12,7 @@ describe "servers:add command" do
   ### Till we can get back the server id that is created, it cannot be deleted, hence marked pending
   context "when creating server with name, image and defaults" do
     before(:all) do
-      @response, @exit = run_command('servers:add fog-test-server ami-00000005').stdout_and_exit_status
+      @response, @exit = run_command('servers:add fog-test-server ami-00000007').stdout_and_exit_status
       @new_server_id = @response.scan(/'([^']+)/)[0][0]
     end
 

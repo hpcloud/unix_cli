@@ -9,7 +9,7 @@ describe "addresses:assign command" do
     @hp_svc = compute_connection
     response, exit = run_command('addresses:add').stdout_and_exit_status
     @public_ip = response.scan(/'([^']+)/)[0][0]
-    response2 = @hp_svc.run_instances('ami-00000005', 1, 1, {'InstanceType' => 'm1.small'})
+    response2 = @hp_svc.run_instances('ami-00000007', 1, 1, {'InstanceType' => 'm1.small'})
     @new_server_id = response2.body['instancesSet'][0]['instanceId']
   end
 

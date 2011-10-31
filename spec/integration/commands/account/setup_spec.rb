@@ -20,7 +20,6 @@ describe "account:setup command" do
       $stdout.should_receive(:print).with('Storage API Auth Uri: [https://region-a.geo-1.objects.hpcloudsvc.com/auth/v1.0/] ')
       $stdin.should_receive(:gets).and_return('https://127.0.0.1/')
       $stdout.should_receive(:print).with('Error connecting to the service endpoint at: https://127.0.0.1/. ')
-      $stdin.should_receive(:gets).and_return('pass')
       begin
         cli.send('account:setup')
       rescue SystemExit => system_exit # catch any exit calls
