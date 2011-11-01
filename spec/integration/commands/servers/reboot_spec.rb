@@ -10,16 +10,15 @@ describe "servers:reboot command" do
   end
 
   ### Server creation returns status "failed to spawn", hence test fails
-  pending "when rebooting server with id" do
+  context "when rebooting server with name" do
     before(:all) do
-      response = @hp_svc.run_instances('ami-00000007', 1, 1, {'InstanceType' => 'm1.small'})
-      @new_server_id = response.body['instancesSet'][0]['instanceId']
-      @server = get_server(@hp_svc, @new_server_id)
+      server = @hp_svc.servers.create(:flavor_id => OS_COMPUTE_BASE_FLAVOR_ID, :image_id => OS_COMPUTE_BASE_IMAGE_ID, :name => "rebootserver" )
+      @server = @hp_svc.servers.get(server.id)
     end
 
     it "should show success message" do
-      @response, @exit = run_command("servers:reboot #{@new_server_id}").stdout_and_exit_status
-      @response.should eql("Rebooting server '#{@new_server_id}'.\n")
+      @response, @exit = run_command("servers:reboot #{@server.name}").stdout_and_exit_status
+      @response.should eql("Rebooting server '#{@server.name}'.\n")
       sleep(10)
     end
 
