@@ -4,45 +4,33 @@ module HP
 
       map %w(servers:delete servers:del) => 'servers:remove'
 
-      desc "servers:remove <id>", "remove a server by id"
+      desc "servers:remove <name>", "remove a server by name"
       long_desc <<-DESC
-  Remove an existing server by specifying its id.
+  Remove an existing server by specifying its name.
 
 Examples:
-  hpcloud servers:remove i-00000001          # delete 'i-00000001'
+  hpcloud servers:remove my-server          # delete 'my-server'
 
 Aliases: servers:delete, servers:del
       DESC
-      define_method "servers:remove" do |id|
+      define_method "servers:remove" do |name|
         begin
           # setup connection for compute service
           compute_connection = connection(:compute)
-          server = compute_connection.servers.select {|s| s.id == id}.first
+          server = compute_connection.servers.select {|s| s.name == name}.first
         rescue Excon::Errors::Forbidden => error
           display_error_message(error, :permission_denied)
         end
-        if (server && server.id == id)
+        if (server && server.name == name)
           begin
-            # disassociate server from address, and release address
-            begin
-            server.addresses.each do |addr|
-              addr.server = nil
-              addr.destroy
-            end
-            rescue Fog::AWS::Compute::Error => error
-              # Hack to fix the lack of correct exception being raised, to enable better user experience
-              unless error_message_includes?(error, "FloatingIpNotFoundForProject")
-                display_error_message(error)
-              end
-            end
             # now delete the server
             server.destroy
-            display "Removed server '#{id}'."
+            display "Removed server '#{name}'."
           rescue Excon::Errors::Conflict, Excon::Errors::Forbidden => error
             display_error_message(error)
           end
         else
-          error "You don't have a server with '#{id}'.", :not_found
+          error "You don't have a server '#{name}'.", :not_found
         end
       end
 
