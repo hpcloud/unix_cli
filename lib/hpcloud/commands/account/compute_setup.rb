@@ -25,8 +25,7 @@ module HP
         unless options['no-validate']
           begin
             display "Verifying your HP Cloud Compute account..."
-            #connection_with(:compute, credentials).list_servers
-            connection_with(:compute, credentials[:compute]).describe_instances
+            connection_with(:compute, credentials[:compute]).list_servers
           rescue NoMethodError
             error "Please verify and try again."
           rescue Excon::Errors::Forbidden, Excon::Errors::Unauthorized => e
