@@ -1,6 +1,6 @@
-require 'hpcloud/commands/addresses/add'
-require 'hpcloud/commands/addresses/remove'
-require 'hpcloud/commands/addresses/assign'
+#require 'hpcloud/commands/addresses/add'
+#require 'hpcloud/commands/addresses/remove'
+#require 'hpcloud/commands/addresses/assign'
 
 module HP
   module Cloud
