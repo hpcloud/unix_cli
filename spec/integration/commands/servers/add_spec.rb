@@ -17,7 +17,7 @@ describe "servers:add command" do
     end
 
     it "should show success message" do
-      @response.should include("Created server fog-test-server")
+      @response.should include("Created server 'fog-test-server'")
     end
     its_exit_status_should_be(:success)
 

@@ -22,14 +22,9 @@ Aliases: none
                                                   :image_id => image_id,
                                                   :name => name)
           server.save
-          display "Created server #{name} with id '#{server.id}'."
+          display "Created server '#{name}' with id '#{server.id}'."
         rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
           display_error_message(error, :permission_denied)
-        end
-        # display list of servers
-        servers = compute_connection.servers
-        if !servers.empty?
-          servers.table([:id, :name, :flavor_id, :image_id, :created_at, :private_ip_address, :public_ip_address, :state])
         end
       end
 
