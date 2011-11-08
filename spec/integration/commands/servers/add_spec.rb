@@ -31,7 +31,7 @@ describe "servers:add command" do
     end
 
     after(:all) do
-      server = get_server(@hp_svc, @new_server_id)
+      server = @hp_svc.servers.get(@new_server_id)
       server.destroy
     end
   end
