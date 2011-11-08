@@ -1,4 +1,5 @@
 require 'hpcloud/commands/images/add'
+require 'hpcloud/commands/images/remove'
 
 module HP
   module Cloud
@@ -21,7 +22,7 @@ Aliases: images:list
           if images.empty?
             display "You currently have no images to use."
           else
-            images.table([:id, :architecture, :type, :is_public, :kernel_id, :platform, :name, :state])
+            images.table([:id, :name, :minDisk, :minRam, :created_at, :updated_at, :status])
           end
         rescue Excon::Errors::Forbidden => error
           display_error_message(error)
