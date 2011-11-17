@@ -18,12 +18,12 @@ Aliases: flavors:list
       def flavors
         begin
           # Need specific flavors for HP
-          #flavors = connection(:compute).flavors
-          flavors = HP::Cloud::Flavors.all
+          flavors = connection(:compute).flavors
           if flavors.empty?
             display "You currently have no flavors."
           else
-            HP::Cloud::Flavors.table(flavors)
+            # :rxtx_cap, :rxtx_quota, :swap, :vcpus are not attributes on model
+            flavors.table([:id, :name, :ram, :disk])
           end
         rescue Excon::Errors::Forbidden => error
           display_error_message(error)
