@@ -23,7 +23,8 @@ Aliases: servers:list
           if servers.empty?
             display "You currently have no servers, use `#{selfname} servers:add <name>` to create one."
           else
-            servers.table([:id, :name, :key_name, :flavor_id, :image_id, :created_at, :private_ip_address, :public_ip_address, :state])
+            servers.table([:id, :name, :created_at, :updated_at, :key_name, :public_ip_address, :state])
+            #servers.table
           end
         rescue Excon::Errors::Forbidden => error
           display_error_message(error)
