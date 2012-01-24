@@ -1,10 +1,6 @@
 ---
 :credentials:
-  :storage:
-    :account_id: account:user
-    :secret_key: foo
-    :auth_uri: http://192.168.1.1:8888/auth/v1.0
-  :compute:
-    :account_id: user
-    :secret_key: bar
-    :auth_uri: http://192.168.1.1:8888/v1.0
+  :account_id: foo
+  :secret_key: bar
+  :auth_uri: http://192.168.1.1:8888/v2.0
+  :tenant_id: '111111'

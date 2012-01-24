@@ -7,7 +7,7 @@ describe "images:remove command" do
 
   before(:all) do
     @hp_svc = compute_connection
-    @flavor_id = 1 #tiny
+    @flavor_id = OS_COMPUTE_BASE_FLAVOR_ID
     @image_id = OS_COMPUTE_BASE_IMAGE_ID
     @image_name = "fog-test-image"
     @server = @hp_svc.servers.create(:flavor_id => @flavor_id, :image_id => @image_id, :name => "fog-test-server" )

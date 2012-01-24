@@ -12,13 +12,15 @@ describe "account:setup command" do
   
     before(:all) { remove_account_files }
   
-    it "should ask for account id, account key and endpoint" do
+    it "should ask for account id, account key, endpoint and tenant_id" do
       $stdout.should_receive(:print).with('Account ID: ')
-      $stdin.should_receive(:gets).and_return('account:user')
+      $stdin.should_receive(:gets).and_return('foo')
       $stdout.should_receive(:print).with('Account Key: ')
-      $stdin.should_receive(:gets).and_return('pass')
-      $stdout.should_receive(:print).with('Storage API Auth Uri: [https://region-a.geo-1.objects.hpcloudsvc.com/auth/v1.0/] ')
+      $stdin.should_receive(:gets).and_return('bar')
+      $stdout.should_receive(:print).with('Auth Uri: [https://region-a.geo-1.objects.hpcloudsvc.com/v2.0/] ')
       $stdin.should_receive(:gets).and_return('https://127.0.0.1/')
+      $stdout.should_receive(:print).with('Tenant Id: ')
+      $stdin.should_receive(:gets).and_return('111111')
       $stdout.should_receive(:print).with('Error connecting to the service endpoint at: https://127.0.0.1/. ')
       begin
         cli.send('account:setup')
@@ -29,12 +31,14 @@ describe "account:setup command" do
 
     it "should provide default endpoint and validate endpoint" do
       $stdout.should_receive(:print).with('Account ID: ')
-      $stdin.should_receive(:gets).and_return('account:user')
+      $stdin.should_receive(:gets).and_return('foo')
       $stdout.should_receive(:print).with('Account Key: ')
-      $stdin.should_receive(:gets).and_return('pass')
-      $stdout.should_receive(:print).with('Storage API Auth Uri: [https://region-a.geo-1.objects.hpcloudsvc.com/auth/v1.0/] ')
-      $stdin.should_receive(:gets).and_return('https://region-a.geo-1.objects.hpcloudsvc.com/auth/v1.0/')
-      $stdout.should_receive(:print).with('Error connecting to the service endpoint at: https://region-a.geo-1.objects.hpcloudsvc.com/auth/v1.0/. ')
+      $stdin.should_receive(:gets).and_return('bar')
+      $stdout.should_receive(:print).with('Auth Uri: [https://region-a.geo-1.objects.hpcloudsvc.com/v2.0/] ')
+      $stdin.should_receive(:gets).and_return('https://region-a.geo-1.objects.hpcloudsvc.com/v2.0/')
+      $stdout.should_receive(:print).with('Tenant Id: ')
+      $stdin.should_receive(:gets).and_return('111111')
+      $stdout.should_receive(:print).with('Error connecting to the service endpoint at: https://region-a.geo-1.objects.hpcloudsvc.com/v2.0/. ')
       begin
         cli.send('account:setup')
       rescue SystemExit => system_exit # catch any exit calls

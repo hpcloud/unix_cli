@@ -24,10 +24,7 @@ RSpec.configure do |config|
     File.open(HP::Cloud::Config.accounts_directory + account.to_s, 'w') do |file|
       file.write(read_account_file(account.to_s))
     end
-    # update both credentials
-    credentials = {:storage => {:account_id => 'account1:user1', :secret_key => 'foo1', :auth_uri => 'http://192.168.1.1:9999/auth/v1.0'},
-                   :compute => {:account_id => 'user1', :secret_key => 'bar1', :auth_uri => 'http://192.168.1.1:9999/v1.0'}
-                  }
+    credentials = {:account_id => 'foo1', :secret_key => 'bar1', :auth_uri => 'http://192.168.1.1:9999/v2.0', :tenant_id => '222222'}
     HP::Cloud::Config.update_credentials(account, credentials)
   end
 
