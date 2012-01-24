@@ -4,9 +4,12 @@ module HP
   module Cloud
     class Config
 
-      @@default_config = { :default_storage_auth_uri => 'https://region-a.geo-1.objects.hpcloudsvc.com/auth/v1.0/',
-                           :default_compute_auth_uri => 'https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v1.1/',
-                         }
+      # Connection timeouts in secs.
+      CONNECT_TIMEOUT = 5
+      READ_TIMEOUT = 5
+      WRITE_TIMEOUT = 5
+
+      @@default_config = { :default_auth_uri => 'https://region-a.geo-1.objects.hpcloudsvc.com/v2.0/' }
 
       def self.config_directory
         home_directory + "/.hpcloud/"
@@ -31,24 +34,10 @@ module HP
       def self.accounts_directory
         config_directory + 'accounts/'
       end
-    
+
       def self.current_credentials
         if File.exists?(accounts_directory + 'default')
           return YAML::load(File.open(accounts_directory + 'default'))[:credentials]
-        end
-        nil
-      end
-
-      def self.storage_credentials
-        if current_credentials
-          return current_credentials[:storage]
-        end
-        nil
-      end
-
-      def self.compute_credentials
-        if current_credentials
-          return current_credentials[:compute]
         end
         nil
       end
@@ -99,8 +88,7 @@ module HP
       def self.update_account(account_name, credentials)
         creds = YAML::load(File.open("#{accounts_directory}#{account_name.to_s.downcase.gsub(' ', '_')}"))
         # only update the creds that are set
-        creds[:credentials][:storage] = credentials[:storage] if credentials.has_key?(:storage)
-        creds[:credentials][:compute] = credentials[:compute] if credentials.has_key?(:compute)
+        creds[:credentials] = credentials
         File.open("#{accounts_directory}#{account_name.to_s.downcase.gsub(' ', '_')}", 'w') do |file|
           file.write creds.to_yaml
         end
