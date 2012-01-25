@@ -1,3 +1,29 @@
+v0.0.11 11/21/11
+================
+- CLI uses OS API and drops EC2 API
+- Still uses 'hpfog' library v0.0.9
+- Update to use HP provider instead of AWS provider
+- Remove all EC2 API based commands
+- Add servers command set: list, add, password, reboot, and remove
+- Add images command set: list, add, and remove
+- Add flavors command set: list
+- Update test suite to go against OS API
+
+v0.0.10 10/31/11
+================
+- Last version of CLI to use EC2 API
+- Still uses 'hpfog' library v0.0.9
+- Update account:setup to call separate setup for storage and compute services
+- Add separate account:storage and account:compute sub-commands.
+- Updates accounts specs
+- Add servers command set: list, add, reboot, and remove
+- Add images command set: list, add, and remove
+- Add flavors command set: list
+- Add keypairs command set: list, add, remove, import and export
+- Add addresses command set: list, add, remove, and assign
+- Add securitygroups command set: list, add, remove and ippermissions
+- Add securitygroups:ippermissions command set: list, add, remove
+
 v0.0.9 9/22/11
 ==============
 - Add container name validation to container:add command
