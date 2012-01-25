@@ -7,8 +7,12 @@ describe "containers:add command" do
   end
 
   before(:all) do
-    purge_containers
     @hp_svc = storage_connection
+    begin
+      purge_containers(@hp_svc)
+    rescue
+      # ignore errors
+    end
     @other_user = storage_connection(:secondary)
   end
 
