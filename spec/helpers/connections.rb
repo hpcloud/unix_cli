@@ -14,16 +14,14 @@ RSpec.configure do |config|
                         :hp_account_id   => OS_STORAGE_ACCOUNT_USERNAME,
                         :hp_secret_key   => OS_STORAGE_ACCOUNT_PASSWORD,
                         :hp_auth_uri     => OS_STORAGE_AUTH_URL,
-                        :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID,
-                        :hp_service_type => "object-store")
+                        :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID)
     elsif (user == :secondary)
       Fog::Storage.new( :provider        => 'HP',
                         :connection_options => connection_options,
                         :hp_account_id   => OS_STORAGE_SEC_ACCOUNT_USERNAME,
                         :hp_secret_key   => OS_STORAGE_SEC_ACCOUNT_PASSWORD,
                         :hp_auth_uri     => OS_STORAGE_AUTH_URL,
-                        :hp_tenant_id    => OS_STORAGE_SEC_ACCOUNT_TENANT_ID,
-                        :hp_service_type => "object-store")
+                        :hp_tenant_id    => OS_STORAGE_SEC_ACCOUNT_TENANT_ID)
     end
   end
   
@@ -36,8 +34,7 @@ RSpec.configure do |config|
                       :hp_account_id   => OS_COMPUTE_ACCOUNT_USERNAME,
                       :hp_secret_key   => OS_COMPUTE_ACCOUNT_PASSWORD,
                       :hp_auth_uri     => OS_COMPUTE_AUTH_URL,
-                      :hp_tenant_id    => OS_COMPUTE_ACCOUNT_TENANT_ID,
-                      :hp_service_type => "compute")
+                      :hp_tenant_id    => OS_COMPUTE_ACCOUNT_TENANT_ID)
   end
   
 end
@@ -60,16 +57,14 @@ module HP::Cloud
                           :hp_account_id   => OS_STORAGE_ACCOUNT_USERNAME,
                           :hp_secret_key   => OS_STORAGE_ACCOUNT_PASSWORD,
                           :hp_auth_uri     => OS_STORAGE_AUTH_URL,
-                          :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID,
-                          :hp_service_type => "object-store")
+                          :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID)
       else
         Fog::Compute.new( :provider        => 'HP',
                           :connection_options => connection_options,
                           :hp_account_id   => OS_COMPUTE_ACCOUNT_USERNAME,
                           :hp_secret_key   => OS_COMPUTE_ACCOUNT_PASSWORD,
                           :hp_auth_uri     => OS_COMPUTE_AUTH_URL,
-                          :hp_tenant_id    => OS_COMPUTE_ACCOUNT_TENANT_ID,
-                          :hp_service_type => "compute")
+                          :hp_tenant_id    => OS_COMPUTE_ACCOUNT_TENANT_ID)
       end
     end
   
