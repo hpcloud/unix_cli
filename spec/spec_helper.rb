@@ -22,7 +22,7 @@ require 'helpers/io'
 require 'helpers/configs'
 require 'helpers/containers'
 require 'helpers/servers'
-#require 'helpers/keypairs'
+require 'helpers/keypairs'
 #require 'helpers/addresses'
 #require 'helpers/securitygroups'
 
@@ -67,8 +67,6 @@ RSpec.configure do |config|
     Fog.mock!
   else
     puts "Running tests against HP Cloud Services with CS endpoint: #{OS_STORAGE_AUTH_URL}..."
-    #puts "Running tests against HP OpenStack Storage (Swift) instance: #{OS_STORAGE_AUTH_URL}..."
-    #puts "and HP OpenStack (EC2 compatibility) Compute (Nova) instance: #{OS_COMPUTE_AUTH_URL}..."
   end
 end
 

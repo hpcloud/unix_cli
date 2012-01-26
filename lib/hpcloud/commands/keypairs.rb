@@ -23,7 +23,7 @@ Aliases: keypairs:list
           if keypairs.empty?
             display "You currently have no keypairs to use."
           else
-            keypairs.table([:name, :fingerprint, :private_key])
+            keypairs.table([:name, :fingerprint])
           end
         rescue Excon::Errors::Forbidden => error
           display_error_message(error)

@@ -4,12 +4,14 @@ module HP
 
       desc "keypairs:add <key_name> <fingerprint> <private_key>", "add a key pair"
       long_desc <<-DESC
-  Add a key pair by specifying the fingerprint and private key data.
+  Add a key pair by specifying the name. Optionally you can specify a fingerprint and private key data too.
+  Additionally you can use the -o option to save the key into a file.
 
 Examples:
   hpcloud keypairs:add mykey
   hpcloud keypairs:add mykey c1:db:b5:bc:8b:b9:0f:33:62:53:de:80:6e:ae:67:66
   hpcloud keypairs:add mykey c1:db:b5:bc:8b:b9:0f:33:62:53:de:80:6e:ae:67:66 'private key data'
+  hpcloud keypairs:add mykey -o my-key.pem
 
 Aliases: none
       DESC
@@ -25,7 +27,7 @@ Aliases: none
             display keypair.private_key
             display "Created key pair '#{key_name}'."
           end
-        rescue Fog::AWS::Compute::Error
+        rescue Fog::Compute::HP::Error
           display "Key pair '#{key_name}' already exists."
         rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
           display_error_message(error, :permission_denied)
