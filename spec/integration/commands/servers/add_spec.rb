@@ -7,17 +7,18 @@ describe "servers:add command" do
 
   before(:all) do
     @hp_svc = compute_connection
+    @server_name = "fog-test-server-1"
   end
 
   ### Till we can get back the server id that is created, it cannot be deleted, hence marked pending
   context "when creating server with name, image and defaults" do
     before(:all) do
-      @response, @exit = run_command("servers:add fog-test-server #{OS_COMPUTE_BASE_IMAGE_ID}").stdout_and_exit_status
-      @new_server_id = @response.scan(/'([^']+)/)[0][0]
+      @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID}").stdout_and_exit_status
+      @new_server_id = @response.scan(/'([^']+)/)[2][0]
     end
 
     it "should show success message" do
-      @response.should include("Created server fog-test-server")
+      @response.should eql("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
     end
     its_exit_status_should_be(:success)
 
@@ -27,7 +28,7 @@ describe "servers:add command" do
     end
     it "should list name in servers" do
       servers = @hp_svc.servers.map {|s| s.name}
-      servers.should include("fog-test-server")
+      servers.should include(@server_name)
     end
 
     after(:all) do

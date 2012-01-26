@@ -8,12 +8,11 @@ module HP
   or without the preceding colon: 'my_server' or ':my_server'.
 
 Examples:
-  hpcloud servers:add :my_server 7       # Creates a new server named 'my_server' using supplied options \n
   hpcloud servers:add :my_server 7 1     # Creates a new server named 'my_server' using supplied options \n
 
 Aliases: none
       DESC
-      define_method "servers:add" do |name, image_id, flavor_id="1"|
+      define_method "servers:add" do |name, image_id, flavor_id|
         # setup connection for compute service
         compute_connection = connection(:compute)
         begin
@@ -22,7 +21,7 @@ Aliases: none
                                                   :image_id => image_id,
                                                   :name => name)
           server.save
-          display "Created server #{name} with id '#{server.id}'."
+          display "Created server '#{name}' with id '#{server.id}'."
         rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
           display_error_message(error, :permission_denied)
         end
