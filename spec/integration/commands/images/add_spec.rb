@@ -9,8 +9,9 @@ describe "images:add command" do
     @hp_svc = compute_connection
     @flavor_id = OS_COMPUTE_BASE_FLAVOR_ID
     @image_id = OS_COMPUTE_BASE_IMAGE_ID
-    @server_name = "fog-test-server"
+    @server_name = "fog-test-server-3"
     @server = @hp_svc.servers.create(:flavor_id => @flavor_id, :image_id => @image_id, :name => @server_name )
+    @server.wait_for { ready? }
   end
 
   context "when creating image with name, server and defaults" do

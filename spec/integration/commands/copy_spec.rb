@@ -85,7 +85,7 @@ describe "Copy command" do
       end
       
       it "should preserve content-type" do
-        @head.headers["Content-Type"].should eql('text/plain; charset=UTF-8')
+        @head.headers["Content-Type"].should include('text/plain')
       end
       
     end

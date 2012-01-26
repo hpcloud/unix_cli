@@ -7,18 +7,19 @@ describe "servers:remove command" do
 
   before(:all) do
     @hp_svc = compute_connection
+    server = @hp_svc.servers.create(:flavor_id => OS_COMPUTE_BASE_FLAVOR_ID, :image_id => OS_COMPUTE_BASE_IMAGE_ID, :name => "delserver" )
+    server.wait_for { ready? }
+    @server = @hp_svc.servers.get(server.id)
   end
 
   context "when deleting server with name" do
     before(:all) do
-      server = @hp_svc.servers.create(:flavor_id => OS_COMPUTE_BASE_FLAVOR_ID, :image_id => OS_COMPUTE_BASE_IMAGE_ID, :name => "delserver" )
-      @server = @hp_svc.servers.get(server.id)
+      @response, @exit = run_command("servers:remove #{@server.name}").stdout_and_exit_status
+      sleep(10)
     end
 
     it "should show success message" do
-      @response, @exit = run_command("servers:remove #{@server.name}").stdout_and_exit_status
       @response.should eql("Removed server '#{@server.name}'.\n")
-      sleep(10)
     end
 
     ### server deletes take time to get it off the list

@@ -10,19 +10,20 @@ describe "images:remove command" do
     @flavor_id = OS_COMPUTE_BASE_FLAVOR_ID
     @image_id = OS_COMPUTE_BASE_IMAGE_ID
     @image_name = "fog-test-image"
-    @server = @hp_svc.servers.create(:flavor_id => @flavor_id, :image_id => @image_id, :name => "fog-test-server" )
+    @server = @hp_svc.servers.create(:flavor_id => @flavor_id, :image_id => @image_id, :name => "fog-test-server-2" )
+    @server.wait_for { ready? }
   end
 
   context "when deleting an image by name" do
     before(:all) do
       resp = @server.create_image(@image_name)
       @new_image_id = resp.headers["Location"].split("/")[5]
+      @response, @exit = run_command("images:remove #{@image_name}").stdout_and_exit_status
+      sleep(10)
     end
 
     it "should show success message" do
-      @response, @exit = run_command("images:remove #{@image_name}").stdout_and_exit_status
       @response.should eql("Removed image '#{@image_name}'.\n")
-      sleep(10)
     end
 
     ### image deletes take time to get it off the list
