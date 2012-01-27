@@ -30,6 +30,9 @@ RSpec.configure do |config|
   
   MOCKING_ENABLED = ENV['ENABLE_CLI_MOCKING'] || false
 
+  HOSTNAME                    = `hostname`.chomp
+  RANDOM_CHARS                = [('a'..'z')].map{|i| i.to_a}.flatten
+
   ### Dev creds. set these env. vars with appropriate data manually.
   #OS_STORAGE_AUTH_URL         = ENV['OS_STORAGE_AUTH_URL'] || "https://objects.hpcloudsvc.com/auth/v1.0"
   #OS_STORAGE_ACCOUNT_USERNAME = ENV['OS_STORAGE_ACCOUNT_USERNAME'] || "<your <access key 1>"
@@ -68,5 +71,11 @@ RSpec.configure do |config|
   else
     puts "Running tests against HP Cloud Services with CS endpoint: #{OS_STORAGE_AUTH_URL}..."
   end
+
+  # Generate a unique resource name
+  def resource_name(seed=random_string(5))
+    'fog_' << HOSTNAME << '_' << Time.now.to_i.to_s << '_' << seed.to_s
+  end
+
 end
 

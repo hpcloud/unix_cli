@@ -7,7 +7,7 @@ describe "servers:add command" do
 
   before(:all) do
     @hp_svc = compute_connection
-    @server_name = "fog-test-server-1"
+    @server_name = resource_name("add")
   end
 
   ### Till we can get back the server id that is created, it cannot be deleted, hence marked pending
