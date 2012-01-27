@@ -1,6 +1,6 @@
-require 'hpcloud/ip_permissions'
-require 'hpcloud/commands/securitygroups/ippermissions/add'
-require 'hpcloud/commands/securitygroups/ippermissions/remove'
+#require 'hpcloud/ip_permissions'
+#require 'hpcloud/commands/securitygroups/ippermissions/add'
+#require 'hpcloud/commands/securitygroups/ippermissions/remove'
 
 module HP
   module Cloud
