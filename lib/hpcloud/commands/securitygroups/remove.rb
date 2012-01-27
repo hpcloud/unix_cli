@@ -17,7 +17,7 @@ Aliases: securitygroups:delete, securitygroups:del
         begin
           compute_connection = connection(:compute)
           security_group = compute_connection.security_groups.select {|sg| sg.name == sec_group_name}.first
-        rescue Excon::Errors::Forbidden => error
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
           display_error_message(error, :permission_denied)
         end
         if (security_group && security_group.name == sec_group_name)
@@ -25,7 +25,7 @@ Aliases: securitygroups:delete, securitygroups:del
             security_group.destroy
             display "Removed security group '#{sec_group_name}'."
           rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-            display_error_message(error)
+            display_error_message(error, :permission_denied)
           end
         else
           error "You don't have a security group '#{sec_group_name}'.", :not_found

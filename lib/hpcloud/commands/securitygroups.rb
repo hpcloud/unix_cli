@@ -25,8 +25,8 @@ Aliases: securitygroups:list
           else
             securitygroups.table([:name, :description, :owner_id])
           end
-        rescue Excon::Errors::Forbidden => error
-          display_error_message(error)
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
+          display_error_message(error, :permission_denied)
         end
       end
 

@@ -22,7 +22,7 @@ Aliases: none
             security_group.save
             display "Created security group '#{sec_group_name}'."
           end
-        rescue Fog::AWS::Compute::Error => error
+        rescue Fog::Compute::HP::Error => error
           display_error_message(error)
         rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
           display_error_message(error, :permission_denied)
