@@ -16,7 +16,7 @@ describe "servers:remove command" do
   context "when deleting server with name" do
     before(:all) do
       @response, @exit = run_command("servers:remove #{@server_name}").stdout_and_exit_status
-      sleep(10)
+      sleep(15)
     end
 
     it "should show success message" do
