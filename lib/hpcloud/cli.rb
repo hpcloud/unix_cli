@@ -94,10 +94,17 @@ module HP
       end
     
       # pull the error message out of an XML response
-      def parse_error(response)
+      def parse_error_xml(response)
         response.body =~ /<Message>(.*)<\/Message>/
         return $1 if $1
         response.body
+      end
+
+      # pull the error message out of an JSON response
+      def parse_error(response)
+        err_msg = MultiJson.decode(response.body)
+        # Error message:  {"badRequest": {"message": "Invalid IP protocol ttt.", "code": 400}}
+        err_msg.map {|_,v| v["message"] if v.has_key?("message")}
       end
 
       # check to see if an error includes a particular text fragment
