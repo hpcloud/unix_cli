@@ -31,7 +31,7 @@ Aliases: securitygroups:rules:list
           else
             error "You don't have a security group '#{sec_group_name}'.", :not_found
           end
-        rescue Excon::Errors::Forbidden => error
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
           display_error_message(error)
         end
       end

@@ -25,6 +25,6 @@ require 'hpcloud/commands/servers'
 require 'hpcloud/commands/flavors'
 require 'hpcloud/commands/images'
 require 'hpcloud/commands/keypairs'
-#require 'hpcloud/commands/addresses'
+require 'hpcloud/commands/addresses'
 require 'hpcloud/commands/securitygroups'
 

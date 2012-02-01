@@ -54,19 +54,17 @@ module HP
                               :hp_account_id   => service_credentials[:account_id],
                               :hp_secret_key   => service_credentials[:secret_key],
                               :hp_auth_uri     => service_credentials[:auth_uri],
-                              :hp_tenant_id    => service_credentials[:tenant_id],
-                              :hp_service_type => "object-store")
+                              :hp_tenant_id    => service_credentials[:tenant_id])
           else
             Fog::Compute.new( :provider        => 'HP',
                               :connection_options => connection_options,
                               :hp_account_id   => service_credentials[:account_id],
                               :hp_secret_key   => service_credentials[:secret_key],
                               :hp_auth_uri     => service_credentials[:auth_uri],
-                              :hp_tenant_id    => service_credentials[:tenant_id],
-                              :hp_service_type => "compute")
+                              :hp_tenant_id    => service_credentials[:tenant_id])
           end
         rescue
-          display("Error connecting to the service endpoint at: #{service_credentials[:auth_uri]}. ")
+          error "Error connecting to the service endpoint at: #{service_credentials[:auth_uri]}."
         end
       end
     

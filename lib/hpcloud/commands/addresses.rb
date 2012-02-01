@@ -1,6 +1,7 @@
-#require 'hpcloud/commands/addresses/add'
-#require 'hpcloud/commands/addresses/remove'
-#require 'hpcloud/commands/addresses/assign'
+require 'hpcloud/commands/addresses/add'
+require 'hpcloud/commands/addresses/remove'
+require 'hpcloud/commands/addresses/associate'
+require 'hpcloud/commands/addresses/disassociate'
 
 module HP
   module Cloud
@@ -10,7 +11,7 @@ module HP
 
       desc "addresses", "list of available addresses"
       long_desc <<-DESC
-  List the available addresses in your compute account.
+  List the available addresses for your account.
 
 Examples:
   hpcloud addresses
@@ -21,19 +22,14 @@ Aliases: addresses:list
         begin
           addresses = connection(:compute).addresses
           if addresses.empty?
-            display "You currently have no addresses, use `#{selfname} addresses:add` to create one."
+            display "You currently have no public IP addresses, use `#{selfname} addresses:add` to create one."
           else
-            addresses.table([:public_ip, :server_id])
+            addresses.table([:id, :ip, :fixed_ip, :instance_id])
           end
-        rescue Excon::Errors::Forbidden => error
-          display_error_message(error)
-        rescue Fog::AWS::Compute::Error => error
-          # Hack to fix the lack of correct exception being raised, to enable better user experience
-          if error_message_includes?(error, "FloatingIpNotFoundForProject")
-            display "You currently have no addresses, use `#{selfname} addresses:add` to create one."
-          else
-            display_error_message(error)
-          end
+        rescue Fog::Compute::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
+          display_error_message(error, :permission_denied)
         end
       end
 

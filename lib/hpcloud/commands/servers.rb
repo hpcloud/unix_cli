@@ -24,11 +24,13 @@ Aliases: servers:list
           if servers.empty?
             display "You currently have no servers, use `#{selfname} servers:add <name>` to create one."
           else
-            servers.table([:id, :name, :created_at, :updated_at, :key_name, :public_ip_address, :state])
-            #servers.table
+            #servers.table([:id, :name, :image_id, :flavor_id, :created_at, :key_name, :public_ip, :private_ip, :state])
+            servers.table([:id, :name, :created_at, :key_name, :state])
           end
-        rescue Excon::Errors::Forbidden => error
-          display_error_message(error)
+        rescue Fog::Compute::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
+          display_error_message(error, :permission_denied)
         end
       end
 

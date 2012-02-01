@@ -6,7 +6,8 @@ module HP
 
       desc "addresses:remove <public_ip>", "remove or release a public IP address"
       long_desc <<-DESC
-  Remove or release a previously allocated public IP address.
+  Remove or release a previously allocated public IP address. Any server instances that
+  were associated to this address, will be disassociated.
 
 Examples:
   hpcloud addresses:remove public_ip
@@ -16,26 +17,23 @@ Aliases: addresses:delete, addresses:release, addresses:del
       define_method "addresses:remove" do |public_ip|
         begin
           compute_connection = connection(:compute)
-          address = compute_connection.addresses.select {|a| a.public_ip == public_ip}.first
-        rescue Excon::Errors::Forbidden => error
+          address = compute_connection.addresses.select {|a| a.ip == public_ip}.first
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
           display_error_message(error, :permission_denied)
         end
-        if (address && address.public_ip == public_ip)
+        if (address && address.ip == public_ip)
           begin
             begin
               # Disassociate any server from this address
-              address.server = nil
-            rescue Fog::AWS::Compute::Error => error
-              # Hack to fix the lack of correct exception being raised, to enable better user experience
-              unless error_message_includes?(error, "Address is not associated")
-                display_error_message(error)
-              end
+              address.server = nil unless address.instance_id.nil?
+              # Release the address
+              address.destroy
+              display "Removed address '#{public_ip}'."
+            rescue Fog::Compute::HP::Error => error
+              display_error_message(error, :general_error)
             end
-            # Release the address
-            address.destroy
-            display "Removed address '#{public_ip}'."
           rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-            display_error_message(error)
+            display_error_message(error, :permission_denied)
           end
         else
           error "You don't have an address with public IP '#{public_ip}'.", :not_found
