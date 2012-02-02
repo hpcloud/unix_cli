@@ -10,9 +10,9 @@ The current version of the CLI requires Ruby 1.9.2 or 1.8.7 and a recent version
 
 1) Start by installing the software, HP Cloud Unix CLI depends on:
 
-- HP Cloud Ruby Fog Binding[http://manage.hpcloud.com/pages/build/bindings/fog]
+- HP Cloud Ruby Fog Binding[http://build.hpcloud.com/bindings/fog]
 
-2) Download the HP Cloud Services Unix CLI gem[http://manage.hpcloud.com/downloads/hpcloudcli.tar] and unpack it into a local directory.
+2) Download the HP Cloud Services Unix CLI gem[http://build.hpcloud.com/cli/unix] and unpack it into a local directory.
 
 3) 'cd' into the directory, you downloaded the gem into during Step 2) and type:
 
@@ -36,7 +36,6 @@ If you should ever need to remove the CLI:
 
   gem uninstall hpcloud
 
-
 = In-Command Help
 
 You can get a list of commands at any time by calling the hpcloud command without any arguments:
@@ -51,114 +50,10 @@ If you want to check which version of the tool you have installed:
 
   hpcloud info
 
-= Examples of Use
+= Documentation and Usage
 
-== HP Cloud Object Storage Services
-
-To add a new container:
-
-  hpcloud container:add demorama
-  # => Created container 'demorama'.
-
-
-To list existing container:
-
-  hpcloud list
-  # => demorama
-  # => demorama2
-
-or
-
-  hpcloud container
-  # => demorama
-  # => demorama2
-
-To add or copy objects to a container:
-
-  hpcloud copy simple.txt :demorama
-  # => Copied simple.txt => :demorama/simple.txt
-
-To copy objects from a container to the local file system:
-
-  hpcloud copy :demorama/simple.txt ./simple.txt
-  # => Copied :demorama/simple.txt => ./simple.txt
-
-To copy objects between container:
-
-  hpcloud copy :demorama/simple.txt :demorama2
-  # => Copied :demorama/simple.txt => :demorama2/simple.txt
-
-  hpcloud copy :demorama/simple.txt :demorama2/simpler.txt
-  # => Copied :demorama/simple.txt => :demorama2/simpler.txt
-
-To list the contents of a container:
-
-  hpcloud list demorama
-  # => simple.txt
-
-To get an object to the local file system:
-
-  hpcloud get :demorama2/simpler.txt
-  # => Copied :demorama2/simpler.txt => simpler.txt
-
-To move objects from a container to the local file system:
-
-  hpcloud move :demorama/simple.txt ./simple.txt
-  # => Moved :demorama/simple.txt => ./simple.txt
-
-To move objects between container:
-
-  hpcloud move :demorama2/simpler.txt :demorama
-  # => Moved :demorama2/simple.txt => :demorama
-
-  hpcloud move :demorama/simple.txt :demorama2/even_simpler.txt
-  # => Moved :demorama/simple.txt => :demorama2/even_simpler.txt
-
-To get an ACL for an existing container:
-
-  hpcloud acl :demorama
-  # => private
-
-To get an ACL for an existing object:
-
-  hpcloud acl :demorama/simple.txt
-  # => private
-
-To set an ACL for an existing container:
-
-  hpcloud acl:set :demorama public-read
-  # => ACL for :demorama updated to public-read.
-
-To set an ACL for an existing object:
-
-  hpcloud acl:set :demorama/simple.txt public-read
-  # => ACL for :demorama/simple.txt updated to public-read.
-
-To get a location for an existing container:
-
-  hpcloud location demorama
-  # => http://16.49.184.32:9242/demorama/
-
-To get a location for an existing object:
-
-  hpcloud location demorama/simple.txt
-  # => http://16.49.184.32:9242/demorama/simple.txt
-
-To remove an object from a container:
-
-  hpcloud remove :demorama2/even_simpler.txt
-  # => Removed object ':demorama2/even_simpler.txt'.
-
-To remove a container if empty:
-
-  hpcloud container:remove :demorama2
-  # => Removed container 'demorama2'.
-
-To force removal of a container even if there are files in it:
-
-  hpcloud container:remove :demorama --force
-  # => Removed container 'demorama'.
+Detailed documentation and usage examples can be found at HP Cloud Unix CLI[http://build.hpcloud.com/cli/unix] page.
 
 = Copyright
 
-Copyright (c) 2011 Hewlett-Packard. Not for external release.
+See LICENSE for copyright details.

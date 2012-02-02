@@ -1,3 +1,15 @@
+v0.0.12 02/02/12
+================
+- Integration with CS authentication
+- Update to use 'hpfog' library v0.0.12
+- Update account:setup to take CS credentials and tenant id.
+- Remove separate account:storage and account:compute commands.
+- Add keypairs command set: list, add, remove, import and export
+- Add addresses command set: list, add, remove, associate and disassociate
+- Add securitygroups command set: list, add, and remove
+- Add securitygroups:rules command set: list, add, and remove
+- Update test suite to go against CS authentication
+
 v0.0.11 11/21/11
 ================
 - CLI uses OS API and drops EC2 API

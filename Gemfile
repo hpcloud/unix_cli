@@ -1,9 +1,8 @@
 source "http://rubygems.org"
-#source "http://16.125.113.34:8808/"
 
 gemspec
 #gem 'hpfog', :path => '~/projects/ruby_fog_os'
-gem 'hpfog', :git => 'git@keg.dev.uswest.hpcloud.net:ruby_fog_os', :branch => 'master'
+#gem 'hpfog', :git => 'git@keg.dev.uswest.hpcloud.net:ruby_fog_os', :branch => 'master'
 
 group :development do
   gem "yard", "~> 0.6.0"
