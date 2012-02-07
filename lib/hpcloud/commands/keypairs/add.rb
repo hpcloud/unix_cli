@@ -11,7 +11,7 @@ Examples:
   hpcloud keypairs:add mykey
   hpcloud keypairs:add mykey c1:db:b5:bc:8b:b9:0f:33:62:53:de:80:6e:ae:67:66
   hpcloud keypairs:add mykey c1:db:b5:bc:8b:b9:0f:33:62:53:de:80:6e:ae:67:66 'private key data'
-  hpcloud keypairs:add mykey -o my-key.pem
+  hpcloud keypairs:add mykey -o               # creates a file mykey.pem in the current folder
 
 Aliases: none
       DESC
