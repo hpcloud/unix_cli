@@ -1,7 +1,7 @@
-#require 'hpcloud/commands/cdn/enable'
-#require 'hpcloud/commands/cdn/remove'
-#require 'hpcloud/commands/cdn/set'
-#require 'hpcloud/commands/cdn/location'
+require 'hpcloud/commands/cdn_containers/add'
+#require 'hpcloud/commands/cdn_containers/remove'
+#require 'hpcloud/commands/cdn_containers/set'
+#require 'hpcloud/commands/cdn_containers/location'
 
 module HP
   module Cloud
