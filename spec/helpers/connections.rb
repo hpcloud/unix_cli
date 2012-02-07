@@ -36,7 +36,19 @@ RSpec.configure do |config|
                       :hp_auth_uri     => OS_COMPUTE_AUTH_URL,
                       :hp_tenant_id    => OS_COMPUTE_ACCOUNT_TENANT_ID)
   end
-  
+
+  def cdn_connection(options = {})
+    connection_options = {:connect_timeout => options[:connect_timeout] || 5,
+                        :read_timeout    => options[:read_timeout] || 5,
+                        :write_timeout   => options[:write_timeout] || 5}
+    Fog::CDN.new( :provider        => 'HP',
+                      :connection_options => connection_options,
+                      :hp_account_id   => OS_COMPUTE_ACCOUNT_USERNAME,
+                      :hp_secret_key   => OS_COMPUTE_ACCOUNT_PASSWORD,
+                      :hp_auth_uri     => OS_COMPUTE_AUTH_URL,
+                      :hp_tenant_id    => OS_COMPUTE_ACCOUNT_TENANT_ID)
+  end
+
 end
 
 # Test-specific hacks of fundamental classes
@@ -58,8 +70,15 @@ module HP::Cloud
                           :hp_secret_key   => OS_STORAGE_ACCOUNT_PASSWORD,
                           :hp_auth_uri     => OS_STORAGE_AUTH_URL,
                           :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID)
-      else
+      elsif service == :compute
         Fog::Compute.new( :provider        => 'HP',
+                          :connection_options => connection_options,
+                          :hp_account_id   => OS_COMPUTE_ACCOUNT_USERNAME,
+                          :hp_secret_key   => OS_COMPUTE_ACCOUNT_PASSWORD,
+                          :hp_auth_uri     => OS_COMPUTE_AUTH_URL,
+                          :hp_tenant_id    => OS_COMPUTE_ACCOUNT_TENANT_ID)
+      elsif service == :cdn
+        Fog::CDN.new( :provider        => 'HP',
                           :connection_options => connection_options,
                           :hp_account_id   => OS_COMPUTE_ACCOUNT_USERNAME,
                           :hp_secret_key   => OS_COMPUTE_ACCOUNT_PASSWORD,

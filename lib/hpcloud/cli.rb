@@ -18,8 +18,10 @@ module HP
       def connection(service = :storage)
         if service == :storage
           storage_connection
-        else
+        elsif service == :compute
           compute_connection
+        elsif service == :cdn
+          cdn_connection
         end
       end
 
@@ -43,6 +45,16 @@ module HP
         end
       end
 
+      def cdn_connection
+        return @cdn_connection if @cdn_connection
+        cdn_credentials = Config.current_credentials
+        if cdn_credentials
+          @cdn_connection ||= connection_with(:cdn, cdn_credentials)
+        else
+          error "Please check your HP Cloud Services account to make sure the CDN service is activated."
+        end
+      end
+
       def connection_with(service = :storage, service_credentials)
         connection_options = {:connect_timeout => Config::CONNECT_TIMEOUT || 5,
                             :read_timeout    => Config::READ_TIMEOUT || 5,
@@ -55,8 +67,15 @@ module HP
                               :hp_secret_key   => service_credentials[:secret_key],
                               :hp_auth_uri     => service_credentials[:auth_uri],
                               :hp_tenant_id    => service_credentials[:tenant_id])
-          else
+          elsif service == :compute
             Fog::Compute.new( :provider        => 'HP',
+                              :connection_options => connection_options,
+                              :hp_account_id   => service_credentials[:account_id],
+                              :hp_secret_key   => service_credentials[:secret_key],
+                              :hp_auth_uri     => service_credentials[:auth_uri],
+                              :hp_tenant_id    => service_credentials[:tenant_id])
+          elsif service == :cdn
+            Fog::CDN.new( :provider        => 'HP',
                               :connection_options => connection_options,
                               :hp_account_id   => service_credentials[:account_id],
                               :hp_secret_key   => service_credentials[:secret_key],
