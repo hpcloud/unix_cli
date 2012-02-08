@@ -55,7 +55,7 @@ module HP
         end
       end
 
-      def connection_with(service = :storage, service_credentials)
+      def connection_with(service, service_credentials)
         connection_options = {:connect_timeout => Config::CONNECT_TIMEOUT || 5,
                             :read_timeout    => Config::READ_TIMEOUT || 5,
                             :write_timeout   => Config::WRITE_TIMEOUT || 5}
