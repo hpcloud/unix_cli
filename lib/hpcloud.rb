@@ -1,4 +1,4 @@
-#require "bundler/setup"
+require "bundler/setup"
 require 'fog'
 
 require 'hpcloud/version'
@@ -10,6 +10,7 @@ require 'hpcloud/cli'
 
 require 'hpcloud/commands/info'
 require 'hpcloud/commands/account'
+require 'hpcloud/commands/config'
 require 'hpcloud/commands/containers'
 require 'hpcloud/commands/list'
 #require 'hpcloud/commands/touch'

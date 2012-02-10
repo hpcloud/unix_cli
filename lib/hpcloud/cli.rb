@@ -43,7 +43,7 @@ module HP
         end
       end
 
-      def connection_with(service = :storage, service_credentials)
+      def connection_with(service, service_credentials)
         connection_options = {:connect_timeout => Config::CONNECT_TIMEOUT || 5,
                             :read_timeout    => Config::READ_TIMEOUT || 5,
                             :write_timeout   => Config::WRITE_TIMEOUT || 5}
@@ -61,7 +61,8 @@ module HP
                               :hp_account_id   => service_credentials[:account_id],
                               :hp_secret_key   => service_credentials[:secret_key],
                               :hp_auth_uri     => service_credentials[:auth_uri],
-                              :hp_tenant_id    => service_credentials[:tenant_id])
+                              :hp_tenant_id    => service_credentials[:tenant_id],
+                              :hp_avl_zone     => Config.settings[:availability_zone].to_sym)
           end
         rescue
           error "Error connecting to the service endpoint at: #{service_credentials[:auth_uri]}."

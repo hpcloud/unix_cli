@@ -52,7 +52,8 @@ describe "Config directory setup" do
       
       it "should populate config file" do
         yaml = YAML::load(File.open(HP::Cloud::Config.config_file))
-        yaml[:default_auth_uri].should eql("https://region-a.geo-1.objects.hpcloudsvc.com/v2.0/")
+        yaml[:default_auth_uri].should eql("https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
+        yaml[:availability_zone].should eql("az1")
       end
       
     end
@@ -164,8 +165,11 @@ describe "Getting settings" do
       HP::Cloud::Config.flush_settings
     end
     
-    it "should return default account settings" do
-      HP::Cloud::Config.settings[:default_auth_uri].should eql('https://region-a.geo-1.objects.hpcloudsvc.com/v2.0/')
+    it "should return default auth uri" do
+      HP::Cloud::Config.settings[:default_auth_uri].should eql('https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
+    end
+    it "should return availability zone" do
+      HP::Cloud::Config.settings[:availability_zone].should eql('az1')
     end
 
   end
@@ -181,8 +185,11 @@ describe "Getting settings" do
       HP::Cloud::Config.flush_settings
     end
     
-    it "should return specified settings for storage" do
-      HP::Cloud::Config.settings[:default_auth_uri].should eql('https://region-a.geo-1.objects.hpcloudsvc.com/v2.0/')
+    it "should return default auth uri" do
+      HP::Cloud::Config.settings[:default_auth_uri].should eql('https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
+    end
+    it "should return availability zone" do
+      HP::Cloud::Config.settings[:availability_zone].should eql('az1')
     end
 
   end

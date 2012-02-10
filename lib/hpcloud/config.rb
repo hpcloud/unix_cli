@@ -9,7 +9,9 @@ module HP
       READ_TIMEOUT = 5
       WRITE_TIMEOUT = 5
 
-      @@default_config = { :default_auth_uri => 'https://region-a.geo-1.objects.hpcloudsvc.com/v2.0/' }
+      @@default_config = { :default_auth_uri => 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/',
+                           :availability_zone => 'az1'
+                         }
 
       def self.config_directory
         home_directory + "/.hpcloud/"
@@ -73,7 +75,24 @@ module HP
           File.open(config_file, 'w') { |file| file.write @@default_config.to_yaml }
         end
       end
-    
+
+      def self.update_config(settings={})
+        unless settings.empty?
+          # make sure the config file exists
+          ensure_config_exists
+          # update the config file with the settings from the settings hash
+          config = YAML::load(File.open("#{config_file}"))
+          # only update the settings that are changed
+          settings.each do |key, value|
+            config[key.to_sym] = value
+          end
+          # write the updated config file back
+          File.open("#{config_file}", 'w') do |file|
+            file.write config.to_yaml
+          end
+        end
+      end
+
       def self.write_account(account_name, credentials)
         contents = {:credentials => credentials}
         File.open("#{accounts_directory}#{account_name.to_s.downcase.gsub(' ', '_')}", 'w') do |file|

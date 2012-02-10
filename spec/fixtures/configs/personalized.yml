@@ -1,2 +1,3 @@
 --- 
-:default_auth_uri: https://region-a.geo-1.objects.hpcloudsvc.com/v2.0/
+:default_auth_uri: 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/'
+:availability_zone: 'az1'
