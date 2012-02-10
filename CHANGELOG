@@ -1,3 +1,9 @@
+v0.0.13 02/09/12
+================
+- Add config:set command to set various config settings
+- Provide access to availability zones via settings
+- Update to use 'hpfog' library v0.0.13
+
 v0.0.12 02/02/12
 ================
 - Integration with CS authentication
