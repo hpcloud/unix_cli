@@ -20,7 +20,7 @@ Aliases: none
             resp = server.create_image(name)
             # extract the new image id from the header
             new_image_id = resp.headers["Location"].split("/")[5]
-            display "Created image #{name} with id '#{new_image_id}'."
+            display "Created image '#{name}' with id '#{new_image_id}'."
           else
             error "You don't have a server '#{server_name}' to create the image from.", :not_found
           end

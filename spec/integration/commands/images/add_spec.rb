@@ -18,11 +18,11 @@ describe "images:add command" do
   context "when creating image with name, server and defaults" do
     before(:all) do
       @response, @exit = run_command("images:add #{@image_name} #{@server_name}").stdout_and_exit_status
-      @new_image_id = @response.scan(/'([^']+)/)[0][0]
+      @new_image_id = @response.scan(/'([^']+)/)[2][0]
     end
 
     it "should show success message" do
-      @response.should include("Created image #{@image_name}")
+      @response.should include("Created image '#{@image_name}'")
     end
     its_exit_status_should_be(:success)
 
