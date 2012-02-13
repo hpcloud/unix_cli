@@ -25,8 +25,8 @@ Aliases: keypairs:list
           else
             keypairs.table([:name, :fingerprint])
           end
-        rescue Excon::Errors::Forbidden => error
-          display_error_message(error)
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
+          display_error_message(error, :permission_denied)
         end
       end
 
