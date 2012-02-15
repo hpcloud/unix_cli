@@ -5,12 +5,12 @@ module HP
       desc "cdn:containers:set <name> <attribute> <value>", "set attributes on a CDN container."
       long_desc <<-DESC
   Set attribute for an existing CDN container by specifying its value. The allowed attributes that can
-be set are 'X-Ttl', 'X-CDN-Uri', 'X-CDN-Enabled', 'X-Log-Retention'.
+be set are 'X-Ttl', 'X-Cdn-Uri', 'X-Cdn-Enabled', 'X-Log-Retention'.
 
 Examples:
   hpcloud cdn:containers:set :my_cdn_container "X-Ttl" 900              # sets the attribute 'X-Ttl' to 900
-  hpcloud cdn:containers:set :my_cdn_container "X-CDN-Uri" "http://my.home.com/cdn"     # sets the attribute 'X-CDN-Uri' to http://my.home.com/cdn
-  hpcloud cdn:containers:set :my_cdn_container "X-CDN-Enabled" True     # sets the attribute 'X-CDN-Enabled' to True
+  hpcloud cdn:containers:set :my_cdn_container "X-Cdn-Uri" "http://my.home.com/cdn"     # sets the attribute 'X-Cdn-Uri' to http://my.home.com/cdn
+  hpcloud cdn:containers:set :my_cdn_container "X-Cdn-Enabled" True     # sets the attribute 'X-Cdn-Enabled' to True
   hpcloud cdn:containers:set :my_cdn_container "X-Log-Retention" False   # sets the attribute 'X-Log-Retention' to False
 
 Aliases: none
@@ -19,7 +19,7 @@ Aliases: none
         # check to see cdn container exists
         begin connection(:cdn).head_container(name)
           begin
-            allowed_attributes = ['X-Ttl', 'X-CDN-Uri', 'X-CDN-Enabled', 'X-Log-Retention']
+            allowed_attributes = ['X-Ttl', 'X-Cdn-Uri', 'X-Cdn-Enabled', 'X-Log-Retention']
             if attribute && value && allowed_attributes.include?(attribute)
               options = {"#{attribute}" => "#{value}"}
               connection(:cdn).post_container(name, options)

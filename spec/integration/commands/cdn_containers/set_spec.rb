@@ -51,7 +51,7 @@ describe "cdn:containers:set command" do
       end
 
       it "should show error message" do
-        @response.should eql("The attribute 'blah' cannot be set. The allowed attributes are 'X-Ttl, X-CDN-Uri, X-CDN-Enabled, X-Log-Retention'.\n")
+        @response.should eql("The attribute 'blah' cannot be set. The allowed attributes are 'X-Ttl, X-Cdn-Uri, X-Cdn-Enabled, X-Log-Retention'.\n")
       end
       its_exit_status_should_be(:incorrect_usage)
     end
