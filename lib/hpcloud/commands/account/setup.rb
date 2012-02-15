@@ -17,12 +17,16 @@ module HP
                     :desc => "Don't verify account settings during setup"
       define_method "account:setup" do
         credentials = {}
+        # remove the existing config directory
+        Config.remove_config_directory
+        # ask for credentials
         display "****** Setup your HP Cloud Services account ******"
         credentials[:account_id] = ask 'Account ID:'
         credentials[:secret_key] = ask 'Account Key:'
         credentials[:auth_uri] = ask_with_default 'Auth Uri:',
                                       Config.settings[:default_auth_uri]
         credentials[:tenant_id] = ask 'Tenant Id:'
+        # validate credentials
         unless options['no-validate']
           begin
             display "Verifying your HP Cloud Services account..."
@@ -43,6 +47,7 @@ module HP
             display_error_message(e)
           end
         end
+        # update credentials and stash in config directory
         Config.update_credentials :default, credentials
         display "Account credentials for HP Cloud Services have been set up."
       end

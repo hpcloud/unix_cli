@@ -37,6 +37,10 @@ module HP
         config_directory + 'accounts/'
       end
 
+      def self.remove_config_directory
+        FileUtils.rm_rf(HP::Cloud::Config.config_directory)
+      end
+
       def self.current_credentials
         if File.exists?(accounts_directory + 'default')
           return YAML::load(File.open(accounts_directory + 'default'))[:credentials]
@@ -45,7 +49,8 @@ module HP
       end
 
       def self.settings
-        @@settings ||= 
+        ensure_config_exists
+        @@settings ||=
           if File.exists?(config_file)
             YAML::load(File.open(config_file))
           else
