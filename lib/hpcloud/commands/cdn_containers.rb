@@ -1,5 +1,5 @@
 require 'hpcloud/commands/cdn_containers/add'
-#require 'hpcloud/commands/cdn_containers/remove'
+require 'hpcloud/commands/cdn_containers/remove'
 #require 'hpcloud/commands/cdn_containers/set'
 #require 'hpcloud/commands/cdn_containers/location'
 
