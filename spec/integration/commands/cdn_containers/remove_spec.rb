@@ -12,7 +12,7 @@ describe "cdn:containers:remove command" do
     end
   end
 
-  context "removing an existing container from the CDN" do
+  context "removing an existing CDN container" do
 
     before(:all) do
       @hp_svc.put_container('my-added-container')
@@ -31,7 +31,7 @@ describe "cdn:containers:remove command" do
 
   end
 
-  context "removing a non-existent storage container from the CDN" do
+  context "removing a non-existent CDN container" do
 
     before(:all) do
       @response, @exit = run_command('cdn:containers:remove not-a-container').stderr_and_exit_status

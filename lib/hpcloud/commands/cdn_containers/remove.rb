@@ -19,7 +19,7 @@ Aliases: cdn:containers:rm, cdn:containers:delete, cdn:containers:del
           display "Removed container '#{name}' from the CDN."
         rescue Excon::Errors::Forbidden => error
           display_error_message(error, :permission_denied)
-        rescue Excon::Errors::NotFound, Fog::Storage::HP::NotFound
+        rescue Excon::Errors::NotFound, Fog::CDN::HP::NotFound
           error "You don't have a container named '#{name}' on the CDN.", :not_found
         end
       end
