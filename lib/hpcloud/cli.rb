@@ -18,8 +18,10 @@ module HP
       def connection(service = :storage)
         if service == :storage
           storage_connection
-        else
+        elsif service == :compute
           compute_connection
+        elsif service == :cdn
+          cdn_connection
         end
       end
 
@@ -43,6 +45,16 @@ module HP
         end
       end
 
+      def cdn_connection
+        return @cdn_connection if @cdn_connection
+        cdn_credentials = Config.current_credentials
+        if cdn_credentials
+          @cdn_connection ||= connection_with(:cdn, cdn_credentials)
+        else
+          error "Please check your HP Cloud Services account to make sure the CDN service is activated."
+        end
+      end
+
       def connection_with(service, service_credentials)
         connection_options = {:connect_timeout => Config::CONNECT_TIMEOUT || 5,
                             :read_timeout    => Config::READ_TIMEOUT || 5,
@@ -55,7 +67,7 @@ module HP
                               :hp_secret_key   => service_credentials[:secret_key],
                               :hp_auth_uri     => service_credentials[:auth_uri],
                               :hp_tenant_id    => service_credentials[:tenant_id])
-          else
+          elsif service == :compute
             Fog::Compute.new( :provider        => 'HP',
                               :connection_options => connection_options,
                               :hp_account_id   => service_credentials[:account_id],
@@ -63,6 +75,13 @@ module HP
                               :hp_auth_uri     => service_credentials[:auth_uri],
                               :hp_tenant_id    => service_credentials[:tenant_id],
                               :hp_avl_zone     => Config.settings[:availability_zone].to_sym)
+          elsif service == :cdn
+            Fog::CDN.new( :provider        => 'HP',
+                              :connection_options => connection_options,
+                              :hp_account_id   => service_credentials[:account_id],
+                              :hp_secret_key   => service_credentials[:secret_key],
+                              :hp_auth_uri     => service_credentials[:auth_uri],
+                              :hp_tenant_id    => service_credentials[:tenant_id])
           end
         rescue
           error "Error connecting to the service endpoint at: #{service_credentials[:auth_uri]}."
@@ -101,9 +120,14 @@ module HP
 
       # pull the error message out of an JSON response
       def parse_error(response)
-        err_msg = MultiJson.decode(response.body)
-        # Error message:  {"badRequest": {"message": "Invalid IP protocol ttt.", "code": 400}}
-        err_msg.map {|_,v| v["message"] if v.has_key?("message")}
+        begin
+          err_msg = MultiJson.decode(response.body)
+          # Error message:  {"badRequest": {"message": "Invalid IP protocol ttt.", "code": 400}}
+          err_msg.map {|_,v| v["message"] if v.has_key?("message")}
+        rescue MultiJson::DecodeError => error
+          # Error message: "400 Bad Request\n\nBlah blah"
+          response.body    #### the body is not in JSON format so just return it as it is
+        end
       end
 
       # check to see if an error includes a particular text fragment
