@@ -45,17 +45,17 @@ is activated.
 
 The following list of commands or tasks, let you interact with the HP Cloud Storage service:
 
-          hpcloud acl <object/container>                                                             # view the ACL for an object or container
-          hpcloud acl:set <resource> <acl>                                                           # set a given resource to a canned ACL
-          hpcloud containers                                                                         # list available containers
-          hpcloud containers:add <name>                                                              # add a container
-          hpcloud containers:remove <name>                                                           # remove a container
-          hpcloud copy <resource> <resource>                                                         # copy files from one resource to another
-          hpcloud get <object>                                                                       # fetch an object to your local directory
-          hpcloud list <container>                                                                   # list container contents
-          hpcloud location <object/container>                                                        # display the URI for a given resource
-          hpcloud move <object> <object>                                                             # move objects inside or between containers
-          hpcloud remove <object/container>                                                          # remove an object or container
+        hpcloud acl <object/container>                                                             # view the ACL for an object or container
+        hpcloud acl:set <resource> <acl>                                                           # set a given resource to a canned ACL
+        hpcloud containers                                                                         # list available containers
+        hpcloud containers:add <name>                                                              # add a container
+        hpcloud containers:remove <name>                                                           # remove a container
+        hpcloud copy <resource> <resource>                                                         # copy files from one resource to another
+        hpcloud get <object>                                                                       # fetch an object to your local directory
+        hpcloud list <container>                                                                   # list container contents
+        hpcloud location <object/container>                                                        # display the URI for a given resource
+        hpcloud move <object> <object>                                                             # move objects inside or between containers
+        hpcloud remove <object/container>                                                          # remove an object or container
 
 Let us look at each command/task in detail. Remember that you can get detailed help for any command/task by:
 
@@ -63,111 +63,110 @@ Let us look at each command/task in detail. Remember that you can get detailed h
 
 To add a new container:
 
-    hpcloud containers:add demorama
-    # => Created container 'demorama'.
+        $ hpcloud containers:add demorama
+        # => Created container 'demorama'.
 
 To list an existing container:
 
-    hpcloud list
-    # => demorama
-    # => demorama2
+        $ hpcloud list
+        # => demorama
+        # => demorama2
 or
 
-    hpcloud container
-    # => demorama
-    # => demorama2
+        $ hpcloud container
+        # => demorama
+        # => demorama2
 
 To add or copy objects to a container:
 
-    hpcloud copy simple.txt :demorama
-    # => Copied simple.txt => :demorama/simple.txt
+        $ hpcloud copy simple.txt :demorama
+        # => Copied simple.txt => :demorama/simple.txt
 
 To copy objects from a container to the local file system:
 
-    hpcloud copy :demorama/simple.txt ./simple.txt
-    # => Copied :demorama/simple.txt => ./simple.txt
+        $ hpcloud copy :demorama/simple.txt ./simple.txt
+        # => Copied :demorama/simple.txt => ./simple.txt
 
 To copy objects between container:
 
-    hpcloud copy :demorama/simple.txt :demorama2
-    # => Copied :demorama/simple.txt => :demorama2/simple.txt
+        $ hpcloud copy :demorama/simple.txt :demorama2
+        # => Copied :demorama/simple.txt => :demorama2/simple.txt
 
-    hpcloud copy :demorama/simple.txt :demorama2/simpler.txt
-    # => Copied :demorama/simple.txt => :demorama2/simpler.txt
+        $ hpcloud copy :demorama/simple.txt :demorama2/simpler.txt
+        # => Copied :demorama/simple.txt => :demorama2/simpler.txt
 
 To list the contents of a container:
 
-    hpcloud list demorama
-    # => simple.txt
+        $ hpcloud list demorama
+        # => simple.txt
 
 To get an object to the local file system:
 
-    hpcloud get :demorama2/simpler.txt
-    # => Copied :demorama2/simpler.txt => simpler.txt
+        $ hpcloud get :demorama2/simpler.txt
+        # => Copied :demorama2/simpler.txt => simpler.txt
 
 To move objects from a container to the local file system:
 
-    hpcloud move :demorama/simple.txt ./simple.txt
-    # => Moved :demorama/simple.txt => ./simple.txt
+        $ hpcloud move :demorama/simple.txt ./simple.txt
+        # => Moved :demorama/simple.txt => ./simple.txt
 
 To move objects between container:
 
-    hpcloud move :demorama2/simpler.txt :demorama
-    # => Moved :demorama2/simple.txt => :demorama
+        $ hpcloud move :demorama2/simpler.txt :demorama
+        # => Moved :demorama2/simple.txt => :demorama
 
-    hpcloud move :demorama/simple.txt :demorama2/even_simpler.txt
-    # => Moved :demorama/simple.txt => :demorama2/even_simpler.txt
+        $ hpcloud move :demorama/simple.txt :demorama2/even_simpler.txt
+        # => Moved :demorama/simple.txt => :demorama2/even_simpler.txt
 
 To get ACLs for an existing container:
 
-    hpcloud acl :demorama
-    # => private
+        $ hpcloud acl :demorama
+        # => private
 
 To get ACLs for an existing object:
 
-    hpcloud acl :demorama/simple.txt
-    # => private
+        $ hpcloud acl :demorama/simple.txt
+        # => private
 
 To set an ACL for an existing container:
 
-    hpcloud acl:set :demorama public-read
-    # => ACL for :demorama updated to public-read.
+        $ hpcloud acl:set :demorama public-read
+        # => ACL for :demorama updated to public-read.
 
 To set an ACL for an existing object:
 
-    hpcloud acl:set :demorama/simple.txt public-read
-    # => ACL for :demorama/simple.txt updated to public-read.
+        $ hpcloud acl:set :demorama/simple.txt public-read
+        # => ACL for :demorama/simple.txt updated to public-read.
 
 To get a location for an existing container:
 
-    hpcloud location demorama
-    # => http://127.0.0.1/v1/AUTH_ea2007cf-5c74-4936-b381-743b438b45e8/demorama
+        $ hpcloud location demorama
+        # => http://127.0.0.1/v1/AUTH_ea2007cf-5c74-4936-b381-743b438b45e8/demorama
 
 To get a location for an existing object:
 
-    hpcloud location demorama/simple.txt
-    # => http://127.0.0.1/v1/AUTH_ea2007cf-5c74-4936-b381-743b438b45e8/demorama/simple.txt
+        $ hpcloud location demorama/simple.txt
+        # => http://127.0.0.1/v1/AUTH_ea2007cf-5c74-4936-b381-743b438b45e8/demorama/simple.txt
 
 To remove an object from a container:
 
-    hpcloud remove :demorama2/even_simpler.txt
-    # => Removed object ':demorama2/even_simpler.txt'.
+        $ hpcloud remove :demorama2/even_simpler.txt
+        # => Removed object ':demorama2/even_simpler.txt'.
 
 To remove a container if empty:
 
-    hpcloud containers:remove :demorama2
-    # => Removed container 'demorama2'.
+        $ hpcloud containers:remove :demorama2
+        # => Removed container 'demorama2'.
 
 To force removal of a container even there are files in it:
 
-    hpcloud containers:remove :demorama --force
-    # => Removed container 'demorama'.
+        $ hpcloud containers:remove :demorama --force
+        # => Removed container 'demorama'.
 
 
 ## Interacting with the CDN Service
 
 Coming Soon!
-
 
 ## Interacting with the Compute Service
 
