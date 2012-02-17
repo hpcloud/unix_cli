@@ -235,7 +235,7 @@ The following list of commands or tasks, let you interact with the HP Cloud Comp
         hpcloud securitygroups:rules:add <sec_group_name> <ip_protocol> <port_range> <ip_address>  # add a rule to the security group
         hpcloud securitygroups:rules:remove <sec_group_name> <rule_id>                             # remove a rule from the security group
         hpcloud servers                                                                            # list of available servers
-        hpcloud servers:add <name> <image_id> <flavor_id>                                          # add a server
+        hpcloud servers:add <name> <image_id> <flavor_id> <key_name> <sg_name>                     # add a server
         hpcloud servers:password <server_name> <password>                                          # change password for a server
         hpcloud servers:reboot <name>                                                              # reboot a server by name
         hpcloud servers:remove <name>                                                              # remove a server by name
@@ -272,10 +272,15 @@ To list servers:
 
         $ hpcloud servers
 
-To add a new server, by specifying an image id and a flavor id:
+To add a new server, by specifying an image and a flavor:
 
         $ hpcloud servers myserver 227 100
         # => Created server 'myserver' with id '111'.
+
+To add a new server, by specifying an image, a flavor, a keyname and a security group:
+
+        $ hpcloud servers myserver 227 100 mykey mysecgroup
+        # => Created server 'myserver' with id '222', key 'mykey' and security group 'mysecgroup'.
 
 To change password of an existing server:
 
