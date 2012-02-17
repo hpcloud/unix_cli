@@ -66,14 +66,14 @@ To add a new container:
         $ hpcloud containers:add demorama
         # => Created container 'demorama'.
 
-To list an existing container:
+To list available containers:
 
         $ hpcloud list
         # => demorama
         # => demorama2
 or
 
-        $ hpcloud container
+        $ hpcloud containers
         # => demorama
         # => demorama2
 
@@ -166,37 +166,79 @@ To force removal of a container even there are files in it:
 
 ## Interacting with the CDN Service
 
-Coming Soon!
+The following list of commands or tasks, let you interact with the HP Cloud CDN service:
+
+        hpcloud cdn:containers                                                                     # list of available containers on the CDN
+        hpcloud cdn:containers:add <name>                                                          # add a container to the CDN
+        hpcloud cdn:containers:get <name> <attribute>                                              # get the value of an attribute on a CDN container.
+        hpcloud cdn:containers:location <name>                                                     # get the location of a container on the CDN.
+        hpcloud cdn:containers:remove <name>                                                       # remove a container from the CDN
+        hpcloud cdn:containers:set <name> <attribute> <value>                                      # set attributes on a CDN container.
+
+Let us look at each command/task in detail. Remember that you can get detailed help for any command/task by:
+
+        $ hpcloud help <TASK>
+
+To list available containers on the CDN:
+
+        $ hpcloud cdn:containers
+        # => demorama
+
+To add an existing container to the CDN:
+
+        $ hpcloud cdn:containers:add demorama2
+        # => Added container 'demorama2' to the CDN.
+
+To get the location of an existing container on the CDN:
+
+        $ hpcloud cdn:containers:location demorama2
+        # => http://ha7828c283acdf403a69c74a35b5f8d97.cdn.hpcloudsvc.com
+
+To get the value of an attribute of a container on the CDN:
+
+        $ hpcloud cdn:containers:get demorama2 X-Ttl
+        # => 86400
+
+To set the value of an attribute of a container on the CDN:
+
+        $ hpcloud cdn:containers:set demorama2 X-Ttl 900
+        # => The attribute 'X-Ttl' with value '900' was set on CDN container 'demorama2'.
+
+To remove an existing container from the CDN:
+
+        $ hpcloud cdn:containers:remove demorama2
+        # => Removed container 'demorama2' from the CDN.
+
 
 ## Interacting with the Compute Service
 
 The following list of commands or tasks, let you interact with the HP Cloud Compute service:
 
-          hpcloud addresses                                                                          # list of available addresses
-          hpcloud addresses:add                                                                      # add or allocate a new public IP address
-          hpcloud addresses:associate <public_ip> <server_name>                                      # associate a public IP address to a server instance
-          hpcloud addresses:disassociate <public_ip>                                                 # disassociate any server instance associated to the publ...
-          hpcloud addresses:remove <public_ip>                                                       # remove or release a public IP address
-          hpcloud config:set                                                                         # set the value for a setting
-          hpcloud flavors                                                                            # list of available flavors
-          hpcloud images                                                                             # list of available images
-          hpcloud images:add <name> <server_name>                                                    # add an image from an existing server
-          hpcloud images:remove <name>                                                               # remove an image by name
-          hpcloud keypairs                                                                           # list of available keypairs
-          hpcloud keypairs:add <key_name> <fingerprint> <private_key>                                # add a key pair
-          hpcloud keypairs:import <key_name> <public_key_data>                                       # import a key pair
-          hpcloud keypairs:remove <key_name>                                                         # remove a key pair by name
-          hpcloud securitygroups                                                                     # list of available security groups
-          hpcloud securitygroups:add <name> <description>                                            # add a security group
-          hpcloud securitygroups:remove <name>                                                       # remove a security group
-          hpcloud securitygroups:rules <sec_group_name>                                              # list of rules for a security group
-          hpcloud securitygroups:rules:add <sec_group_name> <ip_protocol> <port_range> <ip_address>  # add a rule to the security group
-          hpcloud securitygroups:rules:remove <sec_group_name> <rule_id>                             # remove a rule from the security group
-          hpcloud servers                                                                            # list of available servers
-          hpcloud servers:add <name> <image_id> <flavor_id>                                          # add a server
-          hpcloud servers:password <server_name> <password>                                          # change password for a server
-          hpcloud servers:reboot <name>                                                              # reboot a server by name
-          hpcloud servers:remove <name>                                                              # remove a server by name
+        hpcloud addresses                                                                          # list of available addresses
+        hpcloud addresses:add                                                                      # add or allocate a new public IP address
+        hpcloud addresses:associate <public_ip> <server_name>                                      # associate a public IP address to a server instance
+        hpcloud addresses:disassociate <public_ip>                                                 # disassociate any server instance associated to the publ...
+        hpcloud addresses:remove <public_ip>                                                       # remove or release a public IP address
+        hpcloud config:set                                                                         # set the value for a setting
+        hpcloud flavors                                                                            # list of available flavors
+        hpcloud images                                                                             # list of available images
+        hpcloud images:add <name> <server_name>                                                    # add an image from an existing server
+        hpcloud images:remove <name>                                                               # remove an image by name
+        hpcloud keypairs                                                                           # list of available keypairs
+        hpcloud keypairs:add <key_name> <fingerprint> <private_key>                                # add a key pair
+        hpcloud keypairs:import <key_name> <public_key_data>                                       # import a key pair
+        hpcloud keypairs:remove <key_name>                                                         # remove a key pair by name
+        hpcloud securitygroups                                                                     # list of available security groups
+        hpcloud securitygroups:add <name> <description>                                            # add a security group
+        hpcloud securitygroups:remove <name>                                                       # remove a security group
+        hpcloud securitygroups:rules <sec_group_name>                                              # list of rules for a security group
+        hpcloud securitygroups:rules:add <sec_group_name> <ip_protocol> <port_range> <ip_address>  # add a rule to the security group
+        hpcloud securitygroups:rules:remove <sec_group_name> <rule_id>                             # remove a rule from the security group
+        hpcloud servers                                                                            # list of available servers
+        hpcloud servers:add <name> <image_id> <flavor_id>                                          # add a server
+        hpcloud servers:password <server_name> <password>                                          # change password for a server
+        hpcloud servers:reboot <name>                                                              # reboot a server by name
+        hpcloud servers:remove <name>                                                              # remove a server by name
 
 Let us look at each command/task in detail. Remember that you can get detailed help for any command/task by:
 
