@@ -14,9 +14,9 @@ describe "account:setup command" do
   
     it "should ask for account id, account key, endpoint and tenant_id" do
       $stdout.should_receive(:puts).with('****** Setup your HP Cloud Services account ******')
-      $stdout.should_receive(:print).with('Account ID: ')
+      $stdout.should_receive(:print).with('Access Key Id: ')
       $stdin.should_receive(:gets).and_return('foo')
-      $stdout.should_receive(:print).with('Account Key: ')
+      $stdout.should_receive(:print).with('Secret Key: ')
       $stdin.should_receive(:gets).and_return('bar')
       $stdout.should_receive(:print).with('Auth Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] ')
       $stdin.should_receive(:gets).and_return('https://127.0.0.1/')
@@ -33,9 +33,9 @@ describe "account:setup command" do
 
     it "should provide default endpoint and validate endpoint" do
       $stdout.should_receive(:puts).with('****** Setup your HP Cloud Services account ******')
-      $stdout.should_receive(:print).with('Account ID: ')
+      $stdout.should_receive(:print).with('Access Key Id: ')
       $stdin.should_receive(:gets).and_return('foo')
-      $stdout.should_receive(:print).with('Account Key: ')
+      $stdout.should_receive(:print).with('Secret Key: ')
       $stdin.should_receive(:gets).and_return('bar')
       $stdout.should_receive(:print).with('Auth Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] ')
       $stdin.should_receive(:gets).and_return('https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')

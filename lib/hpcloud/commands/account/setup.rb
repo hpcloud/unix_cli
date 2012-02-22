@@ -21,8 +21,8 @@ module HP
         Config.remove_config_directory
         # ask for credentials
         display "****** Setup your HP Cloud Services account ******"
-        credentials[:account_id] = ask 'Account ID:'
-        credentials[:secret_key] = ask 'Account Key:'
+        credentials[:account_id] = ask 'Access Key Id:'
+        credentials[:secret_key] = ask 'Secret Key:'
         credentials[:auth_uri] = ask_with_default 'Auth Uri:',
                                       Config.settings[:default_auth_uri]
         credentials[:tenant_id] = ask 'Tenant Id:'
