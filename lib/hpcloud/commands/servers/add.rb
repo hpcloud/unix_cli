@@ -2,9 +2,9 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "servers:add <name> <image_id> <flavor_id> <key_name> <sg_name>", "add a server"
+      desc "servers:add <name> <image_id> <flavor_id>", "add a server"
       long_desc <<-DESC
-  Add a new server to your compute account. Optionally, a key name or a security group can be specified.
+  Add a new server to your compute account. Optionally, a key name and a security group can be specified.
   Server name can be specified with or without the preceding colon: 'my_server' or ':my_server'.
 
 Examples:

@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "keypairs:add <key_name> <fingerprint> <private_key>", "add a key pair"
+      desc "keypairs:add <key_name>", "add a key pair"
       long_desc <<-DESC
   Add a key pair by specifying the name. Optionally you can specify a fingerprint and private key data too.
   Additionally you can use the -o option to save the key into a file.
