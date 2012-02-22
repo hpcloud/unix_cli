@@ -225,7 +225,7 @@ The following list of commands or tasks, let you interact with the HP Cloud Comp
         hpcloud images:add <name> <server_name>                                                    # add an image from an existing server
         hpcloud images:remove <name>                                                               # remove an image by name
         hpcloud keypairs                                                                           # list of available keypairs
-        hpcloud keypairs:add <key_name> <fingerprint> <private_key>                                # add a key pair
+        hpcloud keypairs:add <key_name>                                                            # add a key pair
         hpcloud keypairs:import <key_name> <public_key_data>                                       # import a key pair
         hpcloud keypairs:remove <key_name>                                                         # remove a key pair by name
         hpcloud securitygroups                                                                     # list of available security groups
@@ -235,7 +235,7 @@ The following list of commands or tasks, let you interact with the HP Cloud Comp
         hpcloud securitygroups:rules:add <sec_group_name> <ip_protocol> <port_range> <ip_address>  # add a rule to the security group
         hpcloud securitygroups:rules:remove <sec_group_name> <rule_id>                             # remove a rule from the security group
         hpcloud servers                                                                            # list of available servers
-        hpcloud servers:add <name> <image_id> <flavor_id> <key_name> <sg_name>                     # add a server
+        hpcloud servers:add <name> <image_id> <flavor_id>                                          # add a server
         hpcloud servers:password <server_name> <password>                                          # change password for a server
         hpcloud servers:reboot <name>                                                              # reboot a server by name
         hpcloud servers:remove <name>                                                              # remove a server by name
@@ -279,8 +279,8 @@ To add a new server, by specifying an image and a flavor:
 
 To add a new server, by specifying an image, a flavor, a keyname and a security group:
 
-        $ hpcloud servers myserver 227 100 mykey mysecgroup
-        # => Created server 'myserver' with id '222', key 'mykey' and security group 'mysecgroup'.
+        $ hpcloud servers myserver 227 100 -k mykey -s mysecgroup
+        # => Created server 'myserver' with id '222'.
 
 To change password of an existing server:
 
@@ -330,7 +330,7 @@ To add a new keypair:
 To add a new keypair and save it to a file:
 
         $ hpcloud keypairs:add mykeypair2 --output
-        # => Created key pair 'mykeypair2' and saved it in a file at './mykeypair2.pem'.
+        # => Created key pair 'mykeypair2' and saved it to a file at './mykeypair2.pem'.
 
 To add a new keypair by importing public key data:
 
