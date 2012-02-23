@@ -274,12 +274,12 @@ To list servers:
 
 To add a new server, by specifying an image and a flavor:
 
-        $ hpcloud servers myserver 227 100
+        $ hpcloud servers:add myserver 227 100
         # => Created server 'myserver' with id '111'.
 
 To add a new server, by specifying an image, a flavor, a keyname and a security group:
 
-        $ hpcloud servers myserver 227 100 -k mykey -s mysecgroup
+        $ hpcloud servers:add myserver 227 100 -k mykey -s mysecgroup
         # => Created server 'myserver' with id '222'.
 
 To change password of an existing server:
