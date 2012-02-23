@@ -34,20 +34,20 @@ RSpec.configure do |config|
   RANDOM_CHARS                = [('a'..'z')].map{|i| i.to_a}.flatten
 
   ### Dev creds. set these env. vars with appropriate data manually.
-  #OS_STORAGE_AUTH_URL         = ENV['OS_STORAGE_AUTH_URL'] || "https://objects.hpcloudsvc.com/auth/v1.0"
-  #OS_STORAGE_ACCOUNT_USERNAME = ENV['OS_STORAGE_ACCOUNT_USERNAME'] || "<your <access key 1>"
-  #OS_STORAGE_ACCOUNT_PASSWORD = ENV['OS_STORAGE_ACCOUNT_PASSWORD'] || "<your secret key 1>"
-  #OS_STORAGE_ACCOUNT_TENANT_ID = ENV['OS_STORAGE_ACCOUNT_TENANT_ID'] || "<your tenant id>"
-  #OS_STORAGE_SEC_ACCOUNT_USERNAME = ENV['OS_STORAGE_SEC_ACCOUNT_USERNAME'] || "<your access key 2>"
-  #OS_STORAGE_SEC_ACCOUNT_PASSWORD = ENV['OS_STORAGE_SEC_ACCOUNT_PASSWORD'] || "<your secret key 2>"
-  #OS_STORAGE_SEC_ACCOUNT_TENANT_ID = ENV['OS_STORAGE_SEC_ACCOUNT_TENANT_ID'] || "<your tenant id>"
+  OS_STORAGE_AUTH_URL         = ENV['OS_STORAGE_AUTH_URL'] || "https://objects.hpcloudsvc.com/auth/v1.0"
+  OS_STORAGE_ACCOUNT_USERNAME = ENV['OS_STORAGE_ACCOUNT_USERNAME'] || "<your <access key 1>"
+  OS_STORAGE_ACCOUNT_PASSWORD = ENV['OS_STORAGE_ACCOUNT_PASSWORD'] || "<your secret key 1>"
+  OS_STORAGE_ACCOUNT_TENANT_ID = ENV['OS_STORAGE_ACCOUNT_TENANT_ID'] || "<your tenant id>"
+  OS_STORAGE_SEC_ACCOUNT_USERNAME = ENV['OS_STORAGE_SEC_ACCOUNT_USERNAME'] || "<your access key 2>"
+  OS_STORAGE_SEC_ACCOUNT_PASSWORD = ENV['OS_STORAGE_SEC_ACCOUNT_PASSWORD'] || "<your secret key 2>"
+  OS_STORAGE_SEC_ACCOUNT_TENANT_ID = ENV['OS_STORAGE_SEC_ACCOUNT_TENANT_ID'] || "<your tenant id>"
 
-  #OS_COMPUTE_AUTH_URL         = ENV['OS_COMPUTE_AUTH_URL']  || "https://compute.hpcloudsvc.com/v1.1/"
-  #OS_COMPUTE_ACCOUNT_USERNAME = ENV['OS_COMPUTE_ACCOUNT_USERNAME']  || "<your <access key>"
-  #OS_COMPUTE_ACCOUNT_PASSWORD = ENV['OS_COMPUTE_ACCOUNT_PASSWORD']  || "<your secret key>"
-  #OS_COMPUTE_ACCOUNT_TENANT_ID = ENV['OS_COMPUTE_ACCOUNT_TENANT_ID'] || "<your tenant id>"
-  #OS_COMPUTE_BASE_IMAGE_ID    = 7
-  #OS_COMPUTE_BASE_FLAVOR_ID   = 1
+  OS_COMPUTE_AUTH_URL         = ENV['OS_COMPUTE_AUTH_URL']  || "https://compute.hpcloudsvc.com/v1.1/"
+  OS_COMPUTE_ACCOUNT_USERNAME = ENV['OS_COMPUTE_ACCOUNT_USERNAME']  || "<your <access key>"
+  OS_COMPUTE_ACCOUNT_PASSWORD = ENV['OS_COMPUTE_ACCOUNT_PASSWORD']  || "<your secret key>"
+  OS_COMPUTE_ACCOUNT_TENANT_ID = ENV['OS_COMPUTE_ACCOUNT_TENANT_ID'] || "<your tenant id>"
+  OS_COMPUTE_BASE_IMAGE_ID    = ENV['OS_COMPUTE_BASE_IMAGE_ID'] || "your image id"
+  OS_COMPUTE_BASE_FLAVOR_ID   = ENV['OS_COMPUTE_BASE_FLAVOR_ID'] || "your flavor id"
 
   if MOCKING_ENABLED
     puts "==========================================================="
