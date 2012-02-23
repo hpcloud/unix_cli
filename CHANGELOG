@@ -1,3 +1,14 @@
+v0.0.14 02/23/12
+================
+- Add examples documentation
+- Update test suite and inline help documentation
+- Fix account:setup labels to match management console screens
+- Add cdn:containers command set: add, remove, set, get and location
+- Update keypairs:add command to use options for specifying optional parameters
+- Update servers:add command to accept keyname and security groups using options
+- Fix account:setup for upgrade issues
+- Update to use 'hpfog' library v0.0.14
+
 v0.0.13 02/09/12
 ================
 - Add config:set command to set various config settings
