@@ -39,7 +39,7 @@ Aliases: none
       private
       
       def acceptable_name?(name, options)
-        Container.valid_virtualhost?(name) or options[:force] or yes?('Specified container name is not a valid virtualhost, continue anyway?')
+        Container.valid_virtualhost?(name) or options[:force] or yes?('Specified container name is not a valid virtualhost, continue anyway? [y/n]')
       end
     
     end
