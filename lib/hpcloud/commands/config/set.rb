@@ -9,7 +9,6 @@ module HP
 Examples:
   hpcloud config:set -z az2
 
-Aliases: loc
       DESC
       method_option :availability_zone, :default => "az1", :type => :string, :aliases => '-z',
                     :desc => 'Set the availability zone - az1 or az2.'
