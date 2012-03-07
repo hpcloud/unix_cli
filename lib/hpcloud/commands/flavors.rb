@@ -1,5 +1,3 @@
-require 'hpcloud/flavors'
-
 module HP
   module Cloud
     class CLI < Thor
