@@ -11,7 +11,7 @@ describe "keypairs:remove command" do
 
   context "when deleting keypair" do
     before(:all) do
-      @keypair = @hp_svc.key_pairs.create(:name => 'mykey', :fingerprint => 'c1:db:b5:bc:8b:b9:0f:33:62:53:de:80:6e:ae:67:66', :private_key => nil)
+      @keypair = @hp_svc.key_pairs.create(:name => 'mytestkey')
     end
 
     it "should show success message" do

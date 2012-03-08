@@ -65,7 +65,7 @@ describe "containers:add command" do
   
   context "when creating a container whose name is valid, but not valid virtual host" do
     it "should present interactive prompt to verify behavior" do
-      $stdout.should_receive(:print).with('Specified container name is not a valid virtualhost, continue anyway? ')
+      $stdout.should_receive(:print).with('Specified container name is not a valid virtualhost, continue anyway? [y/n] ')
       $stdin.should_receive(:gets).and_return('n')
       begin
         cli.send('containers:add', 'UPPERCASE')
