@@ -10,18 +10,18 @@ module HP
           draw_header_line
           puts "  " +
                "| id" + padding(" ", 10, 'id') +
-               "| ip_range/cidr" + padding(" ", 36, 'ip_range/cidr') +
+               "| cidr/source_group" + padding(" ", 36, 'cidr/source_group') +
                "| ip_protocol" + padding(" ", 25, 'ip_protocol') +
                "| from_port" + padding(" ", 13, 'from_port') +
                "| to_port" + padding(" ", 11, 'to_port') + "|"
           draw_header_line
-          rules.each do |ip_perm|
+          rules.each do |rule|
             puts "  " +
-                 "| #{ip_perm['id']}"   + padding(" ", 10, ip_perm['id'].to_s) +
-                 "| #{ip_perm['ip_range']['cidr']}"    + padding(" ", 36, ip_perm['ip_range']['cidr'].to_s) +
-                 "| #{ip_perm['ip_protocol']}" + padding(" ", 25, ip_perm['ip_protocol']) +
-                 "| #{ip_perm['from_port']}"   + padding(" ", 13, ip_perm['from_port']) +
-                 "| #{ip_perm['to_port']}"     + padding(" ", 11, ip_perm['to_port']) + "|"
+                 "| #{rule['id']}"   + padding(" ", 10, rule['id'].to_s) +
+                 "| #{cidr_srcgroup(rule)}" + padding(" ", 36, cidr_srcgroup(rule).to_s) +
+                 "| #{rule['ip_protocol']}" + padding(" ", 25, rule['ip_protocol']) +
+                 "| #{rule['from_port']}"   + padding(" ", 13, rule['from_port']) +
+                 "| #{rule['to_port']}"     + padding(" ", 11, rule['to_port']) + "|"
             draw_header_line
           end
         end
@@ -46,6 +46,10 @@ module HP
            padding("-", 27, 0) + "+" +
            padding("-", 15, 0) + "+" +
            padding("-", 13, 0) + "+"
+      end
+
+      def self.cidr_srcgroup(rule)
+        rule['group'].empty? ? rule['ip_range']['cidr'] : rule['group']['name']
       end
     end
   end

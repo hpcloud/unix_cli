@@ -23,7 +23,7 @@ Aliases: securitygroups:list
           if securitygroups.empty?
             display "You currently have no security groups."
           else
-            securitygroups.table([:name, :description])
+            securitygroups.table([:id, :name, :description])
           end
         rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
           display_error_message(error, :permission_denied)
