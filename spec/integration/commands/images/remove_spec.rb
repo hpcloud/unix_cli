@@ -18,6 +18,7 @@ describe "images:remove command" do
   context "when deleting an image by name" do
     before(:all) do
       resp = @server.create_image(@image_name)
+      sleep(10)
       @new_image_id = resp.headers["Location"].split("/")[5]
       @response, @exit = run_command("images:remove #{@image_name}").stdout_and_exit_status
       sleep(10)

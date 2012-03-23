@@ -3,6 +3,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "securitygroups:add command" do
   before(:all) do
     @hp_svc = compute_connection
+    sgroup = get_securitygroup(@hp_svc, 'mysecgroup')
+    sgroup.destroy if sgroup
   end
 
   context "when creating security groups" do
