@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
 
   s.authors   = ["Matt Sanders", "Rupak Ganguly"]
   s.email     = %w{rupak.ganguly@hp.com}
-  # s.homepage  = '' #TODO
+  s.homepage  = 'http://build.hpcloud.com/cli/unix'
   # s.licenses = [""]
 
   s.executables         = ["hpcloud"]
@@ -38,4 +38,3 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'multi_json', '~>1.0.4'
 
 end
-
