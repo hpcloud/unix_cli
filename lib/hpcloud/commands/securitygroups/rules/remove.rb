@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      map %w(securitygroups:rules:revoke, securitygroups:rules:delete securitygroups:rules:del) => 'securitygroups:rules:remove'
+      map %w(securitygroups:rules:revoke securitygroups:rules:delete securitygroups:rules:del) => 'securitygroups:rules:remove'
 
       desc "securitygroups:rules:remove <sec_group_name> <rule_id>", "remove a rule from the security group"
       long_desc <<-DESC
@@ -11,7 +11,7 @@ module HP
 Examples:
   hpcloud securitygroups:rules:remove mysecgroup 111
 
-Aliases: securitygroups:rules:revoke, securitygroups:rules:delete securitygroups:rules:del
+Aliases: securitygroups:rules:revoke, securitygroups:rules:delete, securitygroups:rules:del
       DESC
       define_method "securitygroups:rules:remove" do |sec_group_name, rule_id|
         begin
