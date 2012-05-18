@@ -28,23 +28,11 @@ module HP
         credentials[:tenant_id] = ask 'Tenant Id:'
         # validate credentials
         unless options['no-validate']
+          display "Verifying your HP Cloud Services account..."
           begin
-            display "Verifying your HP Cloud Services account..."
-            begin
-              connection_with(:storage, credentials).head_containers
-            rescue NoMethodError
-              error "Your HP Cloud Services account does not have the Storage service activated."
-            end
-            begin
-              connection_with(:compute, credentials).list_servers
-            rescue NoMethodError
-              error "Your HP Cloud Services account does not have the Compute service activated."
-            end
-          rescue Excon::Errors::Forbidden, Excon::Errors::Unauthorized => e
-            display_error_message(e)
-          # remove once this is handled more globally
-          rescue Excon::Errors::SocketError => e
-            display_error_message(e)
+            validate_account(credentials)
+          rescue Exception => e
+            error "Account setup failed. Error connecting to the service endpoint at: '#{credentials[:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
           end
         end
         # update credentials and stash in config directory
