@@ -13,7 +13,13 @@ module HP
                       :incorrect_usage      => 64,
                       :permission_denied    => 77
                     }
-    
+
+      VALID_SERVICE_NAMES = ['storage','compute','cdn']
+
+      # define global options for the CLI
+      class_option :availability_zone, :type => :string, :aliases => '-z',
+                   :desc => 'The availability zone for the service.'
+
       private
       def connection(service = :storage, options = {})
         begin
@@ -73,7 +79,7 @@ module HP
                             :hp_secret_key   => service_credentials[:secret_key],
                             :hp_auth_uri     => service_credentials[:auth_uri],
                             :hp_tenant_id    => service_credentials[:tenant_id],
-                            :hp_avl_zone     => options[:avl_zone] || Config.settings[:storage_avl_zone])
+                            :hp_avl_zone     => options[:availability_zone] || Config.settings[:storage_availability_zone])
         elsif service == :compute
           Fog::Compute.new( :provider        => 'HP',
                             :connection_options => connection_options,
@@ -81,7 +87,7 @@ module HP
                             :hp_secret_key   => service_credentials[:secret_key],
                             :hp_auth_uri     => service_credentials[:auth_uri],
                             :hp_tenant_id    => service_credentials[:tenant_id],
-                            :hp_avl_zone     => options[:avl_zone] || Config.settings[:compute_avl_zone])
+                            :hp_avl_zone     => options[:availability_zone] || Config.settings[:compute_availability_zone])
         elsif service == :cdn
           Fog::CDN.new( :provider            => 'HP',
                             :connection_options => connection_options,
@@ -89,7 +95,7 @@ module HP
                             :hp_secret_key   => service_credentials[:secret_key],
                             :hp_auth_uri     => service_credentials[:auth_uri],
                             :hp_tenant_id    => service_credentials[:tenant_id],
-                            :hp_avl_zone     => options[:avl_zone] || Config.settings[:cdn_avl_zone])
+                            :hp_avl_zone     => options[:availability_zone] || Config.settings[:cdn_availability_zone])
         end
       end
 
