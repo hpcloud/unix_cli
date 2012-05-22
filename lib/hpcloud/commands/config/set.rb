@@ -4,24 +4,45 @@ module HP
 
       desc 'config:set', "set the value for a setting"
       long_desc <<-DESC
-  Set the value for a setting using the options.
+  Set the value for a setting in the configuration file for a given service.
 
 Examples:
-  hpcloud config:set -z az2
+  hpcloud config:set -s compute -z az-2.region-a.geo-1     # Sets the availability zone for the compute service
 
       DESC
-      method_option :availability_zone, :default => "az1", :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone - az1 or az2.'
+      method_option :service_name, :type => :string,
+                    :aliases => '-s', :required => :true,
+                    :desc => 'Specify the name of the service, for which the configuration setting is intended.'
       define_method "config:set" do
         begin
-          # write the settings to the config file
-          unless options.empty?
-            Config.update_config(options)
-            display "Configuration setting have been saved to the config file."
+          # Refactor for common settings later
+          service_name = options[:service_name]
+          if VALID_SERVICE_NAMES.include? (service_name)
+            # write the settings to the config file
+            settings = manage_settings(service_name, options)
+            unless settings.empty?
+              print_table(settings.to_a)
+              Config.update_config(settings)
+              display "The configuration setting(s) have been saved to the config file."
+            else
+              display "No configuration setting(s) were saved."
+            end
+          else
+            display "The service name is not valid. The service name has to be one of these: #{VALID_SERVICE_NAMES.join(', ')}"
           end
         rescue Exception => error
           display_error_message(error, :general_error)
         end
+      end
+
+      private
+
+      def manage_settings(service_name, options)
+        settings = {}
+        unless options.empty?
+          settings["#{service_name}_availability_zone"] = options[:availability_zone] unless options[:availability_zone].nil?
+        end
+        settings
       end
 
     end
