@@ -21,7 +21,6 @@ Examples:
             # write the settings to the config file
             settings = manage_settings(service_name, options)
             unless settings.empty?
-              print_table(settings.to_a)
               Config.update_config(settings)
               display "The configuration setting(s) have been saved to the config file."
             else
