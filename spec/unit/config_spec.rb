@@ -53,7 +53,9 @@ describe "Config directory setup" do
       it "should populate config file" do
         yaml = YAML::load(File.open(HP::Cloud::Config.config_file))
         yaml[:default_auth_uri].should eql("https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
-        yaml[:availability_zone].should eql("az1")
+        yaml[:compute_availability_zone].should eql("az-1.region-a.geo-1")
+        yaml[:storage_availability_zone].should eql("region-a.geo-1")
+        yaml[:cdn_availability_zone].should eql("region-a.geo-1")
       end
       
     end
@@ -168,8 +170,14 @@ describe "Getting settings" do
     it "should return default auth uri" do
       HP::Cloud::Config.settings[:default_auth_uri].should eql('https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
     end
-    it "should return availability zone" do
-      HP::Cloud::Config.settings[:availability_zone].should eql('az1')
+    it "should return availability zone for compute service" do
+      HP::Cloud::Config.settings[:compute_availability_zone].should eql('az-1.region-a.geo-1')
+    end
+    it "should return availability zone for storage service" do
+      HP::Cloud::Config.settings[:storage_availability_zone].should eql('region-a.geo-1')
+    end
+    it "should return availability zone for cdn service" do
+      HP::Cloud::Config.settings[:cdn_availability_zone].should eql('region-a.geo-1')
     end
 
   end
@@ -188,8 +196,14 @@ describe "Getting settings" do
     it "should return default auth uri" do
       HP::Cloud::Config.settings[:default_auth_uri].should eql('https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
     end
-    it "should return availability zone" do
-      HP::Cloud::Config.settings[:availability_zone].should eql('az1')
+    it "should return availability zone for compute service" do
+      HP::Cloud::Config.settings[:compute_availability_zone].should eql('az-1.region-a.geo-1')
+    end
+    it "should return availability zone for storage service" do
+      HP::Cloud::Config.settings[:storage_availability_zone].should eql('region-a.geo-1')
+    end
+    it "should return availability zone for cdn service" do
+      HP::Cloud::Config.settings[:cdn_availability_zone].should eql('region-a.geo-1')
     end
 
   end
