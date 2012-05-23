@@ -7,4 +7,11 @@ describe "Config command" do
       exit_status.should be_exit(:success)
     end
   end
+  context "config:list" do
+    it "should report success" do
+      response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['config:list']) }
+      exit_status.should be_exit(:success)
+    end
+  end
+
 end

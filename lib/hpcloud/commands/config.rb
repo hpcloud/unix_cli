@@ -4,7 +4,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      map 'config:show' => 'config'
+      map 'config:list' => 'config'
 
       desc 'config', "list the current configuration settings"
       long_desc <<-DESC
@@ -13,7 +13,7 @@ module HP
 Examples:
   hpcloud config
 
-Aliases: config:show
+Aliases: config:list
       DESC
       def config
         print_table(Config.settings.to_a)
