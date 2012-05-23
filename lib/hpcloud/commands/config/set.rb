@@ -14,23 +14,19 @@ Examples:
                     :aliases => '-s', :required => :true,
                     :desc => 'Specify the name of the service, for which the configuration setting is intended.'
       define_method "config:set" do
-        begin
-          # Refactor for common settings later
-          service_name = options[:service_name]
-          if VALID_SERVICE_NAMES.include? (service_name)
-            # write the settings to the config file
-            settings = manage_settings(service_name, options)
-            unless settings.empty?
-              Config.update_config(settings)
-              display "The configuration setting(s) have been saved to the config file."
-            else
-              display "No configuration setting(s) were saved."
-            end
+        # Refactor for common settings later
+        service_name = options[:service_name]
+        if VALID_SERVICE_NAMES.include? (service_name)
+          # write the settings to the config file
+          settings = manage_settings(service_name, options)
+          unless settings.empty?
+            Config.update_config(settings)
+            display "The configuration setting(s) have been saved to the config file."
           else
-            display "The service name is not valid. The service name has to be one of these: #{VALID_SERVICE_NAMES.join(', ')}"
+            display "No configuration setting(s) were saved."
           end
-        rescue Exception => error
-          display_error_message(error, :general_error)
+        else
+          error("The service name is not valid. The service name has to be one of these: #{VALID_SERVICE_NAMES.join(', ')}", :not_supported)
         end
       end
 
