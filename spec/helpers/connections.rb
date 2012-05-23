@@ -8,7 +8,9 @@ RSpec.configure do |config|
     connection_options = {:connect_timeout => options[:connect_timeout] || 5,
                         :read_timeout    => options[:read_timeout] || 5,
                         :write_timeout   => options[:write_timeout] || 5,
-                        :ssl_verify_peer => options[:ssl_verify_peer] || false}
+                        :ssl_verify_peer => options[:ssl_verify_peer] || false,
+                        :ssl_ca_path     => options[:ssl_ca_path]     || nil,
+                        :ssl_ca_file     => options[:ssl_ca_file]     || nil}
     if user == :primary
       Fog::Storage.new( :provider        => 'HP',
                         :connection_options => connection_options,
@@ -16,7 +18,7 @@ RSpec.configure do |config|
                         :hp_secret_key   => OS_STORAGE_ACCOUNT_PASSWORD,
                         :hp_auth_uri     => OS_STORAGE_AUTH_URL,
                         :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID,
-                        :hp_avl_zone     => OS_STORAGE_ACCOUNT_AVL_ZONE)
+                        :hp_avl_zone     => options[:availability_zone] || OS_STORAGE_ACCOUNT_AVL_ZONE)
     elsif (user == :secondary)
       Fog::Storage.new( :provider        => 'HP',
                         :connection_options => connection_options,
@@ -24,7 +26,7 @@ RSpec.configure do |config|
                         :hp_secret_key   => OS_STORAGE_SEC_ACCOUNT_PASSWORD,
                         :hp_auth_uri     => OS_STORAGE_AUTH_URL,
                         :hp_tenant_id    => OS_STORAGE_SEC_ACCOUNT_TENANT_ID,
-                        :hp_avl_zone     => OS_STORAGE_SEC_ACCOUNT_AVL_ZONE)
+                        :hp_avl_zone     => options[:availability_zone] || OS_STORAGE_SEC_ACCOUNT_AVL_ZONE)
     end
   end
   
@@ -32,28 +34,32 @@ RSpec.configure do |config|
     connection_options = {:connect_timeout => options[:connect_timeout] || 5,
                         :read_timeout    => options[:read_timeout] || 5,
                         :write_timeout   => options[:write_timeout] || 5,
-                        :ssl_verify_peer => options[:ssl_verify_peer] || false}
+                        :ssl_verify_peer => options[:ssl_verify_peer] || false,
+                        :ssl_ca_path     => options[:ssl_ca_path]     || nil,
+                        :ssl_ca_file     => options[:ssl_ca_file]     || nil}
     Fog::Compute.new( :provider        => 'HP',
                       :connection_options => connection_options,
                       :hp_account_id   => OS_COMPUTE_ACCOUNT_USERNAME,
                       :hp_secret_key   => OS_COMPUTE_ACCOUNT_PASSWORD,
                       :hp_auth_uri     => OS_COMPUTE_AUTH_URL,
                       :hp_tenant_id    => OS_COMPUTE_ACCOUNT_TENANT_ID,
-                      :hp_avl_zone     => OS_COMPUTE_ACCOUNT_AVL_ZONE)
+                      :hp_avl_zone     => options[:availability_zone] || OS_COMPUTE_ACCOUNT_AVL_ZONE)
   end
 
   def cdn_connection(options = {})
     connection_options = {:connect_timeout => options[:connect_timeout] || 5,
                         :read_timeout    => options[:read_timeout] || 5,
                         :write_timeout   => options[:write_timeout] || 5,
-                        :ssl_verify_peer => options[:ssl_verify_peer] || false}
+                        :ssl_verify_peer => options[:ssl_verify_peer] || false,
+                        :ssl_ca_path     => options[:ssl_ca_path]     || nil,
+                        :ssl_ca_file     => options[:ssl_ca_file]     || nil}
     Fog::CDN.new( :provider        => 'HP',
                       :connection_options => connection_options,
                       :hp_account_id   => OS_STORAGE_ACCOUNT_USERNAME,
                       :hp_secret_key   => OS_STORAGE_ACCOUNT_PASSWORD,
                       :hp_auth_uri     => OS_STORAGE_AUTH_URL,
                       :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID,
-                      :hp_avl_zone     => OS_STORAGE_ACCOUNT_AVL_ZONE)
+                      :hp_avl_zone     => options[:availability_zone] || OS_STORAGE_ACCOUNT_AVL_ZONE)
   end
 
 end
@@ -70,7 +76,9 @@ module HP::Cloud
       connection_options = {:connect_timeout => options[:connect_timeout] || 5,
                           :read_timeout    => options[:read_timeout] || 5,
                           :write_timeout   => options[:write_timeout] || 5,
-                          :ssl_verify_peer => options[:ssl_verify_peer] || false}
+                          :ssl_verify_peer => options[:ssl_verify_peer] || false,
+                          :ssl_ca_path     => options[:ssl_ca_path]     || nil,
+                          :ssl_ca_file     => options[:ssl_ca_file]     || nil}
       if service == :storage
         Fog::Storage.new( :provider        => 'HP',
                           :connection_options => connection_options,
@@ -78,7 +86,7 @@ module HP::Cloud
                           :hp_secret_key   => OS_STORAGE_ACCOUNT_PASSWORD,
                           :hp_auth_uri     => OS_STORAGE_AUTH_URL,
                           :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID,
-                          :hp_avl_zone     => OS_STORAGE_ACCOUNT_AVL_ZONE)
+                          :hp_avl_zone     => options[:availability_zone] || OS_STORAGE_ACCOUNT_AVL_ZONE)
       elsif service == :compute
         Fog::Compute.new( :provider        => 'HP',
                           :connection_options => connection_options,
@@ -86,7 +94,7 @@ module HP::Cloud
                           :hp_secret_key   => OS_COMPUTE_ACCOUNT_PASSWORD,
                           :hp_auth_uri     => OS_COMPUTE_AUTH_URL,
                           :hp_tenant_id    => OS_COMPUTE_ACCOUNT_TENANT_ID,
-                          :hp_avl_zone     => OS_COMPUTE_ACCOUNT_AVL_ZONE)
+                          :hp_avl_zone     => options[:availability_zone] || OS_COMPUTE_ACCOUNT_AVL_ZONE)
       elsif service == :cdn
         Fog::CDN.new( :provider        => 'HP',
                           :connection_options => connection_options,
@@ -94,7 +102,7 @@ module HP::Cloud
                           :hp_secret_key   => OS_STORAGE_ACCOUNT_PASSWORD,
                           :hp_auth_uri     => OS_STORAGE_AUTH_URL,
                           :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID,
-                          :hp_avl_zone     => OS_STORAGE_ACCOUNT_AVL_ZONE)
+                          :hp_avl_zone     => options[:availability_zone] || OS_STORAGE_ACCOUNT_AVL_ZONE)
       end
     end
   
