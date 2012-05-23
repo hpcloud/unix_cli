@@ -23,7 +23,8 @@ describe "account:setup command" do
       $stdout.should_receive(:print).with('Tenant Id: ')
       $stdin.should_receive(:gets).and_return('111111')
       $stdout.should_receive(:puts).with('Verifying your HP Cloud Services account...')
-      #$stderr.should_receive(:puts).with('Account setup failed. Error connecting to the service endpoint at: https://127.0.0.1/. Please verify your account credentials. \n Exception: Connection refused - connect(2)')
+      $stderr.should_receive(:puts).and_return('Account setup failed. Error connecting to the service endpoint at: https://127.0.0.1/. Please verify your account credentials. ')
+      #$stderr.should_receive(:puts)
       begin
         cli.send('account:setup')
       rescue SystemExit => system_exit # catch any exit calls
@@ -42,7 +43,8 @@ describe "account:setup command" do
       $stdout.should_receive(:print).with('Tenant Id: ')
       $stdin.should_receive(:gets).and_return('111111')
       $stdout.should_receive(:puts).with('Verifying your HP Cloud Services account...')
-      #$stderr.should_receive(:puts).with('Account setup failed. Error connecting to the service endpoint at: 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/'. Please verify your account credentials. \n Exception: Connection refused - connect(2)')
+      $stderr.should_receive(:puts).and_return('Account setup failed. Error connecting to the service endpoint at: "https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/". Please verify your account credentials.')
+      #$stderr.should_receive(:puts)
       begin
         cli.send('account:setup')
       rescue SystemExit => system_exit # catch any exit calls

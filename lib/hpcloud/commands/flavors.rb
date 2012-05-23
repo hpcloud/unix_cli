@@ -16,15 +16,15 @@ Aliases: flavors:list
       def flavors
         begin
           # Need specific flavors for HP
-          flavors = connection(:compute).flavors
+          flavors = connection(:compute, options).flavors
           if flavors.empty?
             display "You currently have no flavors."
           else
             # :rxtx_cap, :rxtx_quota, :swap, :vcpus are not attributes on model
             flavors.table([:id, :name, :ram, :disk])
           end
-        rescue Excon::Errors::Forbidden => error
-          display_error_message(error)
+        rescue Exception => error
+          display_error_message(error, :general_error)
         end
       end
 
