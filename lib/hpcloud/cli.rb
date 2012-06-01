@@ -31,7 +31,7 @@ module HP
           cdn_connection(options)
         end
         rescue Exception => e
-          error "Please check your HP Cloud Services account to make sure the '#{service.to_s.capitalize!}' service is activated for the appropriate availability zone.\n Exception: #{e}"
+          raise "Please check your HP Cloud Services account to make sure the '#{service.to_s.capitalize!}' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
       end
 
@@ -41,7 +41,7 @@ module HP
         if storage_credentials
           @storage_connection ||= connection_with(:storage, storage_credentials, options)
         else
-          error "Error in connecting to the Storage service. Please check your HP Cloud Services account to make sure the account credentials are correct."
+          raise "Error in connecting to the Storage service. Please check your HP Cloud Services account to make sure the account credentials are correct."
         end
       end
 
@@ -51,7 +51,7 @@ module HP
         if compute_credentials
           @compute_connection ||= connection_with(:compute, compute_credentials, options)
         else
-          error "Error in connecting to the Compute service. Please check your HP Cloud Services account to make sure the account credentials are correct."
+          raise "Error in connecting to the Compute service. Please check your HP Cloud Services account to make sure the account credentials are correct."
         end
       end
 
@@ -61,7 +61,7 @@ module HP
         if cdn_credentials
           @cdn_connection ||= connection_with(:cdn, cdn_credentials, options)
         else
-          error "Error in connecting to the CDN service. Please check your HP Cloud Services account to make sure the account credentials are correct."
+          raise "Error in connecting to the CDN service. Please check your HP Cloud Services account to make sure the account credentials are correct."
         end
       end
 
