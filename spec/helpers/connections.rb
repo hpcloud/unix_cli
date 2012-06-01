@@ -79,31 +79,36 @@ module HP::Cloud
                           :ssl_verify_peer => options[:ssl_verify_peer] || false,
                           :ssl_ca_path     => options[:ssl_ca_path]     || nil,
                           :ssl_ca_file     => options[:ssl_ca_file]     || nil}
-      if service == :storage
-        Fog::Storage.new( :provider        => 'HP',
-                          :connection_options => connection_options,
-                          :hp_account_id   => OS_STORAGE_ACCOUNT_USERNAME,
-                          :hp_secret_key   => OS_STORAGE_ACCOUNT_PASSWORD,
-                          :hp_auth_uri     => OS_STORAGE_AUTH_URL,
-                          :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID,
-                          :hp_avl_zone     => options[:availability_zone] || OS_STORAGE_ACCOUNT_AVL_ZONE)
-      elsif service == :compute
-        Fog::Compute.new( :provider        => 'HP',
-                          :connection_options => connection_options,
-                          :hp_account_id   => OS_COMPUTE_ACCOUNT_USERNAME,
-                          :hp_secret_key   => OS_COMPUTE_ACCOUNT_PASSWORD,
-                          :hp_auth_uri     => OS_COMPUTE_AUTH_URL,
-                          :hp_tenant_id    => OS_COMPUTE_ACCOUNT_TENANT_ID,
-                          :hp_avl_zone     => options[:availability_zone] || OS_COMPUTE_ACCOUNT_AVL_ZONE)
-      elsif service == :cdn
-        Fog::CDN.new( :provider        => 'HP',
-                          :connection_options => connection_options,
-                          :hp_account_id   => OS_STORAGE_ACCOUNT_USERNAME,
-                          :hp_secret_key   => OS_STORAGE_ACCOUNT_PASSWORD,
-                          :hp_auth_uri     => OS_STORAGE_AUTH_URL,
-                          :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID,
-                          :hp_avl_zone     => options[:availability_zone] || OS_STORAGE_ACCOUNT_AVL_ZONE)
+      begin
+        if service == :storage
+          Fog::Storage.new( :provider        => 'HP',
+                            :connection_options => connection_options,
+                            :hp_account_id   => OS_STORAGE_ACCOUNT_USERNAME,
+                            :hp_secret_key   => OS_STORAGE_ACCOUNT_PASSWORD,
+                            :hp_auth_uri     => OS_STORAGE_AUTH_URL,
+                            :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID,
+                            :hp_avl_zone     => options[:availability_zone] || OS_STORAGE_ACCOUNT_AVL_ZONE)
+        elsif service == :compute
+          Fog::Compute.new( :provider        => 'HP',
+                            :connection_options => connection_options,
+                            :hp_account_id   => OS_COMPUTE_ACCOUNT_USERNAME,
+                            :hp_secret_key   => OS_COMPUTE_ACCOUNT_PASSWORD,
+                            :hp_auth_uri     => OS_COMPUTE_AUTH_URL,
+                            :hp_tenant_id    => OS_COMPUTE_ACCOUNT_TENANT_ID,
+                            :hp_avl_zone     => options[:availability_zone] || OS_COMPUTE_ACCOUNT_AVL_ZONE)
+        elsif service == :cdn
+          Fog::CDN.new( :provider        => 'HP',
+                            :connection_options => connection_options,
+                            :hp_account_id   => OS_STORAGE_ACCOUNT_USERNAME,
+                            :hp_secret_key   => OS_STORAGE_ACCOUNT_PASSWORD,
+                            :hp_auth_uri     => OS_STORAGE_AUTH_URL,
+                            :hp_tenant_id    => OS_STORAGE_ACCOUNT_TENANT_ID,
+                            :hp_avl_zone     => options[:availability_zone] || OS_STORAGE_ACCOUNT_AVL_ZONE)
+        end
+      rescue Exception => e
+        raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the '#{service.to_s.capitalize!}' service is activated for the appropriate availability zone.\n Exception: #{e}"
       end
+
     end
   
   end
