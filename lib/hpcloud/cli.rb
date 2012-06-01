@@ -16,10 +16,6 @@ module HP
 
       VALID_SERVICE_NAMES = ['storage','compute','cdn']
 
-      # define global options for the CLI
-      class_option :availability_zone, :type => :string, :aliases => '-z',
-                   :desc => 'The availability zone for the service.'
-
       private
       def connection(service = :storage, options = {})
         begin
