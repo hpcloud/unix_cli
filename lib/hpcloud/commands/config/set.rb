@@ -13,7 +13,7 @@ Examples:
       method_option :service_name, :type => :string,
                     :aliases => '-s', :required => :true,
                     :desc => 'Specify the name of the service, for which the configuration setting is intended.'
-      method_option :availability_zone, :default => "az1.region-a.geo.1",
+      method_option :availability_zone,
                     :type => :string, :aliases => '-z',
                     :desc => 'Set the availability zone for the named service.'
       define_method "config:set" do
