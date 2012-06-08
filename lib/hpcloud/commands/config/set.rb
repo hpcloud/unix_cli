@@ -19,7 +19,7 @@ Examples:
       define_method "config:set" do
         # Refactor for common settings later
         service_name = options[:service_name]
-        if VALID_SERVICE_NAMES.include? (service_name)
+        if VALID_SERVICE_NAMES.include?(service_name)
           # write the settings to the config file
           settings = manage_settings(service_name, options)
           unless settings.empty?
