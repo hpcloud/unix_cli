@@ -15,7 +15,7 @@ describe "servers:add command" do
 
   context "when creating server with name, image and flavor (no keyname or security group)" do
     before(:all) do
-      @server_name = resource_name("add")
+      @server_name = resource_name("add1")
       @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID}").stdout_and_exit_status
       @new_server_id = @response.scan(/'([^']+)/)[2][0]
     end
@@ -40,7 +40,7 @@ describe "servers:add command" do
   end
   context "when creating server with name, image, flavor, keyname and security group" do
     before(:all) do
-      @server_name = resource_name("add")
+      @server_name = resource_name("add2")
       @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -k #{@keypair_name} -s #{@sg_name}").stdout_and_exit_status
       @new_server_id = @response.scan(/'([^']+)/)[2][0]
     end
@@ -66,7 +66,7 @@ describe "servers:add command" do
   end
   context "when creating server with name, image, flavor and only keyname" do
     before(:all) do
-      @server_name = resource_name("add")
+      @server_name = resource_name("add3")
       @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -k #{@keypair_name}").stdout_and_exit_status
       @new_server_id = @response.scan(/'([^']+)/)[2][0]
     end
@@ -92,7 +92,7 @@ describe "servers:add command" do
   end
   context "when creating server with name, image, flavor and only security group" do
     before(:all) do
-      @server_name = resource_name("add")
+      @server_name = resource_name("add4")
       @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -s #{@sg_name}").stdout_and_exit_status
       @new_server_id = @response.scan(/'([^']+)/)[2][0]
     end
@@ -134,6 +134,41 @@ describe "servers:add command" do
       @hp_svc.delete_server(@server.id)
     end
   end
+  context "when creating server with avl settings passed in" do
+    before(:all) do
+      @server_name = resource_name("add5")
+    end
+    context "servers:add with valid avl" do
+      before(:all) do
+        @response, @exit_status = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -z az-1.region-a.geo-1").stdout_and_exit_status
+        @server_id2 = @response.scan(/'([^']+)/)[2][0]
+      end
+      it "should report success" do
+        @response.should eql("Created server '#{@server_name}' with id '#{@server_id2}'.\n")
+      end
+      its_exit_status_should_be(:success)
+
+      it "should list id in servers" do
+        servers = @hp_svc.servers.map {|s| s.id}
+        servers.should include(@server_id2.to_i)
+      end
+      it "should list name in servers" do
+        servers = @hp_svc.servers.map {|s| s.name}
+        servers.should include(@server_name)
+      end
+      after(:all) do
+        @hp_svc.delete_server(@server_id2)
+      end
+    end
+    context "servers:add with invalid avl" do
+      it "should report error" do
+        response, exit_status = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -z blah").stderr_and_exit_status
+        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+        exit_status.should be_exit(:general_error)
+      end
+    end
+  end
+
   after(:all) do
     @keypair.destroy if @keypair
     @sgroup.destroy if @sgroup

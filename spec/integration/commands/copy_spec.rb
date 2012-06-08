@@ -385,5 +385,26 @@ describe "Copy command" do
     end
     
   end
-  
+
+  describe "with avl settings passed in" do
+    before(:all) do
+      @hp_svc.put_container('my_avl_container')
+    end
+    context "copy with valid avl" do
+      it "should report success" do
+        response, exit_status = run_command('copy spec/fixtures/files/foo.txt :my_avl_container -z region-a.geo-1').stdout_and_exit_status
+        response.should eql("Copied spec/fixtures/files/foo.txt => :my_avl_container/foo.txt\n")
+        exit_status.should be_exit(:success)
+      end
+    end
+    context "copy with invalid avl" do
+      it "should report error" do
+        response, exit_status = run_command('copy spec/fixtures/files/foo.txt :my_avl_container -z blah').stderr_and_exit_status
+        response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+        exit_status.should be_exit(:general_error)
+      end
+    end
+    after(:all) { purge_container('my_avl_container') }
+  end
+
 end

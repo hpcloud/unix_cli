@@ -29,6 +29,27 @@ describe "addresses:remove command" do
       address = get_address(@hp_svc, @public_ip)
       address.should be_nil
     end
-
   end
+
+  context "with avl settings passed in" do
+    before(:all) do
+      resp, exit = run_command('addresses:add').stdout_and_exit_status
+      @second_ip = resp.scan(/'([^']+)/)[0][0]
+    end
+
+    context "remove ip with valid avl" do
+      it "should report success" do
+        response, exit_status = run_command("addresses:remove #{@second_ip} -z az-1.region-a.geo-1").stdout_and_exit_status
+        exit_status.should be_exit(:success)
+      end
+    end
+    context "remove ip with invalid avl" do
+      it "should report error" do
+        response, exit_status = run_command("addresses:remove #{@second_ip} -z blah").stderr_and_exit_status
+        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+        exit_status.should be_exit(:general_error)
+      end
+    end
+  end
+
 end

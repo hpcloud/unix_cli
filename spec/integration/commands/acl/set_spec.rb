@@ -36,6 +36,23 @@ describe "Acl:set command" do
     end
   end
 
+  describe "with avl settings passed in" do
+    context "acl:set with valid avl" do
+      it "should report success" do
+        response, exit_status = run_command('acl:set :acl_container public-read -z region-a.geo-1').stdout_and_exit_status
+        response.should eql("ACL for :acl_container updated to public-read.\n")
+        exit_status.should be_exit(:success)
+      end
+    end
+    context "acl:set with invalid avl" do
+      it "should report error" do
+        response, exit_status = run_command('acl:set :acl_container public-read -z blah').stderr_and_exit_status
+        response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+        exit_status.should be_exit(:general_error)
+      end
+    end
+  end
+
   after(:all) do
     purge_container('acl_container')
   end

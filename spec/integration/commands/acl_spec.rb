@@ -39,6 +39,34 @@ describe "Acl command (viewing acls)" do
       end
       its_exit_status_should_be(:success)
     end
+    describe "with avl settings passed in" do
+      context "acl for container with valid avl" do
+        it "should report success" do
+          response, exit_status = run_command('acl :acl_container -z region-a.geo-1').stdout_and_exit_status
+          exit_status.should be_exit(:success)
+        end
+      end
+      context "acl for object with valid avl" do
+        it "should report success" do
+          response, exit_status = run_command('acl :acl_container/foo.txt -z region-a.geo-1').stdout_and_exit_status
+          exit_status.should be_exit(:success)
+        end
+      end
+      context "acl for container with invalid avl" do
+        it "should report error" do
+          response, exit_status = run_command('acl :acl_container -z blah').stderr_and_exit_status
+          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+          exit_status.should be_exit(:general_error)
+        end
+      end
+      context "acl for object with invalid avl" do
+        it "should report error" do
+          response, exit_status = run_command('acl :acl_container/foo.txt -z blah').stderr_and_exit_status
+          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+          exit_status.should be_exit(:general_error)
+        end
+      end
+    end
   end
 
   context "when viewing the ACL for a public" do
@@ -64,6 +92,34 @@ describe "Acl command (viewing acls)" do
         @response.should eql("public-read\n")
       end
       its_exit_status_should_be(:success)
+    end
+    describe "with avl settings passed in" do
+      context "acl for container with valid avl" do
+        it "should report success" do
+          response, exit_status = run_command('acl :acl_container -z region-a.geo-1').stdout_and_exit_status
+          exit_status.should be_exit(:success)
+        end
+      end
+      context "acl for object with valid avl" do
+        it "should report success" do
+          response, exit_status = run_command('acl :acl_container/foo.txt -z region-a.geo-1').stdout_and_exit_status
+          exit_status.should be_exit(:success)
+        end
+      end
+      context "acl for container with invalid avl" do
+        it "should report error" do
+          response, exit_status = run_command('acl :acl_container -z blah').stderr_and_exit_status
+          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+          exit_status.should be_exit(:general_error)
+        end
+      end
+      context "acl for object with invalid avl" do
+        it "should report error" do
+          response, exit_status = run_command('acl :acl_container/foo.txt -z blah').stderr_and_exit_status
+          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+          exit_status.should be_exit(:general_error)
+        end
+      end
     end
   end
 

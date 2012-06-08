@@ -52,12 +52,30 @@ describe "Move command" do
       end
       
     end
-    
+
+    describe "with avl settings passed in" do
+      before(:all) do
+        @hp_svc.put_object('move_source_container', 'foo.txt', read_file('foo.txt'))
+      end
+      context "move with valid avl" do
+        it "should report success" do
+          response, exit_status = run_command('move :move_source_container/foo.txt :move_source_container/new/foo.txt -z region-a.geo-1').stdout_and_exit_status
+          response.should eql("Moved :move_source_container/foo.txt => :move_source_container/new/foo.txt\n")
+          exit_status.should be_exit(:success)
+        end
+      end
+      context "move with invalid avl" do
+        it "should report error" do
+          response, exit_status = run_command('move :move_source_container/foo.txt :move_source_container/new/foo.txt -z blah').stderr_and_exit_status
+          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+          exit_status.should be_exit(:general_error)
+        end
+      end
+    end
+
   end
   
   context "Moving an object between containers" do
-    
-    before(:all) { @hp_svc.put_object('move_source_container', 'foo.txt', read_file('foo.txt')) }
     
     context "when source container can't be found" do
       it "should display error message" do
@@ -75,19 +93,63 @@ describe "Move command" do
       end
     end
     
-    # context "when target container can't be found" do
-    #   it "should display error message" do
-    #     response = capture(:stderr){ HP::Cloud::CLI.start(['move', ':missing_container/missing_file', ':missing_container/new/my_file']) }
-    #     response.should eql("You don't have a container 'missing_container'.\n")
-    #   end
-    # end
+    context "when target container can't be found" do
+       it "should display error message" do
+         response = capture(:stderr){ HP::Cloud::CLI.start(['move', ':missing_container/missing_file', ':missing_container/new/my_file']) }
+         response.should eql("You don't have a container 'missing_container'.\n")
+       end
+    end
     
     pending "when target file can't be written" do
     end
     
     pending "when target file written successfully" do
     end
-    
+
+    context "when move is completed successfully" do
+
+      before(:all) do
+        @hp_svc.put_object('move_source_container', 'foo.txt', read_file('foo.txt'))
+        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['move', ':move_source_container/foo.txt', ':move_target_container/foo.txt']) }
+      end
+
+      it "should have created new object at destination" do
+        @hp_svc.head_object('move_target_container', 'foo.txt').status.should eql(200)
+      end
+
+      it "should have removed source object" do
+        lambda {
+          @hp_svc.head_object('move_source_container', 'foo.txt')
+        }.should raise_error(Fog::Storage::HP::NotFound)
+      end
+
+      it "should display success message" do
+        @response.should eql("Moved :move_source_container/foo.txt => :move_target_container/foo.txt\n")
+        @exit_status.should be_exit(:success)
+      end
+
+    end
+
+    describe "with avl settings passed in" do
+      before(:all) do
+        @hp_svc.put_object('move_source_container', 'foo.txt', read_file('foo.txt'))
+      end
+      context "move with valid avl" do
+        it "should report success" do
+          response, exit_status = run_command('move :move_source_container/foo.txt :move_target_container/foo.txt -z region-a.geo-1').stdout_and_exit_status
+          response.should eql("Moved :move_source_container/foo.txt => :move_target_container/foo.txt\n")
+          exit_status.should be_exit(:success)
+        end
+      end
+      context "move with invalid avl" do
+        it "should report error" do
+          response, exit_status = run_command('move :move_source_container/foo.txt :move_target_container/foo.txt -z blah').stderr_and_exit_status
+          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+          exit_status.should be_exit(:general_error)
+        end
+      end
+    end
+
   end
   
   context "Moving an object from a container to the local filesystem" do

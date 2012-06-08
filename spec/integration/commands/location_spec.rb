@@ -76,10 +76,28 @@ describe 'location command' do
       @response, @exit = run_command('location :my_location_container').stdout_and_exit_status
     end
 
-    it "should return location" do
-      @response.should eql("#{@hp_svc.url}/my_location_container\n")
+    context "with avl settings from config" do
+      it "should return location" do
+        @response.should eql("#{@hp_svc.url}/my_location_container\n")
+      end
+      its_exit_status_should_be(:success)
     end
-    its_exit_status_should_be(:success)
+
+    describe "with avl settings passed in" do
+      context "location for container with valid avl" do
+        it "should report success" do
+          response, exit_status = run_command('location :my_location_container -z region-a.geo-1').stdout_and_exit_status
+          exit_status.should be_exit(:success)
+        end
+      end
+      context "location for container with invalid avl" do
+        it "should report error" do
+          response, exit_status = run_command('location :my_location_container -z blah').stderr_and_exit_status
+          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+          exit_status.should be_exit(:general_error)
+        end
+      end
+    end
 
     after(:all) { purge_container('my_location_container') }
 
@@ -93,13 +111,32 @@ describe 'location command' do
       @response, @exit = run_command('location :my_location_container/tiny.txt').stdout_and_exit_status
     end
 
-    it "should return location" do
-      @response.should eql("#{@hp_svc.url}/my_location_container/tiny.txt\n")
+    context "with avl settings from config" do
+      it "should return location" do
+        @response.should eql("#{@hp_svc.url}/my_location_container/tiny.txt\n")
+      end
+      its_exit_status_should_be(:success)
     end
-    its_exit_status_should_be(:success)
+
+    describe "with avl settings passed in" do
+      context "location for file with valid avl" do
+        it "should report success" do
+          response, exit_status = run_command('location :my_location_container/tiny.txt -z region-a.geo-1').stdout_and_exit_status
+          exit_status.should be_exit(:success)
+        end
+      end
+      context "location for file with invalid avl" do
+        it "should report error" do
+          response, exit_status = run_command('location :my_location_container/tiny.txt -z blah').stderr_and_exit_status
+          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+          exit_status.should be_exit(:general_error)
+        end
+      end
+    end
 
     after(:all) { purge_container('my_location_container') }
 
   end
+
 
 end

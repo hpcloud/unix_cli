@@ -52,16 +52,6 @@ describe "Remove command" do
       end
     end
 
-    context "when object and container exist" do
-      before(:all) do
-      end
-      it "should report success" do
-        response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['remove', ':my_container/foo.txt']) }
-        response.should eql("Removed object ':my_container/foo.txt'.\n")
-        exit_status.should be_exit(:success)
-      end
-    end
-
     context "when syntax is not correct" do
       it "should exit with message about bad syntax" do
         response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['remove', '/foo/foo']) }
@@ -70,7 +60,35 @@ describe "Remove command" do
       end
     end
 
-    after(:all) do
+    context "when object and container exist" do
+      it "should report success" do
+        response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['remove', ':my_container/foo.txt']) }
+        response.should eql("Removed object ':my_container/foo.txt'.\n")
+        exit_status.should be_exit(:success)
+      end
+      describe "with avl settings passed in" do
+        before(:all) do
+          purge_container('my_container')
+          create_container_with_files('my_container', 'foo.txt')
+        end
+        context "remove with valid avl" do
+          it "should report success" do
+            response, exit_status = run_command('remove :my_container/foo.txt -z region-a.geo-1').stdout_and_exit_status
+            response.should eql("Removed object ':my_container/foo.txt'.\n")
+            exit_status.should be_exit(:success)
+          end
+        end
+        context "remove with invalid avl" do
+          it "should report error" do
+            response, exit_status = run_command('remove :my_container/foo.txt -z blah').stderr_and_exit_status
+            response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+            exit_status.should be_exit(:general_error)
+          end
+        end
+        after(:all) do
+          purge_container('my_container')
+        end
+      end
     end
 
   end

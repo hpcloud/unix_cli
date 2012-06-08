@@ -7,13 +7,14 @@ describe "securitygroups:rules:remove command" do
   context "when removing rules" do
     before(:all) do
       @security_group = @hp_svc.security_groups.create(:name => 'delsecgroup', :description => 'sec group desc')
-      @security_group.create_rule(8080..8080, "tcp", "111.111.111.111/1")
-      sec_group_with_rules = get_securitygroup(@hp_svc, 'delsecgroup')
-      @rule_id = sec_group_with_rules.rules[0]["id"]
     end
 
     context "tcp with port range" do
       before(:all) do
+        @security_group.create_rule(8080..8080, "tcp", "111.111.111.111/1")
+        sec_group_with_rules = get_securitygroup(@hp_svc, 'delsecgroup')
+        @rule_id = sec_group_with_rules.rules[0]["id"]
+
         @response, @exit = capture_with_status(:stdout){ HP::Cloud::CLI.start(['securitygroups:rules:remove', 'delsecgroup', @rule_id]) }
         @rules = get_securitygroup(@hp_svc, 'delsecgroup')
       end
@@ -42,6 +43,28 @@ describe "securitygroups:rules:remove command" do
       end
       its_exit_status_should_be(:not_found)
 
+    end
+
+    context "with avl settings passed in" do
+      context "servers with valid avl" do
+        before(:all) do
+          @security_group.create_rule(8081..8081, "tcp", "111.111.111.111/1")
+          sec_group_with_rules = get_securitygroup(@hp_svc, 'delsecgroup')
+          @rule_id = sec_group_with_rules.rules[0]["id"]
+        end
+        it "should report success" do
+          response, exit_status = run_command("securitygroups:rules:remove delsecgroup #{@rule_id} -z az-1.region-a.geo-1").stdout_and_exit_status
+          response.should eql("Removed rule '#{@rule_id}' for security group 'delsecgroup'.\n")
+          exit_status.should be_exit(:success)
+        end
+      end
+      context "servers with invalid avl" do
+        it "should report error" do
+          response, exit_status = run_command("securitygroups:rules:remove delsecgroup 111 -z blah").stderr_and_exit_status
+          response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+          exit_status.should be_exit(:general_error)
+        end
+      end
     end
 
     after(:all) do

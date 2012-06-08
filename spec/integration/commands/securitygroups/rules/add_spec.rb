@@ -3,15 +3,15 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../../spec_helper')
 describe "securitygroups:rules:add command" do
   before(:all) do
     @hp_svc = compute_connection
-    sgroup = get_securitygroup(@hp_svc, 'mysecgroup')
-    sgroup.destroy if sgroup
   end
 
   context "when creating rules" do
+    before(:all) do
+      @security_group = @hp_svc.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
+    end
 
     context "tcp with port range" do
       before(:all) do
-        @security_group = @hp_svc.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
         @response, @exit = capture_with_status(:stdout){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'tcp', '-p', '22..22']) }
         sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
         @rule_id = sec_group_with_rules.rules[0]["id"]
@@ -53,13 +53,12 @@ describe "securitygroups:rules:add command" do
       end
 
       after(:all) do
-        @security_group.destroy if @security_group
+        @security_group.delete_rule(@rule_id)
       end
 
     end
     context "tcp with port range and ip address" do
       before(:all) do
-        @security_group = compute_connection.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
         @response, @exit = capture_with_status(:stdout){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'tcp', '-p', '80..80', '-c', '111.111.111.111/1']) }
         sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
         @rule_id = sec_group_with_rules.rules[0]["id"]
@@ -95,13 +94,12 @@ describe "securitygroups:rules:add command" do
       end
 
       after(:all) do
-        @security_group.destroy if @security_group
+        @security_group.delete_rule(@rule_id)
       end
 
     end
     context "tcp without port range" do
       before(:all) do
-        @security_group = compute_connection.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
         @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'tcp']) }
       end
       it "should show error message" do
@@ -109,14 +107,9 @@ describe "securitygroups:rules:add command" do
       end
       its_exit_status_should_be(:incorrect_usage)
 
-      after(:all) do
-        @security_group.destroy if @security_group
-      end
-
     end
     context "icmp without port range" do
       before(:all) do
-        @security_group = compute_connection.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
         @response, @exit = capture_with_status(:stdout){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'icmp']) }
         sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
         @rule_id = sec_group_with_rules.rules[0]["id"]
@@ -152,14 +145,13 @@ describe "securitygroups:rules:add command" do
       end
 
       after(:all) do
-        @security_group.destroy if @security_group
+        @security_group.delete_rule(@rule_id)
       end
     end
 
     context "inherit rule with tcp and source group" do
       before(:all) do
         # assumption that default security group already exists
-        @security_group = @hp_svc.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
         @response, @exit = capture_with_status(:stdout){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'tcp', '-p', '22..22', '-g', 'default']) }
         sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
         @rule_id = sec_group_with_rules.rules[0]["id"]
@@ -192,14 +184,13 @@ describe "securitygroups:rules:add command" do
       end
 
       after(:all) do
-        @security_group.destroy if @security_group
+        @security_group.delete_rule(@rule_id)
       end
 
     end
     context "inherit rule with icmp and source group" do
       before(:all) do
         # assumption that default security group already exists
-        @security_group = @hp_svc.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
         @response, @exit = capture_with_status(:stdout){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'icmp', '-g', 'default']) }
         sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
         @rule_id = sec_group_with_rules.rules[0]["id"]
@@ -232,24 +223,13 @@ describe "securitygroups:rules:add command" do
       end
 
       after(:all) do
-        @security_group.destroy if @security_group
+        @security_group.delete_rule(@rule_id)
       end
 
     end
 
-    context "with invalid security group" do
-      before(:all) do
-        @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'tcp', '-p', '22..22']) }
-      end
-      it "should show error message" do
-        @response.should eql("You don't have a security group 'mysecgroup'.\n")
-      end
-      its_exit_status_should_be(:not_found)
-
-    end
     context "with invalid protocol" do
       before(:all) do
-        @security_group = compute_connection.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
         @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'blah', '-p', '22..22']) }
       end
       it "should show error message" do
@@ -257,13 +237,9 @@ describe "securitygroups:rules:add command" do
       end
       its_exit_status_should_be(:general_error)
 
-      after(:all) do
-        @security_group.destroy if @security_group
-      end
     end
     context "with invalid ip range" do
       before(:all) do
-        @security_group = compute_connection.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
         @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'tcp', '-p', '999999..999999']) }
       end
       it "should show error message" do
@@ -271,13 +247,9 @@ describe "securitygroups:rules:add command" do
       end
       its_exit_status_should_be(:general_error)
 
-      after(:all) do
-        @security_group.destroy if @security_group
-      end
     end
     context "with invalid cidr" do
       before(:all) do
-        @security_group = compute_connection.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
         @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'tcp', '-p', '8080..8080', '-c', '999.999.999.999/999']) }
       end
       it "should show error message" do
@@ -285,13 +257,9 @@ describe "securitygroups:rules:add command" do
       end
       its_exit_status_should_be(:general_error)
 
-      after(:all) do
-        @security_group.destroy if @security_group
-      end
     end
     context "with invalid source group" do
       before(:all) do
-        @security_group = compute_connection.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
         @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'icmp', '-g', 'blah']) }
       end
       it "should show error message" do
@@ -299,21 +267,50 @@ describe "securitygroups:rules:add command" do
       end
       its_exit_status_should_be(:not_found)
 
-      after(:all) do
-        @security_group.destroy if @security_group
-      end
     end
     context "with invalid params - source group and ip address" do
       before(:all) do
-        @security_group = compute_connection.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
         @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'icmp', '-c', '0.0.0.0/0', '-g', 'blah']) }
       end
       it "should show error message" do
         @response.should eql("You can either specify a source group or an ip address, not both.\n")
       end
       its_exit_status_should_be(:incorrect_usage)
-
     end
+
+    context "with avl settings passed in" do
+      context "securitygroups:rules:add with valid avl" do
+        it "should report success" do
+          @response, @exit_status = run_command('securitygroups:rules:add mysecgroup icmp -z az-1.region-a.geo-1').stdout_and_exit_status
+          sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
+          @rule_id = sec_group_with_rules.rules[0]["id"]
+          @response.should eql("Created rule '#{@rule_id}' for security group 'mysecgroup'.\n")
+          @exit_status.should be_exit(:success)
+          @security_group.delete_rule(@rule_id)
+        end
+      end
+      context "securitygroups:rules:add with invalid avl" do
+        it "should report error" do
+          response, exit_status = run_command('securitygroups:rules:add mysecgroup icmp -z blah').stderr_and_exit_status
+          response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+          exit_status.should be_exit(:general_error)
+        end
+      end
+    end
+
+    after(:all) do
+      @security_group.destroy if @security_group
+    end
+
+  end
+  context "when creating rules with invalid security group" do
+    before(:all) do
+      @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['securitygroups:rules:add', 'mysecgroup', 'tcp', '-p', '22..22']) }
+    end
+    it "should show error message" do
+      @response.should eql("You don't have a security group 'mysecgroup'.\n")
+    end
+    its_exit_status_should_be(:not_found)
 
   end
 

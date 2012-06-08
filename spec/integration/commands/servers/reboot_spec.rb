@@ -32,6 +32,24 @@ describe "servers:reboot command" do
     end
   end
 
+  pending "with avl settings passed in" do
+    context "servers:reboot with valid avl" do
+      it "should report success" do
+        response, exit_status = run_command("servers:reboot #{@server_name} -z az-1.region-a.geo-1").stdout_and_exit_status
+        response.should eql("Soft rebooting server '#{@server_name}'.\n")
+        sleep(10)
+        exit_status.should be_exit(:success)
+      end
+    end
+    context "servers:reboot with invalid avl" do
+      it "should report error" do
+        response, exit_status = run_command("servers:reboot #{@server_name} -z blah").stderr_and_exit_status
+        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+        exit_status.should be_exit(:general_error)
+      end
+    end
+  end
+
   after(:all) do
     @server.destroy
   end

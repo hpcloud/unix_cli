@@ -75,4 +75,23 @@ describe "containers:add command" do
     end
   end
 
+  describe "with avl settings passed in" do
+    context "add with valid avl" do
+      it "should report success" do
+        response, exit_status = run_command('containers:add my-added-container2 -z region-a.geo-1').stdout_and_exit_status
+        response.should eql("Created container 'my-added-container2'.\n")
+        exit_status.should be_exit(:success)
+      end
+    end
+    context "add with invalid avl" do
+      it "should report error" do
+        response, exit_status = run_command('containers:add my-added-container2 -z blah').stderr_and_exit_status
+        response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+        exit_status.should be_exit(:general_error)
+      end
+    end
+    after(:all) { purge_container('my-added-container2') }
+  end
+
+
 end

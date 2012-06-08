@@ -44,4 +44,28 @@ describe "cdn:containers:remove command" do
 
   end
 
+  describe "with avl settings passed in" do
+    before(:all) do
+      @hp_svc.put_container('my-added-container2')
+      @hp_cdn.put_container('my-added-container2')
+    end
+    context "cdn:containers:remove with valid avl" do
+      it "should report success" do
+        response, exit_status = run_command('cdn:containers:remove my-added-container2 -z region-a.geo-1').stdout_and_exit_status
+        response.should eql("Removed container 'my-added-container2' from the CDN.\n")
+        exit_status.should be_exit(:success)
+      end
+    end
+    context "cdn:containers:remove with invalid avl" do
+      it "should report error" do
+        response, exit_status = run_command('cdn:containers:remove my-added-container2 -z blah').stderr_and_exit_status
+        response.should include("Please check your HP Cloud Services account to make sure the 'Cdn' service is activated for the appropriate availability zone.\n")
+        exit_status.should be_exit(:general_error)
+      end
+    end
+    after(:all) do
+      @hp_svc.delete_container('my-added-container2')
+    end
+  end
+
 end

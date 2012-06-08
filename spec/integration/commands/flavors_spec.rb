@@ -26,7 +26,7 @@ describe "Flavors command" do
     context "flavors with invalid avl" do
       it "should report error" do
         response, exit_status = run_command('flavors -z blah').stderr_and_exit_status
-        response.should eql("Unable to retrieve endpoint service url for availability zone 'blah' from service catalog. \n")
+        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
         exit_status.should be_exit(:general_error)
       end
     end

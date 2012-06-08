@@ -58,5 +58,30 @@ describe "cdn:containers:get command" do
     its_exit_status_should_be(:not_found)
 
   end
+  describe "with avl settings passed in" do
+    before(:all) do
+      @hp_svc.put_container('my-added-container2')
+      @hp_cdn.put_container('my-added-container2')
+      run_command('cdn:containers:set my-added-container2 X-Ttl 900').stdout_and_exit_status
+    end
+    context "cdn:containers:get with valid avl" do
+      it "should report success" do
+        response, exit_status = run_command('cdn:containers:get my-added-container2 X-Ttl -z region-a.geo-1').stdout_and_exit_status
+        response.should eql("900\n")
+        exit_status.should be_exit(:success)
+      end
+    end
+    context "cdn:containers:get with invalid avl" do
+      it "should report error" do
+        response, exit_status = run_command('cdn:containers:get my-added-container2 X-Ttl -z blah').stderr_and_exit_status
+        response.should include("Please check your HP Cloud Services account to make sure the 'Cdn' service is activated for the appropriate availability zone.\n")
+        exit_status.should be_exit(:general_error)
+      end
+    end
+    after(:all) do
+      @hp_cdn.delete_container('my-added-container2')
+      @hp_svc.delete_container('my-added-container2')
+    end
+  end
 
 end
