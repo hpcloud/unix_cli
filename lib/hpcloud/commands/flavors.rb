@@ -6,14 +6,15 @@ module HP
 
       desc "flavors", "list of available flavors"
       long_desc <<-DESC
-  List the flavors in your compute account.
+  List the flavors in your compute account. Optionally, an availability zone can be passed.
 
 Examples:
-  hpcloud flavors
+  hpcloud flavors                         # List flavors
+  hpcloud flavors -z az-2.region-a.geo-1  # List flavors for an availability zone
 
 Aliases: flavors:list
       DESC
-      method_option :availability_zone, :default => "az-1.region-a.geo-1",
+      method_option :availability_zone,
                     :type => :string, :aliases => '-z',
                     :desc => 'Set the availability zone.'
       def flavors

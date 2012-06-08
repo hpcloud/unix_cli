@@ -7,29 +7,40 @@ module HP
       desc 'copy <resource> <resource>', "copy files from one resource to another"
       long_desc <<-DESC
   Copy a file between your file system and a container, inside a container, or
-  between containers.
+  between containers. Optionally, an availability zone can be passed.
 
 Examples:
-  hpcloud copy my_file.txt :my_container       # Copy file to container 'my_container'
-  hpcloud copy :my_container/file.txt file.txt # Copy file.txt to local file
-  hpcloud copy :logs/today :logs/old/weds   # Copy inside a container
-  hpcloud copy :one/file.txt :two/file.txt  # Copy file.txt between containers
+  hpcloud copy my_file.txt :my_container        # Copy file to container 'my_container'
+  hpcloud copy :my_container/file.txt file.txt  # Copy file.txt to local file
+  hpcloud copy :logs/today :logs/old/weds       # Copy inside a container
+  hpcloud copy :one/file.txt :two/file.txt      # Copy file.txt between containers
+  hpcloud copy my_file.txt :my_container -z region-a.geo-1   # Optionally specify an availability zone
 
 Aliases: cp
 
-Note: Copying multiple files at once will be supported in a future release.
+Note: Copying multiple files at once or recursively copying folder contents will be supported in a future release.
       DESC
+      method_option :availability_zone,
+                    :type => :string, :aliases => '-z',
+                    :desc => 'Set the availability zone.'
       def copy(from, to)
-        from_type = Resource.detect_type(from)
-        to_type   = Resource.detect_type(to)
-        if from_type == :file and Resource::REMOTE_TYPES.include?(to_type)
-          put(from, to)
-        elsif from_type == :object and Resource::LOCAL_TYPES.include?(to_type)
-          fetch(from, to)
-        elsif from_type == :object and Resource::REMOTE_TYPES.include?(to_type)
-          clone(from, to)
-        else
-          error "Not currently supported.", :not_supported
+        begin
+          from_type = Resource.detect_type(from)
+          to_type   = Resource.detect_type(to)
+          @storage_connection = connection(:storage, options)
+          if from_type == :file and Resource::REMOTE_TYPES.include?(to_type)
+            put(from, to)
+          elsif from_type == :object and Resource::LOCAL_TYPES.include?(to_type)
+            fetch(from, to)
+          elsif from_type == :object and Resource::REMOTE_TYPES.include?(to_type)
+            clone(from, to)
+          else
+            error "Not currently supported.", :not_supported
+          end
+        rescue Fog::HP::Errors::ServiceError, Fog::Storage::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Excon::Errors::Unauthorized => error
+          display_error_message(error, :permission_denied)
         end
       end
     
@@ -47,13 +58,13 @@ Note: Copying multiple files at once will be supported in a future release.
           end
           # TODO - ensure expansion to file_destination_path
           begin
-            directory = connection.directories.get(container)
+            directory = @storage_connection.directories.get(container)
           rescue Excon::Errors::Forbidden => e
             error "You don't have permission to access the container '#{container}'.", :permission_denied
           end
           if directory
             begin
-              get = connection.get_object(container, path)
+              get = @storage_connection.get_object(container, path)
               File.open(to, 'w') do |file|
                 file.write get.body
               end
@@ -64,8 +75,6 @@ Note: Copying multiple files at once will be supported in a future release.
               error "You don't have permission to write the target file.", :permission_denied
             rescue Errno::ENOENT, Errno::EISDIR
               error "The target directory is invalid.", :permission_denied
-            rescue Excon::Errors::Forbidden => e
-              display_error_message(e)
             end
           else
             error "You don't have a container '#{container}'.", :not_found
@@ -79,7 +88,7 @@ Note: Copying multiple files at once will be supported in a future release.
           mime_type = Resource.get_mime_type("'#{from}'")
           container, path = Container.parse_resource(to)
           begin
-            directory = connection.directories.get(container)
+            directory = @storage_connection.directories.get(container)
           rescue Excon::Errors::Forbidden => e
             display_error_message(e)
           end
@@ -104,12 +113,12 @@ Note: Copying multiple files at once will be supported in a future release.
           path_to = Container.storage_destination_path(path_to, path)
           begin
             #### connection.copy_object(container, path, container_to, path_to)
-            connection.put_object(container_to, path_to, nil, {'X-Copy-From' => "/#{container}/#{path}" })
+            @storage_connection.put_object(container_to, path_to, nil, {'X-Copy-From' => "/#{container}/#{path}" })
             display "Copied #{from} => :#{container_to}/#{path_to}"
           rescue Fog::Storage::HP::NotFound => e
-            if !connection.directories.get(container)
+            if !@storage_connection.directories.get(container)
               error "You don't have a container '#{container}'.", :not_found
-            elsif container != container_to && !connection.directories.get(container_to)
+            elsif container != container_to && !@storage_connection.directories.get(container_to)
               error "You don't have a container '#{container_to}'.", :not_found
             else
               error "The specified object does not exist.", :not_found

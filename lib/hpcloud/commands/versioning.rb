@@ -3,10 +3,14 @@ module HP
     class CLI < Thor
     
       desc 'versioning <container>', 'show or modify versioning state for a container'
-      long_desc "Show or set the versioning state for a container.
-                \n\nExamples:
-                \n\nhpcloud versioning :my_container
-                \n\nAliases: none"
+      long_desc <<-DESC
+  Show or set the versioning state for a container.
+
+Examples:
+  hpcloud versioning :my_container
+
+Aliases: none
+      DESC
       def versioning(new_state=nil)
         display "show versioning state"
       end

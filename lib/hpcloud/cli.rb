@@ -11,7 +11,8 @@ module HP
                       :not_supported        => 3,
                       :not_found            => 4,
                       :incorrect_usage      => 64,
-                      :permission_denied    => 77
+                      :permission_denied    => 77,
+                      :rate_limited         => 88
                     }
 
       VALID_SERVICE_NAMES = ['storage','compute','cdn']

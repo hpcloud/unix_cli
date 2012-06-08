@@ -11,24 +11,28 @@ module HP
 
       desc "addresses", "list of available addresses"
       long_desc <<-DESC
-  List the available addresses for your account.
+  List the available addresses for your account. Optionally, an availability zone can be passed.
 
 Examples:
-  hpcloud addresses
+  hpcloud addresses                            # List addresses
+  hpcloud addresses -z az-2.region-a.geo-1     # Optionally specify an availability zone
 
 Aliases: addresses:list
       DESC
+      method_option :availability_zone,
+                    :type => :string, :aliases => '-z',
+                    :desc => 'Set the availability zone.'
       def addresses
         begin
-          addresses = connection(:compute).addresses
+          addresses = connection(:compute, options).addresses
           if addresses.empty?
             display "You currently have no public IP addresses, use `#{selfname} addresses:add` to create one."
           else
             addresses.table([:id, :ip, :fixed_ip, :instance_id])
           end
-        rescue Fog::Compute::HP::Error => error
+        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
           display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
           display_error_message(error, :permission_denied)
         end
       end

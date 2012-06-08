@@ -9,23 +9,31 @@ module HP
     
       desc "containers", "list available containers"
       long_desc <<-DESC
-  List the containers in your storage account.
+  List the containers in your storage account. Optionally, an availability zone can be passed.
   
 Examples:
-  hpcloud containers
+  hpcloud containers                    # List containers
+  hpcloud containers -z region-a.geo-1  # Optionally specify an availability zone
 
 Aliases: containers:list
       DESC
+      method_option :availability_zone,
+                    :type => :string, :aliases => '-z',
+                    :desc => 'Set the availability zone.'
       def containers
         begin
-          containers = connection.directories
+          containers = connection(:storage, options).directories
           if containers.empty?
             display "You currently have no containers, use `#{selfname} containers:add <name>` to create one."
           else
             containers.each { |container| display container.key }
           end
-        rescue Excon::Errors::Forbidden => error
-          display_error_message(error)
+        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
+          display_error_message(error, :permission_denied)
+        rescue Excon::Errors::Conflict, Excon::Errors::NotFound => error
+          display_error_message(error, :not_found)
         end
       end
     

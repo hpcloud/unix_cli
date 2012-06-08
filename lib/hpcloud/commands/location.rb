@@ -6,21 +6,25 @@ module HP
     
       desc 'location <object/container>', 'display the URI for a given resource'
       long_desc <<-DESC
-  Print the URI of the specified object or container.
+  Print the URI of the specified object or container. Optionally, an availability zone can be passed.
 
 Examples: 
   hpcloud location :my_container/file.txt
   hpcloud location :my_container
+  hpcloud location :my_container/file.txt -z region-a.geo-1  # Optionally specify an availability zone
 
 Aliases: loc
       DESC
+      method_option :availability_zone,
+                    :type => :string, :aliases => '-z',
+                    :desc => 'Set the availability zone.'
       def location(resource)
         container, key = Container.parse_resource(resource)
-        config = Config.current_credentials
-        
+
         begin
+          storage_connection = connection(:storage, options)
           if container and key
-            dir = connection.directories.get(container)
+            dir = storage_connection.directories.get(container)
             if dir
               file = dir.files.get(key)
               if file
@@ -32,7 +36,7 @@ Aliases: loc
               error "No object exists at '#{container}/#{key}'.", :not_found
             end
           elsif container
-            dir = connection.directories.get(container)
+            dir = storage_connection.directories.get(container)
             if dir
               display "#{dir.public_url}"
             else
@@ -41,8 +45,12 @@ Aliases: loc
           else
             error "Invalid format, see `help location`.", :incorrect_usage
           end
-        rescue Excon::Errors::Forbidden => error
-          error 'Access Denied.', :permission_denied
+        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
+          display_error_message(error, :permission_denied)
+        rescue Excon::Errors::Conflict, Excon::Errors::NotFound => error
+          display_error_message(error, :not_found)
         end
       end
     

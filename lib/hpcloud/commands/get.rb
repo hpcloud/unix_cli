@@ -6,13 +6,17 @@ module HP
 
       desc 'get <object>', 'fetch an object to your local directory'
       long_desc <<-DESC
-  Copy an object from a container to your current directory.
+  Copy an object from a container to your current directory. Optionally, an availability zone can be passed.
 
 Examples: 
   hpcloud get :my_container/file.txt
+  hpcloud get :my_container/file.txt -z region-a.geo-1   # Optionally specify an availability zone
 
 Aliases: fetch
       DESC
+      method_option :availability_zone,
+                    :type => :string, :aliases => '-z',
+                    :desc => 'Set the availability zone.'
       def get(resource)
         container, path = Container.parse_resource(resource)
         type = Resource.detect_type(resource)
@@ -22,7 +26,7 @@ Aliases: fetch
         elsif :container == type
           error "You can get files, but not containers."
         else
-          error "The object path '#{resource}' wasn't recognized.  Usage: '#{selfname} get :container_name/object_name'.", :incorrect_usage
+          error "The object path '#{resource}' wasn't recognized. Usage: '#{selfname} get :container_name/object_name'.", :incorrect_usage
         end
       end
 

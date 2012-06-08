@@ -6,7 +6,12 @@ module HP
     
       desc "info", "info about the HP Cloud CLI"
       def info
-        display "version: #{VERSION}"
+        display "******************************************************************"
+        display " HP Cloud CLI"
+        display " Command-line interface for managing HP Cloud services"
+        display "\n Version: #{VERSION}"
+        display "\n Copyright (c) 2011 Hewlett-Packard Development Company, L.P."
+        display "******************************************************************"
       end
     
     end
