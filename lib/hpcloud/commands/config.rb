@@ -16,7 +16,10 @@ Examples:
 Aliases: config:list
       DESC
       def config
-        print_table(Config.settings.to_a)
+        # ruby 1.8.7 does not like size of an element in an array whose key is a symbol
+        # so convert all keys into strings
+        settings = Config.settings.inject({}){|memo, (k,v)| memo[k.to_s] = v; memo}
+        print_table(settings.to_a)
       end
 
     end
