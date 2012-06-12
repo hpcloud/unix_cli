@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
 
   s.name      = 'hpcloud'
   s.version   = HP::Cloud::VERSION
-  s.date      = '2012-02-23'
+  s.date      = '2012-06-08'
 
   s.summary       = 'HP Cloud CLI'
   s.description   = 'Useful command-line tools for managing your HP Cloud services'
@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
 
   # Dependencies, this syntax requires RubyGems > 1.2.0
   s.add_runtime_dependency 'thor', '~>0.14.6'
-#  s.add_runtime_dependency 'hpfog', '~>0.0.14'
+  s.add_runtime_dependency 'hpfog', '~>0.0.15'
   s.add_development_dependency 'rspec', '~>2.4.0'
   s.add_runtime_dependency 'multi_json', '~>1.0.4'
 

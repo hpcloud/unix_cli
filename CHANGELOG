@@ -1,3 +1,12 @@
+v0.0.15 06/08/12
+================
+- Add an optional switch to all commands to specify availability zone
+- Add a new command config to list the existing configuration settings
+- Add support for AZ3 and future availability zones for all services
+- Fixed account:setup issue when certain services are deactivated.
+- Add an option to add a security group rule by using a source group
+- Minor fixes to aliases, documentation and help.
+
 v0.0.14 02/23/12
 ================
 - Add examples documentation
