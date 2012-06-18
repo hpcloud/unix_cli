@@ -1,3 +1,5 @@
+require 'progressbar'
+
 module HP
   module Cloud
     class CLI < Thor
@@ -25,14 +27,15 @@ Note: Copying multiple files at once or recursively copying folder contents will
                     :desc => 'Set the availability zone.'
       def copy(from, to)
         begin
-          from_type = Resource.detect_type(from)
-          to_type   = Resource.detect_type(to)
           @storage_connection = connection(:storage, options)
-          if from_type == :file and Resource::REMOTE_TYPES.include?(to_type)
-            put(from, to)
-          elsif from_type == :object and Resource::LOCAL_TYPES.include?(to_type)
-            fetch(from, to)
-          elsif from_type == :object and Resource::REMOTE_TYPES.include?(to_type)
+
+          from_file = Resource.new(from)
+          to_file   = Resource.new(to)
+          if from_file.isFile() and to_file.isRemote()
+            put(from_file, to_file)
+          elsif from_file.isObject() and to_file.isLocal()
+            fetch(from_file, to_file)
+          elsif from_file.isObject() and to_file.isRemote()
             clone(from, to)
           else
             error "Not currently supported.", :not_supported
@@ -47,63 +50,81 @@ Note: Copying multiple files at once or recursively copying folder contents will
       no_tasks do
       
         def fetch(from, to)
-          container, path = Container.parse_resource(from)
-          if File.directory?(to)
-            to = to.chop if to[-1,1] == '/'
-            to = "#{to}/#{File.basename(path)}"
+          destination = to.path
+          if to.isDirectory()
+            destination = "#{destination}/#{File.basename(from.path)}"
           end
-          dir_path = File.dirname(to) #File.expand_path(file_path)
+          dir_path = File.expand_path(File.dirname(destination))
           if !File.directory?(dir_path)
-            error "No directory exists at '#{dir_path}'.", :not_found
+            dname = File.dirname(destination)
+            error "No directory exists at '#{dname}'.", :not_found
           end
-          # TODO - ensure expansion to file_destination_path
           begin
-            directory = @storage_connection.directories.get(container)
-          rescue Excon::Errors::Forbidden => e
-            error "You don't have permission to access the container '#{container}'.", :permission_denied
-          end
-          if directory
-            begin
-              get = @storage_connection.get_object(container, path)
-              File.open(to, 'w') do |file|
-                file.write get.body
-              end
-              display "Copied #{from} => #{to}"
-            rescue Fog::Storage::HP::NotFound => e
-              error "The specified object does not exist.", :not_found
-            rescue Errno::EACCES
-              error "You don't have permission to write the target file.", :permission_denied
-            rescue Errno::ENOENT, Errno::EISDIR
-              error "The target directory is invalid.", :permission_denied
+            directory = @storage_connection.directories.get(from.container)
+            if directory.nil?
+              error "You don't have a container '#{from.container}'.", :not_found
             end
-          else
-            error "You don't have a container '#{container}'.", :not_found
+          rescue Excon::Errors::Forbidden => e
+            error "You don't have permission to access the container '#{from.container}'.", :permission_denied
+          end
+
+          begin
+            head = @storage_connection.head_object(from.container, from.path)
+            siz = head.headers["Content-Length"].to_i
+            pbar = ProgressBar.new(File.basename(destination), siz)
+            File.open(destination, 'w') do |file|
+              get = @storage_connection.get_object(from.container, from.path) { |chunk, remaining, total|
+                file.write chunk
+                pbar.inc(chunk.length)
+              }
+            end
+            pbar.finish
+            display "Copied #{from.fname} => #{destination}"
+          rescue Fog::Storage::HP::NotFound => e
+            error "The specified object does not exist.", :not_found
+          rescue Errno::EACCES
+            error "You don't have permission to write the target file.", :permission_denied
+          rescue Errno::ENOENT, Errno::EISDIR
+            error "The targett directory is invalid.", :permission_denied
+          rescue Excon::Errors::Forbidden => e
+            display_error_message(e)
           end
         end
       
         def put(from, to)
-          if !File.exists?(from)
-            error "File not found at '#{from}'.", :not_found
+          if !File.exists?(from.fname)
+            error "File not found at '#{from.fname}'.", :not_found
           end
-          mime_type = Resource.get_mime_type("'#{from}'")
-          container, path = Container.parse_resource(to)
+
           begin
-            directory = @storage_connection.directories.get(container)
+            directory = @storage_connection.directories.get(to.container)
+            if directory.nil?
+              error "You don't have a container '#{to.container}'.", :not_found
+            end
           rescue Excon::Errors::Forbidden => e
             display_error_message(e)
           end
-          key = Container.storage_destination_path(path, from)
-          if directory
-            begin
-              directory.files.create(:key => key, :body => File.open(from), 'Content-Type' => mime_type)
-              display "Copied #{from} => :#{container}/#{key}"
-            rescue Errno::EACCES => e
-              error 'The selected file cannot be read.', :permission_denied
-            rescue Excon::Errors::Forbidden => e
-              error 'Permission denied', :permission_denied
-            end
-          else
-            error "You don't have a container '#{container}'.", :not_found
+
+          key = Container.storage_destination_path(to.path, from.fname)
+          begin
+            file = File.open(from.fname)
+            pbar = ProgressBar.new(File.basename(from.fname), from.get_size())
+            options = { 'Content-Type' => from.get_mime_type() }
+
+            lastread = 0
+            @storage_connection.put_object(to.container, key, {}, options) {
+              pbar.inc(lastread)
+              val = file.read(Excon::CHUNK_SIZE).to_s
+              lastread = val.length
+              val
+            }
+            pbar.finish
+            file.close
+            display "Copied #{from.fname} => :#{to.container}/#{key}"
+          rescue Errno::EACCES => e
+            error 'The selected file cannot be read.', :permission_denied
+          rescue Excon::Errors::Forbidden => e
+            error 'Permission denied', :permission_denied
           end
         end
       
@@ -112,7 +133,7 @@ Note: Copying multiple files at once or recursively copying folder contents will
           container_to, path_to = Container.parse_resource(to)
           path_to = Container.storage_destination_path(path_to, path)
           begin
-            #### connection.copy_object(container, path, container_to, path_to)
+            #### @storage_connection.copy_object(container, path, container_to, path_to)
             @storage_connection.put_object(container_to, path_to, nil, {'X-Copy-From' => "/#{container}/#{path}" })
             display "Copied #{from} => :#{container_to}/#{path_to}"
           rescue Fog::Storage::HP::NotFound => e
