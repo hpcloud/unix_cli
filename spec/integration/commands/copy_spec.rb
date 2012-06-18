@@ -85,7 +85,7 @@ describe "Copy command" do
       end
       
       it "should preserve content-type" do
-        @head.headers["Content-Type"].should include('text/plain')
+        @head.headers["Content-Type"].should eq('text/plain')
       end
       
     end
@@ -200,16 +200,16 @@ describe "Copy command" do
       context "when location does not exist" do
         
         before(:all) do
-          Dir.rmdir('spec/tmp/nonexistant') if File.directory?('spec/tmp/nonexistant')
-          @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/nonexistant/']) }
+          Dir.rmdir('spec/tmp/nonexistent') if File.directory?('spec/tmp/nonexistent')
+          @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/nonexistent/']) }
         end
 
         it "should show failure message" do
-          @response.should eql("The target directory is invalid.\n")
+          @response.should eql("No directory exists at 'spec/tmp/nonexistent'.\n")
         end
 
         it "should have correct exit status" do
-          @exit.should be_exit(:permission_denied)
+          @exit.should be_exit(:not_found)
         end
         
       end
