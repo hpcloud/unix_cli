@@ -1,10 +1,11 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+include HP::Cloud
 
 describe "Detecting mime type" do
   
   context "when this file" do
     it "should return text/plain" do
-      file = HP::Cloud::Resource.new(__FILE__)
+      file = Resource.create(__FILE__)
       file.get_mime_type().should eq('text/plain')
     end
   end
@@ -15,7 +16,7 @@ describe "Resource construction" do
   
   context "when local file" do
     it "should return :file" do
-      file = HP::Cloud::Resource.new('/tmp/myfile.txt')
+      file = Resource.create('/tmp/myfile.txt')
 
       file.fname.should eql('/tmp/myfile.txt')
       file.ftype.should eql(:file)
@@ -31,7 +32,7 @@ describe "Resource construction" do
   
   context "when local file variant" do
     it "should return :file" do
-      file = HP::Cloud::Resource.new('~/documents/myfile.tar')
+      file = Resource.create('~/documents/myfile.tar')
 
       file.fname.should eql('~/documents/myfile.tar')
       file.ftype.should eql(:file)
@@ -47,7 +48,7 @@ describe "Resource construction" do
   
   context "when local directory" do
     it "should return :directory" do
-      file = HP::Cloud::Resource.new('/tmp/')
+      file = Resource.create('/tmp/')
 
       file.fname.should eql('/tmp/')
       file.ftype.should eql(:directory)
@@ -63,7 +64,7 @@ describe "Resource construction" do
   
   context "when local directory" do
     it "should return :directory" do
-      file = HP::Cloud::Resource.new('spec/tmp/nonexistant/')
+      file = Resource.create('spec/tmp/nonexistant/')
 
       file.fname.should eql('spec/tmp/nonexistant/')
       file.ftype.should eql(:directory)
@@ -79,7 +80,7 @@ describe "Resource construction" do
   
   context "when local directory without slash" do
     it "should return :directory" do
-      file = HP::Cloud::Resource.new('/tmp')
+      file = Resource.create('/tmp')
 
       file.fname.should eql('/tmp')
       file.ftype.should eql(:directory)
@@ -95,7 +96,7 @@ describe "Resource construction" do
   
   context "when container" do
     it "should return :container" do
-      file = HP::Cloud::Resource.new(':my_container')
+      file = Resource.create(':my_container')
 
       file.fname.should eql(':my_container')
       file.ftype.should eql(:container)
@@ -111,7 +112,7 @@ describe "Resource construction" do
   
   context "when full object path" do
     it "should return :object" do
-      file = HP::Cloud::Resource.new(':my_container/blah/archive.zip')
+      file = Resource.create(':my_container/blah/archive.zip')
 
       file.fname.should eql(':my_container/blah/archive.zip')
       file.ftype.should eql(:object)
@@ -127,7 +128,7 @@ describe "Resource construction" do
   
   context "when object directory path" do
     it "should return :container_directory" do
-      file = HP::Cloud::Resource.new(':my_container/blah/')
+      file = Resource.create(':my_container/blah/')
 
       file.fname.should eql(':my_container/blah/')
       file.ftype.should eql(:container_directory)
@@ -138,6 +139,108 @@ describe "Resource construction" do
       file.isDirectory().should be_false
       file.isFile().should be_false
       file.isObject().should be_false
+    end
+  end
+  
+end
+
+describe "Set destination" do
+  
+  context "when local directory" do
+    it "valid destination true" do
+      to = Resource.create("spec/tmp")
+      from = Resource.create("file.txt")
+
+      rc = to.set_destination(from)
+
+      rc.should be_true
+      to.error_string.should be_nil
+      to.error_code.should be_nil
+      to.destination.should eq("spec/tmp/file.txt")
+    end
+  end
+
+  context "when local renaming original file" do
+    it "valid destination true" do
+      to = Resource.create("spec/tmp/new.txt")
+      from = Resource.create("file.txt")
+
+      rc = to.set_destination(from)
+
+      rc.should be_true
+      to.error_string.should be_nil
+      to.error_code.should be_nil
+      to.destination.should eq("spec/tmp/new.txt")
+    end
+  end
+
+  context "when bogus local directory" do
+    it "valid destination false" do
+      to = Resource.create("completely/bogus")
+      from = Resource.create("file.txt")
+
+      rc = to.set_destination(from)
+
+      rc.should be_false
+      to.error_string.should eq("No directory exists at 'completely'.")
+      to.error_code.should eq(:not_found)
+      to.destination.should eq("completely/bogus")
+    end
+  end
+  
+  context "when local directory" do
+    it "valid destination true" do
+      to = Resource.create("spec/tmp/")
+      from = Resource.create("/etc/init.d/")
+
+      rc = to.set_destination(from)
+
+      rc.should be_true
+      to.error_string.should be_nil
+      to.error_code.should be_nil
+      to.destination.should eq("spec/tmp/init.d")
+    end
+  end
+  
+  context "when remote directory empty" do
+    it "valid destination true" do
+      to = Resource.create(":container")
+      from = Resource.create("file.txt")
+
+      rc = to.set_destination(from)
+
+      rc.should be_true
+      to.error_string.should be_nil
+      to.error_code.should be_nil
+      to.destination.should eq("file.txt")
+    end
+  end
+
+  context "when remote file ends in slash" do
+    it "valid destination true" do
+      to = Resource.create(":container/directory/")
+      from = Resource.create("file.txt")
+
+      rc = to.set_destination(from)
+
+      rc.should be_true
+      to.error_string.should be_nil
+      to.error_code.should be_nil
+      to.destination.should eq("directory/file.txt")
+    end
+  end
+
+  context "when remote file rename" do
+    it "valid destination true" do
+      to = Resource.create(":container/directory/new.txt")
+      from = Resource.create("file.txt")
+
+      rc = to.set_destination(from)
+
+      rc.should be_true
+      to.error_string.should be_nil
+      to.error_code.should be_nil
+      to.destination.should eq("directory/new.txt")
     end
   end
   

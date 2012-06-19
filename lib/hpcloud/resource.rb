@@ -2,14 +2,28 @@ module HP
   module Cloud
     class Resource
       attr_reader :fname, :ftype, :container, :path
+      attr_reader :destination, :error_string, :error_code
     
       REMOTE_TYPES = [:container, :container_directory, :object]
       LOCAL_TYPES = [:directory, :file]
     
+      def self.create(fname)
+        if LOCAL_TYPES.include?(detect_type(fname))
+          return LocalResource.new(fname)
+        end
+        return RemoteResource.new(fname)
+      end
+
       def initialize(fname)
+        @error_string = nil
+        @error_code = nil
         @fname = fname
         @ftype = Resource.detect_type(@fname)
         parse()
+      end
+
+      class << self
+        protected :new
       end
 
       def isLocal()
@@ -77,7 +91,74 @@ module HP
       def get_size()
         return File.size(@fname)
       end
-    
+
+      def valid_source()
+        return true
+      end
+
+      def valid_destination()
+        return true
+      end
+
+      def set_destination(from)
+        return true
+      end
     end
+
+    class LocalResource < Resource
+
+      def valid_source()
+        if !File.exists?(@fname)
+          @error_string = "File not found at '#{@fname}'."
+          @error_code = :not_found
+          return false
+        end
+        return true
+      end
+
+      def set_destination(from)
+        @destination = @path
+        if isDirectory()
+          @destination = "#{@destination}/#{File.basename(from.path)}"
+        end
+        dir_path = File.expand_path(File.dirname(@destination))
+        if !File.directory?(dir_path)
+          dname = File.dirname(@destination)
+          @error_string = "No directory exists at '#{dname}'."
+          @error_code = :not_found
+          return false
+        end
+        return true
+      end
+    end
+
+    class RemoteResource < Resource
+      def valid_source()
+        begin
+          directory = connection.directories.get(@container)
+          if directory.nil?
+            @error_string = "You don't have a container '#{@container}'."
+            @error_code = :not_found
+            return false
+          end
+        rescue Excon::Errors::Forbidden => e
+          @error_string  = "You don't have permission to access the container '#{@container}'."
+          @error_code = :permission_denied
+          return false
+        end
+        return true
+      end
+
+      def set_destination(from)
+        if @path.to_s.empty?
+          @destination = File.basename(from.path)
+        elsif @fname[-1,1] == '/'
+          @destination = @path + '/' + File.basename(from.path)
+        else
+          @destination = @path
+        end
+      end
+    end
+
   end
 end

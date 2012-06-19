@@ -29,8 +29,8 @@ Note: Copying multiple files at once or recursively copying folder contents will
         begin
           @storage_connection = connection(:storage, options)
 
-          from_file = Resource.new(from)
-          to_file   = Resource.new(to)
+          from_file = Resource.create(from)
+          to_file   = Resource.create(to)
           if from_file.isFile() and to_file.isRemote()
             put(from_file, to_file)
           elsif from_file.isObject() and to_file.isLocal()
@@ -51,35 +51,26 @@ Note: Copying multiple files at once or recursively copying folder contents will
       
         def fetch(from, to)
           destination = to.path
-          if to.isDirectory()
-            destination = "#{destination}/#{File.basename(from.path)}"
+          if ! from.valid_source()
+            error from.error_string, from.error_code
           end
-          dir_path = File.expand_path(File.dirname(destination))
-          if !File.directory?(dir_path)
-            dname = File.dirname(destination)
-            error "No directory exists at '#{dname}'.", :not_found
-          end
-          begin
-            directory = @storage_connection.directories.get(from.container)
-            if directory.nil?
-              error "You don't have a container '#{from.container}'.", :not_found
-            end
-          rescue Excon::Errors::Forbidden => e
-            error "You don't have permission to access the container '#{from.container}'.", :permission_denied
+
+          if ! to.set_destination(from)
+            error to.error_string, to.error_code
           end
 
           begin
             head = @storage_connection.head_object(from.container, from.path)
             siz = head.headers["Content-Length"].to_i
-            pbar = ProgressBar.new(File.basename(destination), siz)
-            File.open(destination, 'w') do |file|
+            pbar = ProgressBar.new(File.basename(to.destination), siz)
+            File.open(to.destination, 'w') do |file|
               get = @storage_connection.get_object(from.container, from.path) { |chunk, remaining, total|
                 file.write chunk
                 pbar.inc(chunk.length)
               }
             end
             pbar.finish
-            display "Copied #{from.fname} => #{destination}"
+            display "Copied #{from.fname} => #{to.destination}"
           rescue Fog::Storage::HP::NotFound => e
             error "The specified object does not exist.", :not_found
           rescue Errno::EACCES
@@ -105,14 +96,17 @@ Note: Copying multiple files at once or recursively copying folder contents will
             display_error_message(e)
           end
 
-          key = Container.storage_destination_path(to.path, from.fname)
+          if ! to.set_destination(from)
+            error to.error_string, to.error_code
+          end
+
           begin
             file = File.open(from.fname)
             pbar = ProgressBar.new(File.basename(from.fname), from.get_size())
             options = { 'Content-Type' => from.get_mime_type() }
 
             lastread = 0
-            @storage_connection.put_object(to.container, key, {}, options) {
+            @storage_connection.put_object(to.container, to.destination, {}, options) {
               pbar.inc(lastread)
               val = file.read(Excon::CHUNK_SIZE).to_s
               lastread = val.length
@@ -120,7 +114,7 @@ Note: Copying multiple files at once or recursively copying folder contents will
             }
             pbar.finish
             file.close
-            display "Copied #{from.fname} => :#{to.container}/#{key}"
+            display "Copied #{from.fname} => :#{to.container}/#{to.destination}"
           rescue Errno::EACCES => e
             error 'The selected file cannot be read.', :permission_denied
           rescue Excon::Errors::Forbidden => e
