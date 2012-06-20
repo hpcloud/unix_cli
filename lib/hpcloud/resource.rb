@@ -1,4 +1,5 @@
 require 'hpcloud/connection.rb'
+require 'progressbar'
 include HP::Cloud
 
 module HP
@@ -106,6 +107,22 @@ module HP
       def set_destination(from)
         return true
       end
+
+      def open(output=false, siz=0)
+        return true
+      end
+
+      def read()
+        return ""
+      end
+
+      def write(data)
+        return true
+      end
+
+      def close()
+        return true
+      end
     end
 
     class LocalResource < Resource
@@ -131,6 +148,43 @@ module HP
           @error_code = :not_found
           return false
         end
+        return true
+      end
+
+      def open(output=false, siz=0)
+        close()
+        @lastread = 0
+        if (output == true)
+          @pbar = ProgressBar.new(File.basename(@destination), siz)
+          @file = File.open(@destination, 'w')
+        else
+          @pbar = ProgressBar.new(File.basename(@fname), get_size())
+          @file = File.open(@fname, 'r')
+        end
+        return true
+      end
+
+      def read()
+        @pbar.inc(@lastread)
+        val = @file.read(Excon::CHUNK_SIZE).to_s
+        @lastread = val.length
+        return val
+      end
+
+      def write(data)
+        @file.write(data)
+        return true
+      end
+
+      def close()
+        unless @pbar.nil?
+          @pbar.inc(@lastread) unless @lastread.nil?
+          @pbar.finish
+        end
+        @lastread = 0
+        @pbar = nil
+        @file.close unless @file.nil?
+        @file = nil
         return true
       end
     end

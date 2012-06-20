@@ -85,3 +85,44 @@ describe "Set destination" do
   end
   
 end
+
+describe "Open read close" do
+  context "when local file" do
+    it "gets the data" do
+      res = Resource.create("spec/fixtures/files/foo.txt")
+
+      res.open().should be_true
+      res.read().should eq("This is a foo file.")
+      res.close().should be_true
+    end
+  end
+end
+
+describe "Open write close" do
+  before(:all) do
+    begin
+      File.unlink("spec/tmp/writer.txt")
+    rescue Exception
+    end
+  end
+
+  context "when local file" do
+    it "writes data" do
+      res = Resource.create("spec/tmp/")
+      dest = Resource.create("writer.txt")
+      res.set_destination(dest)
+
+      res.open(true, "my data".length).should be_true
+      res.write("my data").should be_true
+      res.close().should be_true
+
+      file = File.open("spec/tmp/writer.txt")
+      file.read().to_s.should eq("my data")
+      file.close()
+      begin
+        File.unlink("spec/tmp/writer.txt")
+      rescue Exception
+      end
+    end
+  end
+end
