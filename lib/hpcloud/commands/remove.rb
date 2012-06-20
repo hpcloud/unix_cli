@@ -37,7 +37,8 @@ Aliases: rm, delete, destroy, del
 
         if type == :object
           begin
-            file = directory.files.get(path)
+            # use head instead of get for performance
+            file = directory.files.head(path)
           rescue Excon::Errors::Forbidden => error
             display_error_message(error)
           end
