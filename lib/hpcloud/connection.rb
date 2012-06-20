@@ -18,42 +18,56 @@ module HP
       end
  
       def storage(options = {})
+        return connection(:storage, options)
+      end
+
+      def compute(options = {})
+        return connection(:compute, options)
+      end
+
+      def cdn(options = {})
+        return connection(:cdn, options)
+      end
+
+      def connection(service = :storage, options = {})
+        begin
+        if service == :storage
+          storage_connection(options)
+        elsif service == :compute
+          compute_connection(options)
+        elsif service == :cdn
+          cdn_connection(options)
+        end
+        rescue Exception => e
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the '#{service.to_s.capitalize!}' service is activated for the appropriate availability zone.\n Exception: #{e}"
+        end
+      end
+
+      def storage_connection(options = {})
         return @storage_connection if @storage_connection
         storage_credentials = Config.current_credentials
         if storage_credentials
-          begin
-            @storage_connection ||= connection_with(:storage, storage_credentials, options)
-          rescue Exception => e
-            raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'STORAGE' service is activated for the appropriate availability zone.\n Exception: #{e}"
-          end
+          @storage_connection ||= connection_with(:storage, storage_credentials, options)
         else
           raise Fog::Storage::HP::Error, "Error in connecting to the Storage service. Please check your HP Cloud Services account to make sure the account credentials are correct."
         end
       end
 
-      def compute(options = {})
+      def compute_connection(options = {})
         return @compute_connection if @compute_connection
         compute_credentials = Config.current_credentials
         if compute_credentials
-          begin
-            @compute_connection ||= connection_with(:compute, compute_credentials, options)
-          rescue Exception => e
-            raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'COMPUTE' service is activated for the appropriate availability zone.\n Exception: #{e}"
-          end
+          @compute_connection ||= connection_with(:compute, compute_credentials, options)
         else
           raise Fog::Compute::HP::Error, "Error in connecting to the Compute service. Please check your HP Cloud Services account to make sure the account credentials are correct."
         end
       end
 
-      def cdn(options = {})
+      def cdn_connection(options = {})
         return @cdn_connection if @cdn_connection
         cdn_credentials = Config.current_credentials
         if cdn_credentials
-          begin
-            @cdn_connection ||= connection_with(:cdn, cdn_credentials, options)
-          rescue Exception => e
-            raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n Exception: #{e}"
-          end
+          @cdn_connection ||= connection_with(:cdn, cdn_credentials, options)
         else
           raise Fog::CDN::HP::Error, "Error in connecting to the CDN service. Please check your HP Cloud Services account to make sure the account credentials are correct."
         end
@@ -109,7 +123,6 @@ module HP
         # authenticate with Identity service
         Fog::HP.authenticate_v2(options, connection_options)
       end
-    
     end
   end
 end

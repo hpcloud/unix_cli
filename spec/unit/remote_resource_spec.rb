@@ -36,6 +36,15 @@ describe "Valid source" do
 end
 
 describe "Set destination" do
+
+  before(:each) do
+    @container = double("container")
+    @directories = double("directories")
+    @directories.stub(:get).and_return(@container)
+    @storage = double("storage")
+    @storage.stub(:directories).and_return(@directories)
+    Connection.instance.stub(:storage).and_return(@storage)
+  end
   
   context "when remote directory empty" do
     it "valid destination true" do
@@ -76,6 +85,21 @@ describe "Set destination" do
       to.error_string.should be_nil
       to.error_code.should be_nil
       to.destination.should eq("directory/new.txt")
+    end
+  end
+  
+  context "when remote container missing" do
+    it "valid destination true" do
+      @directories.stub(:get).and_return(nil)
+      to = Resource.create(":missing_container/directory/new.txt")
+      from = Resource.create("file.txt")
+
+      rc = to.set_destination(from)
+
+      rc.should be_false
+      to.error_string.should eq("You don't have a container 'missing_container'.")
+      to.error_code.should eq(:not_found)
+      to.destination.should be_nil
     end
   end
   

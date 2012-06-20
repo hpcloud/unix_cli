@@ -1,3 +1,6 @@
+require 'hpcloud/connection.rb'
+include HP::Cloud
+
 module HP
   module Cloud
     class Resource
@@ -134,7 +137,12 @@ module HP
 
     class RemoteResource < Resource
       def valid_source()
+        return valid_container()
+      end
+
+      def valid_container()
         begin
+          connection = Connection.instance.storage()
           directory = connection.directories.get(@container)
           if directory.nil?
             @error_string = "You don't have a container '#{@container}'."
@@ -142,7 +150,9 @@ module HP
             return false
           end
         rescue Excon::Errors::Forbidden => e
-          @error_string  = "You don't have permission to access the container '#{@container}'."
+          resp = ErrorResponse.new(e)
+          # @error_string  = "You don't have permission to access the container '#{@container}'."
+          @error_string  = resp.error_string
           @error_code = :permission_denied
           return false
         end
@@ -150,6 +160,9 @@ module HP
       end
 
       def set_destination(from)
+        if ! valid_container()
+          return false
+        end
         if @path.to_s.empty?
           @destination = File.basename(from.path)
         elsif @fname[-1,1] == '/'
@@ -157,6 +170,7 @@ module HP
         else
           @destination = @path
         end
+        return true
       end
     end
 

@@ -50,7 +50,6 @@ Note: Copying multiple files at once or recursively copying folder contents will
       no_tasks do
       
         def fetch(from, to)
-          destination = to.path
           if ! from.valid_source()
             error from.error_string, from.error_code
           end
@@ -76,24 +75,15 @@ Note: Copying multiple files at once or recursively copying folder contents will
           rescue Errno::EACCES
             error "You don't have permission to write the target file.", :permission_denied
           rescue Errno::ENOENT, Errno::EISDIR
-            error "The targett directory is invalid.", :permission_denied
+            error "The target directory is invalid.", :permission_denied
           rescue Excon::Errors::Forbidden => e
             display_error_message(e)
           end
         end
       
         def put(from, to)
-          if !File.exists?(from.fname)
-            error "File not found at '#{from.fname}'.", :not_found
-          end
-
-          begin
-            directory = @storage_connection.directories.get(to.container)
-            if directory.nil?
-              error "You don't have a container '#{to.container}'.", :not_found
-            end
-          rescue Excon::Errors::Forbidden => e
-            display_error_message(e)
+          if ! from.valid_source()
+            error from.error_string, from.error_code
           end
 
           if ! to.set_destination(from)

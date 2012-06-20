@@ -4,6 +4,7 @@ require 'fog'
 require 'hpcloud/version'
 require 'hpcloud/config'
 require 'hpcloud/resource'
+require 'hpcloud/error_response'
 require 'hpcloud/container'
 
 require 'hpcloud/cli'
