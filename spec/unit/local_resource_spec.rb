@@ -126,3 +126,56 @@ describe "Open write close" do
     end
   end
 end
+
+describe "Read directory" do
+
+  context "when directory contains files" do
+    it "gets all the files" do
+      res = Resource.create("spec/fixtures/files/")
+      ray = Array.new
+
+      res.foreach{ |x| ray.push(x.fname) }
+
+      ray.sort!
+      ray[0].should eq("spec/fixtures/files/")
+      ray[1].should eq("spec/fixtures/files/cantread.txt")
+      ray[2].should eq("spec/fixtures/files/foo.txt")
+      ray[3].should eq("spec/fixtures/files/with space.txt")
+      ray.length.should eq(4)
+    end
+  end
+
+  context "when directory contains directories" do
+    it "gets all the subdirectories" do
+      res = Resource.create("spec/fixtures/")
+      ray = Array.new
+
+      res.foreach { |x| ray.push(x.fname) }
+
+      ray.sort!
+      ray[0].should eq("spec/fixtures/")
+      ray[1].should eq("spec/fixtures/accounts")
+      ray[2].should eq("spec/fixtures/accounts/default")
+      ray[3].should eq("spec/fixtures/configs")
+      ray[4].should eq("spec/fixtures/configs/personalized.yml")
+      ray[5].should eq("spec/fixtures/files")
+      ray[6].should eq("spec/fixtures/files/cantread.txt")
+      ray[7].should eq("spec/fixtures/files/foo.txt")
+      ray[8].should eq("spec/fixtures/files/with space.txt")
+      ray.length.should eq(9)
+    end
+  end
+
+  context "when file" do
+    it "gets just the file" do
+      res = Resource.create("spec/fixtures/files/foo.txt")
+      ray = Array.new
+
+      res.foreach { |x| ray.push(x.fname) }
+
+      ray.sort!
+      ray[0].should eq("spec/fixtures/files/foo.txt")
+      ray.length.should eq(1)
+    end
+  end
+end

@@ -127,6 +127,10 @@ module HP
       def copy(from)
         return false
       end
+
+      def foreach(&block)
+        return
+      end
     end
 
     class LocalResource < Resource
@@ -223,6 +227,18 @@ module HP
         end
         if ! close() then return false end
         return result
+      end
+
+      def foreach(&block)
+        yield self
+        if (isDirectory() == false)
+          return
+        end
+        Dir.foreach(path) { |x|
+          if ((x != '.') && (x != '..')) then
+            Resource.create(path + '/' + x).foreach(&block)
+          end
+        }
       end
     end
 
