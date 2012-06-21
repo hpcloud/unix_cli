@@ -63,15 +63,9 @@ module HP
       end
 
       def connection_with(service, service_credentials, options={})
-        connection_options = {:connect_timeout => Config.settings[:connect_timeout] || Config::CONNECT_TIMEOUT,
-                              :read_timeout    => Config.settings[:read_timeout]    || Config::READ_TIMEOUT,
-                              :write_timeout   => Config.settings[:write_timeout]   || Config::WRITE_TIMEOUT,
-                              :ssl_verify_peer => Config.settings[:ssl_verify]      || false,
-                              :ssl_ca_path     => Config.settings[:ssl_ca_path]     || nil,
-                              :ssl_ca_file     => Config.settings[:ssl_ca_file]     || nil}
         if service == :storage
           Fog::Storage.new( :provider        => 'HP',
-                            :connection_options => connection_options,
+                            :connection_options => default_connection_options,
                             :hp_account_id   => service_credentials[:account_id],
                             :hp_secret_key   => service_credentials[:secret_key],
                             :hp_auth_uri     => service_credentials[:auth_uri],
@@ -79,7 +73,7 @@ module HP
                             :hp_avl_zone     => options[:availability_zone] || Config.settings[:storage_availability_zone])
         elsif service == :compute
           Fog::Compute.new( :provider        => 'HP',
-                            :connection_options => connection_options,
+                            :connection_options => default_connection_options,
                             :hp_account_id   => service_credentials[:account_id],
                             :hp_secret_key   => service_credentials[:secret_key],
                             :hp_auth_uri     => service_credentials[:auth_uri],
@@ -87,7 +81,7 @@ module HP
                             :hp_avl_zone     => options[:availability_zone] || Config.settings[:compute_availability_zone])
         elsif service == :cdn
           Fog::CDN.new( :provider            => 'HP',
-                            :connection_options => connection_options,
+                            :connection_options => default_connection_options,
                             :hp_account_id   => service_credentials[:account_id],
                             :hp_secret_key   => service_credentials[:secret_key],
                             :hp_auth_uri     => service_credentials[:auth_uri],
@@ -97,12 +91,6 @@ module HP
       end
 
       def validate_account(account_credentials)
-        connection_options = {:connect_timeout => Config.settings[:connect_timeout] || Config::CONNECT_TIMEOUT,
-                              :read_timeout    => Config.settings[:read_timeout]    || Config::READ_TIMEOUT,
-                              :write_timeout   => Config.settings[:write_timeout]   || Config::WRITE_TIMEOUT,
-                              :ssl_verify_peer => Config.settings[:ssl_verify]      || false,
-                              :ssl_ca_path     => Config.settings[:ssl_ca_path]     || nil,
-                              :ssl_ca_file     => Config.settings[:ssl_ca_file]     || nil}
         options = {
             :hp_account_id   => account_credentials[:account_id],
             :hp_secret_key   => account_credentials[:secret_key],
@@ -110,7 +98,7 @@ module HP
             :hp_tenant_id    => account_credentials[:tenant_id]
         }
         # authenticate with Identity service
-        Fog::HP.authenticate_v2(options, connection_options)
+        Fog::HP.authenticate_v2(options, default_connection_options)
       end
 
       # print some non-error output to the user
@@ -178,7 +166,18 @@ module HP
         exit_status = ERROR_TYPES[exit_status] if exit_status.is_a?(Symbol)
         exit exit_status || 1
       end
-    
+
+      def default_connection_options(options={})
+        # define default connection options
+        {
+            :connect_timeout => Config.settings[:connect_timeout] || options[:connect_timeout] || Config::CONNECT_TIMEOUT,
+            :read_timeout    => Config.settings[:read_timeout]    || options[:read_timeout] || Config::READ_TIMEOUT,
+            :write_timeout   => Config.settings[:write_timeout]   || options[:write_timeout] || Config::WRITE_TIMEOUT,
+            :ssl_verify_peer => Config.settings[:ssl_verify_peer] || options[:ssl_verify_peer] || true,
+            :ssl_ca_path     => Config.settings[:ssl_ca_path]     || options[:ssl_ca_path],
+            :ssl_ca_file     => Config.settings[:ssl_ca_file]     || options[:ssl_ca_file]
+        }
+      end
     end
   end
 end
