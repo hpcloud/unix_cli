@@ -301,7 +301,16 @@ module HP
         end
         return true
       end
-    end
 
+      def foreach(&block)
+        connection = Connection.instance.storage()
+        directory = connection.directories.get(@container)
+        return if directory.nil?
+        directory.files.each { |x|
+          puts '==== ' + x.to_s + " match: ^" +  path.to_s
+          yield Resource.create(':' + container + '/' + x) if ! x.match("^" + path).nil?
+        }
+      end
+    end
   end
 end

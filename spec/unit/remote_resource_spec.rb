@@ -215,3 +215,87 @@ describe "File copy" do
     end
   end
 end
+
+describe "Read directory" do
+  before(:each) do
+    @files = ["files/",
+              "files/cantread.txt",
+              "files/with space.txt",
+              "files/foo.txt" ]
+    @container = double("container")
+    @container.stub(:files).and_return(@files)
+    @directories = double("directories")
+    @directories.stub(:get).and_return(@container)
+    @storage = double("storage")
+    @storage.stub(:directories).and_return(@directories)
+    Connection.instance.stub(:storage).and_return(@storage)
+  end
+
+  context "when just a container" do
+    it "gets all the files" do
+      res = Resource.create(":container")
+      ray = Array.new
+
+      res.foreach{ |x| ray.push(x.fname) }
+
+      ray.sort!
+      ray[0].should eq(":container/files/")
+      ray[1].should eq(":container/files/cantread.txt")
+      ray[2].should eq(":container/files/foo.txt")
+      ray[3].should eq(":container/files/with space.txt")
+      ray.length.should eq(4)
+    end
+  end
+
+  context "when file" do
+    it "gets just the file" do
+      res = Resource.create(":container/files/foo.txt")
+      ray = Array.new
+
+      res.foreach { |x| ray.push(x.fname) }
+
+      ray.sort!
+      ray[0].should eq(":container/files/foo.txt")
+      ray.length.should eq(1)
+    end
+  end
+
+  context "when file" do
+    it "gets just the file" do
+      res = Resource.create(":container/.*/foo.*")
+      ray = Array.new
+
+      res.foreach { |x| ray.push(x.fname) }
+
+      ray.sort!
+      ray[0].should eq(":container/files/foo.txt")
+      ray.length.should eq(1)
+    end
+  end
+
+  context "when no match" do
+    it "gets nothing" do
+      res = Resource.create(":container/foo")
+      ray = Array.new
+
+      res.foreach { |x| ray.push(x.fname) }
+
+      ray.sort!
+      ray.length.should eq(0)
+    end
+  end
+
+  context "when file" do
+    it "gets just the file" do
+      res = Resource.create(":container/files/c")
+      ray = Array.new
+
+      res.foreach { |x| ray.push(x.fname) }
+
+      ray.sort!
+      ray[0].should eq(":container/files/cantread.txt")
+      ray.length.should eq(1)
+    end
+  end
+
+end
