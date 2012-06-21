@@ -22,7 +22,7 @@ describe "Valid source" do
     end
   end
 
-  context "when local file" do
+  context "when remote file" do
     it "is bogus file false" do
       @directories.stub(:get).and_return(nil)
       to = Resource.create(":bogus_container/whatever.txt")
@@ -103,4 +103,115 @@ describe "Set destination" do
     end
   end
   
+end
+
+describe "Remote file open read write close" do
+  context "when remote file" do
+    it "everything does nothing" do
+      res = Resource.create(":container/whatever.txt")
+
+      res.open().should be_false
+      res.read().should be_nil
+      res.write("dkdkdkdkd").should be_false
+      res.close().should be_false
+    end
+  end
+end
+
+describe "File copy" do
+  before(:each) do
+    @container = double("container")
+    @directories = double("directories")
+    @directories.stub(:get).and_return(@container)
+    @get_object = double("get_object")
+    @put_object = double("put_object")
+    @storage = double("storage")
+    @storage.stub(:get_object).and_return(@get_object)
+    @storage.stub(:put_object).and_return(@put_object)
+    @storage.stub(:directories).and_return(@directories)
+    Connection.instance.stub(:storage).and_return(@storage)
+  end
+
+  context "when bogus local file source" do
+    it "copy should return false" do
+      src = Resource.create("spec/bogus/directory/")
+      dest = Resource.create(":container/destination.txt")
+
+      dest.copy(src).should be_false
+    end
+  end
+
+  context "when local file source but bogus destination" do
+    it "copy should return false" do
+      @directories.stub(:get).and_return(nil)
+      src = Resource.create("spec/fixtures/files/foo.txt")
+      dest = Resource.create(":container/destination.txt")
+
+      dest.copy(src).should be_false
+    end
+  end
+
+  context "when local file unreadable" do
+    it "copy should return false" do
+      Dir.mkdir('spec/tmp/unreadable') unless File.directory?('spec/tmp/unreadable')
+      File.chmod(0000, 'spec/tmp/unreadable')
+      src = Resource.create("spec/tmp/unreadable")
+      dest = Resource.create(":container/destination.txt")
+
+      dest.copy(src).should be_false
+    end
+  end
+
+  context "when local file source" do
+    it "copies the data" do
+      src = Resource.create("spec/fixtures/files/foo.txt")
+      dest = Resource.create(":container/destination.txt")
+
+      dest.copy(src).should be_true
+    end
+  end
+
+  context "when local file source and destination" do
+    it "copies the data" do
+      File.unlink("spec/tmp/output.txt") if File.exists?("spec/tmp/output.txt")
+      src = Resource.create("spec/fixtures/files/foo.txt")
+      dest = Resource.create("spec/tmp/output.txt")
+
+      dest.copy(src).should be_true
+
+      File.exists?("spec/tmp/output.txt").should be_true
+      File.open("spec/tmp/output.txt").read().should eq("This is a foo file.")
+    end
+  end
+
+  context "when remote file source" do
+    it "copies the data" do
+      src = Resource.create(":container/source.txt")
+      dest = Resource.create("spec/tmp/result.txt")
+
+      dest.copy(src).should be_true
+    end
+  end
+
+  context "when remote file source and destination" do
+    it "copies the data" do
+      src = Resource.create(":container/source.txt")
+      dest = Resource.create(":container/copy.txt")
+
+      dest.copy(src).should be_true
+    end
+  end
+
+  context "when remote files, but source does not exist" do
+    it "fails" do
+      @storage.stub(:put_object).and_raise(Fog::Storage::HP::NotFound)
+      src = Resource.create(":container/source.txt")
+      dest = Resource.create(":container/copy.txt")
+
+      dest.copy(src).should be_false
+
+      dest.error_string.should eq("The specified object does not exist.")
+      dest.error_code.should eq(:not_found)
+    end
+  end
 end

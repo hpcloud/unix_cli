@@ -109,19 +109,23 @@ module HP
       end
 
       def open(output=false, siz=0)
-        return true
+        return false
       end
 
       def read()
-        return ""
+        return nil
       end
 
       def write(data)
-        return true
+        return false
       end
 
       def close()
-        return true
+        return false
+      end
+
+      def copy(from)
+        return false
       end
     end
 
@@ -154,12 +158,18 @@ module HP
       def open(output=false, siz=0)
         close()
         @lastread = 0
-        if (output == true)
-          @pbar = ProgressBar.new(File.basename(@destination), siz)
-          @file = File.open(@destination, 'w')
-        else
-          @pbar = ProgressBar.new(File.basename(@fname), get_size())
-          @file = File.open(@fname, 'r')
+        begin
+          if (output == true)
+            @pbar = ProgressBar.new(File.basename(@destination), siz)
+            @file = File.open(@destination, 'w')
+          else
+            @pbar = ProgressBar.new(File.basename(@fname), get_size())
+            @file = File.open(@fname, 'r')
+          end
+        rescue Exception => e
+          @error_string = e.to_s
+          @error_code = :permission_denied
+          return false
         end
         return true
       end
@@ -186,6 +196,33 @@ module HP
         @file.close unless @file.nil?
         @file = nil
         return true
+      end
+
+      def copy(from)
+        if ! from.valid_source() then return false end
+        if ! set_destination(from) then return false end
+        if ! open(true) then return false end
+
+        result = true
+        if from.isLocal()
+          if (from.open() == true)
+            while ((chunk = from.read()) != nil) do
+              if chunk.empty?
+                break
+              end
+              if ! write(chunk.to_s) then result = false end
+            end
+            result = from.close()
+          else
+            result = false
+          end
+        else
+          Connection.instance.storage.get_object(from.container, from.path) { |chunk, remaining, total|
+            if ! write(chunk) then result = false end
+          }
+        end
+        if ! close() then return false end
+        return result
       end
     end
 
@@ -223,6 +260,28 @@ module HP
           @destination = @path + '/' + File.basename(from.path)
         else
           @destination = @path
+        end
+        return true
+      end
+
+      def copy(from)
+        if ! from.valid_source() then return false end
+        if ! set_destination(from) then return false end
+        if from.isLocal()
+          if (from.open() == false) then return false end
+          options = { 'Content-Type' => from.get_mime_type() }
+          Connection.instance.storage.put_object(@container, @destination, {}, options) {
+            return from.read(Excon::CHUNK_SIZE).to_s
+          }
+          return from.close()
+        else
+          begin
+            Connection.instance.storage.put_object(@container, @path, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
+          rescue Fog::Storage::HP::NotFound => e
+            @error_string = "The specified object does not exist."
+            @error_code = :not_found
+            return false
+          end
         end
         return true
       end
