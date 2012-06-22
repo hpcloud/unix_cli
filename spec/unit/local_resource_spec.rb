@@ -179,3 +179,24 @@ describe "Read directory" do
     end
   end
 end
+
+describe "Get size" do
+
+  context "valid file" do
+    it "returns size" do
+      res = Resource.create("spec/fixtures/files/foo.txt")
+
+      res.get_size().should eq(19)
+    end
+  end
+
+  context "invalid file" do
+    it "returns size" do
+      res = Resource.create("spec/nonexistent/file.txt")
+
+      res.get_size().should eq(0)
+    end
+  end
+
+end
+

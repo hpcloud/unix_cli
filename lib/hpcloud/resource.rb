@@ -92,10 +92,6 @@ module HP
         full_mime.split(';')[0].chomp
       end
 
-      def get_size()
-        return File.size(@fname)
-      end
-
       def valid_source()
         return true
       end
@@ -134,6 +130,14 @@ module HP
     end
 
     class LocalResource < Resource
+
+      def get_size()
+        begin
+          return File.size(@fname)
+        rescue
+          return 0
+        end
+      end
 
       def valid_source()
         if !File.exists?(@fname)
@@ -243,6 +247,7 @@ module HP
     end
 
     class RemoteResource < Resource
+
       def get_size()
         head = Connection.instance.storage().head_object(@container, @path)
         return 0 if head.nil?
