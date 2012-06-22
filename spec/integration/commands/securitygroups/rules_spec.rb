@@ -7,6 +7,8 @@ describe "Security Groups Rules command" do
 
   before(:all) do
     @hp_svc = compute_connection
+    del_securitygroup(@hp_svc, 'mysggroup')
+
     @security_group = @hp_svc.security_groups.create(:name => 'mysggroup', :description => 'sec group desc')
     response = @security_group.create_rule(-1..-1, "icmp")
     @rule_id = response.body["security_group_rule"]["id"]

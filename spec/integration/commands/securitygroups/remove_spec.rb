@@ -7,6 +7,8 @@ describe "securitygroups:remove command" do
 
   before(:all) do
     @hp_svc = compute_connection
+    del_securitygroup(@hp_svc, 'mysggroup')
+    del_securitygroup(@hp_svc, 'mysggroup2')
   end
 
   context "when deleting security group" do

@@ -5,4 +5,8 @@ RSpec.configure do |config|
     connection ||= compute_connection
     connection.security_groups.select {|sg| sg.name == sg_name}.first
   end
+  def del_securitygroup(connection = nil, sg_name)
+    sg = get_securitygroup(connection, sg_name)
+    sg.destroy unless sg.nil?
+  end
 end
