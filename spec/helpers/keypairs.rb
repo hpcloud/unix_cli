@@ -5,4 +5,9 @@ RSpec.configure do |config|
     connection ||= compute_connection
     connection.key_pairs.select {|k| k.name == key_name}.first
   end
+
+  def del_keypair(connection = nil, key_name)
+    kp = get_keypair(connection, key_name)
+    kp.destroy unless kp.nil?
+  end
 end

@@ -7,6 +7,9 @@ describe "keypairs:remove command" do
 
   before(:all) do
     @hp_svc = compute_connection
+    # delete keypairs if they existed
+    del_keypair(@hp_svc, 'fog-del-200')
+    del_keypair(@hp_svc, 'fog-del-201')
   end
 
   context "when deleting a keypair" do
