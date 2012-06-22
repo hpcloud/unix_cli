@@ -34,7 +34,7 @@ Note: Copying multiple files at once or recursively copying folder contents will
           if from_file.isFile() and to_file.isRemote()
             put(from_file, to_file)
           elsif from_file.isObject() and to_file.isLocal()
-            fetch(from_file, to_file)
+            put(from_file, to_file)
           elsif from_file.isObject() and to_file.isRemote()
             clone(from, to)
           else
@@ -69,7 +69,7 @@ Note: Copying multiple files at once or recursively copying folder contents will
               }
             end
             pbar.finish
-            display "Copied #{from.fname} => #{to.destination}"
+            display "Copied #{from.fname} => #{to.get_destination}"
           rescue Fog::Storage::HP::NotFound => e
             error "The specified object does not exist.", :not_found
           rescue Errno::EACCES
@@ -83,7 +83,7 @@ Note: Copying multiple files at once or recursively copying folder contents will
       
         def put(from, to)
           if to.copy(from)
-            display "Copied #{from.fname} => :#{to.container}/#{to.destination}"
+            display "Copied #{from.fname} => #{to.get_destination}"
           else
             if to.error_string.nil?
               if from.error_string.nil?

@@ -189,7 +189,7 @@ describe "Copy command" do
         end
 
         it "should show failure message" do
-          @response.should eql("You don't have permission to write the target file.\n")
+          @response.should eql("Permission denied - spec/tmp/unwriteable/foo.txt\n")
         end
 
         it "should have correct exit status" do

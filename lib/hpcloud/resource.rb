@@ -127,6 +127,10 @@ module HP
       def foreach(&block)
         return
       end
+
+      def get_destination()
+        return @destination
+      end
     end
 
     class LocalResource < Resource
@@ -225,9 +229,15 @@ module HP
             result = false
           end
         else
-          Connection.instance.storage.get_object(from.container, from.path) { |chunk, remaining, total|
-            if ! write(chunk) then result = false end
-          }
+          begin
+            Connection.instance.storage.get_object(from.container, from.path) { |chunk, remaining, total|
+              if ! write(chunk) then result = false end
+            }
+          rescue Fog::Storage::HP::NotFound => e
+            @error_string = "The specified object does not exist."
+            @error_code = :not_found
+            result = false
+          end
         end
         if ! close() then return false end
         return result
@@ -249,10 +259,14 @@ module HP
     class RemoteResource < Resource
 
       def get_size()
-        head = Connection.instance.storage().head_object(@container, @path)
-        return 0 if head.nil?
-        return 0 if head.headers["Content-Length"].nil?
-        return head.headers["Content-Length"].to_i
+        begin
+          head = Connection.instance.storage().head_object(@container, @path)
+          return 0 if head.nil?
+          return 0 if head.headers["Content-Length"].nil?
+          return head.headers["Content-Length"].to_i
+        rescue
+          return 0
+        end
       end
 
       def valid_source()
@@ -332,6 +346,10 @@ module HP
             yield Resource.create(':' + container + '/' + x)
           end
         }
+      end
+
+      def get_destination()
+        return ':' + @container + '/' + @destination
       end
     end
   end
