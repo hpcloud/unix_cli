@@ -162,7 +162,7 @@ describe "File copy" do
     end
   end
 
-  context "when local file source" do
+  context "when local file source to remote destination" do
     it "copies the data" do
       src = Resource.create("spec/fixtures/files/foo.txt")
       dest = Resource.create(":container/destination.txt")
@@ -181,10 +181,11 @@ describe "File copy" do
 
       File.exists?("spec/tmp/output.txt").should be_true
       File.open("spec/tmp/output.txt").read().should eq("This is a foo file.")
+      File.unlink("spec/tmp/output.txt") if File.exists?("spec/tmp/output.txt")
     end
   end
 
-  context "when remote file source" do
+  context "when remote file source to local destination" do
     it "copies the data" do
       src = Resource.create(":container/source.txt")
       dest = Resource.create("spec/tmp/result.txt")
