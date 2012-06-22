@@ -125,7 +125,11 @@ describe "File copy" do
     @directories.stub(:get).and_return(@container)
     @get_object = double("get_object")
     @put_object = double("put_object")
+    @headers = { "Content-Length" => 9 }
+    @head = double("head")
+    @head.stub(:headers).and_return(@headers)
     @storage = double("storage")
+    @storage.stub(:head_object).and_return(@head)
     @storage.stub(:get_object).and_return(@get_object)
     @storage.stub(:put_object).and_return(@put_object)
     @storage.stub(:directories).and_return(@directories)
@@ -298,7 +302,6 @@ describe "Read directory" do
     end
   end
 
-
   context "when subdir" do
     it "gets just subdir" do
       res = Resource.create(":container/files/subdir/")
@@ -309,6 +312,54 @@ describe "Read directory" do
       ray.sort!
       ray[0].should eq(":container/files/subdir/with space.txt")
       ray.length.should eq(1)
+    end
+  end
+
+end
+
+describe "Remote resource get size" do
+
+  before(:each) do
+    @headers = { "Content-Length" => 233 }
+    @head = double("head")
+    @head.stub(:headers).and_return(@headers)
+    @storage = double("storage")
+    @storage.stub(:head_object).and_return(@head)
+    Connection.instance.stub(:storage).and_return(@storage)
+  end
+
+  context "get valid size" do
+    it "correctly" do
+      res = Resource.create(":container/files/subdir/")
+
+      res.get_size().should eq(233)
+    end
+  end
+
+  context "get valid size" do
+    it "new size" do
+      @head.stub(:headers).and_return({"Content-Length" => 502 })
+      res = Resource.create(":container/files/subdir/")
+
+      res.get_size().should eq(502)
+    end
+  end
+
+  context "no content-length" do
+    it "gets zero" do
+      @head.stub(:headers).and_return({})
+      res = Resource.create(":container/files/subdir/")
+
+      res.get_size().should eq(0)
+    end
+  end
+
+  context "head object fails" do
+    it "still gets zero" do
+      @storage.stub(:head_object).and_return(nil)
+      res = Resource.create(":container/files/subdir/")
+
+      res.get_size().should eq(0)
     end
   end
 

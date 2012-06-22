@@ -205,7 +205,7 @@ module HP
       def copy(from)
         if ! from.valid_source() then return false end
         if ! set_destination(from) then return false end
-        if ! open(true) then return false end
+        if ! open(true, from.get_size()) then return false end
 
         result = true
         if from.isLocal()
@@ -243,6 +243,13 @@ module HP
     end
 
     class RemoteResource < Resource
+      def get_size()
+        head = Connection.instance.storage().head_object(@container, @path)
+        return 0 if head.nil?
+        return 0 if head.headers["Content-Length"].nil?
+        return head.headers["Content-Length"].to_i
+      end
+
       def valid_source()
         return valid_container()
       end

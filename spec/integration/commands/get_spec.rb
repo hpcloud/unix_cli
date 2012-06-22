@@ -7,6 +7,7 @@ describe "Get command" do
     @hp_svc.put_container('get_container')
     @hp_svc.put_object('get_container', 'highly_unusual_file_name.txt', read_file('foo.txt'))
     @hp_svc.put_object('get_container', 'folder/highly_unusual_file_name.txt', read_file('foo.txt'))
+    File.unlink('highly_unusual_file_name.txt') if File.exist?('highly_unusual_file_name.txt')
   end
 
   context "when object does not exist" do
@@ -88,6 +89,9 @@ describe "Get command" do
     end
   end
 
-  after(:all) { purge_container('get_container') }
+  after(:all) do
+    purge_container('get_container') }
+    File.unlink('highly_unusual_file_name.txt') if File.exist?('highly_unusual_file_name.txt')
+  end
   
 end
