@@ -306,9 +306,18 @@ module HP
         connection = Connection.instance.storage()
         directory = connection.directories.get(@container)
         return if directory.nil?
+        case @ftype
+        when :container_directory
+          regex = "^" + path + ".*"
+        when :container
+          regex = ".*"
+        else
+          regex = "^" + path + '$'
+        end
         directory.files.each { |x|
-          puts '==== ' + x.to_s + " match: ^" +  path.to_s
-          yield Resource.create(':' + container + '/' + x) if ! x.match("^" + path).nil?
+          if ! x.match(regex).nil?
+            yield Resource.create(':' + container + '/' + x)
+          end
         }
       end
     end

@@ -220,7 +220,7 @@ describe "Read directory" do
   before(:each) do
     @files = ["files/",
               "files/cantread.txt",
-              "files/with space.txt",
+              "files/subdir/with space.txt",
               "files/foo.txt" ]
     @container = double("container")
     @container.stub(:files).and_return(@files)
@@ -242,7 +242,7 @@ describe "Read directory" do
       ray[0].should eq(":container/files/")
       ray[1].should eq(":container/files/cantread.txt")
       ray[2].should eq(":container/files/foo.txt")
-      ray[3].should eq(":container/files/with space.txt")
+      ray[3].should eq(":container/files/subdir/with space.txt")
       ray.length.should eq(4)
     end
   end
@@ -285,15 +285,28 @@ describe "Read directory" do
     end
   end
 
-  context "when file" do
+  context "when partial file name" do
     it "gets just the file" do
-      res = Resource.create(":container/files/c")
+      res = Resource.create(":container/files/cantread")
       ray = Array.new
 
       res.foreach { |x| ray.push(x.fname) }
 
       ray.sort!
-      ray[0].should eq(":container/files/cantread.txt")
+      ray.length.should eq(0)
+    end
+  end
+
+
+  context "when subdir" do
+    it "gets just subdir" do
+      res = Resource.create(":container/files/subdir/")
+      ray = Array.new
+
+      res.foreach { |x| ray.push(x.fname) }
+
+      ray.sort!
+      ray[0].should eq(":container/files/subdir/with space.txt")
       ray.length.should eq(1)
     end
   end
