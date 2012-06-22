@@ -220,7 +220,7 @@ module HP
               end
               if ! write(chunk.to_s) then result = false end
             end
-            result = from.close()
+            result = false if ! from.close()
           else
             result = false
           end
@@ -293,25 +293,26 @@ module HP
       end
 
       def copy(from)
+        result = true
         if ! from.valid_source() then return false end
         if ! set_destination(from) then return false end
         if from.isLocal()
           if (from.open() == false) then return false end
           options = { 'Content-Type' => from.get_mime_type() }
           Connection.instance.storage.put_object(@container, @destination, {}, options) {
-            return from.read(Excon::CHUNK_SIZE).to_s
+            from.read().to_s
           }
-          return from.close()
+          result = false if ! from.close()
         else
           begin
             Connection.instance.storage.put_object(@container, @path, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
           rescue Fog::Storage::HP::NotFound => e
             @error_string = "The specified object does not exist."
             @error_code = :not_found
-            return false
+            result = false
           end
         end
-        return true
+        return result
       end
 
       def foreach(&block)

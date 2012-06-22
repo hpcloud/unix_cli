@@ -82,33 +82,18 @@ Note: Copying multiple files at once or recursively copying folder contents will
         end
       
         def put(from, to)
-          if ! from.valid_source()
-            error from.error_string, from.error_code
-          end
-
-          if ! to.set_destination(from)
-            error to.error_string, to.error_code
-          end
-
-          begin
-            file = File.open(from.fname)
-            pbar = ProgressBar.new(File.basename(from.fname), from.get_size())
-            options = { 'Content-Type' => from.get_mime_type() }
-
-            lastread = 0
-            @storage_connection.put_object(to.container, to.destination, {}, options) {
-              pbar.inc(lastread)
-              val = file.read(Excon::CHUNK_SIZE).to_s
-              lastread = val.length
-              val
-            }
-            pbar.finish
-            file.close
+          if to.copy(from)
             display "Copied #{from.fname} => :#{to.container}/#{to.destination}"
-          rescue Errno::EACCES => e
-            error 'The selected file cannot be read.', :permission_denied
-          rescue Excon::Errors::Forbidden => e
-            error 'Permission denied', :permission_denied
+          else
+            if to.error_string.nil?
+              if from.error_string.nil?
+                error 'Unknown error copying', :unknown
+              else
+                error from.error_string, from.error_code
+              end
+            else
+              error to.error_string, to.error_code
+            end
           end
         end
       

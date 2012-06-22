@@ -33,7 +33,7 @@ describe "Copy command" do
       it "should show error message" do
         # response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_container']) }
         response, exit_status = run_command('copy spec/fixtures/files/cantread.txt :my_container').stderr_and_exit_status
-        response.should eql("The selected file cannot be read.\n")
+        response.should eql("Permission denied - spec/fixtures/files/cantread.txt\n")
         exit_status.should be_exit(:permission_denied)
       end
       
