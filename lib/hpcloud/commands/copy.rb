@@ -36,7 +36,7 @@ Note: Copying multiple files at once or recursively copying folder contents will
           elsif from_file.isObject() and to_file.isLocal()
             put(from_file, to_file)
           elsif from_file.isObject() and to_file.isRemote()
-            clone(from, to)
+            put(from_file, to_file)
           else
             error "Not currently supported.", :not_supported
           end

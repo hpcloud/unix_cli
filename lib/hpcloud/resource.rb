@@ -319,7 +319,7 @@ module HP
           result = false if ! from.close()
         else
           begin
-            Connection.instance.storage.put_object(@container, @path, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
+            Connection.instance.storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
           rescue Fog::Storage::HP::NotFound => e
             @error_string = "The specified object does not exist."
             @error_code = :not_found
