@@ -153,7 +153,24 @@ module HP
       def selfname
         ENV['HPCLOUD_CLI_NAME'] || 'hpcloud'
       end
-    
+
+      def default_connection_options(options={})
+        # define default connection options
+        {
+            :connect_timeout => Config.settings[:connect_timeout] || options[:connect_timeout] || Config::CONNECT_TIMEOUT,
+            :read_timeout    => Config.settings[:read_timeout]    || options[:read_timeout] || Config::READ_TIMEOUT,
+            :write_timeout   => Config.settings[:write_timeout]   || options[:write_timeout] || Config::WRITE_TIMEOUT,
+            :ssl_verify_peer => Config.settings[:ssl_verify_peer] || options[:ssl_verify_peer] || true,
+            :ssl_ca_path     => Config.settings[:ssl_ca_path]     || options[:ssl_ca_path],
+            :ssl_ca_file     => Config.settings[:ssl_ca_file]     || options[:ssl_ca_file]
+        }
+      end
+
+      def tablelize(data, attributes=nil)
+        return if data.nil?
+        Formatador.display_table(data, attributes)
+      end
+
       ### Thor extensions
     
       def ask_with_default(statement, default, color = nil)
@@ -167,17 +184,7 @@ module HP
         exit exit_status || 1
       end
 
-      def default_connection_options(options={})
-        # define default connection options
-        {
-            :connect_timeout => Config.settings[:connect_timeout] || options[:connect_timeout] || Config::CONNECT_TIMEOUT,
-            :read_timeout    => Config.settings[:read_timeout]    || options[:read_timeout] || Config::READ_TIMEOUT,
-            :write_timeout   => Config.settings[:write_timeout]   || options[:write_timeout] || Config::WRITE_TIMEOUT,
-            :ssl_verify_peer => Config.settings[:ssl_verify_peer] || options[:ssl_verify_peer] || true,
-            :ssl_ca_path     => Config.settings[:ssl_ca_path]     || options[:ssl_ca_path],
-            :ssl_ca_file     => Config.settings[:ssl_ca_file]     || options[:ssl_ca_file]
-        }
-      end
+
     end
   end
 end
