@@ -131,17 +131,16 @@ describe "Read directory" do
 
   context "when directory contains files" do
     it "gets all the files" do
-      res = Resource.create("spec/fixtures/files/")
+      res = Resource.create("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/")
       ray = Array.new
 
       res.foreach{ |x| ray.push(x.fname) }
 
       ray.sort!
-      ray[0].should eq("spec/fixtures/files/")
-      ray[1].should eq("spec/fixtures/files/cantread.txt")
-      ray[2].should eq("spec/fixtures/files/foo.txt")
-      ray[3].should eq("spec/fixtures/files/with space.txt")
-      ray.length.should eq(4)
+      ray[0].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Andropov.txt")
+      ray[1].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Chernenko.txt")
+      ray[2].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Mikhail.txt")
+      ray.length.should eq(3)
     end
   end
 
@@ -153,16 +152,18 @@ describe "Read directory" do
       res.foreach { |x| ray.push(x.fname) }
 
       ray.sort!
-      ray[0].should eq("spec/fixtures/")
-      ray[1].should eq("spec/fixtures/accounts")
-      ray[2].should eq("spec/fixtures/accounts/default")
-      ray[3].should eq("spec/fixtures/configs")
-      ray[4].should eq("spec/fixtures/configs/personalized.yml")
-      ray[5].should eq("spec/fixtures/files")
-      ray[6].should eq("spec/fixtures/files/cantread.txt")
-      ray[7].should eq("spec/fixtures/files/foo.txt")
-      ray[8].should eq("spec/fixtures/files/with space.txt")
-      ray.length.should eq(9)
+      ray[0].should eq("spec/fixtures/accounts/default")
+      ray[1].should eq("spec/fixtures/configs/personalized.yml")
+      ray[2].should eq("spec/fixtures/files/Matryoshka/Putin/Medvedev.txt")
+      ray[3].should eq("spec/fixtures/files/Matryoshka/Putin/Vladimir.txt")
+      ray[4].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Boris.txt")
+      ray[5].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Andropov.txt")
+      ray[6].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Chernenko.txt")
+      ray[7].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Mikhail.txt")
+      ray[8].should eq("spec/fixtures/files/cantread.txt")
+      ray[9].should eq("spec/fixtures/files/foo.txt")
+      ray[10].should eq("spec/fixtures/files/with space.txt")
+      ray.length.should eq(11)
     end
   end
 

@@ -121,7 +121,7 @@ describe "Copy command" do
     context "when object does not exist" do
       it "should exit with object not found" do
         response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo2.txt', '/tmp/foo.txt']) }
-        response.should eql("The specified object does not exist.\n")
+        response.should eql("No files found matching source 'foo2.txt'\n")
         exit_status.should be_exit(:not_found)
       end 
     end
@@ -242,7 +242,7 @@ describe "Copy command" do
     context "when object does not exist" do
       it "should exit with object not found" do
         response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/missing.txt', ':copy_inside_container/tmp/missing.txt']) }
-        response.should eql("The specified object does not exist.\n")
+        response.should eql("No files found matching source 'missing.txt'\n")
         exit_status.should be_exit(:not_found)
       end
     end
@@ -320,14 +320,14 @@ describe "Copy command" do
     context "when object does not exist" do
       it "should exit with object not found" do
         response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_between_one/missing.txt', ':copy_between_two/tmp/missing.txt']) }
-        response.should eql("The specified object does not exist.\n")
+        response.should eql("No files found matching source 'missing.txt'\n")
         exit_status.should be_exit(:not_found)
       end
     end
     
     context "when new container does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_between_one/missing.txt', ':missing_container/tmp/missing.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_between_one/foo.txt', ':missing_container/tmp/missing.txt']) }
         response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end

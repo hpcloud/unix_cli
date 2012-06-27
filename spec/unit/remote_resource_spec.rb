@@ -120,7 +120,11 @@ end
 
 describe "File copy" do
   before(:each) do
+    @sourcetxt = double("sourcetxt")
+    @sourcetxt.stub(:key).and_return("source.txt")
+    @files = [@sourcetxt]
     @container = double("container")
+    @container.stub(:files).and_return(@files)
     @directories = double("directories")
     @directories.stub(:get).and_return(@container)
     @get_object = double("get_object")
@@ -223,10 +227,15 @@ end
 
 describe "Read directory" do
   before(:each) do
-    @files = ["files/",
-              "files/cantread.txt",
-              "files/subdir/with space.txt",
-              "files/foo.txt" ]
+    @cantread = double("cantread")
+    @cantread.stub(:key).and_return("files/cantread.txt")
+    @withspace = double("withspace")
+    @withspace.stub(:key).and_return("files/subdir/with space.txt")
+    @footxt = double("footxt")
+    @footxt.stub(:key).and_return("files/foo.txt")
+    @files = [@cantread,
+              @withspace,
+              @footxt ]
     @container = double("container")
     @container.stub(:files).and_return(@files)
     @directories = double("directories")
@@ -244,11 +253,10 @@ describe "Read directory" do
       res.foreach{ |x| ray.push(x.fname) }
 
       ray.sort!
-      ray[0].should eq(":container/files/")
-      ray[1].should eq(":container/files/cantread.txt")
-      ray[2].should eq(":container/files/foo.txt")
-      ray[3].should eq(":container/files/subdir/with space.txt")
-      ray.length.should eq(4)
+      ray[0].should eq(":container/files/cantread.txt")
+      ray[1].should eq(":container/files/foo.txt")
+      ray[2].should eq(":container/files/subdir/with space.txt")
+      ray.length.should eq(3)
     end
   end
 

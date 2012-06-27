@@ -120,8 +120,35 @@ module HP
         return false
       end
 
-      def copy(from)
+      def copy_file(from)
         return false
+      end
+
+      def copy(from)
+        if ! from.valid_source() then return false end
+
+        savepath = @path
+        src = from.path
+        dest = @path
+        copiedfile = false
+        from.foreach { |file|
+          if (file.path != src) && (! dest.empty?)
+            @path = dest + '/' + file.path.sub(src, '').sub(/^\//, '')
+          end
+          if (copy_file(file) == false)
+            return false
+          end
+          copiedfile = true
+        }
+        @path = savepath
+
+        if (copiedfile == false)
+          @error_string = "No files found matching source '#{from.path}'"
+          @error_code = :not_found
+          return false
+        end
+        set_destination(from)
+        return true
       end
 
       def foreach(&block)
@@ -129,7 +156,7 @@ module HP
       end
 
       def get_destination()
-        return @destination
+        return @destination.to_s
       end
     end
 
@@ -210,7 +237,7 @@ module HP
         return true
       end
 
-      def copy(from)
+      def copy_file(from)
         if ! from.valid_source() then return false end
         if ! set_destination(from) then return false end
         if ! open(true, from.get_size()) then return false end
@@ -244,15 +271,20 @@ module HP
       end
 
       def foreach(&block)
-        yield self
         if (isDirectory() == false)
+           yield self
           return
         end
-        Dir.foreach(path) { |x|
-          if ((x != '.') && (x != '..')) then
-            Resource.create(path + '/' + x).foreach(&block)
-          end
-        }
+        begin
+          Dir.foreach(path) { |x|
+            if ((x != '.') && (x != '..')) then
+              Resource.create(path + '/' + x).foreach(&block)
+            end
+          }
+        rescue Errno::EACCES
+          @error_string  = "You don't have permission to access '#{path}'."
+          @error_code = :permission_denied
+        end
       end
     end
 
@@ -306,7 +338,7 @@ module HP
         return true
       end
 
-      def copy(from)
+      def copy_file(from)
         result = true
         if ! from.valid_source() then return false end
         if ! set_destination(from) then return false end
@@ -342,14 +374,15 @@ module HP
           regex = "^" + path + '$'
         end
         directory.files.each { |x|
-          if ! x.match(regex).nil?
-            yield Resource.create(':' + container + '/' + x)
+          name = x.key.to_s
+          if ! name.match(regex).nil?
+            yield Resource.create(':' + container + '/' + name)
           end
         }
       end
 
       def get_destination()
-        return ':' + @container + '/' + @destination
+        return ':' + @container.to_s + '/' + @destination.to_s
       end
     end
   end
