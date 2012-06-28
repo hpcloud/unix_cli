@@ -37,11 +37,13 @@ Aliases: containers:rm, containers:delete, containers:del
           else
             error "You don't have a container named '#{name}'.", :not_found
           end
+        rescue Excon::Errors::Conflict
+          error "The container '#{name}' is not empty. Please use -f option to force deleting a container with objects in it.", :general_error
         rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
           display_error_message(error, :general_error)
         rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
           display_error_message(error, :permission_denied)
-        rescue Excon::Errors::Conflict, Excon::Errors::NotFound => error
+        rescue Excon::Errors::NotFound => error
           display_error_message(error, :not_found)
         end
       end

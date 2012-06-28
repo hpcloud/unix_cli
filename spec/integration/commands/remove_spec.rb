@@ -93,5 +93,76 @@ describe "Remove command" do
 
   end
 
+  context "removing a container" do
+    def cli
+      @cli ||= HP::Cloud::CLI.new
+    end
 
+    context "when user owns container and it exists" do
+      before(:all) do
+        @hp_svc.put_container('container_to_remove')
+      end
+
+      it "should ask for confirmation to delete" do
+        exit_status = :success
+        $stdout.should_receive(:print).with("Are you sure you want to remove the container 'container_to_remove'? ")
+        $stdin.should_receive(:gets).and_return('y')
+        $stdout.should_receive(:puts).with("Removed container 'container_to_remove'.")
+        begin
+          cli.send('remove', ':container_to_remove')
+        rescue SystemExit => system_exit # catch any exit calls
+          exit_status = system_exit.status
+        end
+        exit_status.should eql(:success)
+      end
+
+      it "should remove container" do
+        lambda{ @hp_svc.get_container('container_to_remove') }.should raise_error(Fog::Storage::HP::NotFound)
+      end
+
+      after(:all) { purge_container('container_to_remove') }
+
+    end
+
+    context "when container is not empty" do
+      before(:all) do
+        create_container_with_files('non_empty_container', 'foo.txt')
+      end
+      context "when force option is not used" do
+
+        it "should not remove container" do
+          exit_status = :success
+          $stdout.should_receive(:print).with("Are you sure you want to remove the container 'non_empty_container'? ")
+          $stdin.should_receive(:gets).and_return('y')
+          $stderr.should_receive(:puts).with("The container 'non_empty_container' is not empty. Please use -f option to force deleting a container with objects in it.")
+          begin
+            cli.send('remove', ':non_empty_container')
+          rescue SystemExit => system_exit # catch any exit calls
+            exit_status = system_exit.status
+          end
+          exit_status.should be_exit(:general_error)
+        end
+      end
+      context "when force option is used" do
+        before(:all) do
+          @response, @exit = run_command('remove -f :non_empty_container').stdout_and_exit_status
+        end
+        it "should show success message" do
+          @response.should eql("Removed container 'non_empty_container'.\n")
+        end
+
+        it "should remove container" do
+          lambda{ @hp_svc.get_container('non_empty_container') }.should raise_error(Fog::Storage::HP::NotFound)
+        end
+
+        it "should have success exit status" do
+          @exit.should be_exit(:success)
+        end
+      end
+
+      after(:all) { purge_container('non_empty_container') }
+
+    end
+
+  end
 end

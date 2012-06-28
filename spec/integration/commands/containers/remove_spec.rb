@@ -69,6 +69,46 @@ describe "containers:remove command" do
     
   end
 
+  context "when container is not empty" do
+    before(:all) do
+      create_container_with_files('non_empty_container', 'foo.txt')
+    end
+    context "when force option is not used" do
+      before(:all) do
+        @response, @exit = run_command('containers:remove :non_empty_container').stderr_and_exit_status
+      end
+      it "should show error message" do
+        @response.should eql("The container 'non_empty_container' is not empty. Please use -f option to force deleting a container with objects in it.\n")
+      end
+
+      it "should not remove container" do
+        @hp_svc.get_container('non_empty_container').status.should eql(200)
+      end
+
+      it "should have error exit status" do
+        @exit.should be_exit(:general_error)
+      end
+
+    end
+    context "when force option is used" do
+      before(:all) do
+        @response, @exit = run_command('containers:remove -f :non_empty_container').stdout_and_exit_status
+      end
+      it "should show success message" do
+        @response.should eql("Removed container 'non_empty_container'.\n")
+      end
+
+      it "should remove container" do
+        lambda{ @hp_svc.get_container('non_empty_container') }.should raise_error(Fog::Storage::HP::NotFound)
+      end
+
+      it "should have success exit status" do
+        @exit.should be_exit(:success)
+      end
+    end
+    after(:all) { purge_container('non_empty_container') }
+  end
+
   describe "with avl settings passed in" do
     before(:all) do
       @hp_svc.put_container('my-added-container2')

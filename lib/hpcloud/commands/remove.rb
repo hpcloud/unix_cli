@@ -49,7 +49,7 @@ Aliases: rm, delete, destroy, del
             error "You don't have a object named '#{path}'.", :not_found
           end
         elsif type == :container
-          if options.force? or yes?("Are you sure you want to remove the container '#{resource}'?")
+          if options.force? or yes?("Are you sure you want to remove the container '#{container}'?")
             send('containers:remove', container)
           end
         else
