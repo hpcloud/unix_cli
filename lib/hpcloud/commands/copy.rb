@@ -44,7 +44,7 @@ Note: Copying multiple files at once or recursively copying folder contents will
       
         def put(from, to)
           if to.copy(from)
-            display "Copied #{from.fname} => #{to.get_destination}"
+            display "Copied #{from.fname} => #{to.fname}"
           else
             if to.error_string.nil?
               if from.error_string.nil?

@@ -76,7 +76,7 @@ describe "Copy command" do
       end
       
       it "should report success" do
-        @response.should eql("Copied spec/fixtures/files/foo.txt => :my_container/foo.txt\n")
+        @response.should eql("Copied spec/fixtures/files/foo.txt => :my_container\n")
         @exit_status.should be_exit(:success)
       end
       
@@ -97,7 +97,7 @@ describe "Copy command" do
       end
 
       it "should report success" do
-        @response.should eql("Copied spec/fixtures/files/with space.txt => :my_container/with space.txt\n")
+        @response.should eql("Copied spec/fixtures/files/with space.txt => :my_container\n")
         @exit_status.should be_exit(:success)
       end
 
@@ -165,7 +165,7 @@ describe "Copy command" do
       end
 
       it "should describe copy" do
-        @response.should eql("Copied :copy_remote_to_local/foo.txt => spec/tmp/foo.txt\n")
+        @response.should eql("Copied :copy_remote_to_local/foo.txt => spec/tmp/\n")
         @exit_status.should be_exit(:success)
       end
 
@@ -174,7 +174,10 @@ describe "Copy command" do
       end
 
       after(:all) do
-        File.unlink('spec/tmp/foo.txt')
+        begin
+          File.unlink('spec/tmp/foo.txt')
+        rescue
+        end
       end
 
     end
@@ -278,7 +281,7 @@ describe "Copy command" do
       context "when container only" do
         it "should show success message" do
           response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/nested/file.txt', ':copy_inside_container']) }
-          response.should eql("Copied :copy_inside_container/nested/file.txt => :copy_inside_container/file.txt\n")
+          response.should eql("Copied :copy_inside_container/nested/file.txt => :copy_inside_container\n")
           exit_status.should be_exit(:success)
         end
       end
@@ -340,7 +343,7 @@ describe "Copy command" do
       context "when container only" do
         it "should show success message" do
           response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two']) }
-          response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two/file.txt\n")
+          response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two\n")
           exit_status.should be_exit(:success)
         end
       end
@@ -393,7 +396,7 @@ describe "Copy command" do
     context "copy with valid avl" do
       it "should report success" do
         response, exit_status = run_command('copy spec/fixtures/files/foo.txt :my_avl_container -z region-a.geo-1').stdout_and_exit_status
-        response.should eql("Copied spec/fixtures/files/foo.txt => :my_avl_container/foo.txt\n")
+        response.should eql("Copied spec/fixtures/files/foo.txt => :my_avl_container\n")
         exit_status.should be_exit(:success)
       end
     end

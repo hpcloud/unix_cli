@@ -23,6 +23,7 @@ module HP
         @error_code = nil
         @fname = fname
         @ftype = Resource.detect_type(@fname)
+        @disable_pbar = false
         parse()
       end
 
@@ -39,7 +40,9 @@ module HP
       end
 
       def isDirectory()
-        return @ftype == :directory
+        return @ftype == :directory ||
+               @ftype == :container_directory ||
+               @ftype == :container
       end
 
       def isFile()
@@ -96,7 +99,7 @@ module HP
         return true
       end
 
-      def valid_destination()
+      def valid_destination(source_directory)
         return true
       end
 
@@ -126,28 +129,32 @@ module HP
 
       def copy(from)
         if ! from.valid_source() then return false end
+        if ! valid_destination(from.isDirectory()) then return false end
 
         savepath = @path
-        src = from.path
-        dest = @path
+        saveftype = @ftype
+        original = File.dirname(from.path)
         copiedfile = false
         from.foreach { |file|
-          if (file.path != src) && (! dest.empty?)
-            @path = dest + '/' + file.path.sub(src, '').sub(/^\//, '')
+          if (original != '.')
+            filename = file.path.sub(original, '').sub(/^\//, '')
+          else
+            filename = file.path
           end
+          if ! set_destination(filename) then return false end
           if (copy_file(file) == false)
             return false
           end
           copiedfile = true
         }
         @path = savepath
+        @ftype = saveftype
 
         if (copiedfile == false)
           @error_string = "No files found matching source '#{from.path}'"
           @error_code = :not_found
           return false
         end
-        set_destination(from)
         return true
       end
 
@@ -179,17 +186,45 @@ module HP
         return true
       end
 
-      def set_destination(from)
-        @destination = @path
+      def valid_destination(source_directory)
         if isDirectory()
-          @destination = "#{@destination}/#{File.basename(from.path)}"
+          dir_path = File.expand_path(@path)
+        else
+          if source_directory == true
+            @error_string = "Invalid target for directory copy '#{@fname}'."
+            @error_code = :incorrect_usage
+            return false
+          end
+          dir_path = File.expand_path(File.dirname(@path))
         end
-        dir_path = File.expand_path(File.dirname(@destination))
         if !File.directory?(dir_path)
-          dname = File.dirname(@destination)
-          @error_string = "No directory exists at '#{dname}'."
+          @error_string = "No directory exists at '#{dir_path}'."
           @error_code = :not_found
           return false
+        end
+        return true
+      end
+
+      def set_destination(name)
+        if (@path.nil?)
+          @destination = name
+        else
+          @destination = File.expand_path(@path)
+          if isDirectory()
+            @destination = "#{@destination}/#{name}"
+            dir_path = File.dirname(File.expand_path(@destination))
+          else
+            dir_path = File.dirname(@destination)
+          end
+          if !File.directory?(dir_path)
+            begin
+              FileUtils.mkpath(dir_path)
+            rescue Exception => e
+              @error_string = "Error creating target directory '#{dir_path}'."
+              @error_code = :general_error
+              return false
+            end
+          end
         end
         return true
       end
@@ -202,7 +237,9 @@ module HP
             @pbar = ProgressBar.new(File.basename(@destination), siz)
             @file = File.open(@destination, 'w')
           else
-            @pbar = ProgressBar.new(File.basename(@fname), get_size())
+            if (@disable_pbar == false)
+              @pbar = ProgressBar.new(File.basename(@fname), get_size())
+            end
             @file = File.open(@fname, 'r')
           end
         rescue Exception => e
@@ -214,13 +251,14 @@ module HP
       end
 
       def read()
-        @pbar.inc(@lastread)
+        @pbar.inc(@lastread) unless @pbar.nil?
         val = @file.read(Excon::CHUNK_SIZE).to_s
         @lastread = val.length
         return val
       end
 
       def write(data)
+        @pbar.inc(data.length) unless @pbar.nil?
         @file.write(data)
         return true
       end
@@ -238,8 +276,10 @@ module HP
       end
 
       def copy_file(from)
-        if ! from.valid_source() then return false end
-        if ! set_destination(from) then return false end
+        if from.isLocal()
+          @disable_pbar = true
+        end
+
         if ! open(true, from.get_size()) then return false end
 
         result = true
@@ -305,6 +345,10 @@ module HP
         return valid_container()
       end
 
+      def valid_destination(source_directory)
+        return valid_container()
+      end
+
       def valid_container()
         begin
           connection = Connection.instance.storage()
@@ -324,24 +368,24 @@ module HP
         return true
       end
 
-      def set_destination(from)
+      def set_destination(name)
         if ! valid_container()
           return false
         end
-        if @path.to_s.empty?
-          @destination = File.basename(from.path)
-        elsif @fname[-1,1] == '/'
-          @destination = @path + '/' + File.basename(from.path)
+        if (@path.empty?)
+          @destination = name
         else
-          @destination = @path
+          if isObject()
+            @destination = @path
+          else
+            @destination = @path + '/' + name
+          end
         end
         return true
       end
 
       def copy_file(from)
         result = true
-        if ! from.valid_source() then return false end
-        if ! set_destination(from) then return false end
         if from.isLocal()
           if (from.open() == false) then return false end
           options = { 'Content-Type' => from.get_mime_type() }

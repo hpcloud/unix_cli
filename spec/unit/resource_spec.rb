@@ -104,7 +104,7 @@ describe "Resource construction" do
       file.path.should eql('')
       file.isLocal().should be_false
       file.isRemote().should be_true
-      file.isDirectory().should be_false
+      file.isDirectory().should be_true
       file.isFile().should be_false
       file.isObject().should be_false
     end
@@ -136,7 +136,7 @@ describe "Resource construction" do
       file.path.should eq('blah')
       file.isLocal().should be_false
       file.isRemote().should be_true
-      file.isDirectory().should be_false
+      file.isDirectory().should be_true
       file.isFile().should be_false
       file.isObject().should be_false
     end

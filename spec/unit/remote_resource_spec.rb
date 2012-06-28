@@ -49,9 +49,8 @@ describe "Set destination" do
   context "when remote directory empty" do
     it "valid destination true" do
       to = Resource.create(":container")
-      from = Resource.create("file.txt")
 
-      rc = to.set_destination(from)
+      rc = to.set_destination("file.txt")
 
       rc.should be_true
       to.error_string.should be_nil
@@ -63,9 +62,8 @@ describe "Set destination" do
   context "when remote file ends in slash" do
     it "valid destination true" do
       to = Resource.create(":container/directory/")
-      from = Resource.create("file.txt")
 
-      rc = to.set_destination(from)
+      rc = to.set_destination("file.txt")
 
       rc.should be_true
       to.error_string.should be_nil
@@ -77,9 +75,8 @@ describe "Set destination" do
   context "when remote file rename" do
     it "valid destination true" do
       to = Resource.create(":container/directory/new.txt")
-      from = Resource.create("file.txt")
 
-      rc = to.set_destination(from)
+      rc = to.set_destination("file.txt")
 
       rc.should be_true
       to.error_string.should be_nil
@@ -92,9 +89,8 @@ describe "Set destination" do
     it "valid destination true" do
       @directories.stub(:get).and_return(nil)
       to = Resource.create(":missing_container/directory/new.txt")
-      from = Resource.create("file.txt")
 
-      rc = to.set_destination(from)
+      rc = to.set_destination("file.txt")
 
       rc.should be_false
       to.error_string.should eq("You don't have a container 'missing_container'.")

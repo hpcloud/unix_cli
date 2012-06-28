@@ -26,6 +26,90 @@ describe "Valid source" do
   end
 end
 
+describe "Valid destination" do
+
+  context "when local file" do
+    it "source is object and dest is real file true" do
+      to = Resource.create(__FILE__)
+
+      to.valid_destination(false).should be_true
+
+      to.error_string.should be_nil
+      to.error_code.should be_nil
+    end
+  end
+
+  context "when local file" do
+    it "source is object and dest is nonexistent file" do
+      to = Resource.create("nonexistent.txt")
+
+      to.valid_destination(false).should be_true
+
+      to.error_string.should be_nil
+      to.error_code.should be_nil
+    end
+  end
+
+  context "when local file" do
+    it "source is object and dest is real directory" do
+      to = Resource.create(File.dirname(File.expand_path(__FILE__)))
+
+      to.valid_destination(false).should be_true
+
+      to.error_string.should be_nil
+      to.error_code.should be_nil
+    end
+  end
+
+  context "when local file" do
+    it "source is object and dest is bogus directory" do
+      dir = File.dirname(File.expand_path(__FILE__)) + '/bogus/'
+      to = Resource.create(dir)
+
+      to.valid_destination(false).should be_false
+
+      dir = dir.sub(/\/$/, '')
+      to.error_string.should eq("No directory exists at '#{dir}'.")
+      to.error_code.should eq(:not_found)
+    end
+  end
+
+  context "when local file" do
+    it "source is directory and dest is real file true" do
+      to = Resource.create(__FILE__)
+
+      to.valid_destination(true).should be_false
+
+      to.error_string.should eq("Invalid target for directory copy '#{__FILE__}'.")
+      to.error_code.should eq(:incorrect_usage)
+    end
+  end
+
+  context "when local file" do
+    it "source is directory and dest is real directory" do
+      to = Resource.create(File.dirname(File.expand_path(__FILE__)))
+
+      to.valid_destination(true).should be_true
+
+      to.error_string.should be_nil
+      to.error_code.should be_nil
+    end
+  end
+
+  context "when local file" do
+    it "source is directory and dest is bogus directory" do
+      dir = File.dirname(File.expand_path(__FILE__)) + '/bogus/'
+      to = Resource.create(dir)
+
+      to.valid_destination(true).should be_false
+
+      dir = dir.sub(/\/$/, '')
+      to.error_string.should eq("No directory exists at '#{dir}'.")
+      to.error_code.should eq(:not_found)
+    end
+  end
+end
+
 describe "Set destination" do
   
   context "when local directory" do
@@ -33,54 +117,52 @@ describe "Set destination" do
       to = Resource.create("spec/tmp")
       from = Resource.create("file.txt")
 
-      rc = to.set_destination(from)
+      rc = to.set_destination("file.txt")
 
       rc.should be_true
       to.error_string.should be_nil
       to.error_code.should be_nil
-      to.destination.should eq("spec/tmp/file.txt")
+      to.destination.should eq(Dir.pwd + "/spec/tmp/file.txt")
     end
   end
 
   context "when local renaming original file" do
     it "valid destination true" do
       to = Resource.create("spec/tmp/new.txt")
-      from = Resource.create("file.txt")
 
-      rc = to.set_destination(from)
+      rc = to.set_destination("file.txt")
 
       rc.should be_true
       to.error_string.should be_nil
       to.error_code.should be_nil
-      to.destination.should eq("spec/tmp/new.txt")
+      to.destination.should eq(Dir.pwd + "/spec/tmp/new.txt")
     end
   end
 
   context "when bogus local directory" do
     it "valid destination false" do
-      to = Resource.create("completely/bogus")
-      from = Resource.create("file.txt")
+      to = Resource.create("spec/fixtures/files/")
 
-      rc = to.set_destination(from)
+      rc = to.set_destination("foo.txt/impossible/subdir/file.txt")
 
       rc.should be_false
-      to.error_string.should eq("No directory exists at 'completely'.")
-      to.error_code.should eq(:not_found)
-      to.destination.should eq("completely/bogus")
+      dir=Dir.pwd
+      to.error_string.should eq("Error creating target directory '#{dir}/spec/fixtures/files/foo.txt/impossible/subdir'.")
+      to.error_code.should eq(:general_error)
+      to.destination.should eq("#{dir}/spec/fixtures/files/foo.txt/impossible/subdir/file.txt")
     end
   end
   
-  context "when local directory" do
+  context "when local directory path empty" do
     it "valid destination true" do
-      to = Resource.create("spec/tmp/")
-      from = Resource.create("/etc/init.d/")
+      to = Resource.create("")
 
-      rc = to.set_destination(from)
+      rc = to.set_destination("file.txt")
 
       rc.should be_true
       to.error_string.should be_nil
       to.error_code.should be_nil
-      to.destination.should eq("spec/tmp/init.d")
+      to.destination.should eq("file.txt")
     end
   end
   
@@ -110,7 +192,7 @@ describe "Open write close" do
     it "writes data" do
       res = Resource.create("spec/tmp/")
       dest = Resource.create("writer.txt")
-      res.set_destination(dest)
+      res.set_destination(dest.path)
 
       res.open(true, "my data".length).should be_true
       res.write("my data").should be_true
