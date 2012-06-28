@@ -1,14 +1,11 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "keypairs:add command" do
-  def cli
-    @cli ||= HP::Cloud::CLI.new
-  end
 
   before(:all) do
     @hp_svc = compute_connection
     @fingerprint = "c1:db:b5:bc:8b:b9:0f:33:62:53:de:80:6e:ae:67:66"
-    @private_data = "some real private data"
+    @private_data = "some_real_private_data"
   end
 
   context "when creating a keypair with name" do
@@ -78,7 +75,7 @@ describe "keypairs:add command" do
 
   context "when creating a keypair with name and private data" do
     before(:all) do
-      @key_name = 'fog-key-203'
+      @key_name = 'fog-key-202'
       @response, @exit = run_command("keypairs:add #{@key_name} -p #{@private_data}").stdout_and_exit_status
     end
     its_exit_status_should_be(:success)
@@ -106,7 +103,7 @@ describe "keypairs:add command" do
 
   context "when creating a keypair with name, fingerprint and private data" do
     before(:all) do
-      @key_name = 'fog-key-204'
+      @key_name = 'fog-key-203'
       @response, @exit = run_command("keypairs:add #{@key_name} -f #{@fingerprint} -p #{@private_data}").stdout_and_exit_status
     end
     its_exit_status_should_be(:success)
@@ -134,7 +131,7 @@ describe "keypairs:add command" do
 
   context "when creating a keypair with output flag" do
     before(:all) do
-      @key_name = 'fog-key-205'
+      @key_name = 'fog-key-204'
       @response, @exit = run_command("keypairs:add #{@key_name} -o").stdout_and_exit_status
     end
     it "should show success message" do
@@ -166,7 +163,7 @@ describe "keypairs:add command" do
 
   context "when creating a keypair with avl settings passed in" do
     before(:all) do
-      @key_name = 'fog-key-206'
+      @key_name = 'fog-key-205'
     end
     context "keypairs:add with valid avl" do
       it "should report success" do
