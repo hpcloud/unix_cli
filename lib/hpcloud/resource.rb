@@ -346,7 +346,15 @@ module HP
       end
 
       def valid_destination(source_directory)
-        return valid_container()
+        if ! valid_container()
+          return false
+        end
+        if ((source_directory == true) && (isDirectory() == false))
+          @error_string = "Invalid target for directory copy '#{@fname}'."
+          @error_code = :incorrect_usage
+          return false
+        end
+        return true
       end
 
       def valid_container()
