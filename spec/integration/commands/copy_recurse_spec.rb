@@ -4,19 +4,26 @@ describe "Copy command recrusive" do
   
   before(:all) do
     @hp_svc = storage_connection
+    purge_container('recurse_remote')
+    @hp_svc.put_container('recurse_remote')
+    purge_container('recurse_local')
+    @hp_svc.put_container('recurse_local')
+    FileUtils.rm_rf('spec/tmp/recurse')
+    Dir.mkdir('spec/tmp/recurse/single')
+    Dir.mkdir('spec/tmp/recurse/nested')
+    @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/Matryoshka', ':recurse_remote']) }
+    @exit_status.should be_exit(:success)
   end
   
   context "copying local directory to remote container" do
     
     before(:all) do
-      purge_container('recurse')
-      @hp_svc.put_container('recurse')
-      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev', ':recurse']) }
-      @container = @hp_svc.get_container('recurse')
+      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev', ':recurse_local']) }
+      @container = @hp_svc.get_container('recurse_local')
     end
     
     it "should report success" do
-      @response.should eql("Copied spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev => :recurse\n")
+      @response.should eql("Copied spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev => :recurse_local\n")
       @exit_status.should be_exit(:success)
     end
     
@@ -32,15 +39,13 @@ describe "Copy command recrusive" do
   context "copying multilevel local directory to remote container" do
     
     before(:all) do
-      purge_container('recurse')
-      @hp_svc.put_container('recurse')
-      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/Matryoshka/', ':recurse/nested/']) }
+      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/Matryoshka/', ':recurse_local/nested/']) }
       @exit_status.should be_exit(:success)
-      @container = @hp_svc.get_container('recurse')
+      @container = @hp_svc.get_container('recurse_local')
     end
     
     it "should report success" do
-      @response.should eql("Copied spec/fixtures/files/Matryoshka/ => :recurse/nested/\n")
+      @response.should eql("Copied spec/fixtures/files/Matryoshka/ => :recurse_local/nested/\n")
       @exit_status.should be_exit(:success)
     end
     
@@ -59,29 +64,22 @@ describe "Copy command recrusive" do
   context "copying remote directory to local" do
     
     before(:all) do
-      purge_container('recurse')
-      FileUtils.rm_rf('spec/tmp/recurse')
-      Dir.mkdir('spec/tmp/recurse')
-      @hp_svc.put_container('recurse')
-      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev', ':recurse']) }
-      @response.should eql("Copied spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev => :recurse\n")
-      @exit_status.should be_exit(:success)
-      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':recurse', 'spec/tmp/recurse/']) }
+      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':recurse_remote', 'spec/tmp/recurse/single/']) }
     end
     
     it "should report success" do
-      @response.should eql("Copied :recurse => spec/tmp/recurse/\n")
+      @response.should eql("Copied :recurse_remote => spec/tmp/recurse/single/\n")
       @exit_status.should be_exit(:success)
     end
     
     it "container should have three files" do
-      entries = Dir.entries('spec/tmp/recurse').sort
+      entries = Dir.entries('spec/tmp/recurse/single').sort
       entries[0].should eq(".")
       entries[1].should eq("..")
       entries[2].should eq("Gorbachev")
       entries.length.should eq(3)
 
-      entries = Dir.entries('spec/tmp/recurse/Gorbachev').sort
+      entries = Dir.entries('spec/tmp/recurse/single/Gorbachev').sort
       entries[0].should eq(".")
       entries[1].should eq("..")
       entries[2].should eq("Andropov.txt")
@@ -95,29 +93,22 @@ describe "Copy command recrusive" do
   context "copying multilevel local directory to container" do
     
     before(:all) do
-      purge_container('recurse')
-      FileUtils.rm_rf('spec/tmp/recurse')
-      Dir.mkdir('spec/tmp/recurse')
-      @hp_svc.put_container('recurse')
-      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/Matryoshka/', ':recurse/nested/']) }
-      @response.should eql("Copied spec/fixtures/files/Matryoshka/ => :recurse/nested/\n")
-      @exit_status.should be_exit(:success)
-      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':recurse/nested/Matryoshka/', 'spec/tmp/recurse/']) }
+      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':recurse_remote/nested/Matryoshka/', 'spec/tmp/recurse/nested/']) }
     end
     
     it "should report success" do
-      @response.should eql("Copied :recurse/nested/Matryoshka/ => spec/tmp/recurse/\n")
+      @response.should eql("Copied :recurse_remote/nested/Matryoshka/ => spec/tmp/recurse/nested/\n")
       @exit_status.should be_exit(:success)
     end
 
     it "container should have lots of files" do
-      entries = Dir.entries('spec/tmp/recurse/Matryoshka').sort
+      entries = Dir.entries('spec/tmp/recurse/nested/Matryoshka').sort
       entries[0].should eq(".")
       entries[1].should eq("..")
       entries[2].should eq("Putin")
       entries.length.should eq(3)
 
-      entries = Dir.entries('spec/tmp/recurse/Matryoshka/Putin').sort
+      entries = Dir.entries('spec/tmp/recurse/nested/Matryoshka/Putin').sort
       entries[0].should eq(".")
       entries[1].should eq("..")
       entries[2].should eq("Medvedev.txt")
@@ -125,14 +116,14 @@ describe "Copy command recrusive" do
       entries[4].should eq("Yeltsin")
       entries.length.should eq(5)
 
-      entries = Dir.entries('spec/tmp/recurse/Matryoshka/Putin/Yeltsin').sort
+      entries = Dir.entries('spec/tmp/recurse/nested/Matryoshka/Putin/Yeltsin').sort
       entries[0].should eq(".")
       entries[1].should eq("..")
       entries[2].should eq("Boris.txt")
       entries[3].should eq("Gorbachev")
       entries.length.should eq(4)
 
-      entries = Dir.entries('spec/tmp/recurse/Matryoshka/Putin/Yeltsin/Gorbachev').sort
+      entries = Dir.entries('spec/tmp/recurse/nested/Matryoshka/Putin/Yeltsin/Gorbachev').sort
       entries[0].should eq(".")
       entries[1].should eq("..")
       entries[2].should eq("Andropov.txt")

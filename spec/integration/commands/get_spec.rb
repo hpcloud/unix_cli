@@ -13,7 +13,7 @@ describe "Get command" do
   context "when object does not exist" do
     it "should exit with object not found" do
       response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['get', ':get_container/nonexistant.txt']) }
-      response.should eql("The specified object does not exist.\n")
+      response.should eql("No files found matching source 'nonexistant.txt'\n")
       exit_status.should be_exit(:not_found)
     end
   end
@@ -90,7 +90,7 @@ describe "Get command" do
   end
 
   after(:all) do
-    purge_container('get_container') }
+    purge_container('get_container')
     File.unlink('highly_unusual_file_name.txt') if File.exist?('highly_unusual_file_name.txt')
   end
   

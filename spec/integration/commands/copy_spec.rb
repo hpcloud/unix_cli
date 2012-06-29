@@ -192,7 +192,8 @@ describe "Copy command" do
         end
 
         it "should show failure message" do
-          @response.should eql("Permission denied - spec/tmp/unwriteable/foo.txt\n")
+          dir=Dir.pwd
+          @response.should eql("Permission denied - #{dir}/spec/tmp/unwriteable/foo.txt\n")
         end
 
         it "should have correct exit status" do
@@ -208,7 +209,8 @@ describe "Copy command" do
         end
 
         it "should show failure message" do
-          @response.should eql("No directory exists at 'spec/tmp/nonexistent'.\n")
+          dir=Dir.pwd
+          @response.should eql("No directory exists at '#{dir}/spec/tmp/nonexistent'.\n")
         end
 
         it "should have correct exit status" do

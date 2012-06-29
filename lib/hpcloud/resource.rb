@@ -131,10 +131,8 @@ module HP
         if ! from.valid_source() then return false end
         if ! valid_destination(from.isDirectory()) then return false end
 
-        savepath = @path
-        saveftype = @ftype
-        original = File.dirname(from.path)
         copiedfile = false
+        original = File.dirname(from.path)
         from.foreach { |file|
           if (original != '.')
             filename = file.path.sub(original, '').sub(/^\//, '')
@@ -147,8 +145,6 @@ module HP
           end
           copiedfile = true
         }
-        @path = savepath
-        @ftype = saveftype
 
         if (copiedfile == false)
           @error_string = "No files found matching source '#{from.path}'"

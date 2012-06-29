@@ -21,7 +21,7 @@ describe "Move command" do
     context "when source file can't be found" do
       it "should display error message" do
         response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['move', ':move_source_container/missing_file', ':move_source_container/new/my_file']) }
-        response.should eql("The specified object does not exist.\n")
+        response.should eql("No files found matching source 'missing_file'\n")
         exit_status.should be_exit(:not_found)
       end
     end
@@ -88,7 +88,7 @@ describe "Move command" do
     context "when source file can't be found" do
       it "should display error message" do
         response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['move', ':move_source_container/missing', ':move_target_container']) }
-        response.should eql("The specified object does not exist.\n")
+        response.should eql("No files found matching source 'missing'\n")
         exit_status.should be_exit(:not_found)
       end
     end
@@ -165,7 +165,7 @@ describe "Move command" do
     context "when source file can't be found" do
       it "should display error message" do
         response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['move', ':move_source_container/missing_file', '/tmp/my_file']) }
-        response.should eql("The specified object does not exist.\n")
+        response.should eql("No files found matching source 'missing_file'\n")
         exit_status.should be_exit(:not_found)
       end
     end
