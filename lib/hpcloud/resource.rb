@@ -128,6 +128,22 @@ module HP
       end
 
       def copy(from)
+          if copy_all(from)
+            return true
+          end
+          if @error_string.nil?
+            if from.error_string.nil?
+              @error_string = 'Unknown error copying'
+              @error_code = :unknown
+            else
+              @error_string = from.error_string
+              @error_code = from.error_code
+            end
+          end
+          return false
+      end
+
+      def copy_all(from)
         if ! from.valid_source() then return false end
         if ! valid_destination(from.isDirectory()) then return false end
 

@@ -6,11 +6,13 @@ describe "Copy command recrusive" do
     @hp_svc = storage_connection
     purge_container('recurse_local')
     purge_container('recurse_local_nested')
+    purge_container('recurse_empty')
     purge_container('recurse_remote')
     purge_container('clone_container')
     purge_container('clone_partial')
     @hp_svc.put_container('recurse_local')
     @hp_svc.put_container('recurse_local_nested')
+    @hp_svc.put_container('recurse_empty')
     @hp_svc.put_container('recurse_remote')
     @hp_svc.put_container('clone_container')
     @hp_svc.put_container('clone_partial')
@@ -63,6 +65,42 @@ describe "Copy command recrusive" do
       @container.body[4]['name'].should eq("nested/Matryoshka/Putin/Yeltsin/Gorbachev/Chernenko.txt")
       @container.body[5]['name'].should eq("nested/Matryoshka/Putin/Yeltsin/Gorbachev/Mikhail.txt")
       @container.body.length.should eq(6)
+    end
+    
+  end
+
+  context "copying empty local directory to remote container" do
+    
+    before(:all) do
+      @response, @exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/empty', ':recurse_empty']) }
+    end
+    
+    it "should report success" do
+      @response.should eql("No files found matching source 'spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/empty'\n")
+      @exit_status.should be_exit(:not_found)
+    end
+    
+    it "container should have three files" do
+      @container = @hp_svc.get_container('recurse_empty')
+      @container.body.length.should eq(0)
+    end
+    
+  end
+
+  context "copying directory not found to remote container" do
+    
+    before(:all) do
+      @response, @exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Brezhnev/', ':recurse_empty']) }
+    end
+    
+    it "should report success" do
+      @response.should eql("File not found at 'spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Brezhnev/'.\n")
+      @exit_status.should be_exit(:not_found)
+    end
+    
+    it "container should have three files" do
+      @container = @hp_svc.get_container('recurse_empty')
+      @container.body.length.should eq(0)
     end
     
   end
@@ -190,6 +228,7 @@ describe "Copy command recrusive" do
     FileUtils.rm_rf('spec/tmp/recurse')
     purge_container('recurse_local')
     purge_container('recurse_local_nested')
+    purge_container('recurse_empty')
     purge_container('recurse_remote')
     purge_container('container_clone')
     purge_container('partial_clone')

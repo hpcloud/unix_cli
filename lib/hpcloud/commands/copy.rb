@@ -25,14 +25,15 @@ Note: Copying multiple files at once or recursively copying folder contents will
       method_option :availability_zone,
                     :type => :string, :aliases => '-z',
                     :desc => 'Set the availability zone.'
-      def copy(from, to)
+      def copy(from_name, to_name)
         begin
-
-          @storage_connection = connection(:storage, options)
-
-          from_file = Resource.create(from)
-          to_file   = Resource.create(to)
-          put(from_file, to_file)
+          from = Resource.create(from_name)
+          to   = Resource.create(to_name)
+          if to.copy(from)
+            display "Copied #{from.fname} => #{to.fname}"
+          else
+            error to.error_string, to.error_code
+          end
         rescue Fog::HP::Errors::ServiceError, Fog::Storage::HP::Error => error
           display_error_message(error, :general_error)
         rescue Excon::Errors::Unauthorized => error
@@ -41,22 +42,6 @@ Note: Copying multiple files at once or recursively copying folder contents will
       end
     
       no_tasks do
-      
-        def put(from, to)
-          if to.copy(from)
-            display "Copied #{from.fname} => #{to.fname}"
-          else
-            if to.error_string.nil?
-              if from.error_string.nil?
-                error 'Unknown error copying', :unknown
-              else
-                error from.error_string, from.error_code
-              end
-            else
-              error to.error_string, to.error_code
-            end
-          end
-        end
       
       end
     
