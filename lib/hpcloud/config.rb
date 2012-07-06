@@ -14,6 +14,7 @@ module HP
                            :compute_availability_zone => 'az-1.region-a.geo-1',
                            :cdn_availability_zone     => 'region-a.geo-1'
                          }
+      @@credentials = {}
 
       def self.config_directory
         home_directory + "/.hpcloud/"
@@ -43,11 +44,35 @@ module HP
         FileUtils.rm_rf(HP::Cloud::Config.config_directory)
       end
 
-      def self.current_credentials
-        if File.exists?(accounts_directory + 'default')
+      def self.set_credentials(account, id, key, uri, tenant)
+        @@credentials[account] = { :account_id => id,
+                                   :secret_key => key,
+                                   :auth_uri => uri,
+                                   :tenant_id     => tenant
+                                 }
+      end
+
+      def self.current_credentials(account = 'default')
+        return @@credentials[account] if ! @@credentials[account].nil?
+        @@credentials[account] = read_credentials(account)
+        return @@credentials[account]
+      end
+
+      def self.read_credentials(account = 'default')
+        if File.exists?(accounts_directory + account)
           return YAML::load(File.open(accounts_directory + 'default'))[:credentials]
         end
-        nil
+        return nil
+      end
+
+      def self.connection_options(account = 'default')
+        return {
+          :connect_timeout => Config.settings[:connect_timeout] || Config::CONNECT_TIMEOUT,
+          :read_timeout    => Config.settings[:read_timeout]    || Config::READ_TIMEOUT,
+          :write_timeout   => Config.settings[:write_timeout]   || Config::WRITE_TIMEOUT,
+          :ssl_verify_peer => Config.settings[:ssl_verify_peer]      || false,
+          :ssl_ca_path     => Config.settings[:ssl_ca_path]     || nil,
+          :ssl_ca_file     => Config.settings[:ssl_ca_file]     || nil }
       end
 
       def self.settings

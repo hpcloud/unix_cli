@@ -33,7 +33,7 @@ describe "Copy command" do
       it "should show error message" do
         # response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_container']) }
         response, exit_status = run_command('copy spec/fixtures/files/cantread.txt :my_container').stderr_and_exit_status
-        response.should eql("The selected file cannot be read.\n")
+        response.should eql("Permission denied - spec/fixtures/files/cantread.txt\n")
         exit_status.should be_exit(:permission_denied)
       end
       
@@ -76,7 +76,7 @@ describe "Copy command" do
       end
       
       it "should report success" do
-        @response.should eql("Copied spec/fixtures/files/foo.txt => :my_container/foo.txt\n")
+        @response.should eql("Copied spec/fixtures/files/foo.txt => :my_container\n")
         @exit_status.should be_exit(:success)
       end
       
@@ -97,7 +97,7 @@ describe "Copy command" do
       end
 
       it "should report success" do
-        @response.should eql("Copied spec/fixtures/files/with space.txt => :my_container/with space.txt\n")
+        @response.should eql("Copied spec/fixtures/files/with space.txt => :my_container\n")
         @exit_status.should be_exit(:success)
       end
 
@@ -121,7 +121,7 @@ describe "Copy command" do
     context "when object does not exist" do
       it "should exit with object not found" do
         response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo2.txt', '/tmp/foo.txt']) }
-        response.should eql("The specified object does not exist.\n")
+        response.should eql("No files found matching source 'foo2.txt'\n")
         exit_status.should be_exit(:not_found)
       end 
     end
@@ -165,7 +165,7 @@ describe "Copy command" do
       end
 
       it "should describe copy" do
-        @response.should eql("Copied :copy_remote_to_local/foo.txt => spec/tmp/foo.txt\n")
+        @response.should eql("Copied :copy_remote_to_local/foo.txt => spec/tmp/\n")
         @exit_status.should be_exit(:success)
       end
 
@@ -174,7 +174,10 @@ describe "Copy command" do
       end
 
       after(:all) do
-        File.unlink('spec/tmp/foo.txt')
+        begin
+          File.unlink('spec/tmp/foo.txt')
+        rescue
+        end
       end
 
     end
@@ -189,7 +192,8 @@ describe "Copy command" do
         end
 
         it "should show failure message" do
-          @response.should eql("You don't have permission to write the target file.\n")
+          dir=Dir.pwd
+          @response.should eql("Permission denied - #{dir}/spec/tmp/unwriteable/foo.txt\n")
         end
 
         it "should have correct exit status" do
@@ -205,7 +209,8 @@ describe "Copy command" do
         end
 
         it "should show failure message" do
-          @response.should eql("No directory exists at 'spec/tmp/nonexistent'.\n")
+          dir=Dir.pwd
+          @response.should eql("No directory exists at '#{dir}/spec/tmp/nonexistent'.\n")
         end
 
         it "should have correct exit status" do
@@ -242,7 +247,7 @@ describe "Copy command" do
     context "when object does not exist" do
       it "should exit with object not found" do
         response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/missing.txt', ':copy_inside_container/tmp/missing.txt']) }
-        response.should eql("The specified object does not exist.\n")
+        response.should eql("No files found matching source 'missing.txt'\n")
         exit_status.should be_exit(:not_found)
       end
     end
@@ -278,7 +283,7 @@ describe "Copy command" do
       context "when container only" do
         it "should show success message" do
           response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/nested/file.txt', ':copy_inside_container']) }
-          response.should eql("Copied :copy_inside_container/nested/file.txt => :copy_inside_container/file.txt\n")
+          response.should eql("Copied :copy_inside_container/nested/file.txt => :copy_inside_container\n")
           exit_status.should be_exit(:success)
         end
       end
@@ -320,14 +325,14 @@ describe "Copy command" do
     context "when object does not exist" do
       it "should exit with object not found" do
         response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_between_one/missing.txt', ':copy_between_two/tmp/missing.txt']) }
-        response.should eql("The specified object does not exist.\n")
+        response.should eql("No files found matching source 'missing.txt'\n")
         exit_status.should be_exit(:not_found)
       end
     end
     
     context "when new container does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_between_one/missing.txt', ':missing_container/tmp/missing.txt']) }
+        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_between_one/foo.txt', ':missing_container/tmp/missing.txt']) }
         response.should eql("You don't have a container 'missing_container'.\n")
         exit_status.should be_exit(:not_found)
       end
@@ -340,7 +345,7 @@ describe "Copy command" do
       context "when container only" do
         it "should show success message" do
           response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two']) }
-          response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two/file.txt\n")
+          response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two\n")
           exit_status.should be_exit(:success)
         end
       end
@@ -393,7 +398,7 @@ describe "Copy command" do
     context "copy with valid avl" do
       it "should report success" do
         response, exit_status = run_command('copy spec/fixtures/files/foo.txt :my_avl_container -z region-a.geo-1').stdout_and_exit_status
-        response.should eql("Copied spec/fixtures/files/foo.txt => :my_avl_container/foo.txt\n")
+        response.should eql("Copied spec/fixtures/files/foo.txt => :my_avl_container\n")
         exit_status.should be_exit(:success)
       end
     end

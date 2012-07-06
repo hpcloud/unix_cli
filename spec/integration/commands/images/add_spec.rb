@@ -60,7 +60,8 @@ describe "images:add command" do
 
       end
       after(:all) do
-        @hp_svc.images.get(@image_id2).destroy
+        img = @hp_svc.images.get(@image_id2)
+        img.destroy unless img.nil?
         @server2.destroy
       end
     end

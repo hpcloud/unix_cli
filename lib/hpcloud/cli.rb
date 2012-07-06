@@ -20,73 +20,16 @@ module HP
       private
       def connection(service = :storage, options = {})
         begin
+        Connection.instance.set_options(options)
         if service == :storage
-          storage_connection(options)
+          return Connection.instance.storage()
         elsif service == :compute
-          compute_connection(options)
+          return Connection.instance.compute()
         elsif service == :cdn
-          cdn_connection(options)
+          return Connection.instance.cdn()
         end
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the '#{service.to_s.capitalize!}' service is activated for the appropriate availability zone.\n Exception: #{e}"
-        end
-      end
-
-      def storage_connection(options = {})
-        return @storage_connection if @storage_connection
-        storage_credentials = Config.current_credentials
-        if storage_credentials
-          @storage_connection ||= connection_with(:storage, storage_credentials, options)
-        else
-          raise Fog::Storage::HP::Error, "Error in connecting to the Storage service. Please check your HP Cloud Services account to make sure the account credentials are correct."
-        end
-      end
-
-      def compute_connection(options = {})
-        return @compute_connection if @compute_connection
-        compute_credentials = Config.current_credentials
-        if compute_credentials
-          @compute_connection ||= connection_with(:compute, compute_credentials, options)
-        else
-          raise Fog::Compute::HP::Error, "Error in connecting to the Compute service. Please check your HP Cloud Services account to make sure the account credentials are correct."
-        end
-      end
-
-      def cdn_connection(options = {})
-        return @cdn_connection if @cdn_connection
-        cdn_credentials = Config.current_credentials
-        if cdn_credentials
-          @cdn_connection ||= connection_with(:cdn, cdn_credentials, options)
-        else
-          raise Fog::CDN::HP::Error, "Error in connecting to the CDN service. Please check your HP Cloud Services account to make sure the account credentials are correct."
-        end
-      end
-
-      def connection_with(service, service_credentials, options={})
-        if service == :storage
-          Fog::Storage.new( :provider        => 'HP',
-                            :connection_options => default_connection_options,
-                            :hp_account_id   => service_credentials[:account_id],
-                            :hp_secret_key   => service_credentials[:secret_key],
-                            :hp_auth_uri     => service_credentials[:auth_uri],
-                            :hp_tenant_id    => service_credentials[:tenant_id],
-                            :hp_avl_zone     => options[:availability_zone] || Config.settings[:storage_availability_zone])
-        elsif service == :compute
-          Fog::Compute.new( :provider        => 'HP',
-                            :connection_options => default_connection_options,
-                            :hp_account_id   => service_credentials[:account_id],
-                            :hp_secret_key   => service_credentials[:secret_key],
-                            :hp_auth_uri     => service_credentials[:auth_uri],
-                            :hp_tenant_id    => service_credentials[:tenant_id],
-                            :hp_avl_zone     => options[:availability_zone] || Config.settings[:compute_availability_zone])
-        elsif service == :cdn
-          Fog::CDN.new( :provider            => 'HP',
-                            :connection_options => default_connection_options,
-                            :hp_account_id   => service_credentials[:account_id],
-                            :hp_secret_key   => service_credentials[:secret_key],
-                            :hp_auth_uri     => service_credentials[:auth_uri],
-                            :hp_tenant_id    => service_credentials[:tenant_id],
-                            :hp_avl_zone     => options[:availability_zone] || Config.settings[:cdn_availability_zone])
         end
       end
 
@@ -160,7 +103,7 @@ module HP
             :connect_timeout => Config.settings[:connect_timeout] || options[:connect_timeout] || Config::CONNECT_TIMEOUT,
             :read_timeout    => Config.settings[:read_timeout]    || options[:read_timeout] || Config::READ_TIMEOUT,
             :write_timeout   => Config.settings[:write_timeout]   || options[:write_timeout] || Config::WRITE_TIMEOUT,
-            :ssl_verify_peer => Config.settings[:ssl_verify_peer] || options[:ssl_verify_peer] || true,
+            :ssl_verify_peer => Config.settings[:ssl_verify_peer] || options[:ssl_verify_peer] || false,
             :ssl_ca_path     => Config.settings[:ssl_ca_path]     || options[:ssl_ca_path],
             :ssl_ca_file     => Config.settings[:ssl_ca_file]     || options[:ssl_ca_file]
         }

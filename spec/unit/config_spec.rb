@@ -139,7 +139,7 @@ describe "Credential detection" do
     #it "should detect default account file"
 
     it "should provide credentials for account from file" do
-      credentials = HP::Cloud::Config.current_credentials
+      credentials = HP::Cloud::Config.read_credentials
       credentials[:account_id].should eql('foo')
       credentials[:secret_key].should eql('bar')
       credentials[:auth_uri].should eql('http://192.168.1.1:8888/v2.0')
