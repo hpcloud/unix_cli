@@ -1,5 +1,10 @@
+require 'hpcloud/images'
+require 'hpcloud/image_helper'
 require 'hpcloud/commands/images/add'
+require 'hpcloud/commands/images/metadata'
 require 'hpcloud/commands/images/remove'
+require 'hpcloud/commands/images/metadata/add'
+require 'hpcloud/commands/images/metadata/remove'
 
 module HP
   module Cloud
@@ -20,13 +25,19 @@ Aliases: images:list
       method_option :availability_zone,
                     :type => :string, :aliases => '-z',
                     :desc => 'Set the availability zone.'
-      def images
+      def images(*arguments)
         begin
-          images = connection(:compute, options).images
+          Connection.instance.set_options(options)
+          images = Images.new()
           if images.empty?
-            display "You currently have no images to use."
+            display "You currently have no images, use `#{selfname} images:add` to create one."
           else
-            images.table([:id, :name, :created_at, :status])
+            hsh = images.get_hash(arguments)
+            if hsh.empty?
+              display "There are no images that match the provided arguments"
+            else
+              tablelize(hsh, ImageHelper.get_keys())
+            end
           end
         rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
           display_error_message(error, :general_error)

@@ -60,12 +60,20 @@ describe "Copy command recrusive" do
     
     it "container should have six files" do
       @container = @hp_svc.get_container('recurse_local_nested')
-      @container.body[0]['name'].should eq("nested/Matryoshka/Putin/Medvedev.txt")
-      @container.body[1]['name'].should eq("nested/Matryoshka/Putin/Vladimir.txt")
-      @container.body[2]['name'].should eq("nested/Matryoshka/Putin/Yeltsin/Boris.txt")
-      @container.body[3]['name'].should eq("nested/Matryoshka/Putin/Yeltsin/Gorbachev/Andropov.txt")
-      @container.body[4]['name'].should eq("nested/Matryoshka/Putin/Yeltsin/Gorbachev/Chernenko.txt")
-      @container.body[5]['name'].should eq("nested/Matryoshka/Putin/Yeltsin/Gorbachev/Mikhail.txt")
+      ray = []
+      ray << @container.body[0]['name']
+      ray << @container.body[1]['name']
+      ray << @container.body[2]['name']
+      ray << @container.body[3]['name']
+      ray << @container.body[4]['name']
+      ray << @container.body[5]['name']
+      ray.sort!
+      ray[0].should eq("nested/Matryoshka/Putin/Medvedev.txt")
+      ray[1].should eq("nested/Matryoshka/Putin/Vladimir.txt")
+      ray[2].should eq("nested/Matryoshka/Putin/Yeltsin/Boris.txt")
+      ray[3].should eq("nested/Matryoshka/Putin/Yeltsin/Gorbachev/Andropov.txt")
+      ray[4].should eq("nested/Matryoshka/Putin/Yeltsin/Gorbachev/Chernenko.txt")
+      ray[5].should eq("nested/Matryoshka/Putin/Yeltsin/Gorbachev/Mikhail.txt")
       @container.body.length.should eq(6)
     end
     

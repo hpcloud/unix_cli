@@ -27,7 +27,7 @@ Aliases: containers:rm, containers:delete, containers:del
       define_method "containers:remove" do |name|
         name = Container.container_name_for_service(name)
         begin
-          container = connection(:storage, options).directories.head(name)
+          container = connection(:storage, options).directories.get(name)
           if container
             if options.force?
               container.files.each { |file| file.destroy }

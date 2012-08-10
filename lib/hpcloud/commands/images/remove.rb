@@ -17,18 +17,20 @@ Aliases: images:rm, images:delete, images:del
       method_option :availability_zone,
                     :type => :string, :aliases => '-z',
                     :desc => 'Set the availability zone.'
-      define_method "images:remove" do |name|
+      define_method "images:remove" do |*names|
         begin
           # setup connection for compute service
           compute_connection = connection(:compute, options)
-          image = compute_connection.images.select {|i| i.name == name}.first
-          if (image && image.name == name)
-              # now delete the image
-              image.destroy
-              display "Removed image '#{name}'."
-          else
-            error "You don't have an image '#{name}'.", :not_found
-          end
+          names.each { |name|
+            image = compute_connection.images.select {|i| i.name == name}.first
+            if (image && image.name == name)
+                # now delete the image
+                image.destroy
+                display "Removed image '#{name}'."
+            else
+              error "You don't have an image '#{name}'.", :not_found
+            end
+          }
         rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
           display_error_message(error, :general_error)
         rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error

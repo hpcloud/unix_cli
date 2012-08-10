@@ -1,13 +1,16 @@
+require 'fog/hp'
+require 'fog/block_storage'
 
 module HP
   module Cloud
     class Connection
     
-      VALID_SERVICE_NAMES = ['storage','compute','cdn']
+      VALID_SERVICE_NAMES = ['storage','compute','cdn', 'block']
 
       def initialize
         @storage_connection = {}
         @compute_connection = {}
+        @block_connection = {}
         @cdn_connection = {}
         @options = {}
       end
@@ -21,6 +24,7 @@ module HP
       def reset_connections
         @storage_connection = {}
         @compute_connection = {}
+        @block_connection = {}
         @cdn_connection = {}
       end
 
@@ -63,6 +67,20 @@ module HP
         end
       end
 
+      def block(account='default')
+        return @block_connection[account] unless @block_connection[account].nil?
+        begin
+          block_credentials = Config.current_credentials(account)
+          if block_credentials
+            @block_connection[account] ||= connection_with(:block, block_credentials)
+          else
+            raise Fog::BlockStorage::HP::Error, "Error in connecting to the BlockStorage service. Please check your HP Cloud Services account to make sure the account credentials are correct."
+          end
+        rescue Exception => e
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n Exception: #{e}"
+        end
+      end
+
       def cdn(account='default')
         return @cdn_connection[account] unless @cdn_connection[account].nil?
         begin
@@ -102,6 +120,14 @@ module HP
                             :hp_auth_uri     => service_credentials[:auth_uri],
                             :hp_tenant_id    => service_credentials[:tenant_id],
                             :hp_avl_zone     => @options[:availability_zone] || Config.settings[:cdn_availability_zone])
+        elsif service == :block
+          Fog::BlockStorage.new( :provider            => 'HP',
+                            :connection_options => Config.connection_options(),
+                            :hp_account_id   => service_credentials[:account_id],
+                            :hp_secret_key   => service_credentials[:secret_key],
+                            :hp_auth_uri     => service_credentials[:auth_uri],
+                            :hp_tenant_id    => service_credentials[:tenant_id],
+                            :hp_avl_zone     => @options[:availability_zone] || Config.settings[:block_availability_zone])
         end
       end
 

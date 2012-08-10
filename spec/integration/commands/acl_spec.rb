@@ -58,6 +58,7 @@ describe "Acl command (viewing acls)" do
           response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
           exit_status.should be_exit(:general_error)
         end
+        after(:all) { Connection.instance.set_options({}) }
       end
       context "acl for object with invalid avl" do
         it "should report error" do
@@ -65,6 +66,7 @@ describe "Acl command (viewing acls)" do
           response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
           exit_status.should be_exit(:general_error)
         end
+        after(:all) { Connection.instance.set_options({}) }
       end
     end
   end
@@ -112,6 +114,7 @@ describe "Acl command (viewing acls)" do
           response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
           exit_status.should be_exit(:general_error)
         end
+        after(:all) { Connection.instance.set_options({}) }
       end
       context "acl for object with invalid avl" do
         it "should report error" do
@@ -119,6 +122,7 @@ describe "Acl command (viewing acls)" do
           response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
           exit_status.should be_exit(:general_error)
         end
+        after(:all) { Connection.instance.set_options({}) }
       end
     end
   end

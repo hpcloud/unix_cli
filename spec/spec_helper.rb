@@ -25,6 +25,9 @@ require 'helpers/servers'
 require 'helpers/keypairs'
 require 'helpers/addresses'
 require 'helpers/securitygroups'
+require 'helpers/server_test_helper'
+require 'helpers/volume_test_helper'
+require 'helpers/volume_attachment_helper'
 
 RSpec.configure do |config|
   
@@ -51,10 +54,8 @@ RSpec.configure do |config|
   OS_COMPUTE_ACCOUNT_AVL_ZONE = ENV['OS_COMPUTE_ACCOUNT_AVL_ZONE'] || "<your avl zone>"
   OS_COMPUTE_BASE_IMAGE_ID    = ENV['OS_COMPUTE_BASE_IMAGE_ID'] || "your image id"
   OS_COMPUTE_BASE_FLAVOR_ID   = ENV['OS_COMPUTE_BASE_FLAVOR_ID'] || "your flavor id"
-  HP::Cloud::Config.set_credentials('secondary', OS_STORAGE_SEC_ACCOUNT_USERNAME, OS_STORAGE_SEC_ACCOUNT_PASSWORD, OS_STORAGE_AUTH_URL, OS_STORAGE_SEC_ACCOUNT_TENANT_ID)
-  HP::Cloud::Config.set_credentials('primary', OS_STORAGE_ACCOUNT_USERNAME, OS_STORAGE_ACCOUNT_PASSWORD, OS_STORAGE_AUTH_URL, OS_STORAGE_ACCOUNT_TENANT_ID)
-  HP::Cloud::Config.set_credentials('compute', OS_COMPUTE_ACCOUNT_USERNAME, OS_COMPUTE_ACCOUNT_PASSWORD, OS_COMPUTE_AUTH_URL, OS_COMPUTE_ACCOUNT_TENANT_ID)
-  HP::Cloud::Config.set_credentials('default', OS_STORAGE_ACCOUNT_USERNAME, OS_STORAGE_ACCOUNT_PASSWORD, OS_STORAGE_AUTH_URL, OS_STORAGE_ACCOUNT_TENANT_ID)
+
+  config.before(:each) { HP::Cloud::Connection.instance.set_options({}) }
 
   if MOCKING_ENABLED
     puts "==========================================================="
@@ -73,3 +74,4 @@ RSpec.configure do |config|
 
 end
 
+include HP::Cloud

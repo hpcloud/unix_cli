@@ -38,10 +38,10 @@ describe "servers:add command" do
       @hp_svc.delete_server(@new_server_id)
     end
   end
-  context "when creating server with name, image, flavor, keyname and security group" do
+  context "when creating server with name, image, flavor, keyname and security group and metadata" do
     before(:all) do
       @server_name = resource_name("add2")
-      @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -k #{@keypair_name} -s #{@sg_name}").stdout_and_exit_status
+      @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -k #{@keypair_name} -s #{@sg_name} -m E=mc2,PV=nRT").stdout_and_exit_status
       @new_server_id = @response.scan(/'([^']+)/)[2][0]
     end
 
@@ -58,6 +58,12 @@ describe "servers:add command" do
     it "should list name in servers" do
       servers = @hp_svc.servers.map {|s| s.name}
       servers.should include(@server_name)
+    end
+    it "should have the metadata" do
+      servers = HP::Cloud::Servers.new.get([@new_server_id])
+      servers.length.should eq(1)
+      servers[0].meta.hsh['E'].should eq('mc2')
+      servers[0].meta.hsh['PV'].should eq('nRT')
     end
 
     after(:all) do
@@ -131,7 +137,7 @@ describe "servers:add command" do
     its_exit_status_should_be(:general_error)
 
     after(:all) do
-      @hp_svc.delete_server(@server.id)
+      @hp_svc.delete_server(@server.id) unless @server.nil?
     end
   end
   context "when creating server with avl settings passed in" do
@@ -162,10 +168,11 @@ describe "servers:add command" do
     end
     context "servers:add with invalid avl" do
       it "should report error" do
-        response, exit_status = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -z blah").stderr_and_exit_status
+        response, exit_status = run_command("servers:add other_name #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -z blah").stderr_and_exit_status
         response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
         exit_status.should be_exit(:general_error)
       end
+      after(:all) { HP::Cloud::Connection.instance.set_options({}) }
     end
   end
 
