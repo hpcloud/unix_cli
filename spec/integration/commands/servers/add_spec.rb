@@ -67,7 +67,7 @@ describe "servers:add command" do
     end
 
     after(:all) do
-      @hp_svc.delete_server(@new_server_id)
+      compute_connection.delete_server(@new_server_id)
     end
   end
   context "when creating server with name, image, flavor and only keyname" do
@@ -93,7 +93,7 @@ describe "servers:add command" do
     end
 
     after(:all) do
-      @hp_svc.delete_server(@new_server_id)
+      compute_connection.delete_server(@new_server_id)
     end
   end
   context "when creating server with name, image, flavor and only security group" do

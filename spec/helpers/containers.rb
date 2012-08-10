@@ -20,7 +20,7 @@ RSpec.configure do |config|
     verbose = options[:verbose] || false
     begin
       puts "Deleting '#{container_name}'" if verbose
-      connection.delete_container(container_name)
+      connection.delete_container(container_name) unless connection.nil?
     rescue Fog::Storage::HP::NotFound # container is listed, but does not currently exist
     rescue Excon::Errors::Conflict # container has files in it
       begin
