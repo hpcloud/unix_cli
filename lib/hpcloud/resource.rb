@@ -99,7 +99,19 @@ module HP
         return true
       end
 
-      def valid_destination(source_directory)
+      def isMulti()
+        return true if isDirectory()
+        found = false 
+        foreach { |x|
+          if (found == true)
+            return true
+          end
+          found = true
+        }
+        return false
+      end
+
+      def valid_destination(source)
         return true
       end
 
@@ -145,7 +157,7 @@ module HP
 
       def copy_all(from)
         if ! from.valid_source() then return false end
-        if ! valid_destination(from.isDirectory()) then return false end
+        if ! valid_destination(from) then return false end
 
         copiedfile = false
         original = File.dirname(from.path)
@@ -198,12 +210,12 @@ module HP
         return true
       end
 
-      def valid_destination(source_directory)
+      def valid_destination(source)
         if isDirectory()
           dir_path = File.expand_path(@path)
         else
-          if source_directory == true
-            @error_string = "Invalid target for directory copy '#{@fname}'."
+          if source.isMulti() == true
+            @error_string = "Invalid target for directory/multi-file copy '#{@fname}'."
             @error_code = :incorrect_usage
             return false
           end
@@ -357,12 +369,12 @@ module HP
         return valid_container()
       end
 
-      def valid_destination(source_directory)
+      def valid_destination(source)
         if ! valid_container()
           return false
         end
-        if ((source_directory == true) && (isDirectory() == false))
-          @error_string = "Invalid target for directory copy '#{@fname}'."
+        if ((source.isMulti() == true) && (isDirectory() == false))
+          @error_string = "Invalid target for directory/multi-file copy '#{@fname}'."
           @error_code = :incorrect_usage
           return false
         end

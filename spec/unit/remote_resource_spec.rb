@@ -46,8 +46,10 @@ describe "Valid destination" do
     it "and source is file" do
       @directories.stub(:get).and_return(@container)
       to = Resource.create(@storage, ":container/whatever.txt")
+      src = double("source")
+      src.stub(:isMulti).and_return(false)
 
-      to.valid_destination(false).should be_true
+      to.valid_destination(src).should be_true
 
       to.error_string.should be_nil
       to.error_code.should be_nil
@@ -58,8 +60,10 @@ describe "Valid destination" do
     it "and source is file" do
       @directories.stub(:get).and_return(@container)
       to = Resource.create(@storage, ":container/whatever/")
+      src = double("source")
+      src.stub(:isMulti).and_return(true)
 
-      to.valid_destination(true).should be_true
+      to.valid_destination(src).should be_true
 
       to.error_string.should be_nil
       to.error_code.should be_nil
@@ -70,8 +74,10 @@ describe "Valid destination" do
     it "and source is file" do
       @directories.stub(:get).and_return(@container)
       to = Resource.create(@storage, ":container")
+      src = double("source")
+      src.stub(:isMulti).and_return(true)
 
-      to.valid_destination(true).should be_true
+      to.valid_destination(src).should be_true
 
       to.error_string.should be_nil
       to.error_code.should be_nil
@@ -82,10 +88,12 @@ describe "Valid destination" do
     it "and source is directory" do
       @directories.stub(:get).and_return(@container)
       to = Resource.create(@storage, ":container/whatever.txt")
+      src = double("source")
+      src.stub(:isMulti).and_return(true)
 
-      to.valid_destination(true).should be_false
+      to.valid_destination(src).should be_false
 
-      to.error_string.should eq("Invalid target for directory copy ':container/whatever.txt'.")
+      to.error_string.should eq("Invalid target for directory/multi-file copy ':container/whatever.txt'.")
       to.error_code.should eq(:incorrect_usage)
     end
   end

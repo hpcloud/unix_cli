@@ -33,6 +33,29 @@ RSpec.configure do |config|
     end
     return result, exit_status
   end
+
+  # Capture everything
+  def cptr(command)
+    rsp = TestResponse.new
+    rsp.exit_status = 0
+    begin
+      stdout = 'stdout'
+      stderr = 'stderr'
+      eval "$#{stdout} = StringIO.new"
+      eval "$#{stderr} = StringIO.new"
+      begin
+        HP::Cloud::CLI.start(command.split(' '))
+      rescue SystemExit => system_exit # catch any exit calls
+        rsp.exit_status = system_exit.status
+      end
+      rsp.stdout = eval("$#{stdout}").string
+      rsp.stderr = eval("$#{stderr}").string
+    ensure
+      eval("$#{stdout} = #{stdout.upcase}")
+      eval("$#{stderr} = #{stderr.upcase}")
+    end
+    return rsp
+  end
   
   RSpec::Matchers.define :be_exit do |expected|
     match do |actual|

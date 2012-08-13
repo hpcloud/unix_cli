@@ -37,8 +37,10 @@ describe "Valid destination" do
   context "when local file" do
     it "source is object and dest is real file true" do
       to = Resource.create(@co, __FILE__)
+      src = double("source")
+      src.stub(:isMulti).and_return(false)
 
-      to.valid_destination(false).should be_true
+      to.valid_destination(src).should be_true
 
       to.error_string.should be_nil
       to.error_code.should be_nil
@@ -48,8 +50,10 @@ describe "Valid destination" do
   context "when local file" do
     it "source is object and dest is nonexistent file" do
       to = Resource.create(@co, "nonexistent.txt")
+      src = double("source")
+      src.stub(:isMulti).and_return(false)
 
-      to.valid_destination(false).should be_true
+      to.valid_destination(src).should be_true
 
       to.error_string.should be_nil
       to.error_code.should be_nil
@@ -59,8 +63,10 @@ describe "Valid destination" do
   context "when local file" do
     it "source is object and dest is real directory" do
       to = Resource.create(@co, File.dirname(File.expand_path(__FILE__)))
+      src = double("source")
+      src.stub(:isMulti).and_return(false)
 
-      to.valid_destination(false).should be_true
+      to.valid_destination(src).should be_true
 
       to.error_string.should be_nil
       to.error_code.should be_nil
@@ -71,8 +77,10 @@ describe "Valid destination" do
     it "source is object and dest is bogus directory" do
       dir = File.dirname(File.expand_path(__FILE__)) + '/bogus/'
       to = Resource.create(@co, dir)
+      src = double("source")
+      src.stub(:isMulti).and_return(false)
 
-      to.valid_destination(false).should be_false
+      to.valid_destination(src).should be_false
 
       dir = dir.sub(/\/$/, '')
       to.error_string.should eq("No directory exists at '#{dir}'.")
@@ -83,10 +91,12 @@ describe "Valid destination" do
   context "when local file" do
     it "source is directory and dest is real file true" do
       to = Resource.create(@co, __FILE__)
+      src = double("source")
+      src.stub(:isMulti).and_return(true)
 
-      to.valid_destination(true).should be_false
+      to.valid_destination(src).should be_false
 
-      to.error_string.should eq("Invalid target for directory copy '#{__FILE__}'.")
+      to.error_string.should eq("Invalid target for directory/multi-file copy '#{__FILE__}'.")
       to.error_code.should eq(:incorrect_usage)
     end
   end
@@ -94,8 +104,10 @@ describe "Valid destination" do
   context "when local file" do
     it "source is directory and dest is real directory" do
       to = Resource.create(@co, File.dirname(File.expand_path(__FILE__)))
+      src = double("source")
+      src.stub(:isMulti).and_return(true)
 
-      to.valid_destination(true).should be_true
+      to.valid_destination(src).should be_true
 
       to.error_string.should be_nil
       to.error_code.should be_nil
@@ -106,8 +118,10 @@ describe "Valid destination" do
     it "source is directory and dest is bogus directory" do
       dir = File.dirname(File.expand_path(__FILE__)) + '/bogus/'
       to = Resource.create(@co, dir)
+      src = double("source")
+      src.stub(:isMulti).and_return(true)
 
-      to.valid_destination(true).should be_false
+      to.valid_destination(src).should be_false
 
       dir = dir.sub(/\/$/, '')
       to.error_string.should eq("No directory exists at '#{dir}'.")
