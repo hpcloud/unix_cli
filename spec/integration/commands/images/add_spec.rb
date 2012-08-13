@@ -6,7 +6,7 @@ describe "images:add command" do
   end
 
   before(:all) do
-    @hp_svc = compute_connection
+    @hp_svc = Connection.instance.compute
     @flavor_id = OS_COMPUTE_BASE_FLAVOR_ID
     @image_id = OS_COMPUTE_BASE_IMAGE_ID
   end
@@ -18,7 +18,7 @@ describe "images:add command" do
       @server = @hp_svc.servers.create(:flavor_id => @flavor_id, :image_id => @image_id, :name => @server_name )
       @server.wait_for { ready? }
 
-      @response, @exit = run_command("images:add #{@image_name} #{@server_name}").stdout_and_exit_status
+      @response, @exit = run_command("images:add #{@image_name} #{@server_name} -m e=mc2,pv=nRT").stdout_and_exit_status
       @new_image_id = @response.scan(/'([^']+)/)[2][0]
     end
 
@@ -35,10 +35,16 @@ describe "images:add command" do
       images = @hp_svc.images.map {|i| i.name}
       images.should include(@image_name)
     end
+    it "should have the metadata" do
+      images = Images.new.get([@new_image_id])
+      images.length.should eq(1)
+      images[0].meta.hsh['e'].should eq('mc2')
+      images[0].meta.hsh['pv'].should eq('nRT')
+    end
 
     after(:all) do
-      @hp_svc.images.get(@new_image_id).destroy
-      @server.destroy
+      #Connection.instance.compute.images.get(@new_image_id).destroy
+      @server.destroy unless @server.nil?
     end
   end
 
@@ -71,6 +77,7 @@ describe "images:add command" do
         response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
         exit_status.should be_exit(:general_error)
       end
+      after(:all) { Connection.instance.set_options({}) }
     end
   end
 

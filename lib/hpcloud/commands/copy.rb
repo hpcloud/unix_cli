@@ -26,16 +26,21 @@ Aliases: cp
       method_option :availability_zone,
                     :type => :string, :aliases => '-z',
                     :desc => 'Set the availability zone.'
-      def copy(from_name, to_name)
+      def copy(*source, destination)
         begin
           Connection.instance.set_options(options)
-          from = Resource.create(from_name)
-          to   = Resource.create(to_name)
-          if to.copy(from)
-            display "Copied #{from.fname} => #{to.fname}"
-          else
-            error to.error_string, to.error_code
+          to = Resource.create(Connection.instance.storage, destination)
+          if source.length > 1 && to.isDirectory() == false
+            error("The destination '#{destination}' for multiple files must be a directory or container", :general_error)
           end
+          source.each { |name|
+            from = Resource.create(Connection.instance.storage, name)
+            if to.copy(from)
+              display "Copied #{from.fname} => #{to.fname}"
+            else
+              error to.error_string, to.error_code
+            end
+          }
         rescue Fog::HP::Errors::ServiceError, Fog::Storage::HP::Error => error
           display_error_message(error, :general_error)
         rescue Excon::Errors::Unauthorized => error

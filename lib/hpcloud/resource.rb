@@ -1,6 +1,5 @@
 require 'hpcloud/connection.rb'
 require 'progressbar'
-include HP::Cloud
 
 module HP
   module Cloud
@@ -11,16 +10,17 @@ module HP
       REMOTE_TYPES = [:container, :container_directory, :object]
       LOCAL_TYPES = [:directory, :file]
     
-      def self.create(fname)
+      def self.create(storage, fname)
         if LOCAL_TYPES.include?(detect_type(fname))
-          return LocalResource.new(fname)
+          return LocalResource.new(storage, fname)
         end
-        return RemoteResource.new(fname)
+        return RemoteResource.new(storage, fname)
       end
 
-      def initialize(fname)
+      def initialize(storage, fname)
         @error_string = nil
         @error_code = nil
+        @storage = storage
         @fname = fname
         @ftype = Resource.detect_type(@fname)
         @disable_pbar = false
@@ -99,7 +99,19 @@ module HP
         return true
       end
 
-      def valid_destination(source_directory)
+      def isMulti()
+        return true if isDirectory()
+        found = false 
+        foreach { |x|
+          if (found == true)
+            return true
+          end
+          found = true
+        }
+        return false
+      end
+
+      def valid_destination(source)
         return true
       end
 
@@ -145,7 +157,7 @@ module HP
 
       def copy_all(from)
         if ! from.valid_source() then return false end
-        if ! valid_destination(from.isDirectory()) then return false end
+        if ! valid_destination(from) then return false end
 
         copiedfile = false
         original = File.dirname(from.path)
@@ -198,12 +210,12 @@ module HP
         return true
       end
 
-      def valid_destination(source_directory)
+      def valid_destination(source)
         if isDirectory()
           dir_path = File.expand_path(@path)
         else
-          if source_directory == true
-            @error_string = "Invalid target for directory copy '#{@fname}'."
+          if source.isMulti() == true
+            @error_string = "Invalid target for directory/multi-file copy '#{@fname}'."
             @error_code = :incorrect_usage
             return false
           end
@@ -309,7 +321,7 @@ module HP
           end
         else
           begin
-            Connection.instance.storage.get_object(from.container, from.path) { |chunk, remaining, total|
+            @storage.get_object(from.container, from.path) { |chunk, remaining, total|
               if ! write(chunk) then result = false end
             }
           rescue Fog::Storage::HP::NotFound => e
@@ -330,7 +342,7 @@ module HP
         begin
           Dir.foreach(path) { |x|
             if ((x != '.') && (x != '..')) then
-              Resource.create(path + '/' + x).foreach(&block)
+              Resource.create(@storage, path + '/' + x).foreach(&block)
             end
           }
         rescue Errno::EACCES
@@ -344,7 +356,7 @@ module HP
 
       def get_size()
         begin
-          head = Connection.instance.storage().head_object(@container, @path)
+          head = @storage.head_object(@container, @path)
           return 0 if head.nil?
           return 0 if head.headers["Content-Length"].nil?
           return head.headers["Content-Length"].to_i
@@ -357,12 +369,12 @@ module HP
         return valid_container()
       end
 
-      def valid_destination(source_directory)
+      def valid_destination(source)
         if ! valid_container()
           return false
         end
-        if ((source_directory == true) && (isDirectory() == false))
-          @error_string = "Invalid target for directory copy '#{@fname}'."
+        if ((source.isMulti() == true) && (isDirectory() == false))
+          @error_string = "Invalid target for directory/multi-file copy '#{@fname}'."
           @error_code = :incorrect_usage
           return false
         end
@@ -371,8 +383,7 @@ module HP
 
       def valid_container()
         begin
-          connection = Connection.instance.storage()
-          directory = connection.directories.get(@container)
+          directory = @storage.directories.get(@container)
           if directory.nil?
             @error_string = "You don't have a container '#{@container}'."
             @error_code = :not_found
@@ -409,13 +420,13 @@ module HP
         if from.isLocal()
           if (from.open() == false) then return false end
           options = { 'Content-Type' => from.get_mime_type() }
-          Connection.instance.storage.put_object(@container, @destination, {}, options) {
+          @storage.put_object(@container, @destination, {}, options) {
             from.read().to_s
           }
           result = false if ! from.close()
         else
           begin
-            Connection.instance.storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
+            @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
           rescue Fog::Storage::HP::NotFound => e
             @error_string = "The specified object does not exist."
             @error_code = :not_found
@@ -426,8 +437,7 @@ module HP
       end
 
       def foreach(&block)
-        connection = Connection.instance.storage()
-        directory = connection.directories.get(@container)
+        directory = @storage.directories.get(@container)
         return if directory.nil?
         case @ftype
         when :container_directory
@@ -440,7 +450,7 @@ module HP
         directory.files.each { |x|
           name = x.key.to_s
           if ! name.match(regex).nil?
-            yield Resource.create(':' + container + '/' + name)
+            yield Resource.create(@storage, ':' + container + '/' + name)
           end
         }
       end

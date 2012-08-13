@@ -2,10 +2,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 include HP::Cloud
 
 describe "Detecting mime type" do
+  before(:each) do
+    @storage = double("storage")
+  end
   
   context "when this file" do
     it "should return text/plain" do
-      file = Resource.create(__FILE__)
+      file = Resource.create(@storage, __FILE__)
       file.get_mime_type().should eq('text/plain')
     end
   end
@@ -13,10 +16,13 @@ describe "Detecting mime type" do
 end
 
 describe "Resource construction" do
+  before(:each) do
+    @storage = double("storage")
+  end
   
   context "when local file" do
     it "should return :file" do
-      file = Resource.create('/tmp/myfile.txt')
+      file = Resource.create(@storage, '/tmp/myfile.txt')
 
       file.fname.should eql('/tmp/myfile.txt')
       file.ftype.should eql(:file)
@@ -32,7 +38,7 @@ describe "Resource construction" do
   
   context "when local file variant" do
     it "should return :file" do
-      file = Resource.create('~/documents/myfile.tar')
+      file = Resource.create(@storage, '~/documents/myfile.tar')
 
       file.fname.should eql('~/documents/myfile.tar')
       file.ftype.should eql(:file)
@@ -48,7 +54,7 @@ describe "Resource construction" do
   
   context "when local directory" do
     it "should return :directory" do
-      file = Resource.create('/tmp/')
+      file = Resource.create(@storage, '/tmp/')
 
       file.fname.should eql('/tmp/')
       file.ftype.should eql(:directory)
@@ -64,7 +70,7 @@ describe "Resource construction" do
   
   context "when local directory" do
     it "should return :directory" do
-      file = Resource.create('spec/tmp/nonexistant/')
+      file = Resource.create(@storage, 'spec/tmp/nonexistant/')
 
       file.fname.should eql('spec/tmp/nonexistant/')
       file.ftype.should eql(:directory)
@@ -80,7 +86,7 @@ describe "Resource construction" do
   
   context "when local directory without slash" do
     it "should return :directory" do
-      file = Resource.create('/tmp')
+      file = Resource.create(@storage, '/tmp')
 
       file.fname.should eql('/tmp')
       file.ftype.should eql(:directory)
@@ -96,7 +102,7 @@ describe "Resource construction" do
   
   context "when container" do
     it "should return :container" do
-      file = Resource.create(':my_container')
+      file = Resource.create(@storage, ':my_container')
 
       file.fname.should eql(':my_container')
       file.ftype.should eql(:container)
@@ -112,7 +118,7 @@ describe "Resource construction" do
   
   context "when full object path" do
     it "should return :object" do
-      file = Resource.create(':my_container/blah/archive.zip')
+      file = Resource.create(@storage, ':my_container/blah/archive.zip')
 
       file.fname.should eql(':my_container/blah/archive.zip')
       file.ftype.should eql(:object)
@@ -128,7 +134,7 @@ describe "Resource construction" do
   
   context "when object directory path" do
     it "should return :container_directory" do
-      file = Resource.create(':my_container/blah/')
+      file = Resource.create(@storage, ':my_container/blah/')
 
       file.fname.should eql(':my_container/blah/')
       file.ftype.should eql(:container_directory)

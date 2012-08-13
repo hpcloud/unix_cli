@@ -47,6 +47,7 @@ describe "servers:reboot command" do
         response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
         exit_status.should be_exit(:general_error)
       end
+      after(:all) { Connection.instance.set_options({}) }
     end
   end
 
