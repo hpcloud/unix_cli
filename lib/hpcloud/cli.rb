@@ -38,7 +38,8 @@ module HP
             :hp_account_id   => account_credentials[:account_id],
             :hp_secret_key   => account_credentials[:secret_key],
             :hp_auth_uri     => account_credentials[:auth_uri],
-            :hp_tenant_id    => account_credentials[:tenant_id]
+            :hp_tenant_id    => account_credentials[:tenant_id],
+            :user_agent      => "hpcloud/#{HP::Cloud::VERSION}"
         }
         # authenticate with Identity service
         Fog::HP.authenticate_v2(options, default_connection_options)
