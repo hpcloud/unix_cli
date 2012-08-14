@@ -42,12 +42,7 @@ module HP
       def storage(account='default')
         return @storage_connection[account] unless @storage_connection[account].nil?
         begin
-          storage_credentials = Config.current_credentials(account)
-          if storage_credentials
-            @storage_connection[account] ||= connection_with(:storage, storage_credentials)
-          else
-            raise Fog::Storage::HP::Error, "Error in connecting to the Storage service. Please check your HP Cloud Services account to make sure the account credentials are correct."
-          end
+          @storage_connection[account] = Fog::Storage.new(create_options(account, :storage_availability_zone))
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
@@ -56,12 +51,7 @@ module HP
       def compute(account='default')
         return @compute_connection[account] unless @compute_connection[account].nil?
         begin
-          compute_credentials = Config.current_credentials(account)
-          if compute_credentials
-            @compute_connection[account] ||= connection_with(:compute, compute_credentials)
-          else
-            raise Fog::Compute::HP::Error, "Error in connecting to the Compute service. Please check your HP Cloud Services account to make sure the account credentials are correct."
-          end
+          @compute_connection[account] = Fog::Compute.new(create_options(account, :compute_availability_zone))
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
@@ -70,12 +60,7 @@ module HP
       def block(account='default')
         return @block_connection[account] unless @block_connection[account].nil?
         begin
-          block_credentials = Config.current_credentials(account)
-          if block_credentials
-            @block_connection[account] ||= connection_with(:block, block_credentials)
-          else
-            raise Fog::BlockStorage::HP::Error, "Error in connecting to the BlockStorage service. Please check your HP Cloud Services account to make sure the account credentials are correct."
-          end
+          @block_connection[account] = Fog::BlockStorage.new(create_options(account, :block_availability_zone))
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
@@ -84,51 +69,27 @@ module HP
       def cdn(account='default')
         return @cdn_connection[account] unless @cdn_connection[account].nil?
         begin
-          cdn_credentials = Config.current_credentials(account)
-          if cdn_credentials
-            @cdn_connection[account] ||= connection_with(:cdn, cdn_credentials)
-          else
-            raise Fog::CDN::HP::Error, "Error in connecting to the CDN service. Please check your HP Cloud Services account to make sure the account credentials are correct."
-          end
+          @cdn_connection[account] = Fog::CDN.new(create_options(account, :cdn_availability_zone))
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
       end
 
-      def connection_with(service, service_credentials)
-        if service == :storage
-          Fog::Storage.new( :provider        => 'HP',
-                            :connection_options => Config.connection_options(),
-                            :hp_account_id   => service_credentials[:account_id],
-                            :hp_secret_key   => service_credentials[:secret_key],
-                            :hp_auth_uri     => service_credentials[:auth_uri],
-                            :hp_tenant_id    => service_credentials[:tenant_id],
-                            :hp_avl_zone     => @options[:availability_zone] || Config.settings[:storage_availability_zone])
-        elsif service == :compute
-          Fog::Compute.new( :provider        => 'HP',
-                            :connection_options => Config.connection_options(),
-                            :hp_account_id   => service_credentials[:account_id],
-                            :hp_secret_key   => service_credentials[:secret_key],
-                            :hp_auth_uri     => service_credentials[:auth_uri],
-                            :hp_tenant_id    => service_credentials[:tenant_id],
-                            :hp_avl_zone     => @options[:availability_zone] || Config.settings[:compute_availability_zone])
-        elsif service == :cdn
-          Fog::CDN.new( :provider            => 'HP',
-                            :connection_options => Config.connection_options(),
-                            :hp_account_id   => service_credentials[:account_id],
-                            :hp_secret_key   => service_credentials[:secret_key],
-                            :hp_auth_uri     => service_credentials[:auth_uri],
-                            :hp_tenant_id    => service_credentials[:tenant_id],
-                            :hp_avl_zone     => @options[:availability_zone] || Config.settings[:cdn_availability_zone])
-        elsif service == :block
-          Fog::BlockStorage.new( :provider            => 'HP',
-                            :connection_options => Config.connection_options(),
-                            :hp_account_id   => service_credentials[:account_id],
-                            :hp_secret_key   => service_credentials[:secret_key],
-                            :hp_auth_uri     => service_credentials[:auth_uri],
-                            :hp_tenant_id    => service_credentials[:tenant_id],
-                            :hp_avl_zone     => @options[:availability_zone] || Config.settings[:block_availability_zone])
+      def create_options(account, zone)
+        service_credentials = Config.current_credentials(account)
+        if service_credentials.nil?
+          raise Fog::Storage::HP::Error, "Error getting service credentials. Please check your HP Cloud Services account to make sure the account credentials are correct."
         end
+        zone = @options[:availability_zone] || Config.settings[zone]
+        return { :provider => 'HP',
+                 :connection_options => Config.connection_options(),
+                 :hp_account_id   => service_credentials[:account_id],
+                 :hp_secret_key   => service_credentials[:secret_key],
+                 :hp_auth_uri     => service_credentials[:auth_uri],
+                 :hp_tenant_id    => service_credentials[:tenant_id],
+                 :hp_avl_zone     => zone,
+                 :user_agent => "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
+               }
       end
 
       def validate_account(account_credentials)

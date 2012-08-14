@@ -33,18 +33,6 @@ module HP
         end
       end
 
-      def validate_account(account_credentials)
-        options = {
-            :hp_account_id   => account_credentials[:account_id],
-            :hp_secret_key   => account_credentials[:secret_key],
-            :hp_auth_uri     => account_credentials[:auth_uri],
-            :hp_tenant_id    => account_credentials[:tenant_id],
-            :user_agent      => "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
-        }
-        # authenticate with Identity service
-        Fog::HP.authenticate_v2(options, default_connection_options)
-      end
-
       # print some non-error output to the user
       def display(message)
         say message unless @silence_display
