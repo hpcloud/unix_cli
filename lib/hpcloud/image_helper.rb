@@ -3,7 +3,8 @@ require 'hpcloud/metadata'
 module HP
   module Cloud
     class ImageHelper
-      attr_reader :error_string, :error_code, :meta, :fog
+      attr_reader :meta, :fog
+      attr_accessor :error_string, :error_code
       attr_accessor :id, :name, :created_at, :status
     
       def self.get_keys()

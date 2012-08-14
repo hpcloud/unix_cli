@@ -27,7 +27,7 @@ Aliases: rm, delete, destroy, del
         type = Resource.detect_type(resource)
 
         begin
-          directory = connection(:storage, options).directories.get(container)
+          directory = connection(:storage, options).directories.head(container)
         rescue Excon::Errors::Forbidden => error
           error "Access Denied.", :permission_denied
         end

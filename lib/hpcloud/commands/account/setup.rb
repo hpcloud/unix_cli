@@ -30,7 +30,7 @@ module HP
         unless options['no-validate']
           display "Verifying your HP Cloud Services account..."
           begin
-            validate_account(credentials)
+            Connection.instance.validate_account(credentials)
           rescue Exception => e
             error "Account setup failed. Error connecting to the service endpoint at: '#{credentials[:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
           end
