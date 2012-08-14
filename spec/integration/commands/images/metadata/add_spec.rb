@@ -37,9 +37,9 @@ describe "Images metadata add command" do
 
         exit_status.should be_exit(:success)
         result = Images.new.get(@image_id)
-        still_contains_original(result.metadata)
-        result.metadata.should include("id1=one")
-        result.metadata.should include("id2=2")
+        still_contains_original(result.meta.to_s)
+        result.meta.to_s.should include("id1=one")
+        result.meta.to_s.should include("id2=2")
       end
     end
 
@@ -49,9 +49,19 @@ describe "Images metadata add command" do
 
         exit_status.should be_exit(:success)
         result = Images.new.get(@image_id)
-        still_contains_original(result.metadata)
-        result.metadata.should include("name1=1")
-        result.metadata.should include("name2=2")
+        still_contains_original(result.meta.to_s)
+        result.meta.to_s.should include("name1=1")
+        result.meta.to_s.should include("name2=2")
+      end
+    end
+
+    context "bad image" do
+      it "should report failure" do
+        rsp = cptr("images:metadata:add bogus name1=1,name2=2")
+
+        rsp.stderr.should eq("Cannot find a image matching 'bogus'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
 
@@ -64,9 +74,9 @@ describe "Images metadata add command" do
 
         exit_status.should be_exit(:success)
         result = Images.new.get(@image_id)
-        still_contains_original(result.metadata)
-        result.metadata.should include("avl1=1")
-        result.metadata.should include("avl2=2")
+        still_contains_original(result.meta.to_s)
+        result.meta.to_s.should include("avl1=1")
+        result.meta.to_s.should include("avl2=2")
       end
     end
     context "images with invalid avl" do

@@ -65,20 +65,12 @@ describe "volumes:add command" do
   end
 
   context "when creating volume with a name that already exists" do
-    before(:all) do
+    it "should fail" do
       @volume_name = "volume-already-exists"
-      @volume = @hp_svc.volumes.create(:size => 1, :name => @volume_name )
-      #@volume.wait_for { ready? }
-      @response, @exit = run_command("volumes:add #{@volume_name} 1").stderr_and_exit_status
-    end
-
-    it "should show error message" do
-      @response.should eql("Volume with the name '#{@volume_name}' already exists\n")
-    end
-    its_exit_status_should_be(:general_error)
-
-    after(:all) do
-      @volume.destroy unless @volume.nil?
+      cptr("volumes:add #{@volume_name} 1")
+      rsp = cptr("volumes:add #{@volume_name} 1")
+      rsp.stderr.should eq("Volume with the name '#{@volume_name}' already exists\n")
+      rsp.exit_status.should eq(:general_error)
     end
   end
 
