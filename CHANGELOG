@@ -1,3 +1,11 @@
+v1.0.0 08/20/12
+================
+- Support for listing, adding, attaching, detaching and removing block volumes
+- Progress bar added for file copy local to remote and remote to local
+- Support for metadata add, update and delete for images and servers
+- Recursive copy of directories local to remote, remote to local and remote to remote
+- Support for multiple files specified on a copy command line with some wild carding
+
 v0.0.15 06/08/12
 ================
 - Add an optional switch to all commands to specify availability zone
