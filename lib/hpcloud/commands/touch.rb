@@ -11,6 +11,7 @@ Examples:
 
 Aliases: none
       DESC
+      GOPTS.each { |k,v| method_option(k, v) }
       def touch(resource)
         display "touch an object"
       end

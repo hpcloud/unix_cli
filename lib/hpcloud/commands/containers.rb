@@ -17,9 +17,7 @@ Examples:
 
 Aliases: containers:list
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       def containers
         begin
           containers = connection(:storage, options).directories

@@ -15,9 +15,7 @@ Examples:
 
 Aliases: volumes:servers
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "volumes:server" do |*srv_name_or_ids|
         begin
           @exit_status = nil

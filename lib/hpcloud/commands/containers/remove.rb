@@ -21,9 +21,7 @@ Aliases: containers:rm, containers:delete, containers:del
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
                     :desc => 'Force removal of non-empty containers.'
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "containers:remove" do |name|
         name = Container.container_name_for_service(name)
         begin

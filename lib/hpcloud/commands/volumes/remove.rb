@@ -14,9 +14,7 @@ Examples:
 
 Aliases: volumes:rm, volumes:delete, volumes:del
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "volumes:remove" do |*names|
         begin
           Connection.instance.set_options(options)

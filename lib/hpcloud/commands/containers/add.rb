@@ -16,9 +16,7 @@ Aliases: none
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
                     :desc => "Don't prompt if container name is not a valid virtual host."
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "containers:add" do |name|
         begin
           name = Container.container_name_for_service(name)

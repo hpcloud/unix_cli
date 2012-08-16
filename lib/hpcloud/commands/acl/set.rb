@@ -17,9 +17,7 @@ Aliases: none
 
 Note: Custom ACLs will be supported in a future release.
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method 'acl:set' do |resource, acl|
         acl = acl.downcase
         unless CANNED_ACLS.include?(acl)

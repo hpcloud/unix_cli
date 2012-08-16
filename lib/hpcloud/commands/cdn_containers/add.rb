@@ -13,9 +13,7 @@ Examples:
 
 Aliases: none
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "cdn:containers:add" do |name|
         name = Container.container_name_for_service(name)
         # check if the container exists on the storage account

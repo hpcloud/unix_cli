@@ -24,9 +24,7 @@ Aliases: cdn:containers:list
       method_option :all, :default => false,
                     :type => :boolean, :aliases => '-a',
                     :desc => 'List all the CDN containers, either enabled or disabled.'
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "cdn:containers" do
         begin
           cdn_connection = connection(:cdn, options)

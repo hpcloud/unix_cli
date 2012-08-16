@@ -13,9 +13,7 @@ Examples:
       method_option :service_name, :type => :string,
                     :aliases => '-s', :required => :true,
                     :desc => 'Specify the name of the service, for which the configuration setting is intended.'
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone for the named service.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "config:set" do
         # Refactor for common settings later
         service_name = options[:service_name]

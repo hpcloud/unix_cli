@@ -18,9 +18,7 @@ Aliases: none
       method_option :hard, :default => false,
                     :type => :boolean, :aliases => '-h',
                     :desc => 'Hard reboot a server.'
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "servers:reboot" do |name|
         begin
           # setup connection for compute service

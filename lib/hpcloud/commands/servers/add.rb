@@ -25,9 +25,7 @@ Aliases: none
       method_option :metadata,
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "servers:add" do |name, image_id, flavor_id|
         Connection.instance.set_options(options)
         begin

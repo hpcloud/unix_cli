@@ -19,9 +19,7 @@ Examples:
 
 Aliases: addresses:list
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       def addresses
         begin
           addresses = connection(:compute, options).addresses

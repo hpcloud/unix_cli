@@ -13,9 +13,7 @@ Examples:
 
 Aliases: none
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       method_option :metadata,
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'

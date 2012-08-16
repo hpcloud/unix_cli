@@ -14,9 +14,7 @@ Examples:
 
 Aliases: flavors:list
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       def flavors
         begin
           # Need specific flavors for HP

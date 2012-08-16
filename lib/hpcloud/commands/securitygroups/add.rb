@@ -12,9 +12,7 @@ Examples:
 
 Aliases: none
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "securitygroups:add" do |sec_group_name, sg_desc|
         begin
           compute_connection = connection(:compute, options)

@@ -14,9 +14,7 @@ Examples:
 
 Aliases: cdn:containers:rm, cdn:containers:delete, cdn:containers:del
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "cdn:containers:remove" do |name|
         begin
           connection(:cdn, options).delete_container(name)

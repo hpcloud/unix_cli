@@ -14,9 +14,7 @@ Examples:
 
 Aliases: images:rm, images:delete, images:del
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "images:remove" do |*names|
         begin
           # setup connection for compute service

@@ -28,9 +28,7 @@ Aliases: securitygroups:rules:authorize
       method_option :source_group,
                     :type => :string, :aliases => '-g',
                     :desc => 'Specify a source group.'
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "securitygroups:rules:add" do |sec_group_name, ip_protocol|
         begin
           # defaults

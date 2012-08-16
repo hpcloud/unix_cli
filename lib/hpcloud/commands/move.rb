@@ -17,9 +17,7 @@ Examples:
 
 Aliases: mv
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       def move(from,to)
         from_type = Resource.detect_type(from)
         to_type   = Resource.detect_type(to)

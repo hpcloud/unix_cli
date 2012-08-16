@@ -16,9 +16,7 @@ Examples:
 
 Aliases: volumes:metadata:list
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "volumes:metadata" do |name_or_id|
         begin
           Connection.instance.set_options(options)

@@ -22,9 +22,7 @@ Examples:
 
 Aliases: images:list
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       def images(*arguments)
         begin
           Connection.instance.set_options(options)

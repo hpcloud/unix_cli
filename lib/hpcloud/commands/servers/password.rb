@@ -15,9 +15,7 @@ Examples:
 
 Aliases: servers:passwd
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "servers:password" do |name, password|
         begin
           # setup connection for compute service

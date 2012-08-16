@@ -17,9 +17,7 @@ Examples:
 
 Aliases: none
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       def acl(resource)
         acls = "private"
         type = Resource.detect_type(resource)

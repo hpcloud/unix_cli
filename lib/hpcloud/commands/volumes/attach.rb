@@ -11,9 +11,7 @@ Examples:
   hpcloud volumes:attach my-volume myServer /dev/sdg -z az-2.region-a.geo-1 # Optionally specify an availability zone
 
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "volumes:attach" do |vol_name, server_name, device|
         begin
           Connection.instance.set_options(options)

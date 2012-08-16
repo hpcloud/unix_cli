@@ -12,9 +12,7 @@ Examples:
 
 Aliases: none
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "keypairs:import" do |key_name, public_key_data|
         begin
           compute_connection = connection(:compute, options)

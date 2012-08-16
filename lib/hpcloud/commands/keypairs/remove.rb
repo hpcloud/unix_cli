@@ -14,9 +14,7 @@ Examples:
 
 Aliases: keypairs:rm, keypairs:delete, keypairs:del
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "keypairs:remove" do |key_name|
         begin
           compute_connection = connection(:compute, options)

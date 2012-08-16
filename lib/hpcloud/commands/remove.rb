@@ -19,9 +19,7 @@ Aliases: rm, delete, destroy, del
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
                     :desc => 'Do not confirm removal, remove non-empty containers.'
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       def remove(resource)
         container, path = Container.parse_resource(resource)
         type = Resource.detect_type(resource)

@@ -17,9 +17,7 @@ Aliases: ls
 
 Note: Listing details on files will be available in a future release.
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       def list(name='')
         return containers if name.empty?
         name = Container.container_name_for_service(name)

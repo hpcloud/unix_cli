@@ -13,9 +13,7 @@ Examples:
 
 Aliases: none
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "addresses:disassociate" do |public_ip|
         begin
           compute_connection = connection(:compute, options)

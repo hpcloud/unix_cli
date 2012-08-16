@@ -14,9 +14,7 @@ Examples:
 
 Aliases: securitygroups:rules:rm, securitygroups:rules:revoke, securitygroups:rules:delete, securitygroups:rules:del
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      GOPTS.each { |k,v| method_option(k, v) }
       define_method "securitygroups:rules:remove" do |sec_group_name, rule_id|
         begin
           compute_connection = connection(:compute, options)
