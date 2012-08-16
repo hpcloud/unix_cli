@@ -70,7 +70,7 @@ describe "volumes:add command" do
       cptr("volumes:add #{@volume_name} 1")
       rsp = cptr("volumes:add #{@volume_name} 1")
       rsp.stderr.should eq("Volume with the name '#{@volume_name}' already exists\n")
-      rsp.exit_status.should eq(:general_error)
+      rsp.exit_status.should be_exit(:general_error)
     end
   end
 

@@ -25,7 +25,7 @@ Aliases: none
       define_method "volumes:add" do |name, size|
         Connection.instance.set_options(options)
         begin
-          if Volumes.new.get(name).is_valid? == false
+          if Volumes.new.get(name).is_valid? == true
             error "Volume with the name '#{name}' already exists", :general_error
           end
           vol = HP::Cloud::VolumeHelper.new(Connection.instance)
