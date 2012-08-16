@@ -1,7 +1,8 @@
 source "http://rubygems.org"
 
 gemspec
-#gem 'hpfog', :git => 'git@git.hpcloud.net:SDK-CLI-Docs/ruby_fog_os.git', :branch => 'master'
+#gem 'hpfog', :path => '~/projects/ruby_fog_os' # Comment out for delivery
+gem 'hpfog', :git => 'git@git.hpcloud.net:SDK-CLI-Docs/ruby_fog_os.git', :branch => 'master' # Comment out for delivery
 
 group :development do
   gem "yard", "~> 0.6.0"

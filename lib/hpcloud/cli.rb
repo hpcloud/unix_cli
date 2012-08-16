@@ -19,7 +19,7 @@ module HP
 
       GOPTS = {:availability_zone => {:type => :string, :aliases => '-z',
                                       :desc => 'Set the availability zone.'},
-               :account_name => {:type => :string, :aliases => '-a',
+               :account_name => {:type => :string, :aliases => '-A',
                                  :desc => 'Select account.'}}
 
       private
