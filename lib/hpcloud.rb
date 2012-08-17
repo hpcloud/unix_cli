@@ -2,6 +2,7 @@ require "bundler/setup" # Comment out for delivery
 require 'fog'
 
 require 'hpcloud/version'
+require 'hpcloud/accounts'
 require 'hpcloud/volumes'
 require 'hpcloud/volume_helper'
 require 'hpcloud/volume_attachment'
