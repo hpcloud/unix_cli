@@ -5,9 +5,9 @@ module HP
     class Config
 
       # Connection timeouts in secs.
-      CONNECT_TIMEOUT = 5
-      READ_TIMEOUT = 5
-      WRITE_TIMEOUT = 5
+      CONNECT_TIMEOUT = 30
+      READ_TIMEOUT = 30
+      WRITE_TIMEOUT = 30
 
       @@default_config = { :default_auth_uri => 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/',
                            :block_availability_zone => 'az-1.region-a.geo-1',
