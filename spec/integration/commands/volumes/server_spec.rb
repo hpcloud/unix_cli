@@ -5,11 +5,11 @@ describe "volumes:server command" do
     @srv1 = ServerTestHelper.create("srv1")
     @srv2 = ServerTestHelper.create("srv2")
     @vol1 = VolumeTestHelper.create("svl1")
-    @vol1.attach(@srv1, '/dev/sdf').should be_true
+    @vol1.attach(@srv1, '/dev/sdf')
     @vol2 = VolumeTestHelper.create("svl2")
-    @vol2.attach(@srv2, '/dev/sdg').should be_true
+    @vol2.attach(@srv2, '/dev/sdg')
     @vol3 = VolumeTestHelper.create("svl3")
-    @vol3.attach(@srv1, '/dev/sdh').should be_true
+    @vol3.attach(@srv1, '/dev/sdh')
     @vol1.fog.wait_for { in_use? }
     @vol2.fog.wait_for { in_use? }
     @vol3.fog.wait_for { in_use? }
