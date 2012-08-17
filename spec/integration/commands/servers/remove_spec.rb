@@ -61,6 +61,16 @@ describe "servers:remove command" do
       end
       after(:all) { Connection.instance.set_options({}) }
     end
+
+    context "servers:remove with invalid server" do
+      it "should report error" do
+        rsp = cptr("servers:remove bogus")
+        rsp.stderr.should eq("Cannot find a server matching 'bogus'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
+      end
+    end
+
   end
 
 end

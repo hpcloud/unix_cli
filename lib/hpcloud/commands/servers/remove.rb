@@ -15,24 +15,22 @@ Examples:
 Aliases: servers:rm, servers:delete, servers:del
       DESC
       GOPTS.each { |k,v| method_option(k, v) }
-      define_method "servers:remove" do |*names|
-        names.each { |name|
-          begin
-            # setup connection for compute service
-            compute_connection = connection(:compute, options)
-            server = compute_connection.servers.select {|s| s.name == name}.first
-            if (server && server.name == name)
-              # now delete the server
-              server.destroy
-              display "Removed server '#{name}'."
-            else
-              error "You don't have a server '#{name}'.", :not_found
+      define_method "servers:remove" do |name, *names|
+        cli_command(options) {
+          names = [name] + names
+          servers = Servers.new.get(names, false)
+          servers.each { |server|
+            begin
+              if server.is_valid?
+                server.destroy
+                display "Removed server '#{name}'."
+              else
+                error_message(server.error_string, server.error_code)
+              end
+            rescue Exception => e
+              error_message("Error removing image: " + e.to_s, :general_error)
             end
-          rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error, Excon::Errors::BadRequest, Excon::Errors::InternalServerError => error
-            display_error_message(error, :general_error)
-          rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
-            display_error_message(error, :permission_denied)
-          end
+          }
         }
       end
 

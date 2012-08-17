@@ -15,23 +15,23 @@ Examples:
 Aliases: volumes:rm, volumes:delete, volumes:del
       DESC
       GOPTS.each { |k,v| method_option(k, v) }
-      define_method "volumes:remove" do |*names|
-        begin
-          Connection.instance.set_options(options)
+      define_method "volumes:remove" do |name, *names|
+        cli_command(options) {
+          names = [name] + names
           volumes = Volumes.new.get(names, false)
           volumes.each { |volume|
-            if volume.is_valid?
-              volume.destroy
-              display "Removed volume '#{volume.name}'."
-            else
-              error volume.error_string, volume.error_code
+            begin
+              if volume.is_valid?
+                volume.destroy
+                display "Removed volume '#{volume.name}'."
+              else
+                error_message(volume.error_string, volume.error_code)
+              end
+            rescue Exception => e
+              error_message("Error removing volume: " + e.to_s, :general_error)
             end
           }
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error, Excon::Errors::BadRequest, Excon::Errors::InternalServerError => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
 
     end

@@ -15,25 +15,23 @@ Examples:
 Aliases: images:rm, images:delete, images:del
       DESC
       GOPTS.each { |k,v| method_option(k, v) }
-      define_method "images:remove" do |*names|
-        begin
-          # setup connection for compute service
-          compute_connection = connection(:compute, options)
-          names.each { |name|
-            image = compute_connection.images.select {|i| i.name == name}.first
-            if (image && image.name == name)
-                # now delete the image
-                image.destroy
+      define_method "images:remove" do |name, *names|
+        cli_command(options) {
+          names = [name] + names
+          images = Images.new.get(names, false)
+          images.each { |image|
+            begin
+              if image.is_valid?
+                image.fog.destroy
                 display "Removed image '#{name}'."
-            else
-              error "You don't have an image '#{name}'.", :not_found
+              else
+                error_message(image.error_string, image.error_code)
+              end
+            rescue Exception => e
+              error_message("Error removing image: " + e.to_s, :general_error)
             end
           }
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
 
     end

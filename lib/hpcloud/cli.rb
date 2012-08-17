@@ -130,6 +130,7 @@ module HP
       end
 
       def cli_command(options)
+        @exit_status = ERROR_TYPES[:success]
         Connection.instance.set_options(options)
         begin
           yield
@@ -140,6 +141,7 @@ module HP
         rescue Excon::Errors::NotFound => error
           display_error_message(error, :not_found)
         end
+        exit @exit_status
       end
 
     end

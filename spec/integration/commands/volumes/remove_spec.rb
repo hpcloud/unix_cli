@@ -69,9 +69,10 @@ describe "volumes:remove command" do
 
     context "volumes:remove with invalid volume" do
       it "should report error" do
-        response, exit_status = run_command("volumes:remove bogus").stderr_and_exit_status
-        response.should include("Cannot find a volume matching 'bogus'.\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("volumes:remove bogus")
+        rsp.stderr.should eq("Cannot find a volume matching 'bogus'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
   end

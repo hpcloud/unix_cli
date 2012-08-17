@@ -77,6 +77,16 @@ describe "images:remove command" do
       end
       after(:all) { HP::Cloud::Connection.instance.set_options({}) }
     end
+
+    context "images:remove with invalid image" do
+      it "should report error" do
+        rsp = cptr("images:remove bogus")
+        rsp.stderr.should eq("Cannot find a image matching 'bogus'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
+      end
+    end
+
   end
 
 end
