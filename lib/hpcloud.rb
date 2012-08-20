@@ -1,4 +1,4 @@
-#require "bundler/setup"
+require "bundler/setup" # Comment out for delivery
 require 'fog'
 
 require 'hpcloud/version'
