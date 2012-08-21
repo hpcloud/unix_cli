@@ -271,7 +271,7 @@ describe "Read directory" do
       ray[0].should eq("spec/fixtures/accounts/.hpcloud/accounts/bad")
       ray[1].should eq("spec/fixtures/accounts/.hpcloud/accounts/default")
       ray[2].should eq("spec/fixtures/accounts/.hpcloud/accounts/pro")
-      ray[3].should eq("spec/fixtures/configs/personalized.yml")
+      ray[3].should eq("spec/fixtures/config/.hpcloud/config.yml")
       ray[4].should eq("spec/fixtures/files/Matryoshka/Putin/Medvedev.txt")
       ray[5].should eq("spec/fixtures/files/Matryoshka/Putin/Vladimir.txt")
       ray[6].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Boris.txt")

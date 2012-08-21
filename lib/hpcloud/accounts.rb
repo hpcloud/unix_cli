@@ -66,7 +66,7 @@ module HP
 
       def get(account = 'default')
         hsh = read(account).clone
-        settings = Config.settings
+        settings = Config.new.settings
         hsh[:zones][:compute_availability_zone] ||= settings[:compute_availability_zone]
         hsh[:zones][:storage_availability_zone] ||= settings[:storage_availability_zone]
         hsh[:zones][:cdn_availability_zone] ||= settings[:cdn_availability_zone]
