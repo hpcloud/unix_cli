@@ -6,14 +6,14 @@ describe "account:setup command" do
     @cli ||= HP::Cloud::CLI.new
   end
 
-  before(:all) { setup_temp_home_directory }
+  before(:all) { AccountsHelper.use_tmp() }
   
   context "without existing account" do
   
-    before(:all) { remove_account_files }
+    before(:all) { AccountsHelper.use_tmp() }
   
     it "should ask for account id, account key, endpoint and tenant_id" do
-      $stdout.should_receive(:puts).with('****** Setup your HP Cloud Services account ******')
+      $stdout.should_receive(:puts).with('****** Setup your HP Cloud Services default account ******')
       $stdout.should_receive(:print).with('Access Key Id: ')
       $stdin.should_receive(:gets).and_return('foo')
       $stdout.should_receive(:print).with('Secret Key: ')
@@ -33,7 +33,7 @@ describe "account:setup command" do
     end
 
     it "should provide default endpoint and validate endpoint" do
-      $stdout.should_receive(:puts).with('****** Setup your HP Cloud Services account ******')
+      $stdout.should_receive(:puts).with('****** Setup your HP Cloud Services default account ******')
       $stdout.should_receive(:print).with('Access Key Id: ')
       $stdin.should_receive(:gets).and_return('foo')
       $stdout.should_receive(:print).with('Secret Key: ')
@@ -58,12 +58,6 @@ describe "account:setup command" do
 
     end
        
-  end
-  
-  pending 'with existing account' do
-    
-    before(:all) { setup_account_file(:default) }
-    
   end
   
 end

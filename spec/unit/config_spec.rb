@@ -1,9 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'fileutils'
 require 'yaml'
+include HP::Cloud
 
 describe "Config directory naming" do
-  before(:all) { reset_config_home_directory }
+  before(:all) { HP::Cloud::Config.reset_home_directory() }
   
   it "should assemble properly" do
     HP::Cloud::Config.config_directory.should eql(ENV['HOME'] + '/.hpcloud/')
@@ -16,11 +17,11 @@ end
 
 describe "Config directory setup" do
   
-  before(:all) { setup_temp_home_directory } 
+  before(:all) {
+    AccountsHelper.use_fixtures()
+  } 
 
   context "with no config directory present" do
-    
-    before(:all) { remove_config_directory } 
     
     context "running ensure config" do
       
@@ -53,7 +54,6 @@ describe "Getting settings" do
   context "with no config file present" do
     
     before(:all) do
-      remove_config_directory
       HP::Cloud::Config.flush_settings
     end
     
@@ -75,7 +75,7 @@ describe "Getting settings" do
   context "with config file present" do
     
     before(:all) do
-      setup_temp_home_directory
+      AccountsHelper.use_fixtures()
       HP::Cloud::Config.ensure_config_exists
       File.open(HP::Cloud::Config.config_file, 'w') do |file|
         file.write(read_fixture(:config, 'personalized.yml'))

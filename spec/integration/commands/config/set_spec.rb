@@ -5,7 +5,7 @@ describe "Config command" do
 
   context "config:set" do
     before(:all) do
-      setup_temp_home_directory
+      Account.home_directory = "spec/tmp/home"
       HP::Cloud::Config.ensure_config_exists
     end
     context "set availability zone for compute service" do
