@@ -26,7 +26,7 @@ describe "account:setup command" do
     end
 
     it "with validation" do
-      input = ['oof','rab','https://127.0.0.2/','222222','E','F','G','H']
+      input = ['oof','rab','https://127.0.0.2/','222222','az-1.region-b.geo-1','region-b.geo-1','region-b.geo-1','az-1.region-b.geo-1']
       rsp = cptr('account:setup', input)
       rsp.stdout.should eq(
         "****** Setup your HP Cloud Services default account ******\n" +
@@ -35,9 +35,9 @@ describe "account:setup command" do
         "Auth Uri: [https://127.0.0.1/] " +
         "Tenant Id: [111111] " +
         "Compute zone: [A] " +
-        "Storage zone: [B] " +
-        "CDN zone: [C] " +
-        "Block zone: [D] " +
+        "Storage zone: [region-b.geo-1] " +
+        "CDN zone: [region-b.geo-1] " +
+        "Block zone: [az-1.region-b.geo-1] " +
         "Verifying your HP Cloud Services account...\n")
       rsp.stderr.should eq("Account setup failed. Error connecting to the service endpoint at: 'https://127.0.0.2/'. Please verify your account credentials. \n Exception: Connection refused - connect(2)\n")
       rsp.exit_status.should be_exit(:general_error)

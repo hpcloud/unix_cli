@@ -35,6 +35,7 @@ module HP
         cred[:auth_uri] = ask_with_default 'Auth Uri:', "#{cred[:auth_uri]}"
         cred[:tenant_id] = ask_with_default 'Tenant Id:', "#{cred[:tenant_id]}"
         zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
+        accounts.rejigger_zones(zones)
         zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
         zones[:cdn_availability_zone] = ask_with_default 'CDN zone:', "#{zones[:cdn_availability_zone]}"
         zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"

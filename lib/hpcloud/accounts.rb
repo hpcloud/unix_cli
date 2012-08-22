@@ -87,6 +87,9 @@ module HP
         compute = zones[:compute_availability_zone]
         alternate = compute
         alternate=compute.gsub(/^[^\.]*\./, '')
+        if alternate == compute
+          return
+        end
         zones[:storage_availability_zone] = alternate
         zones[:cdn_availability_zone] = alternate
         zones[:block_availability_zone] = compute
