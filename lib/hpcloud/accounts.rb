@@ -47,6 +47,7 @@ module HP
           @accts[account] = {:credentials=>{:auth_uri=>uri},
                              :zones=>{},
                              :options=>{}}
+          set_default_zones(@accts[account])
         end
         return @accts[account]
       end
@@ -68,15 +69,33 @@ module HP
         hsh[:zones][:storage_availability_zone] = storage
         hsh[:zones][:cdn_availability_zone] = cdn
         hsh[:zones][:block_availability_zone] = block
+        hsh[:zones].delete(:compute_availability_zone) if compute.empty?
+        hsh[:zones].delete(:storage_availability_zone) if storage.empty?
+        hsh[:zones].delete(:cdn_availability_zone) if cdn.empty?
+        hsh[:zones].delete(:block_availability_zone) if block.empty?
       end
 
-      def get(account = 'default')
-        hsh = read(account).clone
+      def set_default_zones(hsh)
         settings = Config.new.settings
         hsh[:zones][:compute_availability_zone] ||= settings[:compute_availability_zone]
         hsh[:zones][:storage_availability_zone] ||= settings[:storage_availability_zone]
         hsh[:zones][:cdn_availability_zone] ||= settings[:cdn_availability_zone]
         hsh[:zones][:block_availability_zone] ||= settings[:block_availability_zone]
+      end
+
+      def rejigger_zones(zones)
+        compute = zones[:compute_availability_zone]
+        alternate = compute
+        alternate=compute.gsub(/^[^\.]*\./, '')
+        zones[:storage_availability_zone] = alternate
+        zones[:cdn_availability_zone] = alternate
+        zones[:block_availability_zone] = compute
+      end
+
+      def get(account = 'default')
+        hsh = read(account).clone
+        settings = Config.new.settings
+        set_default_zones(hsh)
         hsh[:options][:connect_timeout] ||= settings[:connect_timeout]
         hsh[:options][:read_timeout] ||= settings[:read_timeout]
         hsh[:options][:write_timeout] ||= settings[:write_timeout]

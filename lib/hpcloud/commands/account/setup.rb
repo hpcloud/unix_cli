@@ -26,6 +26,7 @@ module HP
           acct = accounts.create(name)
         end
         cred = acct[:credentials]
+        zones = acct[:zones]
 
         # ask for credentials
         display "****** Setup your HP Cloud Services #{name} account ******"
@@ -33,6 +34,10 @@ module HP
         cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
         cred[:auth_uri] = ask_with_default 'Auth Uri:', "#{cred[:auth_uri]}"
         cred[:tenant_id] = ask_with_default 'Tenant Id:', "#{cred[:tenant_id]}"
+        zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
+        zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
+        zones[:cdn_availability_zone] = ask_with_default 'CDN zone:', "#{zones[:cdn_availability_zone]}"
+        zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
 
         unless options['no-validate']
           display "Verifying your HP Cloud Services account..."
@@ -45,6 +50,7 @@ module HP
 
         # update credentials and stash in config directory
         accounts.set_credentials(name, cred[:account_id], cred[:secret_key], cred[:auth_uri], cred[:tenant_id])
+        accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:cdn_availability_zone], zones[:block_availability_zone])
         accounts.write(name)
 
         display "Account credentials for HP Cloud Services have been set up."

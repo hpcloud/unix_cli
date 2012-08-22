@@ -181,8 +181,30 @@ describe "Accounts" do
       uri = HP::Cloud::Config.new.get(:default_auth_uri)
 
       acct[:credentials].should eq({:auth_uri=>uri})
-      acct[:zones].should eq({})
+      zones = {:compute_availability_zone=>"az-1.region-a.geo-1", :storage_availability_zone=>"region-a.geo-1", :cdn_availability_zone=>"region-a.geo-1", :block_availability_zone=>"az-1.region-a.geo-1"}
+      acct[:zones].should eq(zones)
       acct[:options].should eq({})
+    end
+  end
+end
+
+describe "Accounts" do
+  before(:each) do
+    AccountsHelper.use_tmp()
+  end
+
+  context "when rejigger called" do
+    it "should have basic settings" do
+      accounts = Accounts.new()
+      acct = accounts.create('Walkmen')
+      acct[:zones][:compute_availability_zone] = "az-2.region-b.geo-1"
+
+      accounts.rejigger_zones(acct[:zones])
+
+      acct[:zones][:compute_availability_zone].should eq("az-2.region-b.geo-1")
+      acct[:zones][:storage_availability_zone].should eq("region-b.geo-1")
+      acct[:zones][:cdn_availability_zone].should eq("region-b.geo-1")
+      acct[:zones][:block_availability_zone].should eq("az-2.region-b.geo-1")
     end
   end
 end
