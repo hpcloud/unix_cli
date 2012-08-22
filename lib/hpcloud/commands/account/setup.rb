@@ -22,8 +22,7 @@ module HP
         display "****** Setup your HP Cloud Services #{name} account ******"
         cred[:account_id] = ask 'Access Key Id:'
         cred[:secret_key] = ask 'Secret Key:'
-        cred[:auth_uri] = ask_with_default 'Auth Uri:',
-                                      Config.new.settings[:default_auth_uri]
+        cred[:auth_uri] = ask_with_default 'Auth Uri:', Config.new.get(:default_auth_uri)
         cred[:tenant_id] = ask 'Tenant Id:'
 
         unless options['no-validate']
