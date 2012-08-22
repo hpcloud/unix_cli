@@ -16,7 +16,7 @@ describe "servers:add command" do
   context "when creating server with name, image and flavor (no keyname or security group)" do
     before(:all) do
       @server_name = resource_name("add1")
-      @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID}").stdout_and_exit_status
+      @response, @exit = run_command("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()}").stdout_and_exit_status
       @new_server_id = @response.scan(/'([^']+)/)[2][0]
     end
 
@@ -41,7 +41,7 @@ describe "servers:add command" do
   context "when creating server with name, image, flavor, keyname and security group and metadata" do
     before(:all) do
       @server_name = resource_name("add2")
-      @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -k #{@keypair_name} -s #{@sg_name} -m E=mc2,PV=nRT").stdout_and_exit_status
+      @response, @exit = run_command("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name} -s #{@sg_name} -m E=mc2,PV=nRT").stdout_and_exit_status
       @new_server_id = @response.scan(/'([^']+)/)[2][0]
     end
 
@@ -73,7 +73,7 @@ describe "servers:add command" do
   context "when creating server with name, image, flavor and only keyname" do
     before(:all) do
       @server_name = resource_name("add3")
-      @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -k #{@keypair_name}").stdout_and_exit_status
+      @response, @exit = run_command("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name}").stdout_and_exit_status
       @new_server_id = @response.scan(/'([^']+)/)[2][0]
     end
 
@@ -99,7 +99,7 @@ describe "servers:add command" do
   context "when creating server with name, image, flavor and only security group" do
     before(:all) do
       @server_name = resource_name("add4")
-      @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -s #{@sg_name}").stdout_and_exit_status
+      @response, @exit = run_command("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -s #{@sg_name}").stdout_and_exit_status
       @new_server_id = @response.scan(/'([^']+)/)[2][0]
     end
 
@@ -125,10 +125,10 @@ describe "servers:add command" do
   context "when creating server with a name that already exists" do
     before(:all) do
       @server_name = "server-already-exists"
-      @server = @hp_svc.servers.create(:flavor_id => OS_COMPUTE_BASE_FLAVOR_ID, :image_id => OS_COMPUTE_BASE_IMAGE_ID, :name => @server_name )
+      @server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
       @server.wait_for { ready? }
       # now create the server with the same name
-      @response, @exit = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID}").stderr_and_exit_status
+      @response, @exit = run_command("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()}").stderr_and_exit_status
     end
 
     it "should show error message" do
@@ -146,7 +146,7 @@ describe "servers:add command" do
     end
     context "servers:add with valid avl" do
       before(:all) do
-        @response, @exit_status = run_command("servers:add #{@server_name} #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -z az-1.region-a.geo-1").stdout_and_exit_status
+        @response, @exit_status = run_command("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -z az-1.region-a.geo-1").stdout_and_exit_status
         @server_id2 = @response.scan(/'([^']+)/)[2][0]
       end
       it "should report success" do
@@ -168,7 +168,7 @@ describe "servers:add command" do
     end
     context "servers:add with invalid avl" do
       it "should report error" do
-        response, exit_status = run_command("servers:add other_name #{OS_COMPUTE_BASE_IMAGE_ID} #{OS_COMPUTE_BASE_FLAVOR_ID} -z blah").stderr_and_exit_status
+        response, exit_status = run_command("servers:add other_name #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -z blah").stderr_and_exit_status
         response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
         exit_status.should be_exit(:general_error)
       end

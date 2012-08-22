@@ -12,7 +12,7 @@ describe "servers:password command" do
   context "when changing password for server" do
     before(:all) do
       @server_name = resource_name("pwd1")
-      @server = @hp_svc.servers.create(:flavor_id => OS_COMPUTE_BASE_FLAVOR_ID, :image_id => OS_COMPUTE_BASE_IMAGE_ID, :name => @server_name )
+      @server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
       @server.wait_for { ready? }
     end
 
@@ -32,7 +32,7 @@ describe "servers:password command" do
     end
     context "servers:password with valid avl" do
       before(:all) do
-        @server = @hp_svc.servers.create(:flavor_id => OS_COMPUTE_BASE_FLAVOR_ID, :image_id => OS_COMPUTE_BASE_IMAGE_ID, :name => @server_name )
+        @server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
         @server.wait_for { ready? }
       end
       it "should report success" do

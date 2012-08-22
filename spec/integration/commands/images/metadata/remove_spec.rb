@@ -3,8 +3,8 @@ require 'hpcloud/image_helper'
 
 describe "Images metadata remove command" do
   before(:all) do
-    @flavor_id = OS_COMPUTE_BASE_FLAVOR_ID
-    @image_id = OS_COMPUTE_BASE_IMAGE_ID
+    @flavor_id = AccountsHelper.get_flavor_id()
+    @image_id = AccountsHelper.get_image_id()
 
     @srv = HP::Cloud::ServerHelper.new(Connection.instance.compute)
     @srv.name = resource_name("meta_srv")

@@ -8,7 +8,7 @@ describe "servers:reboot command" do
   before(:all) do
     @hp_svc = compute_connection
     @server_name = resource_name("reboot")
-    server = @hp_svc.servers.create(:flavor_id => OS_COMPUTE_BASE_FLAVOR_ID, :image_id => OS_COMPUTE_BASE_IMAGE_ID, :name => @server_name )
+    server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
     server.wait_for { ready? }
     @server = @hp_svc.servers.get(server.id)
   end

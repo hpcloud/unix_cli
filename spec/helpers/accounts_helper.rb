@@ -20,4 +20,19 @@ class AccountsHelper
     file_name = @@tmpdir + "/.hpcloud/accounts/" + name
     return File.read(file_name)
   end
+
+  def self.get_flavor_id()
+    acct = HP::Cloud::Accounts.new.get('primary')
+    return acct[:options][:flavor] || "set options flavor in primary account"
+  end
+
+  def self.get_image_id()
+    acct = HP::Cloud::Accounts.new.get('primary')
+    return acct[:options][:image] || "set options image in primary account"
+  end
+
+  def self.get_uri()
+    acct = HP::Cloud::Accounts.new.get('primary')
+    return acct[:credentials][:auth_uri]
+  end
 end

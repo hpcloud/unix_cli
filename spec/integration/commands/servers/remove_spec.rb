@@ -12,7 +12,7 @@ describe "servers:remove command" do
   context "when deleting server with name" do
     before(:all) do
       @server_name = resource_name("del1")
-      server = @hp_svc.servers.create(:flavor_id => OS_COMPUTE_BASE_FLAVOR_ID, :image_id => OS_COMPUTE_BASE_IMAGE_ID, :name => @server_name )
+      server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
       server.wait_for { ready? }
       @server = @hp_svc.servers.get(server.id)
 
@@ -43,7 +43,7 @@ describe "servers:remove command" do
     end
     context "servers:remove with valid avl" do
       before(:all) do
-        server = @hp_svc.servers.create(:flavor_id => OS_COMPUTE_BASE_FLAVOR_ID, :image_id => OS_COMPUTE_BASE_IMAGE_ID, :name => @server_name )
+        server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
         server.wait_for { ready? }
         @server = @hp_svc.servers.get(server.id)
       end

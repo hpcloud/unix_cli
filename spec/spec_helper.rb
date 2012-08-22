@@ -35,16 +35,9 @@ require 'helpers/volume_attachment_helper'
 
 RSpec.configure do |config|
   
-  MOCKING_ENABLED = ENV['ENABLE_CLI_MOCKING'] || false
-
   HOSTNAME                    = `hostname`.chomp
-  RANDOM_CHARS                = [('a'..'z')].map{|i| i.to_a}.flatten
-
-  OS_COMPUTE_BASE_IMAGE_ID    = ENV['OS_COMPUTE_BASE_IMAGE_ID'] || "your image"
-  OS_COMPUTE_BASE_FLAVOR_ID   = ENV['OS_COMPUTE_BASE_FLAVOR_ID'] || "your flav"
-
+  MOCKING_ENABLED = ENV['ENABLE_CLI_MOCKING'] || false
   config.before(:each) { HP::Cloud::Connection.instance.set_options({}) }
-
   if MOCKING_ENABLED
     puts "==========================================================="
     puts "Running tests in mocking mode..."
@@ -52,12 +45,12 @@ RSpec.configure do |config|
     # Enable mocking
     Fog.mock!
   else
-    puts "Running tests against HP Cloud Services..."
+    puts "Running tests against: #{AccountsHelper.get_uri()}..."
   end
 
   # Generate a unique resource name
   def resource_name(seed=random_string(5))
-    'fog_' << HOSTNAME << '_' << Time.now.to_i.to_s << '_' << seed.to_s
+    'cli_' << HOSTNAME << '_' << Time.now.to_i.to_s << '_' << seed.to_s
   end
 
 end

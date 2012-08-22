@@ -10,7 +10,7 @@ describe "addresses:disassociate command" do
     @server_name = resource_name("ip")
     response, exit = run_command('addresses:add').stdout_and_exit_status
     @public_ip = response.scan(/'([^']+)/)[0][0]
-    @server = @hp_svc.servers.create(:flavor_id => OS_COMPUTE_BASE_FLAVOR_ID, :image_id => OS_COMPUTE_BASE_IMAGE_ID, :name => @server_name )
+    @server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
     @server.wait_for { ready? }
   end
 
