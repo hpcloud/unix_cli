@@ -23,7 +23,7 @@ module HP
         cred[:account_id] = ask 'Access Key Id:'
         cred[:secret_key] = ask 'Secret Key:'
         cred[:auth_uri] = ask_with_default 'Auth Uri:',
-                                      Config.settings[:default_auth_uri]
+                                      Config.new.settings[:default_auth_uri]
         cred[:tenant_id] = ask 'Tenant Id:'
 
         unless options['no-validate']

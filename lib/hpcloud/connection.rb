@@ -90,12 +90,6 @@ module HP
       end
 
       def validate_account(account_credentials)
-        connection_options = {:connect_timeout => Config.settings[:connect_timeout] || Config::CONNECT_TIMEOUT,
-                              :read_timeout    => Config.settings[:read_timeout]    || Config::READ_TIMEOUT,
-                              :write_timeout   => Config.settings[:write_timeout]   || Config::WRITE_TIMEOUT,
-                              :ssl_verify_peer => Config.settings[:ssl_verify]      || false,
-                              :ssl_ca_path     => Config.settings[:ssl_ca_path]     || nil,
-                              :ssl_ca_file     => Config.settings[:ssl_ca_file]     || nil}
         options = {
             :hp_account_id   => account_credentials[:account_id],
             :hp_secret_key   => account_credentials[:secret_key],
@@ -104,7 +98,7 @@ module HP
             :user_agent      => "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
         }
         # authenticate with Identity service
-        Fog::HP.authenticate_v2(options, connection_options)
+        Fog::HP.authenticate_v2(options, Config.default_options)
       end
     end
   end

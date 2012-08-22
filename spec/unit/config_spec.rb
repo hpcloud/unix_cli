@@ -83,3 +83,100 @@ describe "Config reading" do
     end
   end
 end
+
+describe "Config set and get" do
+  before(:each) do
+    ConfigHelper.use_tmp()
+  end
+    
+  context "with good value" do
+    it "should return value" do
+      config = HP::Cloud::Config.new()
+      config.set('connect_timeout', '99').should be_true
+      config.get('connect_timeout').should eq('99')
+      config.set('connect_timeout', '').should be_true
+      config.get('connect_timeout').should be_nil
+    end
+  end
+
+  context "set bogus" do
+    it "should throw exception" do
+      config = HP::Cloud::Config.new()
+      lambda {
+        config.set("bogus", "99")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Unknown configuration key value 'bogus'")
+      }
+    end
+  end
+
+  after(:each) do
+    ConfigHelper.reset()
+  end
+end
+
+describe "Config write" do
+  before(:each) do
+    ConfigHelper.use_tmp()
+    @config = HP::Cloud::Config.new
+    @config.write()
+  end
+
+  context "set nothing" do
+    it "should create empty file" do
+      ConfigHelper.contents.should eq("--- {}\n")
+    end
+  end
+
+  context "set something" do
+    it "should have the value" do
+      @config.set("connect_timeout", "44")
+      @config.write()
+      ConfigHelper.contents.should eq("---\nconnect_timeout: '44'\n")
+    end
+  end
+
+  context "set everything" do
+    it "should have the value" do
+      @config.set('default_auth_uri', '1val')
+      @config.set('block_availability_zone', '2val')
+      @config.set('storage_availability_zone', '3val')
+      @config.set('compute_availability_zone', '4val')
+      @config.set('cdn_availability_zone', '5val')
+      @config.set('connect_timeout', '6val')
+      @config.set('read_timeout', '7val')
+      @config.set('write_timeout', '8val')
+      @config.set('ssl_verify_peer', '9val')
+      @config.set('ssl_ca_path', '10val')
+      @config.set("ssl_ca_file", "11val")
+      @config.write()
+      ConfigHelper.contents.should eq("---\n" +
+        "default_auth_uri: 1val\n" +
+        "block_availability_zone: 2val\n" +
+        "storage_availability_zone: 3val\n" +
+        "compute_availability_zone: 4val\n" +
+        "cdn_availability_zone: 5val\n" +
+        "connect_timeout: 6val\n" +
+        "read_timeout: 7val\n" +
+        "write_timeout: 8val\n" +
+        "ssl_verify_peer: 9val\n" +
+        "ssl_ca_path: 10val\n" +
+        "ssl_ca_file: 11val\n")
+    end
+  end
+
+  context "clear something" do
+    it "should have the value" do
+      @config.set("connect_timeout", "33")
+      @config.write()
+      ConfigHelper.contents.should eq("---\nconnect_timeout: '33'\n")
+      @config.set("connect_timeout", "")
+      @config.write()
+      ConfigHelper.contents.should eq("--- {}\n")
+    end
+  end
+
+  after(:each) do
+    ConfigHelper.reset()
+  end
+end

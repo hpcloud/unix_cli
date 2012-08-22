@@ -5,6 +5,18 @@ module HP
     class Config
       @@home = nil
       attr_reader :directory, :file, :settings
+      KNOWN = [ 'default_auth_uri',
+                'block_availability_zone',
+                'storage_availability_zone',
+                'compute_availability_zone',
+                'cdn_availability_zone',
+                'connect_timeout',
+                'read_timeout',
+                'write_timeout',
+                'ssl_verify_peer',
+                'ssl_ca_path',
+                'ssl_ca_file'
+              ]
 
       def initialize
         if @@home.nil?
@@ -12,6 +24,7 @@ module HP
         end
         @directory = @@home + "/.hpcloud/"
         @file = @directory + "config.yml"
+        @file_settings = {}
         read()
       end
 
@@ -63,8 +76,26 @@ module HP
         @settings[:ssl_ca_file] ||= options[:ssl_ca_file]
       end
 
+      def get(key)
+        return @settings[key]
+      end
+
+      def set(key, value)
+        if KNOWN.include?(key) == false
+          raise Exception.new("Unknown configuration key value '#{key}'")
+        end
+        value = value.to_s
+        if value.empty?
+          @file_settings.delete(key)
+          @settings.delete(key)
+        else
+          @file_settings[key] = value
+          @settings[key] = value
+        end
+        return true
+      end
+
       def write()
-        return unless @file_settings.empty?
         begin
           Dir.mkdir(@directory) unless File.directory?(@directory)
           File.open("#{@file}", 'w') do |file|
@@ -73,6 +104,7 @@ module HP
         rescue
           raise Exception.new('Error writing configuration file: ' + @file)
         end
+        return true
       end
     end
   end

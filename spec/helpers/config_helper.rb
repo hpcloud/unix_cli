@@ -19,4 +19,9 @@ class ConfigHelper
     FileUtils.rm_rf(@@tmpdir) unless @@tmpdir.nil?
     HP::Cloud::Config.home_directory = nil
   end
+
+  def self.contents()
+    file_name = ConfigHelper.tmp_directory() + "/.hpcloud/config.yml"
+    return File.read(file_name)
+  end
 end
