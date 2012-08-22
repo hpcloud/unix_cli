@@ -168,3 +168,21 @@ describe "Account get" do
     end
   end
 end
+
+describe "Accounts" do
+  before(:each) do
+    AccountsHelper.use_fixtures()
+  end
+
+  context "when create called" do
+    it "should have basic settings" do
+      accounts = Accounts.new()
+      acct = accounts.create('mumford')
+      uri = HP::Cloud::Config.new.get(:default_auth_uri)
+
+      acct[:credentials].should eq({:auth_uri=>uri})
+      acct[:zones].should eq({})
+      acct[:options].should eq({})
+    end
+  end
+end

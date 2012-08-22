@@ -1,63 +1,51 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "account:setup command" do
-
-  def cli
-    @cli ||= HP::Cloud::CLI.new
-  end
-
-  before(:all) { AccountsHelper.use_tmp() }
-  
   context "without existing account" do
-  
     before(:all) { AccountsHelper.use_tmp() }
   
-    it "should ask for account id, account key, endpoint and tenant_id" do
-      $stdout.should_receive(:puts).with('****** Setup your HP Cloud Services default account ******')
-      $stdout.should_receive(:print).with('Access Key Id: ')
-      $stdin.should_receive(:gets).and_return('foo')
-      $stdout.should_receive(:print).with('Secret Key: ')
-      $stdin.should_receive(:gets).and_return('bar')
-      $stdout.should_receive(:print).with('Auth Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] ')
-      $stdin.should_receive(:gets).and_return('https://127.0.0.1/')
-      $stdout.should_receive(:print).with('Tenant Id: ')
-      $stdin.should_receive(:gets).and_return('111111')
-      $stdout.should_receive(:puts).with('Verifying your HP Cloud Services account...')
-      $stderr.should_receive(:puts).and_return('Account setup failed. Error connecting to the service endpoint at: https://127.0.0.1/. Please verify your account credentials. ')
-      #$stderr.should_receive(:puts)
-      begin
-        cli.send('account:setup')
-      rescue SystemExit => system_exit # catch any exit calls
-        exit_status = system_exit.status
-      end
+    it "without validation" do
+      input = ['foo','bar','https://127.0.0.1/','111111']
+      rsp = cptr('account:setup --no-validate', input)
+      rsp.stdout.should eq(
+        "****** Setup your HP Cloud Services default account ******\n" +
+        "Access Key Id: [] " +
+        "Secret Key: [] " +
+        "Auth Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] " +
+        "Tenant Id: [] " +
+        "Account credentials for HP Cloud Services have been set up.\n")
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
     end
 
-    it "should provide default endpoint and validate endpoint" do
-      $stdout.should_receive(:puts).with('****** Setup your HP Cloud Services default account ******')
-      $stdout.should_receive(:print).with('Access Key Id: ')
-      $stdin.should_receive(:gets).and_return('foo')
-      $stdout.should_receive(:print).with('Secret Key: ')
-      $stdin.should_receive(:gets).and_return('bar')
-      $stdout.should_receive(:print).with('Auth Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] ')
-      $stdin.should_receive(:gets).and_return('https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
-      $stdout.should_receive(:print).with('Tenant Id: ')
-      $stdin.should_receive(:gets).and_return('111111')
-      $stdout.should_receive(:puts).with('Verifying your HP Cloud Services account...')
-      $stderr.should_receive(:puts).and_return('Account setup failed. Error connecting to the service endpoint at: "https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/". Please verify your account credentials.')
-      #$stderr.should_receive(:puts)
-      begin
-        cli.send('account:setup')
-      rescue SystemExit => system_exit # catch any exit calls
-        exit_status = system_exit.status
-      end
+    it "with validation" do
+      input = ['oof','rab','https://127.0.0.2/','222222']
+      rsp = cptr('account:setup', input)
+      rsp.stdout.should eq(
+        "****** Setup your HP Cloud Services default account ******\n" +
+        "Access Key Id: [foo] " +
+        "Secret Key: [bar] " +
+        "Auth Uri: [https://127.0.0.1/] " +
+        "Tenant Id: [111111] " +
+        "Verifying your HP Cloud Services account...\n")
+      rsp.stderr.should eq("Account setup failed. Error connecting to the service endpoint at: 'https://127.0.0.2/'. Please verify your account credentials. \n Exception: Connection refused - connect(2)\n")
+      rsp.exit_status.should be_exit(:general_error)
     end
-    
-    context "when successful" do
-      
-      it "should create account credential file"
 
+    it "with account name" do
+      input = ['mumford','sons','https://timshel/','322']
+      rsp = cptr('account:setup --no-validate deluxe', input)
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+      AccountsHelper.contents('deluxe').should eq("---\n:credentials:\n  :account_id: mumford\n  :secret_key: sons\n  :auth_uri: https://timshel/\n  :tenant_id: '322'\n:zones: {}\n:options: {}\n")
     end
-       
+
+    it "over existing" do
+      input = ['LaSera','SeesTheLight','https://please/','227']
+      rsp = cptr('account:setup --no-validate deluxe', input)
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+      AccountsHelper.contents('deluxe').should eq("---\n:credentials:\n  :account_id: LaSera\n  :secret_key: SeesTheLight\n  :auth_uri: https://please/\n  :tenant_id: '227'\n:zones: {}\n:options: {}\n")
+    end
   end
-  
 end

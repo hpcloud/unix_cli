@@ -15,4 +15,9 @@ class AccountsHelper
     FileUtils.rm_rf(@@tmpdir) unless @@tmpdir.nil?
     Accounts.home_directory = nil
   end
+
+  def self.contents(name)
+    file_name = @@tmpdir + "/.hpcloud/accounts/" + name
+    return File.read(file_name)
+  end
 end

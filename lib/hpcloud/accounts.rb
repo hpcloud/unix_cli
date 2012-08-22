@@ -41,6 +41,16 @@ module HP
         return @accts[account]
       end
 
+      def create(account)
+        if @accts[account].nil?
+          uri = Config.new.get(:default_auth_uri)
+          @accts[account] = {:credentials=>{:auth_uri=>uri},
+                             :zones=>{},
+                             :options=>{}}
+        end
+        return @accts[account]
+      end
+
       def set_credentials(account, id, key, uri, tenant)
         if @accts[account].nil?
           @accts[account] = {:credentials=>{}, :zones=>{}, :options=>{}}
@@ -51,10 +61,6 @@ module HP
                                           :tenant_id => tenant
                                         }
       end
-
-      #def set(account, values)
-      #  @accts[account] = values
-      #end
 
       def set_zones(account, compute, storage, cdn, block)
         hsh = @accts[account]

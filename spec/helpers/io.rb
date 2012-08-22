@@ -35,7 +35,8 @@ RSpec.configure do |config|
   end
 
   # Capture everything
-  def cptr(command)
+  def cptr(command, input=[])
+    input.each { |x| $stdin.should_receive(:gets).and_return(x) }
     rsp = TestResponse.new
     rsp.exit_status = 0
     begin

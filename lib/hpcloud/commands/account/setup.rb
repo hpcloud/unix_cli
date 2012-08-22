@@ -1,3 +1,5 @@
+require 'hpcloud/accounts'
+
 module HP
   module Cloud
     class CLI < Thor
@@ -17,13 +19,20 @@ module HP
                     :desc => "Don't verify account settings during setup"
       define_method "account:setup" do |name='default'|
 
+        accounts = HP::Cloud::Accounts.new()
+        begin
+          acct = accounts.read(name)
+        rescue Exception => e
+          acct = accounts.create(name)
+        end
+        cred = acct[:credentials]
+
         # ask for credentials
-        cred = {}
         display "****** Setup your HP Cloud Services #{name} account ******"
-        cred[:account_id] = ask 'Access Key Id:'
-        cred[:secret_key] = ask 'Secret Key:'
-        cred[:auth_uri] = ask_with_default 'Auth Uri:', Config.new.get(:default_auth_uri)
-        cred[:tenant_id] = ask 'Tenant Id:'
+        cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
+        cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
+        cred[:auth_uri] = ask_with_default 'Auth Uri:', "#{cred[:auth_uri]}"
+        cred[:tenant_id] = ask_with_default 'Tenant Id:', "#{cred[:tenant_id]}"
 
         unless options['no-validate']
           display "Verifying your HP Cloud Services account..."
@@ -35,8 +44,7 @@ module HP
         end
 
         # update credentials and stash in config directory
-        accounts = Accounts.new()
-        accounts.set(name, cred)
+        accounts.set_credentials(name, cred[:account_id], cred[:secret_key], cred[:auth_uri], cred[:tenant_id])
         accounts.write(name)
 
         display "Account credentials for HP Cloud Services have been set up."
