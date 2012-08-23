@@ -15,7 +15,7 @@ module HP
                       :rate_limited         => 88
                     }
 
-      VALID_SERVICE_NAMES = ['storage','compute','cdn']
+      VALID_SERVICE_NAMES = ['storage','compute','cdn', 'block']
 
       private
       def connection(service = :storage, options = {})
