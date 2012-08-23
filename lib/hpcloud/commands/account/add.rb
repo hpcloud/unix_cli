@@ -11,9 +11,9 @@ module HP
   Add or update account credentials, zones, or options.
   
 Examples:
-  hpcloud accout:add pro auth_uri='https://127.0.01/' block_availability_zone='region-a'
+  hpcloud account:add pro auth_uri='https://127.0.01/' block_availability_zone='region-a'
 
-Alias: accout:update
+Alias: account:update
       DESC
       define_method "account:add" do |name, pair, *pairs|
 

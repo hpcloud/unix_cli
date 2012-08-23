@@ -37,6 +37,13 @@ module HP
         "#{@directory}#{account.to_s.downcase.gsub(' ', '_')}"
       end
 
+      def list
+        ray = Dir.entries("#{@directory}")
+        ray.delete_if{|item| File.file?("#{@directory}/#{item}") == false }
+        ray.sort!
+        return ray.join("\n")
+      end
+
       def read(account = 'default', createIt=false)
         return @accts[account] if @accts[account].nil? == false
         file_name = get_file_name(account)

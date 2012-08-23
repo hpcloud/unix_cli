@@ -1,5 +1,4 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
-require 'hpcloud/server_helper'
 
 describe "Account add and update" do
   before(:all) do
