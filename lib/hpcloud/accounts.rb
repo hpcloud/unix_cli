@@ -44,6 +44,17 @@ module HP
         return ray.join("\n")
       end
 
+      def remove(account)
+        begin
+          file_name = get_file_name(account)
+          File.delete(file_name)
+          return true
+        rescue Exception => e
+          raise Exception.new('Error removing account file: ' + file_name)
+        end
+        return false
+      end
+
       def read(account = 'default', createIt=false)
         return @accts[account] if @accts[account].nil? == false
         file_name = get_file_name(account)
