@@ -101,6 +101,11 @@ module HP
         return response.empty? ? default : response
       end
     
+      def error(message, exit_status=nil)
+        error_message(message, exit_status)
+        exit @exit_status || 1
+      end
+
       def error_message(message, exit_status=nil)
         $stderr.puts message
         if exit_status.is_a?(Symbol)
@@ -108,11 +113,6 @@ module HP
         else
           @exit_status = ERROR_TYPES[:general_error]
         end
-      end
-
-      def error(message, exit_status=nil)
-        error_message(message, exit_status)
-        exit @exit_status || 1
       end
 
       def cli_command(options)
@@ -126,6 +126,8 @@ module HP
           display_error_message(error, :permission_denied)
         rescue Excon::Errors::NotFound => error
           display_error_message(error, :not_found)
+        rescue Exception => error
+          display_error_message(error, :general_error)
         end
         exit @exit_status
       end

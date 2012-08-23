@@ -37,7 +37,7 @@ module HP
         "#{@directory}#{account.to_s.downcase.gsub(' ', '_')}"
       end
 
-      def read(account = 'default')
+      def read(account = 'default', createIt=false)
         return @accts[account] if @accts[account].nil? == false
         file_name = get_file_name(account)
         if File.exists?(file_name)
@@ -51,6 +51,9 @@ module HP
             raise Exception.new('Error reading account file: ' + file_name)
           end
         else
+          if createIt
+            return create(account)
+          end
           raise Exception.new('Could not find account file: ' + file_name)
         end
         return @accts[account]

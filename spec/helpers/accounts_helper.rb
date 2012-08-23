@@ -11,6 +11,10 @@ class AccountsHelper
     Accounts.home_directory = @@tmpdir
   end
 
+  def self.tmp_dir()
+    @@tmpdir
+  end
+
   def self.reset()
     FileUtils.rm_rf(@@tmpdir) unless @@tmpdir.nil?
     Accounts.home_directory = nil
@@ -19,6 +23,12 @@ class AccountsHelper
   def self.contents(name)
     file_name = @@tmpdir + "/.hpcloud/accounts/" + name
     return File.read(file_name)
+  end
+
+  def self.value(name, groupo, key)
+    file_name = @@tmpdir + "/.hpcloud/accounts/" + name
+    yaml = YAML::load(File.open(file_name))
+    return yaml[groupo][key]
   end
 
   def self.get_flavor_id()
