@@ -208,3 +208,48 @@ describe "Accounts" do
     end
   end
 end
+
+describe "Accounts" do
+  before(:each) do
+    AccountsHelper.use_tmp()
+  end
+
+  context "when we use set" do
+    it "should set the right setting" do
+      accounts = Accounts.new()
+      accounts.create('Hives')
+      accounts.set('Hives', :account_id, "C1").should be_true
+      accounts.set('Hives', :secret_key, "C2").should be_true
+      accounts.set('Hives', :auth_uri, "C3").should be_true
+      accounts.set('Hives', :tenant_id, "C4").should be_true
+      accounts.set('Hives', :compute_availability_zone, "Z1").should be_true
+      accounts.set('Hives', :storage_availability_zone, "Z2").should be_true
+      accounts.set('Hives', :cdn_availability_zone, "Z3").should be_true
+      accounts.set('Hives', :block_availability_zone, "Z4").should be_true
+      accounts.set('Hives', :connect_timeout, "O1").should be_true
+      accounts.set('Hives', :read_timeout, "O2").should be_true
+      accounts.set('Hives', :write_timeout, "O3").should be_true
+      accounts.set('Hives', :ssl_verify_peer, "O4").should be_true
+      accounts.set('Hives', :ssl_ca_path, "O5").should be_true
+      accounts.set('Hives', :ssl_ca_file, "O6").should be_true
+      accounts.set('Hives', :bogus, "What").should be_false
+      accounts.set('bogus', :ssl_ca_file, "O7").should be_false
+
+      acct = accounts.get('Hives')
+      acct[:credentials][:account_id].should eq("C1")
+      acct[:credentials][:secret_key].should eq("C2")
+      acct[:credentials][:auth_uri].should eq("C3")
+      acct[:credentials][:tenant_id].should eq("C4")
+      acct[:zones][:compute_availability_zone].should eq("Z1")
+      acct[:zones][:storage_availability_zone].should eq("Z2")
+      acct[:zones][:cdn_availability_zone].should eq("Z3")
+      acct[:zones][:block_availability_zone].should eq("Z4")
+      acct[:options][:connect_timeout].should eq("O1")
+      acct[:options][:read_timeout].should eq("O2")
+      acct[:options][:write_timeout].should eq("O3")
+      acct[:options][:ssl_verify_peer].should eq("O4")
+      acct[:options][:ssl_ca_path].should eq("O5")
+      acct[:options][:ssl_ca_file].should eq("O6")
+    end
+  end
+end

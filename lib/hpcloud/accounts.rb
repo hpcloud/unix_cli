@@ -6,6 +6,21 @@ module HP
       attr_reader :directory
       @@home = nil
 
+      CREDENTIALS = [:account_id,
+                     :secret_key,
+                     :auth_uri,
+                     :tenant_id]
+      ZONES = [:compute_availability_zone,
+               :storage_availability_zone,
+               :cdn_availability_zone,
+               :block_availability_zone]
+      OPTIONS = [:connect_timeout,
+                 :read_timeout,
+                 :write_timeout,
+                 :ssl_verify_peer,
+                 :ssl_ca_path,
+                 :ssl_ca_file]
+
       def initialize
         if @@home.nil?
           @@home = ENV['HOME']
@@ -73,6 +88,22 @@ module HP
         hsh[:zones].delete(:storage_availability_zone) if storage.empty?
         hsh[:zones].delete(:cdn_availability_zone) if cdn.empty?
         hsh[:zones].delete(:block_availability_zone) if block.empty?
+      end
+
+      def set(account, key, value)
+        hsh = @accts[account]
+        return false if hsh.nil?
+        key = key.to_sym
+        if CREDENTIALS.include?(key)
+          hsh[:credentials][key] = value
+        elsif ZONES.include?(key)
+          hsh[:zones][key] = value
+        elsif OPTIONS.include?(key)
+          hsh[:options][key] = value
+        else
+          return false
+        end
+        return true
       end
 
       def set_default_zones(hsh)
