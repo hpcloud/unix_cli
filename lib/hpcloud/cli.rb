@@ -15,8 +15,6 @@ module HP
                       :rate_limited         => 88
                     }
 
-      VALID_SERVICE_NAMES = ['storage','compute','cdn']
-
       GOPTS = {:availability_zone => {:type => :string, :aliases => '-z',
                                       :desc => 'Set the availability zone.'},
                :account_name => {:type => :string, :aliases => '-A',

@@ -17,30 +17,21 @@ Examples:
       define_method "config:set" do
         # Refactor for common settings later
         service_name = options[:service_name]
-        if VALID_SERVICE_NAMES.include?(service_name)
-          # write the settings to the config file
-          settings = manage_settings(service_name, options)
-          unless settings.empty?
-            Config.update_config(settings)
+        if HP::Cloud::Connection.is_service(service_name)
+          begin
+            config = Config.new(true)
+            key = "#{service_name}_availability_zone"
+            value = options[:availability_zone]
+            config.set(key, value)
+            config.write()
             display "The configuration setting(s) have been saved to the config file."
-          else
+          rescue
             display "No configuration setting(s) were saved."
           end
         else
-          error("The service name is not valid. The service name has to be one of these: #{VALID_SERVICE_NAMES.join(', ')}", :not_supported)
+          error("The service name is not valid. The service name has to be one of these: #{HP::Cloud::Connection.get_services()}", :not_supported)
         end
       end
-
-      private
-
-      def manage_settings(service_name, options)
-        settings = {}
-        unless options.empty?
-          settings["#{service_name}_availability_zone"] = options[:availability_zone] unless options[:availability_zone].nil?
-        end
-        settings
-      end
-
     end
   end
 end

@@ -5,8 +5,6 @@ module HP
   module Cloud
     class Connection
     
-      VALID_SERVICE_NAMES = ['storage','compute','cdn', 'block']
-
       def initialize
         @storage_connection = {}
         @compute_connection = {}
@@ -21,6 +19,16 @@ module HP
         return @@instance
       end
  
+      VALID_SERVICES = ['storage','compute','cdn', 'block']
+
+      def self.is_service(name)
+        return VALID_SERVICES.include?(name)
+      end
+
+      def self.get_services()
+        return VALID_SERVICES.join(', ')
+      end
+
       def reset_connections
         @storage_connection = {}
         @compute_connection = {}

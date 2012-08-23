@@ -22,13 +22,17 @@ class AccountsHelper
   end
 
   def self.get_flavor_id()
+    return @@flavor_id unless @@flavor_id.nil?
     acct = HP::Cloud::Accounts.new.get('primary')
-    return acct[:options][:flavor] || "set options flavor in primary account"
+    @@flavor_id = acct[:options][:flavor] || "set options flavor primary acct"
+    return @@flavor_id
   end
 
   def self.get_image_id()
+    return @@image_id unless @@image_id.nil?
     acct = HP::Cloud::Accounts.new.get('primary')
-    return acct[:options][:image] || "set options image in primary account"
+    @@image_id = acct[:options][:image] || "set options image in primary acct"
+    return @@image_id
   end
 
   def self.get_uri()

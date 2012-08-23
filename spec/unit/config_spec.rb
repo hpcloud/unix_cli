@@ -132,7 +132,7 @@ describe "Config write" do
     it "should have the value" do
       @config.set("connect_timeout", "44")
       @config.write()
-      ConfigHelper.contents.should eq("---\nconnect_timeout: '44'\n")
+      ConfigHelper.contents.should eq("---\n:connect_timeout: '44'\n")
     end
   end
 
@@ -151,17 +151,17 @@ describe "Config write" do
       @config.set("ssl_ca_file", "11val")
       @config.write()
       ConfigHelper.contents.should eq("---\n" +
-        "default_auth_uri: 1val\n" +
-        "block_availability_zone: 2val\n" +
-        "storage_availability_zone: 3val\n" +
-        "compute_availability_zone: 4val\n" +
-        "cdn_availability_zone: 5val\n" +
-        "connect_timeout: 6val\n" +
-        "read_timeout: 7val\n" +
-        "write_timeout: 8val\n" +
-        "ssl_verify_peer: 9val\n" +
-        "ssl_ca_path: 10val\n" +
-        "ssl_ca_file: 11val\n")
+        ":default_auth_uri: 1val\n" +
+        ":block_availability_zone: 2val\n" +
+        ":storage_availability_zone: 3val\n" +
+        ":compute_availability_zone: 4val\n" +
+        ":cdn_availability_zone: 5val\n" +
+        ":connect_timeout: 6val\n" +
+        ":read_timeout: 7val\n" +
+        ":write_timeout: 8val\n" +
+        ":ssl_verify_peer: 9val\n" +
+        ":ssl_ca_path: 10val\n" +
+        ":ssl_ca_file: 11val\n")
     end
   end
 
@@ -169,7 +169,7 @@ describe "Config write" do
     it "should have the value" do
       @config.set("connect_timeout", "33")
       @config.write()
-      ConfigHelper.contents.should eq("---\nconnect_timeout: '33'\n")
+      ConfigHelper.contents.should eq("---\n:connect_timeout: '33'\n")
       @config.set("connect_timeout", "")
       @config.write()
       ConfigHelper.contents.should eq("--- {}\n")

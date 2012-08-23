@@ -5,27 +5,32 @@ module HP
     class Config
       @@home = nil
       attr_reader :directory, :file, :settings
-      KNOWN = [ 'default_auth_uri',
-                'block_availability_zone',
-                'storage_availability_zone',
-                'compute_availability_zone',
-                'cdn_availability_zone',
-                'connect_timeout',
-                'read_timeout',
-                'write_timeout',
-                'ssl_verify_peer',
-                'ssl_ca_path',
-                'ssl_ca_file'
+      KNOWN = [ :default_auth_uri,
+                :block_availability_zone,
+                :storage_availability_zone,
+                :compute_availability_zone,
+                :cdn_availability_zone,
+                :connect_timeout,
+                :read_timeout,
+                :write_timeout,
+                :ssl_verify_peer,
+                :ssl_ca_path,
+                :ssl_ca_file
               ]
 
-      def initialize
+      def initialize(ignore=false)
         if @@home.nil?
           @@home = ENV['HOME']
         end
         @directory = @@home + "/.hpcloud/"
         @file = @directory + "config.yml"
         @file_settings = {}
-        read()
+        @settings = {}
+        begin
+          read()
+        rescue Exception => e
+          raise e unless ignore
+        end
       end
 
       def self.home_directory=(dir)
@@ -77,10 +82,11 @@ module HP
       end
 
       def get(key)
-        return @settings[key]
+        return @settings[key.to_sym]
       end
 
       def set(key, value)
+        key = key.to_sym
         if KNOWN.include?(key) == false
           raise Exception.new("Unknown configuration key value '#{key}'")
         end
@@ -98,6 +104,7 @@ module HP
       def write()
         begin
           Dir.mkdir(@directory) unless File.directory?(@directory)
+          @file_settings.delete_if { |k,v| v.nil? }
           File.open("#{@file}", 'w') do |file|
             file.write @file_settings.to_yaml
           end

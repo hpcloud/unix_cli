@@ -24,4 +24,10 @@ class ConfigHelper
     file_name = ConfigHelper.tmp_directory() + "/.hpcloud/config.yml"
     return File.read(file_name)
   end
+
+  def self.value(key)
+    file_name = ConfigHelper.tmp_directory() + "/.hpcloud/config.yml"
+    yaml = YAML::load(File.open(file_name))
+    return yaml[key]
+  end
 end
