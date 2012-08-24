@@ -74,7 +74,7 @@ describe "Config reading" do
       lambda {
         config = HP::Cloud::Config.new
       }.should raise_error(Exception) {|e|
-        e.to_s.should eq("Error reading configuration file: #{directory}/.hpcloud/config.yml")
+        e.to_s.should eq("Error reading configuration file: #{directory}/.hpcloud/config.yml\ncan't convert Symbol into Integer")
       }
     end
 
@@ -178,5 +178,47 @@ describe "Config write" do
 
   after(:each) do
     ConfigHelper.reset()
+  end
+end
+
+describe "Config split nvp" do
+  context "should split valid nvp" do
+    it "should handle valid cases" do
+      k, v = HP::Cloud::Config.split("abc=123")
+      k.should eq("abc")
+      v.should eq("123")
+    end
+
+    it "should handle nil cases" do
+      k, v = HP::Cloud::Config.split("abc=")
+      k.should eq("abc")
+      v.should eq("")
+    end
+  end
+
+  context "should throw exceptions on bad cases" do
+    it "should handle no equal" do
+      lambda {
+        HP::Cloud::Config.split("abc")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Invalid name value pair: 'abc'")
+      }
+    end
+
+    it "should handle too many equal" do
+      lambda {
+        HP::Cloud::Config.split("abc=123=22")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Invalid name value pair: 'abc=123=22'")
+      }
+    end
+
+    it "should handle nothing" do
+      lambda {
+        HP::Cloud::Config.split("")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Invalid name value pair: ''")
+      }
+    end
   end
 end

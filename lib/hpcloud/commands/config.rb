@@ -16,7 +16,9 @@ Examples:
 Aliases: config:list
       DESC
       def config
-        display Config.new.list
+        cli_command(options) {
+          display Config.new.list
+        }
       end
     end
   end

@@ -13,7 +13,7 @@ module HP
 Examples:
   hpcloud account:remove useast uswest
 
-Alias: accout:rm, account:delete, account:del
+Alias: account:rm, account:delete, account:del
       DESC
       define_method "account:remove" do |name, *names|
         cli_command(options) {

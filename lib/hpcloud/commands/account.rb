@@ -18,7 +18,7 @@ Examples:
   hpcloud account:list
   hpcloud account:list useast
 
-Alias: accout:list
+Alias: account:list
       DESC
       define_method "account" do |name=nil|
         cli_command(options) {

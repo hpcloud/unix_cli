@@ -29,7 +29,11 @@ module HP
         begin
           read()
         rescue Exception => e
-          raise e unless ignore
+          if ignore
+            warn e.to_s
+          else
+            raise e
+          end
         end
       end
 
@@ -56,6 +60,26 @@ module HP
                }
       end
 
+      def self.get_known
+        ret = ""
+        KNOWN.each{|key| ret += "\n" + key.to_s }
+        return ret
+      end
+
+      def self.split(nvp)
+        begin
+          kv = nvp.split('=')
+          if kv.length == 2
+            return kv[0], kv[1]
+          end
+          if nvp[-1,1] == '='
+            return kv[0], ''
+          end
+        rescue Exception => e
+        end
+        raise Exception.new("Invalid name value pair: '#{nvp}'")
+      end
+
       def list
         return @settings.to_yaml
       end
@@ -67,11 +91,13 @@ module HP
             @file_settings = YAML::load(File.open(@file))
             @settings = @file_settings.clone
             @settings[:block_availability_zone] ||= cfg[:block_availability_zone]
+            @settings[:block_availability_zone] ||= cfg[:block_availability_zone]
             @settings[:cdn_availability_zone] ||= cfg[:cdn_availability_zone]
             @settings[:compute_availability_zone] ||= cfg[:compute_availability_zone]
             @settings[:storage_availability_zone] ||= cfg[:storage_availability_zone]
-          rescue
-            raise Exception.new('Error reading configuration file: ' + @file)
+          rescue Exception => e
+            @settings = cfg
+            raise Exception.new("Error reading configuration file: #{@file}\n" + e.to_s)
           end
         else
           @settings = cfg
