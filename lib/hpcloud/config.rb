@@ -56,12 +56,16 @@ module HP
                }
       end
 
+      def list
+        return @settings.to_yaml
+      end
+
       def read
         cfg = Config.default_config()
         if File.exists?(@file)
           begin
             @file_settings = YAML::load(File.open(@file))
-            @settings = @file_settings
+            @settings = @file_settings.clone
             @settings[:block_availability_zone] ||= cfg[:block_availability_zone]
             @settings[:cdn_availability_zone] ||= cfg[:cdn_availability_zone]
             @settings[:compute_availability_zone] ||= cfg[:compute_availability_zone]
@@ -79,6 +83,7 @@ module HP
         @settings[:ssl_verify_peer] ||= options[:ssl_verify_peer]
         @settings[:ssl_ca_path] ||= options[:ssl_ca_path]
         @settings[:ssl_ca_file] ||= options[:ssl_ca_file]
+        @settings.delete_if { |k,v| v.nil? }
       end
 
       def get(key)
