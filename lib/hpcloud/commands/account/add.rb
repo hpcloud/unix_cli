@@ -8,7 +8,8 @@ module HP
 
       desc 'account:add', "modify your account credentials, zones, or options"
       long_desc <<-DESC
-  Add or update account credentials, zones, or options.
+  Add or update account credentials, zones, or options.  Valid settings include:
+#{Accounts.get_known}
   
 Examples:
   hpcloud account:add pro auth_uri='https://127.0.01/' block_availability_zone='region-a'

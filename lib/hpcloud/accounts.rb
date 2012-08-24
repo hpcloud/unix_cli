@@ -19,7 +19,9 @@ module HP
                  :write_timeout,
                  :ssl_verify_peer,
                  :ssl_ca_path,
-                 :ssl_ca_file]
+                 :ssl_ca_file,
+                 :prefered_flavor,
+                 :prefered_image]
 
       def initialize
         if @@home.nil?
@@ -31,6 +33,14 @@ module HP
 
       def self.home_directory=(dir)
         @@home = dir
+      end
+
+      def self.get_known
+        ret = ""
+        CREDENTIALS.each{|key| ret += "\n" + key.to_s }
+        ZONES.each{|key| ret += "\n" + key.to_s }
+        OPTIONS.each{|key| ret += "\n" + key.to_s }
+        return ret
       end
 
       def get_file_name(account)
