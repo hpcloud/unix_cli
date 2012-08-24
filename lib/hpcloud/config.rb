@@ -54,7 +54,7 @@ module HP
         return { :connect_timeout => 30,
                  :read_timeout => 30,
                  :write_timeout => 30,
-                 :ssl_verify_peer => false,
+                 :ssl_verify_peer => true,
                  :ssl_ca_path => nil,
                  :ssl_ca_file => nil
                }

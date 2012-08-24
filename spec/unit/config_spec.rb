@@ -28,7 +28,7 @@ describe "Config reading" do
       config.settings[:connect_timeout].should eq(30)
       config.settings[:read_timeout].should eq(30)
       config.settings[:write_timeout].should eq(30)
-      config.settings[:ssl_verify_peer].should be_false
+      config.settings[:ssl_verify_peer].should be_true
       config.settings[:ssl_ca_path].should be_nil
       config.settings[:ssl_ca_file].should be_nil
     end
