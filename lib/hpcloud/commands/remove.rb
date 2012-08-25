@@ -19,7 +19,7 @@ Aliases: rm, delete, destroy, del
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
                     :desc => 'Do not confirm removal, remove non-empty containers.'
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       def remove(resource)
         container, path = Container.parse_resource(resource)
         type = Resource.detect_type(resource)

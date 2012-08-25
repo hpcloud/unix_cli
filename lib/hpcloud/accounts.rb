@@ -164,9 +164,12 @@ module HP
         hsh[:options][:connect_timeout] ||= settings[:connect_timeout]
         hsh[:options][:read_timeout] ||= settings[:read_timeout]
         hsh[:options][:write_timeout] ||= settings[:write_timeout]
-        hsh[:options][:ssl_verify_peer] ||= settings[:ssl_verify_peer]
+        if hsh[:options][:ssl_verify_peer].nil?
+          hsh[:options][:ssl_verify_peer] = settings[:ssl_verify_peer]
+        end
         hsh[:options][:ssl_ca_path] ||= settings[:ssl_ca_path]
         hsh[:options][:ssl_ca_file] ||= settings[:ssl_ca_file]
+        hsh[:options].delete_if{ |k,v| v.nil? }
         return hsh
       end
 

@@ -13,7 +13,7 @@ Examples:
 
 Aliases: none
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       method_option :metadata,
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'

@@ -14,7 +14,7 @@ Examples:
 
 Aliases: flavors:list
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       def flavors
         begin
           # Need specific flavors for HP

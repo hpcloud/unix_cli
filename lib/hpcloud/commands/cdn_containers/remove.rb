@@ -14,7 +14,7 @@ Examples:
 
 Aliases: cdn:containers:rm, cdn:containers:delete, cdn:containers:del
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "cdn:containers:remove" do |name|
         begin
           connection(:cdn, options).delete_container(name)

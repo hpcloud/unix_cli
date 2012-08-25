@@ -106,7 +106,9 @@ module HP
         @settings[:connect_timeout] ||= options[:connect_timeout]
         @settings[:read_timeout] ||= options[:read_timeout]
         @settings[:write_timeout] ||= options[:write_timeout]
-        @settings[:ssl_verify_peer] ||= options[:ssl_verify_peer]
+        if @settings[:ssl_verify_peer].nil?
+          @settings[:ssl_verify_peer] = options[:ssl_verify_peer]
+        end
         @settings[:ssl_ca_path] ||= options[:ssl_ca_path]
         @settings[:ssl_ca_file] ||= options[:ssl_ca_file]
         @settings.delete_if { |k,v| v.nil? }

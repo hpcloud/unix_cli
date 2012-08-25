@@ -36,6 +36,10 @@ module HP
         end
       end
 
+      def self.add_common_options
+        GOPTS.each { |k,v| method_option(k, v) }
+      end
+
       # print some non-error output to the user
       def display(message)
         say message unless @silence_display

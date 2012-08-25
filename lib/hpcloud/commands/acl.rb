@@ -17,7 +17,7 @@ Examples:
 
 Aliases: none
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       def acl(resource)
         acls = "private"
         type = Resource.detect_type(resource)

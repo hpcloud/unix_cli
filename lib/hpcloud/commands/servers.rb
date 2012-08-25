@@ -23,7 +23,7 @@ Examples:
 
 Aliases: servers:list
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       def servers(*arguments)
         begin
           Connection.instance.set_options(options)

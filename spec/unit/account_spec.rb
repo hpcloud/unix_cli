@@ -143,6 +143,7 @@ end
 describe "Account get" do
   before(:each) do
     AccountsHelper.use_fixtures()
+    ConfigHelper.use_tmp()
   end
 
   context "when getting account" do

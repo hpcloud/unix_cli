@@ -15,7 +15,7 @@ Examples:
 
 Aliases: loc
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       def location(resource)
         container, key = Container.parse_resource(resource)
 

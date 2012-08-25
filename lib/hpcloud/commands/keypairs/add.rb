@@ -26,7 +26,7 @@ Aliases: none
       method_option :output, :default => false,
                     :type => :boolean, :aliases => '-o',
                     :desc => 'Save the key pair to a file in the current folder.'
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "keypairs:add" do |key_name|
         begin
           # get the options

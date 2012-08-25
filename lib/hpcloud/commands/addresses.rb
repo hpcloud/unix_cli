@@ -19,7 +19,7 @@ Examples:
 
 Aliases: addresses:list
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       def addresses
         begin
           addresses = connection(:compute, options).addresses

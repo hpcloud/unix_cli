@@ -5,6 +5,13 @@ describe "Connection options" do
   context "when we create" do
     before(:each) do
       AccountsHelper.use_fixtures()
+      ConfigHelper.use_tmp()
+    end
+
+    def expected_options()
+      eopts = HP::Cloud::Config.default_options.clone
+      eopts.delete_if{ |k,v| v.nil? }
+      return eopts
     end
 
     it "should have expected values with avail zone" do
@@ -12,7 +19,7 @@ describe "Connection options" do
       options = Connection.instance.create_options('default', :storage_availability_zone)
 
       options[:provider].should eql('HP')
-      options[:connection_options].should eql(HP::Cloud::Config.default_options)
+      options[:connection_options].should eql(expected_options)
       options[:hp_account_id].should eql('foo')
       options[:hp_secret_key].should eql('bar')
       options[:hp_auth_uri].should eql('http://192.168.1.1:8888/v2.0')
@@ -25,7 +32,7 @@ describe "Connection options" do
       options = Connection.instance.create_options('default', :storage_availability_zone)
 
       options[:provider].should eql('HP')
-      options[:connection_options].should eql(HP::Cloud::Config.default_options)
+      options[:connection_options].should eql(expected_options())
       options[:hp_account_id].should eql('foo')
       options[:hp_secret_key].should eql('bar')
       options[:hp_auth_uri].should eql('http://192.168.1.1:8888/v2.0')

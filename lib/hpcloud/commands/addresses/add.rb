@@ -15,7 +15,7 @@ Examples:
 
 Aliases: addresses:allocate
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "addresses:add" do
         begin
           compute_connection = connection(:compute, options)

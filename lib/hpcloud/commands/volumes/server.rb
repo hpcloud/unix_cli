@@ -15,7 +15,7 @@ Examples:
 
 Aliases: volumes:servers
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "volumes:server" do |*srv_name_or_ids|
         begin
           @exit_status = nil

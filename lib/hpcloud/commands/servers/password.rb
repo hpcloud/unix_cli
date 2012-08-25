@@ -15,7 +15,7 @@ Examples:
 
 Aliases: servers:passwd
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "servers:password" do |name, password|
         begin
           # setup connection for compute service

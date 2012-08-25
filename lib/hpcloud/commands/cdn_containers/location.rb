@@ -14,7 +14,7 @@ Examples:
 
 Aliases: cdn:containers:loc
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "cdn:containers:location" do |name|
         # check to see cdn container exists
         name = Container.container_name_for_service(name)

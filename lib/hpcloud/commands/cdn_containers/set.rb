@@ -14,7 +14,7 @@ Examples:
 
 Aliases: none
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "cdn:containers:set" do |name, attribute, value|
         # check to see cdn container exists
         begin connection(:cdn, options).head_container(name)

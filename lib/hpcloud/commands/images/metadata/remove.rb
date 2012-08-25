@@ -13,7 +13,7 @@ Examples:
 
 Aliases: rm
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "images:metadata:remove" do |name_or_id, *metadata|
         begin
           Connection.instance.set_options(options)

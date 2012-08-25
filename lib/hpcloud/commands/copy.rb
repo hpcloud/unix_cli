@@ -23,7 +23,7 @@ Examples:
 Aliases: cp
 
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       def copy(*source, destination)
         begin
           Connection.instance.set_options(options)

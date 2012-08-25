@@ -12,7 +12,7 @@ Examples:
 
 Aliases: none
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "keypairs:import" do |key_name, public_key_data|
         begin
           compute_connection = connection(:compute, options)

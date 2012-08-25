@@ -13,7 +13,7 @@ Examples:
   hpcloud volumes:detach myVolume -z az-2.region-a.geo-1 # Optionally specify an availability zone
 
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "volumes:detach" do |*vol_names|
         begin
           Connection.instance.set_options(options)

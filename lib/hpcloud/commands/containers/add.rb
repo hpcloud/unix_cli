@@ -16,7 +16,7 @@ Aliases: none
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
                     :desc => "Don't prompt if container name is not a valid virtual host."
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "containers:add" do |name|
         begin
           name = Container.container_name_for_service(name)

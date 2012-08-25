@@ -17,7 +17,7 @@ Examples:
 
 Aliases: mv
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       def move(from,to)
         from_type = Resource.detect_type(from)
         to_type   = Resource.detect_type(to)

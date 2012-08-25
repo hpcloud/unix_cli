@@ -17,7 +17,7 @@ Examples:
 
 Aliases: containers:list
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       def containers
         begin
           containers = connection(:storage, options).directories

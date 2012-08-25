@@ -17,7 +17,7 @@ Aliases: none
 
 Note: Custom ACLs will be supported in a future release.
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method 'acl:set' do |resource, acl|
         acl = acl.downcase
         unless CANNED_ACLS.include?(acl)

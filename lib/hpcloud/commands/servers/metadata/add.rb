@@ -13,7 +13,7 @@ Examples:
 
 Aliases: servers:metadata:update
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "servers:metadata:add" do |name_or_id, metadata|
         begin
           Connection.instance.set_options(options)

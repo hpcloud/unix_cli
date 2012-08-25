@@ -13,7 +13,7 @@ Examples:
 
 Aliases: none
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "addresses:disassociate" do |public_ip|
         begin
           compute_connection = connection(:compute, options)

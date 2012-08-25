@@ -18,7 +18,7 @@ Examples:
 
 Aliases: securitygroups:rules:list
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "securitygroups:rules" do |sec_group_name|
         begin
           compute_connection = connection(:compute, options)

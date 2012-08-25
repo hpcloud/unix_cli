@@ -17,7 +17,7 @@ Examples:
 
 Aliases: servers:metadata:list
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "servers:metadata" do |name_or_id|
         begin
           Connection.instance.set_options(options)

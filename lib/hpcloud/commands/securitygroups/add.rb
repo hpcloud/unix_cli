@@ -12,7 +12,7 @@ Examples:
 
 Aliases: none
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "securitygroups:add" do |sec_group_name, sg_desc|
         begin
           compute_connection = connection(:compute, options)

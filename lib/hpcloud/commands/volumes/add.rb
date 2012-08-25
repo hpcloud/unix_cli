@@ -19,7 +19,7 @@ Aliases: none
       method_option :metadata,
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "volumes:add" do |name, size|
         Connection.instance.set_options(options)
         begin

@@ -14,7 +14,7 @@ Examples:
 
 Aliases: securitygroups:rm, securitygroups:delete, securitygroups:del
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "securitygroups:remove" do |sec_group_name|
         begin
           compute_connection = connection(:compute, options)

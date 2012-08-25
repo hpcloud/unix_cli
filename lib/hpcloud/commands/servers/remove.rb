@@ -14,7 +14,7 @@ Examples:
 
 Aliases: servers:rm, servers:delete, servers:del
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "servers:remove" do |name, *names|
         cli_command(options) {
           names = [name] + names

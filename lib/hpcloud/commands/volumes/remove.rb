@@ -14,7 +14,7 @@ Examples:
 
 Aliases: volumes:rm, volumes:delete, volumes:del
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "volumes:remove" do |name, *names|
         cli_command(options) {
           names = [name] + names

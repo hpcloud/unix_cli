@@ -17,7 +17,7 @@ Aliases: ls
 
 Note: Listing details on files will be available in a future release.
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       def list(name='')
         return containers if name.empty?
         name = Container.container_name_for_service(name)

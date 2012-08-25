@@ -18,7 +18,7 @@ Aliases: none
       method_option :hard, :default => false,
                     :type => :boolean, :aliases => '-h',
                     :desc => 'Hard reboot a server.'
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "servers:reboot" do |name|
         begin
           # setup connection for compute service

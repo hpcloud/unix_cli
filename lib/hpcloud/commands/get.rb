@@ -14,7 +14,7 @@ Examples:
 
 Aliases: fetch
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       def get(resource)
         container, path = Container.parse_resource(resource)
         type = Resource.detect_type(resource)

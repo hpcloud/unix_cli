@@ -13,7 +13,7 @@ Examples:
 
 Aliases: none
       DESC
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "cdn:containers:add" do |name|
         name = Container.container_name_for_service(name)
         # check if the container exists on the storage account

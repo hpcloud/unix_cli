@@ -28,7 +28,7 @@ Aliases: securitygroups:rules:authorize
       method_option :source_group,
                     :type => :string, :aliases => '-g',
                     :desc => 'Specify a source group.'
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "securitygroups:rules:add" do |sec_group_name, ip_protocol|
         begin
           # defaults

@@ -24,7 +24,7 @@ Aliases: cdn:containers:list
       method_option :all, :default => false,
                     :type => :boolean, :aliases => '-a',
                     :desc => 'List all the CDN containers, either enabled or disabled.'
-      GOPTS.each { |k,v| method_option(k, v) }
+      CLI.add_common_options()
       define_method "cdn:containers" do
         begin
           cdn_connection = connection(:cdn, options)
