@@ -16,13 +16,13 @@ module HP
 
 Examples:
   hpcloud cdn:containers                    # list only the CDN-enabled containers
-  hpcloud cdn:containers -a                 # list all the container on the CDN
+  hpcloud cdn:containers -l                 # list all the container on the CDN
   hpcloud cdn:containers -z region-a.geo-1  # Optionally specify an availability zone
 
 Aliases: cdn:containers:list
       DESC
       method_option :all, :default => false,
-                    :type => :boolean, :aliases => '-a',
+                    :type => :boolean, :aliases => '-l',
                     :desc => 'List all the CDN containers, either enabled or disabled.'
       CLI.add_common_options()
       define_method "cdn:containers" do

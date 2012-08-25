@@ -1,3 +1,14 @@
+v1.0.1 08/27/12
+================
+- Support for multiple account files
+  - account:list lists accounts and shows account settings
+  - account:update modify accounts settings
+  - account:remove remove accounts
+  - account:use command makes the specified account default
+  - The -a option was added to commands to select an account
+- Clean up of configuration
+- Changed the cdn:containers -a option to -l for long listing
+
 v1.0.0 08/20/12
 ================
 - Support for listing, adding, attaching, detaching and removing block volumes
