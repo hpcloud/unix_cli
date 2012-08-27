@@ -147,6 +147,7 @@ module HP
           display_error_message(error, :not_found)
         rescue Excon::Errors::RequestEntityTooLarge => error
           display_error_message(error, :rate_limited)
+        rescue SystemExit => error
         rescue Exception => error
           display_error_message(error, :general_error)
         end

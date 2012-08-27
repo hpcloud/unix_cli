@@ -12,7 +12,7 @@ Examples:
 
 Aliases: none
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "securitygroups:add" do |sec_group_name, sg_desc|
         cli_command(options) {
           compute_connection = connection(:compute, options)

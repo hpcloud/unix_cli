@@ -15,7 +15,7 @@ Examples:
 
 Aliases: loc
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def location(resource)
         cli_command(options) {
           container, key = Container.parse_resource(resource)

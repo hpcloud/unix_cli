@@ -15,7 +15,7 @@ Examples:
 
 Aliases: servers:passwd
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "servers:password" do |name, password|
         cli_command(options) {
           compute_connection = connection(:compute, options)

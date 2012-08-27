@@ -13,7 +13,7 @@ Examples:
 
 Aliases: volumes:metadata:update
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "volumes:metadata:add" do |name_or_id, metadata|
         cli_command(options) {
           volume = Volumes.new.get(name_or_id.to_s)

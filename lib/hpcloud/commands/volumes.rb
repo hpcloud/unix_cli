@@ -22,7 +22,7 @@ Examples:
 
 Aliases: volumes:list
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def volumes(*arguments)
         cli_command(options) {
           volumes = Volumes.new

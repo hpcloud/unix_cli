@@ -14,7 +14,7 @@ Examples:
 
 Aliases: keypairs:rm, keypairs:delete, keypairs:del
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "keypairs:remove" do |key_name|
         cli_command(options) {
           compute_connection = connection(:compute, options)

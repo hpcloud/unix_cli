@@ -19,7 +19,7 @@ Aliases: rm, delete, destroy, del
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
                     :desc => 'Do not confirm removal, remove non-empty containers.'
-      CLI.add_common_options()
+      CLI.add_common_options
       def remove(resource)
         cli_command(options) {
           container, path = Container.parse_resource(resource)

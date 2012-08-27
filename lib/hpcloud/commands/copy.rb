@@ -23,7 +23,7 @@ Examples:
 Aliases: cp
 
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def copy(*source, destination)
         cli_command(options) {
           to = Resource.create(Connection.instance.storage, destination)

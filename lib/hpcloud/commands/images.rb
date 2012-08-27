@@ -22,7 +22,7 @@ Examples:
 
 Aliases: images:list
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def images(*arguments)
         cli_command(options) {
           images = Images.new()

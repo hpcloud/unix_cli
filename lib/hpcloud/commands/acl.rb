@@ -17,7 +17,7 @@ Examples:
 
 Aliases: none
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def acl(resource)
         cli_command(options) {
           acls = "private"

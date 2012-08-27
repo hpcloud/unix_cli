@@ -18,7 +18,7 @@ Examples:
 
 Aliases: securitygroups:rules:list
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "securitygroups:rules" do |sec_group_name|
         cli_command(options) {
           compute_connection = connection(:compute, options)

@@ -18,7 +18,7 @@ Aliases: none
       method_option :hard, :default => false,
                     :type => :boolean, :aliases => '-h',
                     :desc => 'Hard reboot a server.'
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "servers:reboot" do |name|
         cli_command(options) {
           compute_connection = connection(:compute, options)

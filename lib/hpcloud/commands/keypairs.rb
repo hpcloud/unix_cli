@@ -18,7 +18,7 @@ Examples:
 
 Aliases: keypairs:list
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def keypairs
         cli_command(options) {
           keypairs = connection(:compute, options).key_pairs

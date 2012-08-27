@@ -20,8 +20,8 @@ module HP
                  :ssl_verify_peer,
                  :ssl_ca_path,
                  :ssl_ca_file,
-                 :prefered_flavor,
-                 :prefered_image]
+                 :preferred_flavor,
+                 :preferred_image]
 
       def initialize
         if @@home.nil?

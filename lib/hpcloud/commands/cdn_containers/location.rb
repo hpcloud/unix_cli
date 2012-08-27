@@ -14,7 +14,7 @@ Examples:
 
 Aliases: cdn:containers:loc
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "cdn:containers:location" do |name|
         cli_command(options) {
           name = Container.container_name_for_service(name)

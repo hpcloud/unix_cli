@@ -15,7 +15,7 @@ Examples:
 
 Aliases: addresses:rm, addresses:delete, addresses:release, addresses:del
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "addresses:remove" do |public_ip|
         cli_command(options) {
           compute_connection = connection(:compute, options)

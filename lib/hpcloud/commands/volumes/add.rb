@@ -19,7 +19,7 @@ Aliases: none
       method_option :metadata,
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "volumes:add" do |name, size|
         cli_command(options) {
           if Volumes.new.get(name).is_valid? == true

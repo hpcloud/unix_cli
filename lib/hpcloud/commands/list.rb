@@ -17,7 +17,7 @@ Aliases: ls
 
 Note: Listing details on files will be available in a future release.
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def list(name='')
         cli_command(options) {
           return containers if name.empty?

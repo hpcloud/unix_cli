@@ -14,7 +14,7 @@ Examples:
 
 Aliases: none
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "cdn:containers:set" do |name, attribute, value|
         cli_command(options) {
           begin

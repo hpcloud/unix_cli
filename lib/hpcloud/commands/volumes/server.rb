@@ -15,7 +15,7 @@ Examples:
 
 Aliases: volumes:servers
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "volumes:server" do |*srv_name_or_ids|
         cli_command(options) {
           hshes = []

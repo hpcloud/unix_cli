@@ -16,7 +16,7 @@ Aliases: none
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
                     :desc => "Don't prompt if container name is not a valid virtual host."
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "containers:add" do |name|
         cli_command(options) {
           begin

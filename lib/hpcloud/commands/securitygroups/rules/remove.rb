@@ -14,7 +14,7 @@ Examples:
 
 Aliases: securitygroups:rules:rm, securitygroups:rules:revoke, securitygroups:rules:delete, securitygroups:rules:del
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "securitygroups:rules:remove" do |sec_group_name, rule_id|
         cli_command(options) {
           compute_connection = connection(:compute, options)

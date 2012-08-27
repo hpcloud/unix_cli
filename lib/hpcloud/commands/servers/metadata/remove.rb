@@ -13,7 +13,7 @@ Examples:
 
 Aliases: servers:metadata:rm
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "servers:metadata:remove" do |name_or_id, *metadata|
         cli_command(options) {
           server = Servers.new.get(name_or_id)

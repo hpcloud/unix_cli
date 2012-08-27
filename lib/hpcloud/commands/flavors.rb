@@ -14,7 +14,7 @@ Examples:
 
 Aliases: flavors:list
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def flavors
         cli_command(options) {
           flavors = connection(:compute, options).flavors

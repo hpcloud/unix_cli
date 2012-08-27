@@ -19,7 +19,7 @@ Examples:
 
 Aliases: addresses:list
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def addresses
         cli_command(options) {
           addresses = connection(:compute, options).addresses

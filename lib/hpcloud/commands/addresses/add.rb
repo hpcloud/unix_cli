@@ -15,7 +15,7 @@ Examples:
 
 Aliases: addresses:allocate
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "addresses:add" do
         cli_command(options) {
           compute_connection = connection(:compute, options)

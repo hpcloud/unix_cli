@@ -17,7 +17,7 @@ Aliases: none
 
 Note: Custom ACLs will be supported in a future release.
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method 'acl:set' do |resource, acl|
         cli_command(options) {
           acl = acl.downcase

@@ -14,7 +14,7 @@ Examples:
 
 Aliases: none
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "cdn:containers:get" do |name, attribute|
         cli_command(options) {
           name = Container.container_name_for_service(name)

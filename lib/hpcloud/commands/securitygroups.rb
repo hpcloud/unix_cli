@@ -18,7 +18,7 @@ Examples:
 
 Aliases: securitygroups:list
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def securitygroups
         cli_command(options) {
           securitygroups = connection(:compute, options).security_groups

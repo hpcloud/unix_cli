@@ -91,7 +91,6 @@ module HP
             @file_settings = YAML::load(File.open(@file))
             @settings = @file_settings.clone
             @settings[:block_availability_zone] ||= cfg[:block_availability_zone]
-            @settings[:block_availability_zone] ||= cfg[:block_availability_zone]
             @settings[:cdn_availability_zone] ||= cfg[:cdn_availability_zone]
             @settings[:compute_availability_zone] ||= cfg[:compute_availability_zone]
             @settings[:storage_availability_zone] ||= cfg[:storage_availability_zone]

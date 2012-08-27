@@ -14,7 +14,7 @@ Examples:
 
 Aliases: fetch
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def get(resource)
         cli_command(options) {
           container, path = Container.parse_resource(resource)

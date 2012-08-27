@@ -25,7 +25,7 @@ Aliases: none
       method_option :metadata,
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "servers:add" do |name, image_id, flavor_id|
         cli_command(options) {
           srv = HP::Cloud::ServerHelper.new(Connection.instance.compute)

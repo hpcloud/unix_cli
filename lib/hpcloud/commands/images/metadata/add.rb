@@ -13,7 +13,7 @@ Examples:
 
 Aliases: images:metadata:update
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "images:metadata:add" do |name_or_id, metadata|
         cli_command(options) {
           image = Images.new.get(name_or_id.to_s)

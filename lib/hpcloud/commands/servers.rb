@@ -23,7 +23,7 @@ Examples:
 
 Aliases: servers:list
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def servers(*arguments)
         cli_command(options) {
           servers = Servers.new

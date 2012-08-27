@@ -20,7 +20,7 @@ describe "Account list" do
     end
   end
 
-  context "account:list with no args" do
+  context "account:list with account name" do
     it "should report success" do
       rsp = cptr("account:list mike")
 

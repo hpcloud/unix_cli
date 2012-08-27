@@ -21,7 +21,7 @@ Aliases: containers:rm, containers:delete, containers:del
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
                     :desc => 'Force removal of non-empty containers.'
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "containers:remove" do |name|
         cli_command(options) {
           name = Container.container_name_for_service(name)

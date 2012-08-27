@@ -24,7 +24,7 @@ Aliases: cdn:containers:list
       method_option :all, :default => false,
                     :type => :boolean, :aliases => '-l',
                     :desc => 'List all the CDN containers, either enabled or disabled.'
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "cdn:containers" do
         cli_command(options) {
           cdn_connection = connection(:cdn, options)

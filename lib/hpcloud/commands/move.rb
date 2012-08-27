@@ -17,7 +17,7 @@ Examples:
 
 Aliases: mv
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def move(from,to)
         cli_command(options) {
           from_type = Resource.detect_type(from)

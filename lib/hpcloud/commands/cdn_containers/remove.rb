@@ -14,7 +14,7 @@ Examples:
 
 Aliases: cdn:containers:rm, cdn:containers:delete, cdn:containers:del
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "cdn:containers:remove" do |name|
         cli_command(options) {
           begin

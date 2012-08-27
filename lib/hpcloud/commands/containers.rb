@@ -17,7 +17,7 @@ Examples:
 
 Aliases: containers:list
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       def containers
         cli_command(options) {
           containers = connection(:storage, options).directories

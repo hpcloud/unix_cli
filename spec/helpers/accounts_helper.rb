@@ -1,4 +1,7 @@
 class AccountsHelper
+  @@flavor_id = nil
+  @@image_id = nil
+
   def self.use_fixtures()
     home = File.expand_path(File.dirname(__FILE__) + "/../fixtures/accounts")
     Accounts.home_directory = home
@@ -34,14 +37,14 @@ class AccountsHelper
   def self.get_flavor_id()
     return @@flavor_id unless @@flavor_id.nil?
     acct = HP::Cloud::Accounts.new.get('primary')
-    @@flavor_id = acct[:options][:prefered_flavor] || "set options flavor primary acct"
+    @@flavor_id = acct[:options][:preferred_flavor] || "set options flavor in primary acct"
     return @@flavor_id
   end
 
   def self.get_image_id()
     return @@image_id unless @@image_id.nil?
     acct = HP::Cloud::Accounts.new.get('primary')
-    @@image_id = acct[:options][:prefered_image] || "set options image in primary acct"
+    @@image_id = acct[:options][:preferred_image] || "set options image in primary acct"
     return @@image_id
   end
 

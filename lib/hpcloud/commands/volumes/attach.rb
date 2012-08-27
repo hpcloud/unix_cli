@@ -11,7 +11,7 @@ Examples:
   hpcloud volumes:attach my-volume myServer /dev/sdg -z az-2.region-a.geo-1 # Optionally specify an availability zone
 
       DESC
-      CLI.add_common_options()
+      CLI.add_common_options
       define_method "volumes:attach" do |vol_name, server_name, device|
         cli_command(options) {
           server = Servers.new.get(server_name)

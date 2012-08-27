@@ -12,7 +12,7 @@ module HP
 #{Accounts.get_known}
   
 Examples:
-  hpcloud account:add pro auth_uri='https://127.0.01/' block_availability_zone='region-a'
+  hpcloud account:add pro auth_uri='https://127.0.0.1/' block_availability_zone='region-a'
 
 Alias: account:update
       DESC
