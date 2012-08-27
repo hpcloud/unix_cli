@@ -99,6 +99,32 @@ describe "Config set and get" do
     end
   end
 
+  context "with nil availability zones" do
+    it "should raise exception" do
+      config = HP::Cloud::Config.new()
+      lambda {
+        config.set("block_availability_zone", "")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("The value of 'block_availability_zone' may not be empty")
+      }
+      lambda {
+        config.set("storage_availability_zone", "")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("The value of 'storage_availability_zone' may not be empty")
+      }
+      lambda {
+        config.set("compute_availability_zone", "")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("The value of 'compute_availability_zone' may not be empty")
+      }
+      lambda {
+        config.set("cdn_availability_zone", "")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("The value of 'cdn_availability_zone' may not be empty")
+      }
+    end
+  end
+
   context "set bogus" do
     it "should throw exception" do
       config = HP::Cloud::Config.new()

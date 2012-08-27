@@ -120,10 +120,13 @@ module HP
       def set(key, value)
         key = key.to_sym
         if KNOWN.include?(key) == false
-          raise Exception.new("Unknown configuration key value '#{key}'")
+          raise Exception.new("Unknown configuration key value '#{key.to_s}'")
         end
         value = value.to_s
         if value.empty?
+          if key.to_s.include?('availability_zone')
+            raise Exception.new("The value of '#{key.to_s}' may not be empty")
+          end
           @file_settings.delete(key)
           @settings.delete(key)
         else

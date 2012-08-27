@@ -55,13 +55,13 @@ describe "Config command" do
     end
   end
 
-  context "set availability zone with no zone passed in" do
+  context "set empty configuration value" do
     it "should set value" do
-      rsp = cptr("config:set compute_availability_zone=")
+      rsp = cptr("config:set ssl_ca_file=")
       rsp.stderr.should eql("")
-      rsp.stdout.should eql("Configuration set compute_availability_zone=\n")
+      rsp.stdout.should eql("Configuration set ssl_ca_file=\n")
       rsp.exit_status.should be_exit(:success)
-      ConfigHelper.value(:compute_availability_zone).should be_nil
+      ConfigHelper.value(:ssl_ca_file).should be_nil
     end
   end
 
