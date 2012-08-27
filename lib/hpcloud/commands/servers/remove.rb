@@ -33,7 +33,6 @@ Aliases: servers:rm, servers:delete, servers:del
           }
         }
       end
-
     end
   end
 end

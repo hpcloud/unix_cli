@@ -19,22 +19,15 @@ Aliases: containers:list
       DESC
       CLI.add_common_options()
       def containers
-        begin
+        cli_command(options) {
           containers = connection(:storage, options).directories
           if containers.empty?
             display "You currently have no containers, use `#{selfname} containers:add <name>` to create one."
           else
             containers.each { |container| display container.key }
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::Conflict, Excon::Errors::NotFound => error
-          display_error_message(error, :not_found)
-        end
+        }
       end
-    
     end
   end
 end

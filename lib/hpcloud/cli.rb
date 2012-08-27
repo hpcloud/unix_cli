@@ -124,18 +124,33 @@ module HP
         Connection.instance.set_options(options)
         begin
           yield
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
+        rescue Excon::Errors::BadRequest => error
+          display_error_message(error, :incorrect_usage)
+        rescue Excon::Errors::InternalServerError => error
           display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
+        rescue Fog::HP::Errors::ServiceError => error
+          display_error_message(error, :general_error)
+        rescue Fog::BlockStorage::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Fog::CDN::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Fog::Compute::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Fog::Storage::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
+          display_error_message(error, :permission_denied)
+        rescue Excon::Errors::Conflict => error
           display_error_message(error, :permission_denied)
         rescue Excon::Errors::NotFound => error
           display_error_message(error, :not_found)
+        rescue Excon::Errors::RequestEntityTooLarge => error
+          display_error_message(error, :rate_limited)
         rescue Exception => error
           display_error_message(error, :general_error)
         end
         exit @exit_status
       end
-
     end
   end
 end

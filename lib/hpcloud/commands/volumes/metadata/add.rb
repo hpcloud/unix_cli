@@ -15,8 +15,7 @@ Aliases: volumes:metadata:update
       DESC
       CLI.add_common_options()
       define_method "volumes:metadata:add" do |name_or_id, metadata|
-        begin
-          Connection.instance.set_options(options)
+        cli_command(options) {
           volume = Volumes.new.get(name_or_id.to_s)
           if volume.is_valid? == false
             error volume.error_string, volume.error_code
@@ -27,14 +26,7 @@ Aliases: volumes:metadata:update
               error(volume.meta.error_string, volume.meta.error_code)
             end
           end
-
-        rescue Fog::HP::Errors::ServiceError, Excon::Errors::BadRequest, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
-        end
+        }
       end
     end
   end

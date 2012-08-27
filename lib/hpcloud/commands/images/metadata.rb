@@ -16,7 +16,7 @@ Aliases: images:metadata:list
       DESC
       CLI.add_common_options()
       define_method "images:metadata" do |name_or_id|
-        begin
+        cli_command(options) {
           Connection.instance.set_options(options)
           image = Images.new.get(name_or_id.to_s)
           if image.is_valid?
@@ -24,11 +24,7 @@ Aliases: images:metadata:list
           else
             error(image.error_string, image.error_code)
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
 
     end

@@ -21,20 +21,15 @@ Aliases: addresses:list
       DESC
       CLI.add_common_options()
       def addresses
-        begin
+        cli_command(options) {
           addresses = connection(:compute, options).addresses
           if addresses.empty?
             display "You currently have no public IP addresses, use `#{selfname} addresses:add` to create one."
           else
             addresses.table([:id, :ip, :fixed_ip, :instance_id])
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end

@@ -18,7 +18,6 @@ module HP
       method_option 'no-validate', :type => :boolean, :default => false,
                     :desc => "Don't verify account settings during setup"
       define_method "account:setup" do |name='default'|
-
         accounts = HP::Cloud::Accounts.new()
         begin
           acct = accounts.read(name)
@@ -56,7 +55,6 @@ module HP
 
         display "Account credentials for HP Cloud Services have been set up."
       end
-    
     end
   end
 end

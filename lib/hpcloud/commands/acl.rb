@@ -19,10 +19,10 @@ Aliases: none
       DESC
       CLI.add_common_options()
       def acl(resource)
-        acls = "private"
-        type = Resource.detect_type(resource)
-        container, key = Container.parse_resource(resource)
-        begin
+        cli_command(options) {
+          acls = "private"
+          type = Resource.detect_type(resource)
+          container, key = Container.parse_resource(resource)
           dir = connection(:storage, options).directories.get(container)
           if type == :object
             if dir
@@ -46,15 +46,8 @@ Aliases: none
           else
             error "ACL viewing is only supported for containers and objects. See `help acl`.", :not_supported
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::NotFound => error
-          display_error_message(error, :not_found)
-        end
+        }
       end
-
     end
   end
 end

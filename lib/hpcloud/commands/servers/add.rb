@@ -27,8 +27,7 @@ Aliases: none
                     :desc => 'Set the meta data.'
       CLI.add_common_options()
       define_method "servers:add" do |name, image_id, flavor_id|
-        Connection.instance.set_options(options)
-        begin
+        cli_command(options) {
           srv = HP::Cloud::ServerHelper.new(Connection.instance.compute)
           srv.name = name
           srv.flavor = flavor_id
@@ -41,13 +40,7 @@ Aliases: none
           else
             error(srv.error_string, srv.error_code)
           end
-        rescue Fog::HP::Errors::ServiceError, Excon::Errors::BadRequest, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
-        end
+        }
       end
     end
   end

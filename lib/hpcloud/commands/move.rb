@@ -19,20 +19,21 @@ Aliases: mv
       DESC
       CLI.add_common_options()
       def move(from,to)
-        from_type = Resource.detect_type(from)
-        to_type   = Resource.detect_type(to)
-        if from_type != :object
-          error "Move is limited to objects within containers. Please use '#{selfname} copy' instead.", :incorrect_usage
-        else
-          silence_display do
-            copy(from, to)
-            remove(from)
+        cli_command(options) {
+          from_type = Resource.detect_type(from)
+          to_type   = Resource.detect_type(to)
+          if from_type != :object
+            error "Move is limited to objects within containers. Please use '#{selfname} copy' instead.", :incorrect_usage
+          else
+            silence_display do
+              copy(from, to)
+              remove(from)
+            end
+            # any errors will be handled by above functions
+            display "Moved #{from} => #{to}"
           end
-          # any errors will be handled by above functions
-          display "Moved #{from} => #{to}"
-        end
+        }
       end
-    
     end
   end
 end

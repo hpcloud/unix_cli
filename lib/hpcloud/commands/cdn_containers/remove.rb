@@ -16,18 +16,15 @@ Aliases: cdn:containers:rm, cdn:containers:delete, cdn:containers:del
       DESC
       CLI.add_common_options()
       define_method "cdn:containers:remove" do |name|
-        begin
-          connection(:cdn, options).delete_container(name)
-          display "Removed container '#{name}' from the CDN."
-        rescue Excon::Errors::NotFound, Fog::CDN::HP::NotFound
-          error "You don't have a container named '#{name}' on the CDN.", :not_found
-        rescue Fog::HP::Errors::ServiceError, Fog::CDN::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        end
+        cli_command(options) {
+          begin
+            connection(:cdn, options).delete_container(name)
+            display "Removed container '#{name}' from the CDN."
+          rescue Excon::Errors::NotFound, Fog::CDN::HP::NotFound
+            error "You don't have a container named '#{name}' on the CDN.", :not_found
+          end
+        }
       end
-
     end
   end
 end

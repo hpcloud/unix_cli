@@ -16,30 +16,22 @@ Aliases: none
       DESC
       CLI.add_common_options()
       define_method "cdn:containers:set" do |name, attribute, value|
-        # check to see cdn container exists
-        begin connection(:cdn, options).head_container(name)
-          allowed_attributes = ['X-Ttl', 'X-Cdn-Uri', 'X-Cdn-Enabled', 'X-Log-Retention']
-          if attribute && value && allowed_attributes.include?(attribute)
-            options = {"#{attribute}" => "#{value}"}
-            connection(:cdn, options).post_container(name, options)
-            display "The attribute '#{attribute}' with value '#{value}' was set on CDN container '#{name}'."
-          else
-            error "The attribute '#{attribute}' cannot be set. The allowed attributes are '#{allowed_attributes.join(', ')}'.", :incorrect_usage
+        cli_command(options) {
+          begin
+            connection(:cdn, options).head_container(name)
+            allowed_attributes = ['X-Ttl', 'X-Cdn-Uri', 'X-Cdn-Enabled', 'X-Log-Retention']
+            if attribute && value && allowed_attributes.include?(attribute)
+              options = {"#{attribute}" => "#{value}"}
+              connection(:cdn, options).post_container(name, options)
+              display "The attribute '#{attribute}' with value '#{value}' was set on CDN container '#{name}'."
+            else
+              error "The attribute '#{attribute}' cannot be set. The allowed attributes are '#{allowed_attributes.join(', ')}'.", :incorrect_usage
+            end
+          rescue Fog::CDN::HP::NotFound => err
+            error "You don't have a container named '#{name}' on the CDN.", :not_found
           end
-        rescue Fog::CDN::HP::NotFound => err
-          error "You don't have a container named '#{name}' on the CDN.", :not_found
-        rescue Excon::Errors::BadRequest => error
-          display_error_message(error, :incorrect_usage)
-        rescue Fog::HP::Errors::ServiceError, Fog::CDN::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::Conflict, Excon::Errors::NotFound => error
-          display_error_message(error, :not_found)
-        end
-
+        }
       end
-
     end
   end
 end

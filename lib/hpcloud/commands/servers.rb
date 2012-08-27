@@ -25,7 +25,7 @@ Aliases: servers:list
       DESC
       CLI.add_common_options()
       def servers(*arguments)
-        begin
+        cli_command(options) {
           Connection.instance.set_options(options)
           servers = Servers.new
           if servers.empty?
@@ -38,13 +38,8 @@ Aliases: servers:list
               tablelize(hsh, ServerHelper.get_keys())
             end
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end

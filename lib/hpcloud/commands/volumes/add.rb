@@ -21,8 +21,7 @@ Aliases: none
                     :desc => 'Set the meta data.'
       CLI.add_common_options()
       define_method "volumes:add" do |name, size|
-        Connection.instance.set_options(options)
-        begin
+        cli_command(options) {
           if Volumes.new.get(name).is_valid? == true
             error "Volume with the name '#{name}' already exists", :general_error
           end
@@ -36,13 +35,7 @@ Aliases: none
           else
             error(vol.error_string, vol.error_code)
           end
-        rescue Fog::HP::Errors::ServiceError, Excon::Errors::BadRequest, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
-        end
+        }
       end
     end
   end

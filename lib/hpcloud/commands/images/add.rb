@@ -18,9 +18,7 @@ Aliases: none
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'
       define_method "images:add" do |name, server_name|
-        # setup connection for compute service
-        begin
-          Connection.instance.set_options(options)
+        cli_command(options) {
           img = HP::Cloud::ImageHelper.new()
           img.name = name
           img.set_server(server_name)
@@ -30,11 +28,7 @@ Aliases: none
           else
             display_error_message(img.error_string, img.error_code)
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
 
     end

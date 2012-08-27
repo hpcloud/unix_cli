@@ -20,20 +20,15 @@ Aliases: securitygroups:list
       DESC
       CLI.add_common_options()
       def securitygroups
-        begin
+        cli_command(options) {
           securitygroups = connection(:compute, options).security_groups
           if securitygroups.empty?
             display "You currently have no security groups."
           else
             securitygroups.table([:id, :name, :description])
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end

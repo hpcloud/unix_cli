@@ -18,7 +18,7 @@ Aliases: volumes:metadata:list
       DESC
       CLI.add_common_options()
       define_method "volumes:metadata" do |name_or_id|
-        begin
+        cli_command(options) {
           Connection.instance.set_options(options)
           volume = Volumes.new.get(name_or_id)
           if volume.is_valid?
@@ -26,13 +26,8 @@ Aliases: volumes:metadata:list
           else
             error volume.error_string, volume.error_code
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end

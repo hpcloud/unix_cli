@@ -13,7 +13,7 @@ Examples:
       DESC
       CLI.add_common_options()
       define_method "volumes:attach" do |vol_name, server_name, device|
-        begin
+        cli_command(options) {
           Connection.instance.set_options(options)
           server = Servers.new.get(server_name)
           if server.is_valid?
@@ -27,13 +27,8 @@ Examples:
           else
             error server.error_string, server.error_code
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error, Excon::Errors::BadRequest, Excon::Errors::InternalServerError => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end

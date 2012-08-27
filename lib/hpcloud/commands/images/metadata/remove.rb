@@ -15,8 +15,7 @@ Aliases: rm
       DESC
       CLI.add_common_options()
       define_method "images:metadata:remove" do |name_or_id, *metadata|
-        begin
-          Connection.instance.set_options(options)
+        cli_command(options) {
           image = Images.new.get(name_or_id.to_s)
           if image.is_valid?
             metadata.each { |key|
@@ -26,18 +25,10 @@ Aliases: rm
                 error_message(image.meta.error_string, image.meta.error_code)
               end
             }
-            exit @exit_status || 0
           else
             error(image.error_string, image.error_code)
           end
-
-        rescue Fog::HP::Errors::ServiceError, Excon::Errors::BadRequest, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
-        end
+        }
       end
     end
   end

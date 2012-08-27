@@ -15,7 +15,7 @@ Aliases: servers:metadata:update
       DESC
       CLI.add_common_options()
       define_method "servers:metadata:add" do |name_or_id, metadata|
-        begin
+        cli_command(options) {
           Connection.instance.set_options(options)
           server = Servers.new.get(name_or_id.to_s)
           if server.is_valid? == false
@@ -28,13 +28,7 @@ Aliases: servers:metadata:update
             end
           end
 
-        rescue Fog::HP::Errors::ServiceError, Excon::Errors::BadRequest, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
-        end
+        }
       end
     end
   end

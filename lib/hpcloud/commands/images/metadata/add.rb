@@ -15,8 +15,7 @@ Aliases: images:metadata:update
       DESC
       CLI.add_common_options()
       define_method "images:metadata:add" do |name_or_id, metadata|
-        begin
-          Connection.instance.set_options(options)
+        cli_command(options) {
           image = Images.new.get(name_or_id.to_s)
           if image.is_valid?
             if image.meta.set_metadata(metadata)
@@ -27,14 +26,7 @@ Aliases: images:metadata:update
           else
             error(image.error_string, image.error_code)
           end
-
-        rescue Fog::HP::Errors::ServiceError, Excon::Errors::BadRequest, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
-        end
+        }
       end
     end
   end

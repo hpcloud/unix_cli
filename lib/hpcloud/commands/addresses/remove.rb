@@ -17,7 +17,7 @@ Aliases: addresses:rm, addresses:delete, addresses:release, addresses:del
       DESC
       CLI.add_common_options()
       define_method "addresses:remove" do |public_ip|
-        begin
+        cli_command(options) {
           compute_connection = connection(:compute, options)
           address = compute_connection.addresses.select {|a| a.ip == public_ip}.first
           if (address && address.ip == public_ip)
@@ -29,13 +29,8 @@ Aliases: addresses:rm, addresses:delete, addresses:release, addresses:del
           else
             error "You don't have an address with public IP '#{public_ip}'.", :not_found
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end

@@ -23,29 +23,24 @@ Aliases: containers:rm, containers:delete, containers:del
                     :desc => 'Force removal of non-empty containers.'
       CLI.add_common_options()
       define_method "containers:remove" do |name|
-        name = Container.container_name_for_service(name)
-        begin
-          container = connection(:storage, options).directories.head(name)
-          if container
-            if options.force?
-              container.files.each { |file| file.destroy }
+        cli_command(options) {
+          name = Container.container_name_for_service(name)
+          begin
+            container = connection(:storage, options).directories.head(name)
+            if container
+              if options.force?
+                container.files.each { |file| file.destroy }
+              end
+              container.destroy
+              display "Removed container '#{name}'."
+            else
+              error "You don't have a container named '#{name}'.", :not_found
             end
-            container.destroy
-            display "Removed container '#{name}'."
-          else
-            error "You don't have a container named '#{name}'.", :not_found
+          rescue Excon::Errors::Conflict
+            error "The container '#{name}' is not empty. Please use -f option to force deleting a container with objects in it.", :general_error
           end
-        rescue Excon::Errors::Conflict
-          error "The container '#{name}' is not empty. Please use -f option to force deleting a container with objects in it.", :general_error
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::NotFound => error
-          display_error_message(error, :not_found)
-        end
+        }
       end
-    
     end
   end
 end

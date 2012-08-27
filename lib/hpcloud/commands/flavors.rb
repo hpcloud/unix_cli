@@ -16,8 +16,7 @@ Aliases: flavors:list
       DESC
       CLI.add_common_options()
       def flavors
-        begin
-          # Need specific flavors for HP
+        cli_command(options) {
           flavors = connection(:compute, options).flavors
           if flavors.empty?
             display "You currently have no flavors."
@@ -25,13 +24,8 @@ Aliases: flavors:list
             # :rxtx_cap, :rxtx_quota, :swap, :vcpus are not attributes on model
             flavors.table([:id, :name, :ram, :disk])
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end

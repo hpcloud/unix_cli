@@ -17,9 +17,7 @@ Aliases: volumes:servers
       DESC
       CLI.add_common_options()
       define_method "volumes:server" do |*srv_name_or_ids|
-        begin
-          @exit_status = nil
-          Connection.instance.set_options(options)
+        cli_command(options) {
           hshes = []
           servers = Servers.new.get(srv_name_or_ids)
           servers.each { |server|
@@ -37,16 +35,8 @@ Aliases: volumes:servers
           if hshes.empty? == false
             tablelize(hshes, VolumeAttachment.get_keys())
           end
-          if @exit_status.nil? == false
-            exit @exit_status
-          end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error, Excon::Errors::BadRequest, Excon::Errors::InternalServerError => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end
