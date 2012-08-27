@@ -41,5 +41,5 @@ describe "CDN Containers command" do
     end
   end
 
-  after(:all) { Connection.instance.set_options({}) }
+  after(:all) { Connection.instance.clear_options() }
 end

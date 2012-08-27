@@ -59,7 +59,7 @@ describe "volumes:remove command" do
       end
 
       after(:all) do
-        HP::Cloud::Connection.instance.set_options({})
+        HP::Cloud::Connection.instance.clear_options()
         begin
           @volume.destroy
         rescue Exception => e

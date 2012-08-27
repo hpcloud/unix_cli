@@ -19,7 +19,6 @@ Aliases: volumes:metadata:list
       CLI.add_common_options()
       define_method "volumes:metadata" do |name_or_id|
         cli_command(options) {
-          Connection.instance.set_options(options)
           volume = Volumes.new.get(name_or_id)
           if volume.is_valid?
             tablelize(volume.meta.to_hash(), Metadata.get_keys())

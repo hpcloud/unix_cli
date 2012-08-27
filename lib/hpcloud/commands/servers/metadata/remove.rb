@@ -16,7 +16,6 @@ Aliases: servers:metadata:rm
       CLI.add_common_options()
       define_method "servers:metadata:remove" do |name_or_id, *metadata|
         cli_command(options) {
-          Connection.instance.set_options(options)
           server = Servers.new.get(name_or_id)
           if server.is_valid? == false
             error server.error_string, server.error_code

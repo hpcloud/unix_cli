@@ -17,7 +17,6 @@ Aliases: images:metadata:list
       CLI.add_common_options()
       define_method "images:metadata" do |name_or_id|
         cli_command(options) {
-          Connection.instance.set_options(options)
           image = Images.new.get(name_or_id.to_s)
           if image.is_valid?
             tablelize(image.meta.to_hash(), Metadata.get_keys())

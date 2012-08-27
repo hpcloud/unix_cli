@@ -47,6 +47,11 @@ module HP
         @options = options
       end
 
+      def clear_options()
+        @options = {}
+        reset_connections()
+      end
+
       def storage(account='default')
         return @storage_connection[account] unless @storage_connection[account].nil?
         begin

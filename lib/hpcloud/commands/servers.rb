@@ -26,7 +26,6 @@ Aliases: servers:list
       CLI.add_common_options()
       def servers(*arguments)
         cli_command(options) {
-          Connection.instance.set_options(options)
           servers = Servers.new
           if servers.empty?
             display "You currently have no servers, use `#{selfname} servers:add <name>` to create one."

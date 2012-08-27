@@ -37,7 +37,7 @@ RSpec.configure do |config|
   
   HOSTNAME                    = `hostname`.chomp
   MOCKING_ENABLED = ENV['ENABLE_CLI_MOCKING'] || false
-  config.before(:each) { HP::Cloud::Connection.instance.set_options({}) }
+  config.before(:each) { HP::Cloud::Connection.instance.clear_options() }
   if MOCKING_ENABLED
     puts "==========================================================="
     puts "Running tests in mocking mode..."

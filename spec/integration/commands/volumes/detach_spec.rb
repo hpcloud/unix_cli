@@ -68,7 +68,7 @@ describe "volumes:detach command" do
       end
 
       after(:all) do
-        HP::Cloud::Connection.instance.set_options({})
+        HP::Cloud::Connection.instance.clear_options()
         begin
           @vol3.destroy
         rescue Exception => e

@@ -20,7 +20,6 @@ Aliases: servers:metadata:list
       CLI.add_common_options()
       define_method "servers:metadata" do |name_or_id|
         cli_command(options) {
-          Connection.instance.set_options(options)
           server = Servers.new.get(name_or_id)
           if server.is_valid?
             tablelize(server.meta.to_hash(), Metadata.get_keys())

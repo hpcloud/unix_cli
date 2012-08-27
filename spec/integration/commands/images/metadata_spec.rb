@@ -62,7 +62,7 @@ describe "Images command" do
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:general_error)
       end
-      after(:all) { Connection.instance.set_options({}) }
+      after(:all) { Connection.instance.clear_options() }
     end
   end
 

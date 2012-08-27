@@ -49,7 +49,7 @@ describe "volumes:server command" do
         response.should include("Exception: Unable to retrieve endpoint service url for availability zone 'blah' from service catalog.")
         exit_status.should be_exit(:general_error)
       end
-      after(:all) { HP::Cloud::Connection.instance.set_options({}) }
+      after(:all) { HP::Cloud::Connection.instance.clear_options() }
     end
 
     context "volumes:server with invalid volume" do

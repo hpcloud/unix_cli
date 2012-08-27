@@ -14,7 +14,6 @@ Examples:
       CLI.add_common_options()
       define_method "volumes:attach" do |vol_name, server_name, device|
         cli_command(options) {
-          Connection.instance.set_options(options)
           server = Servers.new.get(server_name)
           if server.is_valid?
             volume = Volumes.new.get(vol_name)
