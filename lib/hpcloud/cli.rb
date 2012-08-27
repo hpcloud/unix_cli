@@ -10,6 +10,7 @@ module HP
                       :general_error        => 1,
                       :not_supported        => 3,
                       :not_found            => 4,
+                      :conflicted           => 5,
                       :incorrect_usage      => 64,
                       :permission_denied    => 77,
                       :rate_limited         => 88
@@ -141,7 +142,7 @@ module HP
         rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
           display_error_message(error, :permission_denied)
         rescue Excon::Errors::Conflict => error
-          display_error_message(error, :permission_denied)
+          display_error_message(error, :conflicted)
         rescue Excon::Errors::NotFound => error
           display_error_message(error, :not_found)
         rescue Excon::Errors::RequestEntityTooLarge => error
