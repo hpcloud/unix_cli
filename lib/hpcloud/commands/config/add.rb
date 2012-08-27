@@ -2,19 +2,19 @@ module HP
   module Cloud
     class CLI < Thor
 
-      map %w(config:add config:update) => 'config:set'
+      map %w(config:set config:update) => 'config:add'
 
-      desc 'config:set', "set the value for a setting"
+      desc 'config:add', "set the value for a configuration value"
       long_desc <<-DESC
   Set values in the configuration file.  Valid settings include:
 #{Config.get_known}
 
 Examples:
-  hpcloud config:set compute_availability_zone=az-2.region-a.geo-1     # Sets the default availability zone for the compute service.
+  hpcloud config:update compute_availability_zone=az-2.region-a.geo-1     # Sets the default availability zone for the compute service.
 
 Alias: config:add, config:update
       DESC
-      define_method "config:set" do |pair, *pairs|
+      define_method "config:add" do |pair, *pairs|
         cli_command(options) {
           config = Config.new(true)
           updated = ""
