@@ -4,7 +4,7 @@ describe 'location command' do
 
   before(:all) do
     @hp_svc = storage_connection
-    @other = storage_connection(:secondary)
+    cptr("container:add -a secondary :someone_elses")
   end
 
   context "run on missing container" do
@@ -37,36 +37,24 @@ describe 'location command' do
   end
 
   context "run without permission for container" do
-
-    before(:all) do
-      @other.put_container('someone_elses')
-      @response, @exit = run_command('location :someone_elses').stderr_and_exit_status
-    end
-
     it "should display error message" do
-      @response.should eql("No container named 'someone_elses' exists.\n")
-    end
-    its_exit_status_should_be(:not_found)
+      rsp = cptr('location :someone_elses')
 
-    after(:all) { purge_container('someone_elses', :connection => @other) }
+      rsp.stderr.should eql("No container named 'someone_elses' exists.\n")
+      rsp.exit_status.should be_exit(:not_found)
+    end
   end
 
   context "run without permissions for object" do
-
-    before(:all) do
-      @other.put_container('someone_elses')
-      #### @other.put_container_acl('someone_elses', 'public-read')
-      @other.put_object('someone_elses', 'foo.txt', read_file('foo.txt'))
-      @response, @exit = run_command('location :someone_elses/foo.txt').stderr_and_exit_status
-    end
-
     it "should display error message" do
-      @response.should eql("No object exists at 'someone_elses/foo.txt'.\n")
+      @file_name='spec/fixtures/files/Matryoshka/Putin/Medvedev.txt'
+      cptr("copy -a secondary #{@file_name} :someone_elses")
+
+      rsp = cptr("location :someone_elses/#{@file_name}")
+
+      rsp.stderr.should eq("No object exists at 'someone_elses/#{@file_name}'.\n")
+      rsp.exit_status.should be_exit(:not_found)
     end
-    its_exit_status_should_be(:not_found)
-
-    after(:all) { purge_container('someone_elses', :connection => @other) }
-
   end
 
   context "run with permissions on container" do

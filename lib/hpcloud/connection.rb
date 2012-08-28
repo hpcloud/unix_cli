@@ -52,44 +52,56 @@ module HP
         reset_connections()
       end
 
-      def storage(account='default')
+      def storage
+        account = get_account()
         return @storage_connection[account] unless @storage_connection[account].nil?
+        opts = create_options(:storage_availability_zone)
         begin
-          @storage_connection[account] = Fog::Storage.new(create_options(account, :storage_availability_zone))
+          @storage_connection[account] = Fog::Storage.new(opts)
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
       end
 
-      def compute(account='default')
+      def compute
+        account = get_account()
         return @compute_connection[account] unless @compute_connection[account].nil?
+        opts = create_options(:compute_availability_zone)
         begin
-          @compute_connection[account] = Fog::Compute.new(create_options(account, :compute_availability_zone))
+          @compute_connection[account] = Fog::Compute.new(opts)
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
       end
 
-      def block(account='default')
+      def block
+        account = get_account()
         return @block_connection[account] unless @block_connection[account].nil?
+        opts = create_options(:block_availability_zone)
         begin
-          @block_connection[account] = Fog::BlockStorage.new(create_options(account, :block_availability_zone))
+          @block_connection[account] = Fog::BlockStorage.new(opts)
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
       end
 
-      def cdn(account='default')
+      def cdn
+        account = get_account()
         return @cdn_connection[account] unless @cdn_connection[account].nil?
+        opts = create_options(:cdn_availability_zone)
         begin
-          @cdn_connection[account] = Fog::CDN.new(create_options(account, :cdn_availability_zone))
+          @cdn_connection[account] = Fog::CDN.new(opts)
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
       end
 
-      def create_options(account, zone)
-        acct = Accounts.new.get(account)
+      def get_account
+        return @options[:account_name] || 'default'
+      end
+
+      def create_options(zone)
+        acct = Accounts.new.get(get_account())
         avl_zone = @options[:availability_zone] || acct[:zones][zone]
         return { :provider => 'HP',
                  :connection_options => acct[:options],

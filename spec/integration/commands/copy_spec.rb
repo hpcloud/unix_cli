@@ -51,21 +51,15 @@ describe "Copy command" do
     end
 
     pending "when container is public-read but remote file cannot be overwritten" do
-      before(:all) do
-        @hp_svc_other_user = storage_connection(:secondary)
-        @hp_svc_other_user.put_container('public_read_container')
-        #### @hp_svc_other_user.put_container_acl('public_read_container', 'public-read')
-        @hp_svc_other_user.put_object('public_read_container', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
-      end
-
       it "should exit with permission denied" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':public_read_container/foo.txt']) }
-        response.should eql("Permission denied\n")
-        exit_status.should be_exit(:permission_denied)
-      end
+        @file_name='spec/fixtures/files/Matryoshka/Putin/Medvedev.txt'
+        cptr("container:add -a secondary public_read_container")
+        cptr("copy -a secondary #{file_name} :public_read_container")
 
-      after(:all) do
-        purge_container('public_read_container', {:connection => @hp_svc_other_user})
+        rsp = cptr("copy #{file_name} :public_read_container")
+
+        rsp.stderr.should eq("Permission denied\n")
+        rsp.exit_status.should be_exit(:permission_denied)
       end
     end
     

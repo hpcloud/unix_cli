@@ -30,25 +30,17 @@ describe "Remove command" do
     end
 
     context "when removing an object that isn't controlled by the user" do
-      before(:all) do
-        @hp_svc_other_user = storage_connection(:secondary)
-        @hp_svc_other_user.put_container('notmycontainer')
-        @hp_svc_other_user.put_object('notmycontainer', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
-        @response, @exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['rm', ':notmycontainer/foo.txt']) }
-      end
-
       #### Swift does not have acls, so it just cannot see the container
       it "should exit with access denied" do
-        @response.should eql("You don't have a container named 'notmycontainer'\n")
-      end
+        @file_name='spec/fixtures/files/Matryoshka/Putin/Medvedev.txt'
+        cptr("containers:add -a secondary :notmycontainer")
+        cptr("copy -a secondary #{@file_name} :notmycontainer")
 
-      #### Swift does not have acls, so it just cannot see the container
-      pending "should exit with denied status" do
-        @exit_status.should be_exit(:permission_denied)
-      end
+        rsp = cptr("rm :notmycontainer/#{@file_name}")
 
-      after(:all) do
-        purge_container('notmycontainer', {:connection => @hp_svc_other_user})
+        rsp.stderr.should eq("You don't have a container named 'notmycontainer'\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
 
@@ -114,7 +106,7 @@ describe "Remove command" do
         rescue SystemExit => system_exit # catch any exit calls
           exit_status = system_exit.status
         end
-        exit_status.should eql(:success)
+        exit_status.should be_exit(:success)
       end
 
       it "should remove container" do

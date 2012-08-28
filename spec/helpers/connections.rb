@@ -2,20 +2,15 @@
 require 'hpcloud/connection'
 
 RSpec.configure do |config|
-  def storage_connection(user = :primary)
-    if user == :secondary
-      account = 'secondary'
-    else
-      account = 'primary'
-    end
-    HP::Cloud::Connection.instance.storage(account)
+  def storage_connection
+    HP::Cloud::Connection.instance.storage()
   end
   
   def compute_connection()
-    HP::Cloud::Connection.instance.compute('primary')
+    HP::Cloud::Connection.instance.compute()
   end
 
   def cdn_connection()
-    HP::Cloud::Connection.instance.cdn('primary')
+    HP::Cloud::Connection.instance.cdn()
   end
 end

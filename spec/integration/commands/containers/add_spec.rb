@@ -13,7 +13,6 @@ describe "containers:add command" do
     rescue
       # ignore errors
     end
-    @other_user = storage_connection(:secondary)
   end
 
   context "when creating a new valid container" do

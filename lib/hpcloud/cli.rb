@@ -18,12 +18,11 @@ module HP
 
       GOPTS = {:availability_zone => {:type => :string, :aliases => '-z',
                                       :desc => 'Set the availability zone.'},
-               :account_name => {:type => :string, :aliases => '-A',
+               :account_name => {:type => :string, :aliases => '-a',
                                  :desc => 'Select account.'}}
 
       private
       def connection(service = :storage, options = {})
-        begin
         Connection.instance.set_options(options)
         if service == :storage
           return Connection.instance.storage()
@@ -31,9 +30,6 @@ module HP
           return Connection.instance.compute()
         elsif service == :cdn
           return Connection.instance.cdn()
-        end
-        rescue Exception => e
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the '#{service.to_s.capitalize!}' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
       end
 

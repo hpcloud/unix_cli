@@ -4,7 +4,6 @@ describe "containers:remove command" do
 
   before(:all) do
     @hp_svc = storage_connection
-    @other_user = storage_connection(:secondary)
   end
 
   context "when container does not exist" do
@@ -24,26 +23,13 @@ describe "containers:remove command" do
   end
   
   context "when user doesn't have permissions to remove" do
-    
-    before(:all) do
-      @other_user.put_container('other_users_container')
-      @response, @exit_status = run_command('containers:remove :other_users_container').stderr_and_exit_status
-    end
-    
     it "should show error message" do
-      #### Swift does not have acls, so it just cannot see the container
-      @response.should eql("You don't have a container named 'other_users_container'.\n")
+      cptr('containers:add -z secondary other_users_container')
+      rsp = cptr("containers:remove :other_users_container")
+      rsp.stderr.should eq("You don't have a container named 'other_users_container'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_found)
     end
-    
-    #### Swift does not have acls, so it just cannot see the container
-    pending "should exit with denied status" do
-      @exit_status.should be_exit(:permission_denied)
-    end
-    
-    after(:all) do
-      purge_container('other_users_container', :connection => @other_user)
-    end
-    
   end
   
   context "when user owns container and it exists" do
