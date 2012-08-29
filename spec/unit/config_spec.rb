@@ -57,6 +57,8 @@ describe "Config reading" do
       config.settings[:ssl_ca_path].should eq('capath')
       config.settings[:ssl_ca_file].should eq('cafile')
     end
+
+    after(:all) {reset_all()}
   end
   
   context "with bad configuration" do

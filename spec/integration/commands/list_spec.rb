@@ -39,6 +39,19 @@ describe "list command" do
     end
   end
 
-  after(:all) { purge_container('my_container') }
+  context "verify the -a option is activated" do
+    it "should report error" do
+      AccountsHelper.use_tmp()
 
+      rsp = cptr("list :my_container -a bogus")
+
+      tmpdir = AccountsHelper.tmp_dir()
+      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) {reset_all()}
+  end
+
+  after(:all) { purge_container('my_container') }
 end

@@ -1,6 +1,7 @@
 class AccountsHelper
   @@flavor_id = nil
   @@image_id = nil
+  @@tmpdir = nil
 
   def self.use_fixtures()
     home = File.expand_path(File.dirname(__FILE__) + "/../fixtures/accounts")
@@ -21,6 +22,7 @@ class AccountsHelper
   def self.reset()
     FileUtils.rm_rf(@@tmpdir) unless @@tmpdir.nil?
     Accounts.home_directory = nil
+    @@tmpdir = nil
   end
 
   def self.contents(name)

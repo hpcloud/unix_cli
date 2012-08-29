@@ -4,19 +4,19 @@ module HP
   module Cloud
     class CLI < Thor
     
-      map 'account:update' => 'account:add'
+      map 'account:add' => 'account:update'
 
-      desc 'account:add', "modify your account credentials, zones, or options"
+      desc 'account:update', "modify your account credentials, zones, or options"
       long_desc <<-DESC
   Add or update account credentials, zones, or options.  Valid settings include:
 #{Accounts.get_known}
   
 Examples:
-  hpcloud account:add pro auth_uri='https://127.0.0.1/' block_availability_zone='region-a'
+  hpcloud account:update pro auth_uri='https://127.0.0.1/' block_availability_zone='region-a'
 
-Alias: account:update
+Alias: account:add
       DESC
-      define_method "account:add" do |name, pair, *pairs|
+      define_method "account:update" do |name, pair, *pairs|
         cli_command(options) {
           accounts = HP::Cloud::Accounts.new()
           acct = accounts.read(name, true)

@@ -3,6 +3,8 @@ require 'hpcloud/accounts'
 module HP
   module Cloud
     class CLI < Thor
+
+      map 'account:edit' => 'account:setup'
     
       desc 'account:setup', "set up or modify your credentials"
       long_desc <<-DESC
@@ -14,6 +16,8 @@ module HP
   but in most cases you will want to use the default.  
   
   You can re-run this command to modify your settings at anytime.
+
+Aliases: account:edit
       DESC
       method_option 'no-validate', :type => :boolean, :default => false,
                     :desc => "Don't verify account settings during setup"

@@ -18,8 +18,8 @@ Aliases: none
         cli_command(options) {
           name = Container.container_name_for_service(name)
           begin
-            if connection(:storage).directories.get(name)
-              response = connection(:cdn, options).put_container(name)
+            if Connection.instance.storage.directories.get(name)
+              response = Connection.instance.cdn.put_container(name)
               display "Added container '#{name}' to the CDN."
             else
               error "The container '#{name}' does not exist in your storage account. Please create the storage container first and then add it to the CDN.", :incorrect_usage

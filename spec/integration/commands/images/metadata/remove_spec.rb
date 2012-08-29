@@ -88,6 +88,20 @@ describe "Images metadata remove command" do
     end
   end
 
+  context "verify the -a option is activated" do
+    it "should report error" do
+      AccountsHelper.use_tmp()
+
+      rsp = cptr("images:metadata:remove -a bogus #{@image_id} something")
+
+      tmpdir = AccountsHelper.tmp_dir()
+      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) {reset_all()}
+  end
+
   after(:all) do
     @img.destroy() unless @img.nil?
   end

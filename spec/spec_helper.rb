@@ -37,7 +37,6 @@ RSpec.configure do |config|
   
   HOSTNAME                    = `hostname`.chomp
   MOCKING_ENABLED = ENV['ENABLE_CLI_MOCKING'] || false
-  config.before(:each) { HP::Cloud::Connection.instance.clear_options() }
   if MOCKING_ENABLED
     puts "==========================================================="
     puts "Running tests in mocking mode..."
@@ -46,6 +45,12 @@ RSpec.configure do |config|
     Fog.mock!
   else
     puts "Running tests against: #{AccountsHelper.get_uri()}..."
+  end
+
+  def reset_all
+    AccountsHelper.reset()
+    ConfigHelper.reset()
+    HP::Cloud::Connection.instance.clear_options()
   end
 
   # Generate a unique resource name

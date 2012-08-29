@@ -55,6 +55,7 @@ describe "Accounts getting credentials" do
       }
     end
   end
+  after(:all) {reset_all()}
 end
 
 describe "Accounts setting credentials" do
@@ -89,6 +90,7 @@ describe "Accounts setting credentials" do
       acct[:credentials][:tenant_id].should eq('335')
     end
   end
+  after(:all) {reset_all()}
 end
 
 describe "Account write" do
@@ -168,6 +170,7 @@ describe "Account get" do
       acct[:options][:ssl_ca_file].should be_nil
     end
   end
+  after(:all) {reset_all()}
 end
 
 describe "Accounts" do
@@ -187,6 +190,7 @@ describe "Accounts" do
       acct[:options].should eq({})
     end
   end
+  after(:all) {reset_all()}
 end
 
 describe "Accounts" do
@@ -208,6 +212,7 @@ describe "Accounts" do
       acct[:zones][:block_availability_zone].should eq("az-2.region-b.geo-1")
     end
   end
+  after(:all) {reset_all()}
 end
 
 describe "Accounts" do
@@ -253,4 +258,5 @@ describe "Accounts" do
       acct[:options][:ssl_ca_file].should eq("O6")
     end
   end
+  after(:all) {reset_all()}
 end

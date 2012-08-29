@@ -1,7 +1,9 @@
 require 'hpcloud/accounts'
-require 'hpcloud/commands/account/add'
+require 'hpcloud/commands/account/copy'
 require 'hpcloud/commands/account/remove'
 require 'hpcloud/commands/account/setup'
+require 'hpcloud/commands/account/update'
+require 'hpcloud/commands/account/use'
 
 module HP
   module Cloud

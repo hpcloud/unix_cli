@@ -1,4 +1,6 @@
 class ConfigHelper
+  @@tmpdir = nil
+
   def self.use_fixtures()
     home = File.expand_path(File.dirname(__FILE__) + "/../fixtures/config")
     HP::Cloud::Config.home_directory = home
@@ -18,6 +20,7 @@ class ConfigHelper
   def self.reset()
     FileUtils.rm_rf(@@tmpdir) unless @@tmpdir.nil?
     HP::Cloud::Config.home_directory = nil
+    @@tmpdir = nil
   end
 
   def self.contents()

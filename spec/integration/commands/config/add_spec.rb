@@ -104,4 +104,5 @@ describe "Config command" do
       ConfigHelper.value(:ssl_ca_file).should eq("11")
     end
   end
+  after(:all) {reset_all()}
 end

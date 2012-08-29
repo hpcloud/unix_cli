@@ -50,8 +50,6 @@ describe "Connection options" do
         Connection.instance.create_options(:storage_availability_zone)
       }.should raise_error(Exception, "Could not find account file: #{directory}bogus")
     end
-
-    after(:each) do
-    end
   end
+  after(:all) {reset_all()}
 end

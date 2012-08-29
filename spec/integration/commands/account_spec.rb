@@ -29,4 +29,5 @@ describe "Account list" do
       rsp.exit_status.should be_exit(:success)
     end
   end
+  after(:all) {reset_all()}
 end

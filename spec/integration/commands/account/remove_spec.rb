@@ -31,4 +31,5 @@ describe "Account remove" do
       rsp.stdout.should eq("lanegan\n")
     end
   end
+  after(:all) {reset_all()}
 end

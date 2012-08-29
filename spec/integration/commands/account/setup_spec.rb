@@ -1,12 +1,12 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "account:setup command" do
+  before(:all) do
+    ConfigHelper.use_tmp()
+    AccountsHelper.use_tmp()
+  end
+
   context "without existing account" do
-    before(:all) do
-      ConfigHelper.use_tmp()
-      AccountsHelper.use_tmp()
-    end
-  
     it "without validation" do
       input = ['foo','bar','https://127.0.0.1/','111111','A','B','C','D']
       rsp = cptr('account:setup --no-validate', input)
@@ -58,5 +58,15 @@ describe "account:setup command" do
       rsp.exit_status.should be_exit(:success)
       AccountsHelper.contents('deluxe').should eq("---\n:credentials:\n  :account_id: LaSera\n  :secret_key: SeesTheLight\n  :auth_uri: https://please/\n  :tenant_id: '227'\n:zones:\n  :compute_availability_zone: E\n  :storage_availability_zone: F\n  :cdn_availability_zone: G\n  :block_availability_zone: H\n:options: {}\n")
     end
+
+    it "over existing" do
+      input = ['LaSera','SeesTheLight','https://please/','227','1','2','3','4']
+      rsp = cptr('account:edit --no-validate deluxe', input)
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+      AccountsHelper.contents('deluxe').should eq("---\n:credentials:\n  :account_id: LaSera\n  :secret_key: SeesTheLight\n  :auth_uri: https://please/\n  :tenant_id: '227'\n:zones:\n  :compute_availability_zone: '1'\n  :storage_availability_zone: '2'\n  :cdn_availability_zone: '3'\n  :block_availability_zone: '4'\n:options: {}\n")
+    end
   end
+
+  after(:all) {reset_all()}
 end

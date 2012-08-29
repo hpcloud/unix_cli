@@ -80,6 +80,20 @@ describe "Servers metadata remove command" do
     end
   end
 
+  context "verify the -a option is activated" do
+    it "should report error" do
+      AccountsHelper.use_tmp()
+
+      rsp = cptr("servers:metadata:remove #{@server_id} aardvark kangaroo -a bogus")
+
+      tmpdir = AccountsHelper.tmp_dir()
+      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) {reset_all()}
+  end
+
   after(:all) do
     @srv.destroy() unless @srv.nil?
   end

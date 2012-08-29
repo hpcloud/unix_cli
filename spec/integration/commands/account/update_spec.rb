@@ -88,11 +88,12 @@ describe "Account add and update" do
 
   context "account:add with no pairs" do
     it "should report error" do
-      rsp = cptr("account:add foo")
+      rsp = cptr("account:update foo")
 
-      rsp.stderr.should include("account:add requires at least 2 arguments")
+      rsp.stderr.should include("account:update requires at least 2 arguments")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:success)
     end
   end
+  after(:all) {reset_all()}
 end

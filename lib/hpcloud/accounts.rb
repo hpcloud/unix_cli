@@ -65,6 +65,18 @@ module HP
         return false
       end
 
+      def copy(src, dest)
+        begin
+          src_name = get_file_name(src)
+          dest_name = get_file_name(dest)
+          FileUtils.cp(src_name, dest_name)
+          return true
+        rescue Exception => e
+          raise Exception.new('Error copying ' + src_name + ' to ' + dest_name)
+        end
+        return false
+      end
+
       def read(account = 'default', createIt=false)
         return @accts[account] if @accts[account].nil? == false
         file_name = get_file_name(account)

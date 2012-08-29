@@ -59,7 +59,7 @@ describe "cdn:containers:remove command" do
     context "cdn:containers:remove with invalid avl" do
       it "should report error" do
         response, exit_status = run_command('cdn:containers:remove my-added-container2 -z blah').stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Cdn' service is activated for the appropriate availability zone.\n")
+        response.should include("Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n")
         exit_status.should be_exit(:general_error)
       end
       after(:all) { Connection.instance.clear_options() }
@@ -69,4 +69,17 @@ describe "cdn:containers:remove command" do
     end
   end
 
+  context "verify the -a option is activated" do
+    it "should report error" do
+      AccountsHelper.use_tmp()
+
+      rsp = cptr("cdn:containers:remove -a bogus somecontainer")
+
+      tmpdir = AccountsHelper.tmp_dir()
+      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) {reset_all()}
+  end
 end
