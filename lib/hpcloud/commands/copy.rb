@@ -24,8 +24,11 @@ Aliases: cp
 
       DESC
       CLI.add_common_options
-      def copy(*source, destination)
+      def copy(source, *destination)
         cli_command(options) {
+          last = destination.pop
+          source = [source] + destination
+          destination = last
           to = Resource.create(Connection.instance.storage, destination)
           if source.length > 1 && to.isDirectory() == false
             error("The destination '#{destination}' for multiple files must be a directory or container", :general_error)

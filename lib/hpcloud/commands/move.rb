@@ -26,8 +26,16 @@ Aliases: mv
             error "Move is limited to objects within containers. Please use '#{selfname} copy' instead.", :incorrect_usage
           else
             silence_display do
-              copy(from, to)
-              remove(from)
+              begin
+                copy(from, to)
+              rescue SystemExit => error
+                exit error.status if error.success? == false
+              end
+              begin
+                remove(from)
+              rescue SystemExit => error
+                exit error.status if error.success? == false
+              end
             end
             # any errors will be handled by above functions
             display "Moved #{from} => #{to}"
