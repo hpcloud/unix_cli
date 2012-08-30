@@ -1,5 +1,3 @@
-require 'progressbar'
-
 module HP
   module Cloud
     class CLI < Thor
