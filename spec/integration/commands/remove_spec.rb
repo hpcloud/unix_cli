@@ -8,24 +8,30 @@ describe "Remove command" do
 
   context "removing an object from container" do
 
-    before(:all) do
+    def given_foo
       purge_container('my_container')
       create_container_with_files('my_container', 'foo.txt')
     end
 
+    before(:all) do
+      given_foo
+    end
+
     context "when object does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['remove', ':my_container/nonexistant.txt']) }
-        response.should eql("You don't have a object named 'nonexistant.txt'.\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr('remove :my_container/nonexistant.txt')
+        rsp.stderr.should eq("You don't have a object named 'nonexistant.txt'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
 
     context "when container does not exist" do
       it "should exit with container not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['remove', ':nonexistant_container']) }
-        response.should eql("You don't have a container named 'nonexistant_container'\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("remove :nonexistant_container")
+        rsp.stderr.should eql("You don't have a container named 'nonexistant_container'\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
 
@@ -46,44 +52,53 @@ describe "Remove command" do
 
     context "when syntax is not correct" do
       it "should exit with message about bad syntax" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['remove', '/foo/foo']) }
-        response.should eql("Could not find resource '/foo/foo'. Correct syntax is :containername/objectname.\n")
-        exit_status.should be_exit(:incorrect_usage)
+        rsp = cptr("remove /foo/foo")
+        rsp.stderr.should eql("Could not find resource '/foo/foo'. Correct syntax is :containername/objectname.\n")
+        rsp.stdout.should eql("")
+        rsp.exit_status.should be_exit(:incorrect_usage)
       end
     end
 
     context "when object and container exist" do
       it "should report success" do
-        response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['remove', ':my_container/foo.txt']) }
-        response.should eql("Removed object ':my_container/foo.txt'.\n")
-        exit_status.should be_exit(:success)
-      end
-      describe "with avl settings passed in" do
-        before(:all) do
-          purge_container('my_container')
-          create_container_with_files('my_container', 'foo.txt')
-        end
-        context "remove with valid avl" do
-          it "should report success" do
-            response, exit_status = run_command('remove :my_container/foo.txt -z region-a.geo-1').stdout_and_exit_status
-            response.should eql("Removed object ':my_container/foo.txt'.\n")
-            exit_status.should be_exit(:success)
-          end
-        end
-        context "remove with invalid avl" do
-          it "should report error" do
-            response, exit_status = run_command('remove :my_container/foo.txt -z blah').stderr_and_exit_status
-            response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
-            exit_status.should be_exit(:general_error)
-          end
-          after(:all) { Connection.instance.clear_options() }
-        end
-        after(:all) do
-          purge_container('my_container')
-        end
+        given_foo
+
+        rsp = cptr("remove :my_container/foo.txt")
+
+        rsp.stderr.should eql("")
+        rsp.stdout.should eql("Removed object ':my_container/foo.txt'.\n")
+        rsp.exit_status.should be_exit(:success)
       end
     end
 
+    context "remove with valid avl" do
+      it "should report success" do
+        given_foo
+
+        rsp = cptr("remove :my_container/foo.txt -z region-a.geo-1")
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("Removed object ':my_container/foo.txt'.\n")
+        rsp.exit_status.should be_exit(:success)
+      end
+    end
+
+    context "remove with invalid avl" do
+      it "should report error" do
+        given_foo
+
+        rsp = cptr("remove :my_container/foo.txt -z blah")
+
+        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:general_error)
+      end
+      after(:all) { Connection.instance.clear_options() }
+    end
+
+    after(:all) do
+      purge_container('my_container')
+    end
   end
 
   context "removing a container" do

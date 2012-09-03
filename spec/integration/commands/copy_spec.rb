@@ -14,7 +14,6 @@ describe "Copy command" do
     
     context "when local file does not exist" do
       it "should exit with file not found" do
-        # response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'foo.txt', ':my_container']) }
         response, exit_status = run_command('copy foo.txt :my_container').stderr_and_exit_status
         response.should eql("File not found at 'foo.txt'.\n")
         exit_status.should be_exit(:not_found)
@@ -31,7 +30,6 @@ describe "Copy command" do
       end
       
       it "should show error message" do
-        # response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/cantread.txt', ':my_container']) }
         response, exit_status = run_command('copy spec/fixtures/files/cantread.txt :my_container').stderr_and_exit_status
         response.should eql("Permission denied - spec/fixtures/files/cantread.txt\n")
         exit_status.should be_exit(:permission_denied)
@@ -44,9 +42,10 @@ describe "Copy command" do
     
     context "when container does not exist" do
       it "should exit with container not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':missing_container']) }
-        response.should eql("You don't have a container 'missing_container'.\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("copy spec/fixtures/files/foo.txt :missing_container")
+        rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
 
@@ -64,35 +63,25 @@ describe "Copy command" do
     end
     
     context "when file and container exist" do
-      before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/foo.txt', ':my_container']) }
+      it "should copy" do
+        rsp = cptr("copy spec/fixtures/files/foo.txt :my_container")
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("Copied spec/fixtures/files/foo.txt => :my_container\n")
+        rsp.exit_status.should be_exit(:success)
         @head = @hp_svc.head_object('my_container', 'foo.txt')
-      end
-      
-      it "should report success" do
-        @response.should eql("Copied spec/fixtures/files/foo.txt => :my_container\n")
-        @exit_status.should be_exit(:success)
-      end
-      
-      it "should copy file to container" do
         @head.status.should eql(200)
-      end
-      
-      it "should preserve content-type" do
         @head.headers["Content-Type"].should eq('text/plain')
       end
-      
     end
 
     context "when local file has spaces in name" do
-      before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', 'spec/fixtures/files/with space.txt', ':my_container']) }
+      it "should copy" do
+        rsp = cptr("copy 'spec/fixtures/files/with space.txt' :my_container")
+        rsp.stderr.should eql("")
+        rsp.stdout.should eql("Copied spec/fixtures/files/with space.txt => :my_container\n")
+        rsp.exit_status.should be_exit(:success)
         @get = @hp_svc.get_object('my_container', 'with space.txt')
-      end
-
-      it "should report success" do
-        @response.should eql("Copied spec/fixtures/files/with space.txt => :my_container\n")
-        @exit_status.should be_exit(:success)
       end
 
     end
@@ -106,71 +95,65 @@ describe "Copy command" do
     
     context "when container does not exist" do
       it "should exit with container not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_blah/foo.txt', '/tmp/foo.txt']) }
-        response.should eql("You don't have a container 'copy_blah'.\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("copy :copy_blah/foo.txt /tmp/foo.txt")
+        rsp.stderr.should eq("You don't have a container 'copy_blah'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
     
     context "when object does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo2.txt', '/tmp/foo.txt']) }
-        response.should eql("No files found matching source 'foo2.txt'\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("copy :copy_remote_to_local/foo2.txt /tmp/foo.txt")
+        rsp.stderr.should eq("No files found matching source 'foo2.txt'\n")
+        rsp.stderr.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end 
     end
     
     context "when local directory structure does not exist" do
       it "should exit with directory not present" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', '/blah/foo.txt']) }
-        response.should eql("No directory exists at '/blah'.\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("copy :copy_remote_to_local/foo.txt /blah/foo.txt")
+        rsp.stderr.should eq("No directory exists at '/blah'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
 
     context "when local directory and object exist" do
-      before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/foo.txt']) }
-      end
-      
       it "should describe copy" do
-        @response.should eql("Copied :copy_remote_to_local/foo.txt => spec/tmp/foo.txt\n")
-        @exit_status.should be_exit(:success)
-      end
-      
-      it "should create local file" do
+        rsp = cptr("copy :copy_remote_to_local/foo.txt spec/tmp/foo.txt")
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("Copied :copy_remote_to_local/foo.txt => spec/tmp/foo.txt\n")
+        rsp.exit_status.should be_exit(:success)
         File.exists?('spec/tmp/foo.txt').should be_true
-      end
-      
-      it "should have same body as object" do
         get = @hp_svc.get_object('copy_remote_to_local', 'foo.txt')
         File.read('spec/tmp/foo.txt').should eql(get.body)
       end
 
       after(:all) do
-        File.unlink('spec/tmp/foo.txt')
+        begin
+          File.unlink('spec/tmp/foo.txt')
+        rescue Exception => e
+        end
       end
-
     end
 
     context "when target is local directory" do
-      before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/']) }
-      end
-
       it "should describe copy" do
-        @response.should eql("Copied :copy_remote_to_local/foo.txt => spec/tmp/\n")
-        @exit_status.should be_exit(:success)
-      end
+        rsp = cptr("copy :copy_remote_to_local/foo.txt spec/tmp/")
 
-      it "should create local file" do
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("Copied :copy_remote_to_local/foo.txt => spec/tmp/\n")
+        rsp.exit_status.should be_exit(:success)
         File.exists?('spec/tmp/foo.txt').should be_true
       end
 
       after(:all) do
         begin
           File.unlink('spec/tmp/foo.txt')
-        rescue
+        rescue Exception => e
         end
       end
 
@@ -182,37 +165,32 @@ describe "Copy command" do
         before(:all) do
           Dir.mkdir('spec/tmp/unwriteable') unless File.directory?('spec/tmp/unwriteable')
           File.chmod(0000, 'spec/tmp/unwriteable')
-          @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/unwriteable/']) }
         end
 
         it "should show failure message" do
-          dir=Dir.pwd
-          @response.should eql("Permission denied - #{dir}/spec/tmp/unwriteable/foo.txt\n")
-        end
+          rsp = cptr("copy :copy_remote_to_local/foo.txt spec/tmp/unwriteable/")
 
-        it "should have correct exit status" do
-          @exit.should be_exit(:permission_denied)
+          dir=Dir.pwd
+          rsp.stderr.should eql("Permission denied - #{dir}/spec/tmp/unwriteable/foo.txt\n")
+          rsp.stdout.should eql("")
+          rsp.exit_status.should be_exit(:permission_denied)
         end
       end
 
       context "when location does not exist" do
-        
         before(:all) do
           Dir.rmdir('spec/tmp/nonexistent') if File.directory?('spec/tmp/nonexistent')
-          @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_remote_to_local/foo.txt', 'spec/tmp/nonexistent/']) }
         end
 
         it "should show failure message" do
-          dir=Dir.pwd
-          @response.should eql("No directory exists at '#{dir}/spec/tmp/nonexistent'.\n")
-        end
+          rsp = cptr("copy :copy_remote_to_local/foo.txt spec/tmp/nonexistent/")
 
-        it "should have correct exit status" do
-          @exit.should be_exit(:not_found)
+          dir=Dir.pwd
+          rsp.stderr.should eq("No directory exists at '#{dir}/spec/tmp/nonexistent'.\n")
+          rsp.stdout.should eq("")
+          rsp.exit_status.should be_exit(:not_found)
         end
-        
       end
-      
     end
     
     after(:all) do
@@ -232,61 +210,57 @@ describe "Copy command" do
     
     context "when container does not exist" do
       it "should exit with container not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':missing_container/foo.txt', ':missing_container/tmp/foo.txt']) }
-        response.should eql("You don't have a container 'missing_container'.\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("copy :missing_container/foo.txt :missing_container/tmp/foo.txt")
+        rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
     
     context "when object does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/missing.txt', ':copy_inside_container/tmp/missing.txt']) }
-        response.should eql("No files found matching source 'missing.txt'\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("copy :copy_inside_container/missing.txt :copy_inside_container/tmp/missing.txt")
+        rsp.stderr.should eq("No files found matching source 'missing.txt'\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
     
     context "when container and object exist" do
-      before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/foo.txt', ':copy_inside_container/new/foo.txt']) }
-        @get = @hp_svc.get_object('copy_inside_container', 'new/foo.txt')
-      end
-      
       it "should exit with object copied" do
-        @response.should eql("Copied :copy_inside_container/foo.txt => :copy_inside_container/new/foo.txt\n")
-        @exit_status.should be_exit(:success)
-      end
-      
-      it "should create new object" do
-        @get.status.should eql(200)
-      end
-      
-      it "should preserve content-type" do
-        @get.headers['Content-Type'].should eql('application/json')
-      end
+        rsp = cptr("copy :copy_inside_container/foo.txt :copy_inside_container/new/foo.txt")
 
-      it "should have same object body" do
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("Copied :copy_inside_container/foo.txt => :copy_inside_container/new/foo.txt\n")
+        @exit_status.should be_exit(:success)
+        @get = @hp_svc.get_object('copy_inside_container', 'new/foo.txt')
+        @get.status.should eql(200)
+        @get.headers['Content-Type'].should eql('application/json')
         @get.body.should eql(read_file('foo.txt'))
       end
     end
     
     context "when target not absolutely specified" do
       
-      before(:all) { @hp_svc.put_object('copy_inside_container', 'nested/file.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'}) }
+      before(:all) do
+        @hp_svc.put_object('copy_inside_container', 'nested/file.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
+      end
       
       context "when container only" do
         it "should show success message" do
-          response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/nested/file.txt', ':copy_inside_container']) }
-          response.should eql("Copied :copy_inside_container/nested/file.txt => :copy_inside_container\n")
-          exit_status.should be_exit(:success)
+          rsp = cptr("copy :copy_inside_container/nested/file.txt :copy_inside_container")
+          rsp.stderr.should eq("")
+          rsp.stdout.should eq("Copied :copy_inside_container/nested/file.txt => :copy_inside_container\n")
+          rsp.exit_status.should be_exit(:success)
         end
       end
       
       context "when directory in container" do
         it "should show success message" do
-          response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_inside_container/nested/file.txt', ':copy_inside_container/nested_new/file.txt']) }
-          response.should eql("Copied :copy_inside_container/nested/file.txt => :copy_inside_container/nested_new/file.txt\n")
-          exit_status.should be_exit(:success)
+          rsp = cptr("copy :copy_inside_container/nested/file.txt :copy_inside_container/nested_new/file.txt")
+          rsp.stderr.should eq("")
+          rsp.stdout.should eq("Copied :copy_inside_container/nested/file.txt => :copy_inside_container/nested_new/file.txt\n")
+          rsp.exit_status.should be_exit(:success)
         end
       end
       
@@ -310,70 +284,69 @@ describe "Copy command" do
     
     context "when container does not exist" do
       it "should exit with container not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':missing_container/foo.txt', ':copy_between_two/tmp/foo.txt']) }
-        response.should eql("You don't have a container 'missing_container'.\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("copy :missing_container/foo.txt :copy_between_two/tmp/foo.txt")
+
+        rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
     
     context "when object does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_between_one/missing.txt', ':copy_between_two/tmp/missing.txt']) }
-        response.should eql("No files found matching source 'missing.txt'\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("copy :copy_between_one/missing.txt :copy_between_two/tmp/missing.txt")
+        rsp.stderr.should eq("No files found matching source 'missing.txt'\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
     
     context "when new container does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['copy', ':copy_between_one/foo.txt', ':missing_container/tmp/missing.txt']) }
-        response.should eql("You don't have a container 'missing_container'.\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("copy :copy_between_one/foo.txt :missing_container/tmp/missing.txt")
+        rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
     
     context "when target is not absolutely specified" do
 
-      before(:all) { @hp_svc.put_object('copy_between_one', 'nested/file.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'}) }
+      before(:all) do
+        @hp_svc.put_object('copy_between_one', 'nested/file.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
+      end
 
       context "when container only" do
         it "should show success message" do
-          response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two']) }
-          response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two\n")
-          exit_status.should be_exit(:success)
+          rsp = cptr("copy :copy_between_one/nested/file.txt :copy_between_two")
+
+          rsp.stderr.should eq("")
+          rsp.stdout.should eq("Copied :copy_between_one/nested/file.txt => :copy_between_two\n")
+          rsp.exit_status.should be_exit(:success)
         end
       end
 
       context "when directory in container" do
         it "should show success message" do
-          response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_between_one/nested/file.txt', ':copy_between_two/nested_new/file.txt']) }
-          response.should eql("Copied :copy_between_one/nested/file.txt => :copy_between_two/nested_new/file.txt\n")
-          exit_status.should be_exit(:success)
+          rsp = cptr("copy :copy_between_one/nested/file.txt :copy_between_two/nested_new/file.txt")
+
+          rsp.stderr.should eq("")
+          rsp.stdout.should eq("Copied :copy_between_one/nested/file.txt => :copy_between_two/nested_new/file.txt\n")
+          rsp.exit_status.should be_exit(:success)
         end
       end
 
     end
 
     context "when object is copied successfully" do
-      before(:all) do
-        @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['copy', ':copy_between_one/foo.txt', ':copy_between_two/new/foo.txt']) }
-        @get = @hp_svc.get_object('copy_between_two', 'new/foo.txt')
-      end
-      
       it "should exit with object copied" do
-        @response.should eql("Copied :copy_between_one/foo.txt => :copy_between_two/new/foo.txt\n")
-        @exit_status.should be_exit(:success)
-      end
-      
-      it "should create new object" do
+        rsp = cptr("copy :copy_between_one/foo.txt :copy_between_two/new/foo.txt")
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("Copied :copy_between_one/foo.txt => :copy_between_two/new/foo.txt\n")
+        rsp.exit_status.should be_exit(:success)
+        @get = @hp_svc.get_object('copy_between_two', 'new/foo.txt')
         @get.status.should eql(200)
-      end
-      
-      it "should preserve content-type" do
         @get.headers['Content-Type'].should eql('application/json')
-      end
-
-      it "should have same object body" do
         @get.body.should eql(read_file('foo.txt'))
       end
     end
@@ -391,19 +364,25 @@ describe "Copy command" do
     end
     context "copy with valid avl" do
       it "should report success" do
-        response, exit_status = run_command('copy spec/fixtures/files/foo.txt :my_avl_container -z region-a.geo-1').stdout_and_exit_status
-        response.should eql("Copied spec/fixtures/files/foo.txt => :my_avl_container\n")
-        exit_status.should be_exit(:success)
+        rsp = cptr('copy spec/fixtures/files/foo.txt :my_avl_container -z region-a.geo-1')
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("Copied spec/fixtures/files/foo.txt => :my_avl_container\n")
+        rsp.exit_status.should be_exit(:success)
       end
     end
+
     context "copy with invalid avl" do
       it "should report error" do
-        response, exit_status = run_command('copy spec/fixtures/files/foo.txt :my_avl_container -z blah').stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
+        rsp = cptr('copy spec/fixtures/files/foo.txt :my_avl_container -z blah')
+        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:general_error)
       end
+
       after(:all) { Connection.instance.clear_options() }
     end
+
     after(:all) { purge_container('my_avl_container') }
   end
 

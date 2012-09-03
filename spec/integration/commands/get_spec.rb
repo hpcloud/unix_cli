@@ -12,39 +12,40 @@ describe "Get command" do
 
   context "when object does not exist" do
     it "should exit with object not found" do
-      response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['get', ':get_container/nonexistant.txt']) }
-      response.should eql("No files found matching source 'nonexistant.txt'\n")
-      exit_status.should be_exit(:not_found)
+      rsp = cptr("get :get_container/nonexistant.txt")
+
+      rsp.stderr.should eq("No files found matching source 'nonexistant.txt'\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_found)
     end
   end
   
   context "when container does not exist" do
     it "should exit with container not found" do
-      response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['get', ':nonexistant_container/foo.txt']) }
-      response.should eql("You don't have a container 'nonexistant_container'.\n")
-      exit_status.should be_exit(:not_found)
+      rsp = cptr("get :nonexistant_container/foo.txt")
+
+      rsp.stderr.should eql("You don't have a container 'nonexistant_container'.\n")
+      rsp.exit_status.should be_exit(:not_found)
     end
   end
 
   context "when syntax is not correct" do
     it "should exit with message about bad syntax" do
-      response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['get', '/foo/foo']) }
-      response.should eql("The object path '/foo/foo' wasn't recognized. Usage: 'hpcloud get :container_name/object_name'.\n")
-      exit_status.should be_exit(:incorrect_usage)
+      rsp = cptr("get /foo/foo")
+
+      rsp.stderr.should eq("The object path '/foo/foo' wasn't recognized. Usage: 'hpcloud get :container_name/object_name'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:incorrect_usage)
     end
   end
 
   context "when object and container exist and object is at container level" do
-    before(:all) do
-      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['get', ':get_container/highly_unusual_file_name.txt']) }
-    end
-
     it "should report success" do
-      @response.should eql("Copied :get_container/highly_unusual_file_name.txt => highly_unusual_file_name.txt\n")
-      @exit_status.should be_exit(:success)
-    end
+      rsp = cptr("get :get_container/highly_unusual_file_name.txt")
 
-    it "should have created a file" do
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Copied :get_container/highly_unusual_file_name.txt => highly_unusual_file_name.txt\n")
+      rsp.exit_status.should be_exit(:success)
       File.exist?('highly_unusual_file_name.txt').should be_true
     end
 
@@ -54,16 +55,12 @@ describe "Get command" do
   end
 
   context "when object and container exist and object is in a nested folder" do
-    before(:all) do
-      @response, @exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['get', ':get_container/folder/highly_unusual_file_name.txt']) }
-    end
-
     it "should report success" do
-      @response.should eql("Copied :get_container/folder/highly_unusual_file_name.txt => highly_unusual_file_name.txt\n")
-      @exit_status.should be_exit(:success)
-    end
+      rsp = cptr("get :get_container/folder/highly_unusual_file_name.txt")
 
-    it "should have created a file" do
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Copied :get_container/folder/highly_unusual_file_name.txt => highly_unusual_file_name.txt\n")
+      rsp.exit_status.should be_exit(:success)
       File.exist?('highly_unusual_file_name.txt').should be_true
     end
 
@@ -72,29 +69,27 @@ describe "Get command" do
     end
   end
 
-  describe "with avl settings passed in" do
-    context "get with valid avl" do
-      it "should report success" do
-        response, exit_status = run_command('get :get_container/highly_unusual_file_name.txt -z region-a.geo-1').stdout_and_exit_status
-        response.should eql("Copied :get_container/highly_unusual_file_name.txt => highly_unusual_file_name.txt\n")
-        exit_status.should be_exit(:success)
-      end
-    end
-    context "get with invalid avl" do
-      it "should report error" do
-        response, exit_status = run_command('get :get_container/highly_unusual_file_name.txt -z blah').stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
-      end
-      after(:all) { Connection.instance.clear_options() }
+  context "get with valid avl" do
+    it "should report success" do
+      rsp = cptr('get :get_container/highly_unusual_file_name.txt -z region-a.geo-1')
+
+      rsp.stderr.should eql("")
+      rsp.stdout.should eql("Copied :get_container/highly_unusual_file_name.txt => highly_unusual_file_name.txt\n")
+      rsp.exit_status.should be_exit(:success)
     end
   end
 
-  after(:all) do
-    purge_container('get_container')
-    File.unlink('highly_unusual_file_name.txt') if File.exist?('highly_unusual_file_name.txt')
+  context "get with invalid avl" do
+    it "should report error" do
+      rsp = cptr('get :get_container/highly_unusual_file_name.txt -z blah')
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) { Connection.instance.clear_options() }
   end
-  
+
   context "verify the -a option is activated" do
     it "should report error" do
       AccountsHelper.use_tmp()
@@ -107,5 +102,10 @@ describe "Get command" do
       rsp.exit_status.should be_exit(:general_error)
     end
     after(:all) {reset_all()}
+  end
+
+  after(:all) do
+    purge_container('get_container')
+    File.unlink('highly_unusual_file_name.txt') if File.exist?('highly_unusual_file_name.txt')
   end
 end

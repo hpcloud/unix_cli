@@ -9,15 +9,18 @@ describe "list command" do
   describe "with avl settings from config" do
     context "list" do
       it "should report success" do
-        response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['list']) }
-        exit_status.should be_exit(:success)
+        rsp = cptr("list")
+        rsp.stderr.should eq("")
+        rsp.exit_status.should be_exit(:success)
       end
     end
 
     context "list container contents" do
       it "should report success" do
-        response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['list', ':my_container']) }
-        exit_status.should be_exit(:success)
+        rsp = cptr("list :my_container")
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("my_container")
+        rsp.exit_status.should be_exit(:success)
       end
     end
   end
@@ -25,15 +28,18 @@ describe "list command" do
   describe "with avl settings passed in" do
     context "list container with valid avl" do
       it "should report success" do
-        response, exit_status = run_command('list :my_container -z region-a.geo-1').stdout_and_exit_status
-        exit_status.should be_exit(:success)
+        rsp = cptr("list :my_container -z region-a.geo-1")
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("my_container")
+        rsp.exit_status.should be_exit(:success)
       end
     end
     context "list container with invalid avl" do
       it "should report error" do
-        response, exit_status = run_command('list :my_container -z blah').stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
+        rsp = cptr("list :my_container -z blah")
+        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:general_error)
       end
       after(:all) { Connection.instance.clear_options() }
     end
