@@ -30,63 +30,63 @@ describe "Images metadata add command" do
     metastr.should include("count=dooku")
   end
 
-  describe "with avl settings from config" do
-    context "images" do
-      it "should report success" do
-        response, exit_status = run_command("images:metadata:add #{@image_id} id1=one,id2=2").stdout_and_exit_status
+  context "images" do
+    it "should report success" do
+      rsp = cptr("images:metadata:add #{@image_id} id1=one,id2=2")
 
-        exit_status.should be_exit(:success)
-        result = Images.new.get(@image_id)
-        still_contains_original(result.meta.to_s)
-        result.meta.to_s.should include("id1=one")
-        result.meta.to_s.should include("id2=2")
-      end
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+      result = Images.new.get(@image_id)
+      still_contains_original(result.meta.to_s)
+      result.meta.to_s.should include("id1=one")
+      result.meta.to_s.should include("id2=2")
     end
-
-    context "images" do
-      it "should report success" do
-        response, exit_status = run_command("images:metadata:add #{@image_name} name1=1,name2=2").stdout_and_exit_status
-
-        exit_status.should be_exit(:success)
-        result = Images.new.get(@image_id)
-        still_contains_original(result.meta.to_s)
-        result.meta.to_s.should include("name1=1")
-        result.meta.to_s.should include("name2=2")
-      end
-    end
-
-    context "bad image" do
-      it "should report failure" do
-        rsp = cptr("images:metadata:add bogus name1=1,name2=2")
-
-        rsp.stderr.should eq("Cannot find a image matching 'bogus'.\n")
-        rsp.stdout.should eq("")
-        rsp.exit_status.should be_exit(:not_found)
-      end
-    end
-
   end
 
-  describe "with avl settings passed in" do
-    context "images with valid avl" do
-      it "should report success" do
-        response, exit_status = run_command("images:metadata:add -z az-1.region-a.geo-1 #{@image_id} avl1=1,avl2=2").stdout_and_exit_status
+  context "images" do
+    it "should report success" do
+      rsp = cptr("images:metadata:add #{@image_name} name1=1,name2=2")
 
-        exit_status.should be_exit(:success)
-        result = Images.new.get(@image_id)
-        still_contains_original(result.meta.to_s)
-        result.meta.to_s.should include("avl1=1")
-        result.meta.to_s.should include("avl2=2")
-      end
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+      result = Images.new.get(@image_id)
+      still_contains_original(result.meta.to_s)
+      result.meta.to_s.should include("name1=1")
+      result.meta.to_s.should include("name2=2")
     end
-    context "images with invalid avl" do
-      it "should report error" do
-        response, exit_status = run_command("images:metadata:add -z blah #{@image_id} blah1=1,blah2=2").stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
-      end
-      after(:all) { HP::Cloud::Connection.instance.clear_options() }
+  end
+
+  context "bad image" do
+    it "should report failure" do
+      rsp = cptr("images:metadata:add bogus name1=1,name2=2")
+
+      rsp.stderr.should eq("Cannot find a image matching 'bogus'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_found)
     end
+  end
+
+  context "images with valid avl" do
+    it "should report success" do
+      rsp = cptr("images:metadata:add -z az-1.region-a.geo-1 #{@image_id} avl1=1,avl2=2")
+
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+      result = Images.new.get(@image_id)
+      still_contains_original(result.meta.to_s)
+      result.meta.to_s.should include("avl1=1")
+      result.meta.to_s.should include("avl2=2")
+    end
+  end
+
+  context "images with invalid avl" do
+    it "should report error" do
+      rsp = cptr("images:metadata:add -z blah #{@image_id} blah1=1,blah2=2")
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) { HP::Cloud::Connection.instance.clear_options() }
   end
 
   context "verify the -a option is activated" do

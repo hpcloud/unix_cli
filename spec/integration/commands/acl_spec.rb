@@ -27,8 +27,8 @@ describe "Acl command (viewing acls)" do
       end
       it "should have 'private' permissions" do
         @response.should eql("private\n")
+        rsp.exit_status.should be_exit(:success)
       end
-      its_exit_status_should_be(:success)
     end
     context "object" do
       before(:all) do
@@ -36,8 +36,8 @@ describe "Acl command (viewing acls)" do
       end
       it "should have 'private' permissions" do
         @response.should eql("private\n")
+        rsp.exit_status.should be_exit(:success)
       end
-      its_exit_status_should_be(:success)
     end
     describe "with avl settings passed in" do
       context "acl for container with valid avl" do
@@ -83,8 +83,8 @@ describe "Acl command (viewing acls)" do
       end
       it "should have 'public' permissions" do
         @response.should eql("public-read\n")
+        rsp.exit_status.should be_exit(:success)
       end
-      its_exit_status_should_be(:success)
     end
     context "object" do
       before(:all) do
@@ -92,8 +92,8 @@ describe "Acl command (viewing acls)" do
       end
       it "should have 'public' permissions" do
         @response.should eql("public-read\n")
+        rsp.exit_status.should be_exit(:success)
       end
-      its_exit_status_should_be(:success)
     end
     describe "with avl settings passed in" do
       context "acl for container with valid avl" do

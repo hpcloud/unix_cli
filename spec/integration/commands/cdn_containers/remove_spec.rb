@@ -22,8 +22,8 @@ describe "cdn:containers:remove command" do
 
     it "should show success message" do
       @response.should eql("Removed container 'my-added-container' from the CDN.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    its_exit_status_should_be(:success)
 
     after(:all) do
       @hp_svc.delete_container('my-added-container')
@@ -39,8 +39,8 @@ describe "cdn:containers:remove command" do
 
     it "should show error message" do
       @response.should eql("You don't have a container named 'not-a-container' on the CDN.\n")
+      rsp.exit_status.should be_exit(:not_found)
     end
-    its_exit_status_should_be(:not_found)
 
   end
 

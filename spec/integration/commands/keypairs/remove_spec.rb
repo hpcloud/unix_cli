@@ -13,47 +13,46 @@ describe "keypairs:remove command" do
   end
 
   context "when deleting a keypair" do
-    before(:all) do
+    it "should show success message" do
       @key_name = 'fog-del-200'
       @keypair = @hp_svc.key_pairs.create(:name => @key_name)
-    end
 
-    it "should show success message" do
-      @response, @exit = run_command("keypairs:remove #{@key_name}").stdout_and_exit_status
-      @response.should eql("Removed key pair '#{@key_name}'.\n")
-    end
+      rsp = cptr("keypairs:remove #{@key_name}")
 
-    it "should not list in keypairs" do
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Removed key pair '#{@key_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
       keypairs = @hp_svc.key_pairs.map {|k| k.name}
       keypairs.should_not include(@key_name)
-    end
-
-    it "should not exist" do
       keypair = get_keypair(@hp_svc, @key_name)
       keypair.should be_nil
     end
   end
 
-  context "when deleting a keypair with avl settings passed in" do
-    before(:all) do
+  context "keypairs:remove with valid avl" do
+    it "should report success" do
       @key_name = 'fog-del-201'
+      @keypair = @hp_svc.key_pairs.create(:name => @key_name)
+
+      rsp = cptr("keypairs:remove #{@key_name} -z az-1.region-a.geo-1")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Removed key pair '#{@key_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    context "keypairs:remove with valid avl" do
-      it "should report success" do
-        @keypair = @hp_svc.key_pairs.create(:name => @key_name)
-        response, exit_status = run_command("keypairs:remove #{@key_name} -z az-1.region-a.geo-1").stdout_and_exit_status
-        response.should eql("Removed key pair '#{@key_name}'.\n")
-        exit_status.should be_exit(:success)
-      end
+  end
+
+  context "keypairs:remove with invalid avl" do
+    it "should report error" do
+      @key_name = 'fog-del-201'
+
+      rsp = cptr("keypairs:remove #{@key_name} -z blah")
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
     end
-    context "keypairs:remove with invalid avl" do
-      it "should report error" do
-        response, exit_status = run_command("keypairs:remove #{@key_name} -z blah").stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
-      end
-      after(:all) { Connection.instance.clear_options() }
-    end
+    after(:all) { Connection.instance.clear_options() }
   end
 
   context "verify the -a option is activated" do

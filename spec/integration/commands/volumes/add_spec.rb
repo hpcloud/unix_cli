@@ -15,8 +15,8 @@ describe "volumes:add command" do
 
     it "should show success message" do
       @response.should eql("Created volume '#{@volume_name}' with id '#{@new_volume_id}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    its_exit_status_should_be(:success)
 
     it "should list id in volumes" do
       volumes = @hp_svc.volumes.map {|s| s.id}
@@ -47,8 +47,8 @@ describe "volumes:add command" do
 
     it "should show success message" do
       @response.should eql("Created volume '#{@volume_name}' with id '#{@new_volume_id}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    its_exit_status_should_be(:success)
 
     it "should list id in volumes" do
       volumes = @hp_svc.volumes.map {|s| s.id}

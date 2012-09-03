@@ -1,39 +1,6 @@
 
 RSpec.configure do |config|
   
-  # run a CLI command - returned object is a CLITester instance, can be mined for output
-  def run_command(string)
-    name, *args = string.split(' ')
-    CLITester.new(name, args)
-  end
-  
-  # Capture a certain io stream for anything run within the block
-  #
-  # Example:  output = capture('stdout') { puts 'hello world' }
-  def capture(stream)
-    capture_with_status(stream){ yield }[0]
-  end
-  
-  # Capture both io stream and exit status
-  #
-  # Example:  output, exit_status = capture('stdout') { puts 'hello world' }
-  def capture_with_status(stream)
-    exit_status = 0
-    begin
-      stream = stream.to_s
-      eval "$#{stream} = StringIO.new"
-      begin
-        yield
-      rescue SystemExit => system_exit # catch any exit calls
-        exit_status = system_exit.status
-      end
-      result = eval("$#{stream}").string
-    ensure
-      eval("$#{stream} = #{stream.upcase}")
-    end
-    return result, exit_status
-  end
-
   # Capture everything
   def cptr(command, input=[])
     input.each { |x| $stdin.should_receive(:gets).and_return(x) }
@@ -78,76 +45,5 @@ RSpec.configure do |config|
       message
     end
   end
-  
-end
-
-class CLITester
-  
-  def initialize(command_name, args=nil)
-    @command_name = command_name.to_s
-    @args = args || []
-  end
-  
-  # def with(arguments)
-  #   @args = arguments.to_s
-  #   return self
-  # end
-  
-  def stdout
-    capture(:stdout){ HP::Cloud::CLI.start([@command_name, *@args]) }
-  end
-  
-  def stderr
-    capture(:stderr){ HP::Cloud::CLI.start([@command_name, *@args]) }
-  end
-  
-  def exit_status
-    capture_with_status(:stdout){ HP::Cloud::CLI.start([@command_name, *@args]) }[1]
-  end
-  
-  def stdout_and_exit_status
-    capture_with_status(:stdout){ HP::Cloud::CLI.start([@command_name, *@args]) }
-  end
-  
-  def stderr_and_exit_status
-    capture_with_status(:stderr){ HP::Cloud::CLI.start([@command_name, *@args]) }
-  end
-  
-  def to_s
-    @cached_string ||= self.stdout
-  end
-  
-  def include?(string)
-    self.to_s.include?(string)
-  end
-  
-  private
-  
-    # Capture a certain io stream for anything run within the block
-    #
-    # Example:  output = capture('stdout') { puts 'hello world' }
-    def capture(stream)
-      capture_with_status(stream){ yield }[0]
-    end
-    
-    # Capture both io stream and exit status
-    #
-    # Example:  output, exit_status = capture('stdout') { puts 'hello world' }
-    def capture_with_status(stream)
-      exit_status = 0
-      begin
-        stream = stream.to_s
-        eval "$#{stream} = StringIO.new"
-        begin
-          yield
-        rescue SystemExit => system_exit # catch any exit calls
-          exit_status = system_exit.status
-        end
-        result = eval("$#{stream}").string
-      ensure
-        eval("$#{stream} = #{stream.upcase}")
-      end
-      return result, exit_status
-    end
   
 end

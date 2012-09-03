@@ -29,8 +29,8 @@ describe "cdn:containers:get command" do
 
       it "should get the correct value" do
         @response.should eql("900\n")
+        rsp.exit_status.should be_exit(:success)
       end
-      its_exit_status_should_be(:success)
     end
     context "getting the value of an invalid attribute" do
       before(:all) do
@@ -39,8 +39,8 @@ describe "cdn:containers:get command" do
 
       it "should show error message" do
         @response.should eql("The value of the attribute 'blah' cannot be retrieved. The allowed attributes are 'X-Ttl, X-Cdn-Uri, X-Cdn-Enabled, X-Log-Retention'.\n")
+        rsp.exit_status.should be_exit(:incorrect_usage)
       end
-      its_exit_status_should_be(:incorrect_usage)
     end
     after(:all) do
       @hp_svc.delete_container('my-added-container')
@@ -54,8 +54,8 @@ describe "cdn:containers:get command" do
 
     it "should show error message" do
       @response.should eql("You don't have a container named 'not-a-container' on the CDN.\n")
+      rsp.exit_status.should be_exit(:not_found)
     end
-    its_exit_status_should_be(:not_found)
 
   end
   describe "with avl settings passed in" do

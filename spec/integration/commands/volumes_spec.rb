@@ -15,17 +15,21 @@ describe "Volumes command" do
   describe "with avl settings from config" do
     context "volumes" do
       it "should report success" do
-        response, exit_status = run_command("volumes one two").stdout_and_exit_status
-        exit_status.should be_exit(:success)
-        then_expected_table(response)
+        rsp = cptr("volumes one two")
+
+        rsp.stderr.should eq("")
+        then_expected_table(rsp.stdout)
+        rsp.exit_status.should be_exit(:success)
       end
     end
 
     context "volumes:list" do
       it "should report success" do
-        response, exit_status = run_command("volumes:list one two").stdout_and_exit_status
-        exit_status.should be_exit(:success)
-        then_expected_table(response)
+        rsp = cptr("volumes:list one two")
+
+        rsp.stderr.should eq("")
+        then_expected_table(rsp.stdout)
+        rsp.exit_status.should be_exit(:success)
       end
     end
   end
@@ -34,15 +38,19 @@ describe "Volumes command" do
     context "volumes with valid avl" do
       it "should report success" do
         response, exit_status = run_command('volumes one two -z az-1.region-a.geo-1').stdout_and_exit_status
-        exit_status.should be_exit(:success)
-        then_expected_table(response)
+
+        rsp.stderr.should eq("")
+        then_expected_table(rsp.stdout)
+        rsp.exit_status.should be_exit(:success)
       end
     end
     context "volumes with invalid avl" do
       it "should report error" do
         response, exit_status = run_command('volumes -z blah').stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
+
+        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:general_error)
       end
       after(:all) { Connection.instance.clear_options() }
     end

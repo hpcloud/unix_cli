@@ -28,8 +28,8 @@ describe "cdn:containers:set command" do
 
       it "should show success message" do
         @response.should eql("The attribute 'X-Ttl' with value '900' was set on CDN container 'my-added-container'.\n")
+        rsp.exit_status.should be_exit(:success)
       end
-      its_exit_status_should_be(:success)
       it "should have set the correct value" do
         response = @hp_cdn.head_container('my-added-container')
         response.headers['X-Ttl'].should eql("900")
@@ -42,8 +42,8 @@ describe "cdn:containers:set command" do
 
       it "should show error message" do
         @response.should include("400 Bad Request")
+        rsp.exit_status.should be_exit(:incorrect_usage)
       end
-      its_exit_status_should_be(:incorrect_usage)
     end
     context "setting an invalid attribute" do
       before(:all) do
@@ -52,8 +52,8 @@ describe "cdn:containers:set command" do
 
       it "should show error message" do
         @response.should eql("The attribute 'blah' cannot be set. The allowed attributes are 'X-Ttl, X-Cdn-Uri, X-Cdn-Enabled, X-Log-Retention'.\n")
+        rsp.exit_status.should be_exit(:incorrect_usage)
       end
-      its_exit_status_should_be(:incorrect_usage)
     end
     after(:all) do
       @hp_svc.delete_container('my-added-container')
@@ -67,8 +67,8 @@ describe "cdn:containers:set command" do
 
     it "should show error message" do
       @response.should eql("You don't have a container named 'not-a-container' on the CDN.\n")
+       rsp.exit_status.should be_exit(:not_found)
     end
-    its_exit_status_should_be(:not_found)
 
   end
 

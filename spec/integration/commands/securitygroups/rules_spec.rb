@@ -17,15 +17,15 @@ describe "Security Groups Rules command" do
   context "securitygroups:rules" do
     before(:all) do
       @response, @exit = run_command('securitygroups:rules mysggroup').stdout_and_exit_status
+      rsp.exit_status.should be_exit(:success)
     end
-    its_exit_status_should_be(:success)
   end
 
   context "securitygroups:rules:list" do
     before(:all) do
       @response, @exit = run_command('securitygroups:rules:list mysggroup').stdout_and_exit_status
+      rsp.exit_status.should be_exit(:success)
     end
-    its_exit_status_should_be(:success)
   end
 
   describe "with avl settings passed in" do

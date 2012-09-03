@@ -17,18 +17,14 @@ describe "cdn:containers:add command" do
   end
 
   context "putting an existing storage container on the CDN" do
-
-    before(:all) do
-      @hp_svc.put_container('my-added-container')
-      @response, @exit = run_command('cdn:containers:add my-added-container').stdout_and_exit_status
-    end
-
     it "should show success message" do
-      @response.should eql("Added container 'my-added-container' to the CDN.\n")
-    end
-    its_exit_status_should_be(:success)
+      @hp_svc.put_container('my-added-container')
 
-    it "should have added the container to the CDN" do
+      rsp = cptr('cdn:containers:add my-added-container')
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Added container 'my-added-container' to the CDN.\n")
+      rsp.exit_status.should be_exit(:success)
       @hp_cdn.head_container('my-added-container').status.should eql(204)
     end
 
@@ -36,46 +32,41 @@ describe "cdn:containers:add command" do
       @hp_cdn.delete_container('my-added-container')
       @hp_svc.delete_container('my-added-container')
     end
-
   end
 
   context "putting a non-existent storage container on the CDN" do
-
-    before(:all) do
-      @response, @exit = run_command('cdn:containers:add not-a-container').stderr_and_exit_status
-    end
-
     it "should show error message" do
-      @response.should eql("The container 'not-a-container' does not exist in your storage account. Please create the storage container first and then add it to the CDN.\n")
-    end
-    its_exit_status_should_be(:incorrect_usage)
+      rsp = cptr('cdn:containers:add not-a-container')
 
+      rsp.stderr.should eq("The container 'not-a-container' does not exist in your storage account. Please create the storage container first and then add it to the CDN.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:incorrect_usage)
+    end
   end
 
-  describe "with avl settings passed in" do
-    before(:all) do
+  context "cdn:containers:add with valid avl" do
+    it "should report success" do
       @hp_svc.put_container('my-added-container2')
-      @response, @exit = run_command('cdn:containers:add my-added-container2').stdout_and_exit_status
+      rsp = cptr('cdn:containers:add my-added-container2')
+      rsp.stderr.should eq("")
+
+      rsp = cptr('cdn:containers:add my-added-container2 -z region-a.geo-1')
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eql("Added container 'my-added-container2' to the CDN.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    context "cdn:containers:add with valid avl" do
-      it "should report success" do
-        response, exit_status = run_command('cdn:containers:add my-added-container2 -z region-a.geo-1').stdout_and_exit_status
-        response.should eql("Added container 'my-added-container2' to the CDN.\n")
-        exit_status.should be_exit(:success)
-      end
+  end
+
+  context "cdn:containers:add with invalid avl" do
+    it "should report error" do
+      rsp = cptr('cdn:containers:add my-added-container2 -z blah')
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
     end
-    context "cdn:containers:add with invalid avl" do
-      it "should report error" do
-        response, exit_status = run_command('cdn:containers:add my-added-container2 -z blah').stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
-      end
-      after(:all) { Connection.instance.clear_options() }
-    end
-    after(:all) do
-      @hp_cdn.delete_container('my-added-container2')
-      @hp_svc.delete_container('my-added-container2')
-    end
+    after(:all) { Connection.instance.clear_options() }
   end
 
   context "verify the -a option is activated" do
@@ -90,5 +81,10 @@ describe "cdn:containers:add command" do
       rsp.exit_status.should be_exit(:general_error)
     end
     after(:all) {reset_all()}
+  end
+
+  after(:all) do
+    @hp_cdn.delete_container('my-added-container2')
+    @hp_svc.delete_container('my-added-container2')
   end
 end

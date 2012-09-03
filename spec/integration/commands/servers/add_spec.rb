@@ -22,8 +22,8 @@ describe "servers:add command" do
 
     it "should show success message" do
       @response.should eql("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    its_exit_status_should_be(:success)
 
     it "should list id in servers" do
       servers = @hp_svc.servers.map {|s| s.id}
@@ -48,8 +48,8 @@ describe "servers:add command" do
     it "should show success message" do
       @response.should eql("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
       #@response.should eql("Created server '#{@server_name}' with id '#{@new_server_id}', key '#{@keypair_name}' and security group '#{@sg_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    its_exit_status_should_be(:success)
 
     it "should list id in servers" do
       servers = @hp_svc.servers.map {|s| s.id}
@@ -80,8 +80,8 @@ describe "servers:add command" do
     it "should show success message" do
       @response.should eql("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
       #@response.should eql("Created server '#{@server_name}' with id '#{@new_server_id}', and key '#{@keypair_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    its_exit_status_should_be(:success)
 
     it "should list id in servers" do
       servers = @hp_svc.servers.map {|s| s.id}
@@ -106,8 +106,8 @@ describe "servers:add command" do
     it "should show success message" do
       @response.should eql("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
       #@response.should eql("Created server '#{@server_name}' with id '#{@new_server_id}', and security group '#{@sg_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    its_exit_status_should_be(:success)
 
     it "should list id in servers" do
       servers = @hp_svc.servers.map {|s| s.id}
@@ -133,8 +133,8 @@ describe "servers:add command" do
 
     it "should show error message" do
       @response.should eql("Server with the name '#{@server_name}' already exists\n")
+      rsp.exit_status.should be_exit(:general_error)
     end
-    its_exit_status_should_be(:general_error)
 
     after(:all) do
       @hp_svc.delete_server(@server.id) unless @server.nil?
@@ -151,8 +151,8 @@ describe "servers:add command" do
       end
       it "should report success" do
         @response.should eql("Created server '#{@server_name}' with id '#{@server_id2}'.\n")
+        rsp.exit_status.should be_exit(:success)
       end
-      its_exit_status_should_be(:success)
 
       it "should list id in servers" do
         servers = @hp_svc.servers.map {|s| s.id}

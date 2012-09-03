@@ -136,8 +136,8 @@ describe "Remove command" do
       before(:all) do
         create_container_with_files('non_empty_container', 'foo.txt')
       end
-      context "when force option is not used" do
 
+      context "when force option is not used" do
         it "should not remove container" do
           exit_status = :success
           $stdout.should_receive(:print).with("Are you sure you want to remove the container 'non_empty_container'? ")
@@ -151,27 +151,20 @@ describe "Remove command" do
           exit_status.should be_exit(:general_error)
         end
       end
+
       context "when force option is used" do
-        before(:all) do
-          @response, @exit = run_command('remove -f :non_empty_container').stdout_and_exit_status
-        end
         it "should show success message" do
-          @response.should eql("Removed container 'non_empty_container'.\n")
-        end
+          rsp = cptr('remove -f :non_empty_container')
 
-        it "should remove container" do
+          rsp.stderr.should eq("")
+          rsp.stdout.should eq("Removed container 'non_empty_container'.\n")
           lambda{ @hp_svc.get_container('non_empty_container') }.should raise_error(Fog::Storage::HP::NotFound)
-        end
-
-        it "should have success exit status" do
-          @exit.should be_exit(:success)
+          rsp.exit_status.should be_exit(:success)
         end
       end
 
       after(:all) { purge_container('non_empty_container') }
-
     end
-
   end
 
   context "verify the -a option is activated" do
