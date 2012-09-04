@@ -10,49 +10,49 @@ describe "servers:password command" do
   end
 
   context "when changing password for server" do
-    before(:all) do
+    it "should show success message" do
       @server_name = resource_name("pwd1")
       @server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
       @server.wait_for { ready? }
-    end
 
-    it "should show success message" do
-      @response, @exit = run_command("servers:password #{@server_name} Passw0rd1 ").stdout_and_exit_status
-      @response.should eql("Password changed for server '#{@server_name}'.\n")
-      sleep(10)
+      rsp = cptr("servers:password #{@server_name} Passw0rd1 ")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eql("Password changed for server '#{@server_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
 
     after(:all) do
       @server.destroy
     end
   end
-  describe "with avl settings passed in" do
-    before(:all) do
+
+  context "servers:password with valid avl" do
+    it "should report success" do
       @server_name = resource_name("pwd2")
+      @server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
+      @server.wait_for { ready? }
+
+      rsp = cptr("servers:password #{@server_name} Passw0rd1 -z az-1.region-a.geo-1")
+
+      rsp.stdout.should eq("")
+      rsp.stdout.should eq("Password changed for server '#{@server_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    context "servers:password with valid avl" do
-      before(:all) do
-        @server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
-        @server.wait_for { ready? }
-      end
-      it "should report success" do
-        response, exit_status = run_command("servers:password #{@server_name} Passw0rd1 -z az-1.region-a.geo-1").stdout_and_exit_status
-        response.should eql("Password changed for server '#{@server_name}'.\n")
-        sleep(10)
-        exit_status.should be_exit(:success)
-      end
-      after(:all) do
-        @server.destroy
-      end
+    after(:all) do
+      @server.destroy
     end
-    context "servers with invalid avl" do
-      it "should report error" do
-        response, exit_status = run_command("servers:password #{@server_name} Passw0rd1 -z blah").stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
-      end
-      after(:all) { Connection.instance.clear_options() }
+  end
+
+  context "servers with invalid avl" do
+    it "should report error" do
+      rsp = cptr("servers:password #{@server_name} Passw0rd1 -z blah")
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
     end
+    after(:all) { Connection.instance.clear_options() }
   end
 
   context "verify the -a option is activated" do

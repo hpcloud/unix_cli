@@ -21,13 +21,12 @@ describe "volumes:attach command" do
   end
 
   context "when attaching volume with name" do
-    before(:all) do
-      @response, @exit = run_command("volumes:attach #{@vol1.name} #{@server.name} /dev/sdf").stdout_and_exit_status
-    end
-
     it "should succeed" do
-      @response.should eql("Attached volume '#{@vol1.name}' to '#{@server.name}' on '/dev/sdf'.\n")
-      @exit.should be_exit(:success)
+      rsp = cptr("volumes:attach #{@vol1.name} #{@server.name} /dev/sdf")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Attached volume '#{@vol1.name}' to '#{@server.name}' on '/dev/sdf'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
 
     after(:all) do
@@ -35,39 +34,38 @@ describe "volumes:attach command" do
     end
   end
 
-  describe "with avl settings passed in" do
+  context "volumes:attach with valid avl" do
+    it "should be successful" do
+      rsp = cptr("volumes:attach #{@vol2.name} -z az-1.region-a.geo-1 #{@server.name} /dev/sdg")
 
-    context "volumes:attach with valid avl" do
-      before(:all) do
-        @response, @exit = run_command("volumes:attach #{@vol2.name} -z az-1.region-a.geo-1 #{@server.name} /dev/sdg").stdout_and_exit_status
-      end
-
-      it "should be successful" do
-        @response.should eql("Attached volume '#{@vol2.name}' to '#{@server.name}' on '/dev/sdg'.\n")
-        @exit.should be_exit(:success)
-      end
-
-      after(:all) do
-        @vol2.detach()
-      end
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Attached volume '#{@vol2.name}' to '#{@server.name}' on '/dev/sdg'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
 
-    context "volumes:attach with invalid avl" do
-
-      it "should report error" do
-        response, exit_status = run_command("volumes:attach #{@vol3.name} #{@server.name} /dev/sdh -z blah").stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
-      end
-      after(:all) { HP::Cloud::Connection.instance.clear_options() }
+    after(:all) do
+      @vol2.detach()
     end
+  end
 
-    context "volumes:attach with invalid volume" do
-      it "should report error" do
-        response, exit_status = run_command("volumes:attach bogus #{@server.name} /dev/sdi").stderr_and_exit_status
-        response.should include("Cannot find a volume matching 'bogus'.\n")
-        exit_status.should be_exit(:not_found)
-      end
+  context "volumes:attach with invalid avl" do
+    it "should report error" do
+      rsp = cptr("volumes:attach #{@vol3.name} #{@server.name} /dev/sdh -z blah")
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) { HP::Cloud::Connection.instance.clear_options() }
+  end
+
+  context "volumes:attach with invalid volume" do
+    it "should report error" do
+      rsp = cptr("volumes:attach bogus #{@server.name} /dev/sdi")
+
+      rsp.stderr.should include("Cannot find a volume matching 'bogus'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_found)
     end
   end
 

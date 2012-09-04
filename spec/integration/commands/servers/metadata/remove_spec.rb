@@ -31,10 +31,11 @@ describe "Servers metadata remove command" do
   describe "with avl settings from config" do
     context "servers delete one" do
       it "should report success" do
-        response, exit_status = run_command("servers:metadata:remove #{@server_id} aardvark").stdout_and_exit_status
+        rsp = cptr("servers:metadata:remove #{@server_id} aardvark")
 
-        exit_status.should be_exit(:success)
-        response.should include("aardvark")
+        rsp.stderr.should eq("")
+        rsp.stdout.should include("aardvark")
+        rsp.exit_status.should be_exit(:success)
         result = Servers.new.get(@server_id)
         still_contains_original(result.meta.to_s)
         result.meta.to_s.should include("kangaroo=two")
@@ -44,10 +45,12 @@ describe "Servers metadata remove command" do
 
     context "servers" do
       it "should report success" do
-        response, exit_status = run_command("servers:metadata:remove #{@server_name} aardvark kangaroo").stdout_and_exit_status
-        exit_status.should be_exit(:success)
-        response.should include("aardvark")
-        response.should include("kangaroo")
+        rsp = cptr("servers:metadata:remove #{@server_name} aardvark kangaroo")
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should include("aardvark")
+        rsp.stdout.should include("kangaroo")
+        rsp.exit_status.should be_exit(:success)
         result = Servers.new.get(@server_id)
         still_contains_original(result.meta.to_s)
         result.meta.to_s.should_not include("kangaroo")
@@ -60,21 +63,26 @@ describe "Servers metadata remove command" do
   describe "with avl settings passed in" do
     context "servers with valid avl" do
       it "should report success" do
-        response, exit_status = run_command("servers:metadata:remove -z az-1.region-a.geo-1 #{@server_id} aardvark kangaroo").stdout_and_exit_status
-        exit_status.should be_exit(:success)
-        response.should include("Removed metadata 'aardvark' from server")
-        response.should include("Removed metadata 'kangaroo' from server")
+        rsp = cptr("servers:metadata:remove -z az-1.region-a.geo-1 #{@server_id} aardvark kangaroo")
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should include("Removed metadata 'aardvark' from server")
+        rsp.stdout.should include("Removed metadata 'kangaroo' from server")
+        rsp.exit_status.should be_exit(:success)
         result = Servers.new.get(@server_id)
         still_contains_original(result.meta.to_s)
         result.meta.to_s.should_not include("kangaroo")
         result.meta.to_s.should_not include("aardvark")
       end
     end
+
     context "servers with invalid avl" do
       it "should report error" do
-        response, exit_status = run_command("servers:metadata:remove -z blah #{@server_id} aardvark kangaroo").stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
+        rsp = cptr("servers:metadata:remove -z blah #{@server_id} aardvark kangaroo")
+
+        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:general_error)
       end
       after(:all) { HP::Cloud::Connection.instance.clear_options() }
     end

@@ -10,8 +10,11 @@ describe "Acl command (viewing acls)" do
 
   context "when resource is not correct" do
     it "should exit with message about not supported resource" do
-      message = run_command('acl /foo/foo').stderr
-      message.should eql("ACL viewing is only supported for containers and objects. See `help acl`.\n")
+      rsp = cptr('acl /foo/foo')
+
+      rsp.stderr.should eq("ACL viewing is only supported for containers and objects. See `help acl`.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status be_exit(:general_error)
     end
   end
 
@@ -21,53 +24,66 @@ describe "Acl command (viewing acls)" do
       @dir.public = false
       @dir.save
     end
+
     context "container" do
-      before(:all) do
-        @response, @exit = run_command('acl :acl_container').stdout_and_exit_status
-      end
       it "should have 'private' permissions" do
-        @response.should eql("private\n")
+        rsp = cptr('acl :acl_container')
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eql("private\n")
         rsp.exit_status.should be_exit(:success)
       end
     end
+
     context "object" do
-      before(:all) do
-        @response, @exit = run_command('acl :acl_container/foo.txt').stdout_and_exit_status
-      end
       it "should have 'private' permissions" do
-        @response.should eql("private\n")
+        rsp = cptr('acl :acl_container/foo.txt')
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eql("private\n")
         rsp.exit_status.should be_exit(:success)
       end
     end
-    describe "with avl settings passed in" do
-      context "acl for container with valid avl" do
-        it "should report success" do
-          response, exit_status = run_command('acl :acl_container -z region-a.geo-1').stdout_and_exit_status
-          exit_status.should be_exit(:success)
-        end
+
+    context "acl for container with valid avl" do
+      it "should report success" do
+        rsp = cptr('acl :acl_container -z region-a.geo-1')
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eql("private\n")
+        rsp.exit_status.should be_exit(:success)
       end
-      context "acl for object with valid avl" do
-        it "should report success" do
-          response, exit_status = run_command('acl :acl_container/foo.txt -z region-a.geo-1').stdout_and_exit_status
-          exit_status.should be_exit(:success)
-        end
+    end
+
+    context "acl for object with valid avl" do
+      it "should report success" do
+        rsp = cptr('acl :acl_container/foo.txt -z region-a.geo-1')
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eql("private\n")
+        rsp.exit_status.should be_exit(:success)
       end
-      context "acl for container with invalid avl" do
-        it "should report error" do
-          response, exit_status = run_command('acl :acl_container -z blah').stderr_and_exit_status
-          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
-          exit_status.should be_exit(:general_error)
-        end
-        after(:all) { Connection.instance.clear_options() }
+    end
+
+    context "acl for container with invalid avl" do
+      it "should report error" do
+        rsp = cptr('acl :acl_container -z blah')
+
+        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:general_error)
       end
-      context "acl for object with invalid avl" do
-        it "should report error" do
-          response, exit_status = run_command('acl :acl_container/foo.txt -z blah').stderr_and_exit_status
-          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
-          exit_status.should be_exit(:general_error)
-        end
-        after(:all) { Connection.instance.clear_options() }
+      after(:all) { Connection.instance.clear_options() }
+    end
+
+    context "acl for object with invalid avl" do
+      it "should report error" do
+        rsp = cptr('acl :acl_container/foo.txt -z blah')
+        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+        rsp.stdout.should eql("")
+        rsp.exit_status.should be_exit(:general_error)
       end
+      after(:all) { Connection.instance.clear_options() }
     end
   end
 
@@ -77,53 +93,67 @@ describe "Acl command (viewing acls)" do
       @dir.public = true
       @dir.save
     end
+
     context "container" do
-      before(:all) do
-        @response, @exit = run_command('acl :acl_container').stdout_and_exit_status
-      end
       it "should have 'public' permissions" do
-        @response.should eql("public-read\n")
+        rsp = cptr('acl :acl_container')
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eql("public-read\n")
         rsp.exit_status.should be_exit(:success)
       end
     end
+
     context "object" do
-      before(:all) do
-        @response, @exit = run_command('acl :acl_container/foo.txt').stdout_and_exit_status
-      end
       it "should have 'public' permissions" do
-        @response.should eql("public-read\n")
+        rsp = cptr('acl :acl_container/foo.txt')
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eql("public-read\n")
         rsp.exit_status.should be_exit(:success)
       end
     end
-    describe "with avl settings passed in" do
-      context "acl for container with valid avl" do
-        it "should report success" do
-          response, exit_status = run_command('acl :acl_container -z region-a.geo-1').stdout_and_exit_status
-          exit_status.should be_exit(:success)
-        end
+
+    context "acl for container with valid avl" do
+      it "should report success" do
+        rsp = cptr('acl :acl_container -z region-a.geo-1')
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eql("public-read\n")
+        rsp.exit_status.should be_exit(:success)
       end
-      context "acl for object with valid avl" do
-        it "should report success" do
-          response, exit_status = run_command('acl :acl_container/foo.txt -z region-a.geo-1').stdout_and_exit_status
-          exit_status.should be_exit(:success)
-        end
+    end
+
+    context "acl for object with valid avl" do
+      it "should report success" do
+        rsp = cptr('acl :acl_container/foo.txt -z region-a.geo-1')
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eql("public-read\n")
+        rsp.exit_status.should be_exit(:success)
       end
-      context "acl for container with invalid avl" do
-        it "should report error" do
-          response, exit_status = run_command('acl :acl_container -z blah').stderr_and_exit_status
-          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
-          exit_status.should be_exit(:general_error)
-        end
-        after(:all) { Connection.instance.clear_options() }
+    end
+
+    context "acl for container with invalid avl" do
+      it "should report error" do
+        rsp = cptr('acl :acl_container -z blah')
+
+        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:general_error)
       end
-      context "acl for object with invalid avl" do
-        it "should report error" do
-          response, exit_status = run_command('acl :acl_container/foo.txt -z blah').stderr_and_exit_status
-          response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
-          exit_status.should be_exit(:general_error)
-        end
-        after(:all) { Connection.instance.clear_options() }
+      after(:all) { Connection.instance.clear_options() }
+    end
+
+    context "acl for object with invalid avl" do
+      it "should report error" do
+        rsp = cptr('acl :acl_container/foo.txt -z blah')
+
+        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:general_error)
       end
+      after(:all) { Connection.instance.clear_options() }
     end
   end
 

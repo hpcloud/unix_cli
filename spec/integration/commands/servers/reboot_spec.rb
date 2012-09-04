@@ -15,40 +15,44 @@ describe "servers:reboot command" do
 
   ### Server creation returns status "failed to spawn", hence test fails
   pending "when soft rebooting server" do
-
     it "should show success message" do
-      @response, @exit = run_command("servers:reboot #{@server_name}").stdout_and_exit_status
-      @response.should eql("Soft rebooting server '#{@server_name}'.\n")
-      sleep(10)
+      rsp = cptr("servers:reboot #{@server_name}")
+
+      rsp.stderr.should eql("")
+      rsp.stdout.should eql("Soft rebooting server '#{@server_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
   end
 
   pending "when hard rebooting server" do
-
     it "should show success message" do
-      @response, @exit = run_command("servers:reboot #{@server_name} -h").stdout_and_exit_status
-      @response.should eql("Hard rebooting server '#{@server_name}'.\n")
-      sleep(10)
+      rsp = cptr("servers:reboot #{@server_name} -h")
+
+      rsp.stderr.should eql("")
+      rsp.stdout.should eql("Hard rebooting server '#{@server_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
   end
 
-  pending "with avl settings passed in" do
-    context "servers:reboot with valid avl" do
-      it "should report success" do
-        response, exit_status = run_command("servers:reboot #{@server_name} -z az-1.region-a.geo-1").stdout_and_exit_status
-        response.should eql("Soft rebooting server '#{@server_name}'.\n")
-        sleep(10)
-        exit_status.should be_exit(:success)
-      end
+  context "servers:reboot with valid avl" do
+    it "should report success" do
+      rsp = cptr("servers:reboot #{@server_name} -z az-1.region-a.geo-1")
+
+      rsp.stderr.should eql("")
+      rsp.stdout.should eql("Soft rebooting server '#{@server_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    context "servers:reboot with invalid avl" do
-      it "should report error" do
-        response, exit_status = run_command("servers:reboot #{@server_name} -z blah").stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
-      end
-      after(:all) { Connection.instance.clear_options() }
+  end
+
+  context "servers:reboot with invalid avl" do
+    it "should report error" do
+      rsp = cptr("servers:reboot #{@server_name} -z blah")
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
     end
+    after(:all) { Connection.instance.clear_options() }
   end
 
   context "verify the -a option is activated" do
@@ -68,5 +72,4 @@ describe "servers:reboot command" do
   after(:all) do
     @server.destroy
   end
-
 end

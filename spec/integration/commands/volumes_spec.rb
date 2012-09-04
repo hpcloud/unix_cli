@@ -34,26 +34,25 @@ describe "Volumes command" do
     end
   end
 
-  describe "with avl settings passed in" do
-    context "volumes with valid avl" do
-      it "should report success" do
-        response, exit_status = run_command('volumes one two -z az-1.region-a.geo-1').stdout_and_exit_status
+  context "volumes with valid avl" do
+    it "should report success" do
+      rsp = cptr('volumes one two -z az-1.region-a.geo-1')
 
-        rsp.stderr.should eq("")
-        then_expected_table(rsp.stdout)
-        rsp.exit_status.should be_exit(:success)
-      end
+      rsp.stderr.should eq("")
+      then_expected_table(rsp.stdout)
+      rsp.exit_status.should be_exit(:success)
     end
-    context "volumes with invalid avl" do
-      it "should report error" do
-        response, exit_status = run_command('volumes -z blah').stderr_and_exit_status
+  end
 
-        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n")
-        rsp.stdout.should eq("")
-        rsp.exit_status.should be_exit(:general_error)
-      end
-      after(:all) { Connection.instance.clear_options() }
+  context "volumes with invalid avl" do
+    it "should report error" do
+      rsp = cptr('volumes -z blah')
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
     end
+    after(:all) { Connection.instance.clear_options() }
   end
 
   context "verify the -a option is activated" do

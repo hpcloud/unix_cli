@@ -14,25 +14,24 @@ describe "Copy command" do
     
     context "when local file does not exist" do
       it "should exit with file not found" do
-        response, exit_status = run_command('copy foo.txt :my_container').stderr_and_exit_status
-        response.should eql("File not found at 'foo.txt'.\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr('copy foo.txt :my_container')
+
+        rsp.stderr.should eq("File not found at 'foo.txt'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
     
     context "when local file cannot be read" do
-      before(:all) do
-        File.chmod(0200, 'spec/fixtures/files/cantread.txt')
-      end
-      
-      it "should not be a readable file" do
-        File.readable?('spec/fixtures/files/cantread.txt').should be_false
-      end
-      
       it "should show error message" do
-        response, exit_status = run_command('copy spec/fixtures/files/cantread.txt :my_container').stderr_and_exit_status
-        response.should eql("Permission denied - spec/fixtures/files/cantread.txt\n")
-        exit_status.should be_exit(:permission_denied)
+        File.chmod(0200, 'spec/fixtures/files/cantread.txt')
+        File.readable?('spec/fixtures/files/cantread.txt').should be_false
+
+        rsp = cptr('copy spec/fixtures/files/cantread.txt :my_container')
+
+        rsp.stderr.should eql("Permission denied - spec/fixtures/files/cantread.txt\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:permission_denied)
       end
       
       after(:all) do
@@ -43,6 +42,7 @@ describe "Copy command" do
     context "when container does not exist" do
       it "should exit with container not found" do
         rsp = cptr("copy spec/fixtures/files/foo.txt :missing_container")
+
         rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)

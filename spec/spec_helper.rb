@@ -15,7 +15,6 @@ require 'rspec/mocks/standalone'
 
 require 'hpcloud'
 
-require 'helpers/macros'
 require 'helpers/fixtures'
 require 'helpers/accounts_helper'
 require 'helpers/config_helper'
