@@ -27,7 +27,7 @@ describe "keypairs:add command" do
       rsp.stderr.should eq("Key pair '#{@key_name}' already exists.\n")
     end
 
-    after(:all) do
+    after(:each) do
       keypair = get_keypair(@hp_svc, @key_name)
       keypair.destroy if keypair
     end
@@ -49,7 +49,7 @@ describe "keypairs:add command" do
       keypair.fingerprint.should_not be_nil
     end
 
-    after(:all) do
+    after(:each) do
       keypair = get_keypair(@hp_svc, @key_name)
       keypair.destroy if keypair
     end
@@ -71,7 +71,7 @@ describe "keypairs:add command" do
       keypair.fingerprint.should_not be_nil
     end
 
-    after(:all) do
+    after(:each) do
       keypair = get_keypair(@hp_svc, @key_name)
       keypair.destroy if keypair
     end
@@ -93,7 +93,7 @@ describe "keypairs:add command" do
       keypair.fingerprint.should_not be_nil
     end
 
-    after(:all) do
+    after(:each) do
       keypair = get_keypair(@hp_svc, @key_name)
       keypair.destroy if keypair
     end
@@ -116,7 +116,7 @@ describe "keypairs:add command" do
       keypair.fingerprint.should_not be_nil
     end
 
-    after(:all) do
+    after(:each) do
       keypair = get_keypair(@hp_svc, @key_name)
       keypair.destroy if keypair
       File.delete("./#{@key_name}.pem") if File.exists?("./#{@key_name}.pem")
@@ -133,7 +133,7 @@ describe "keypairs:add command" do
       rsp.stdout.should include("Created key pair '#{@key_name}'.")
       rsp.exit_status.should be_exit(:success)
     end
-    after(:all) do
+    after(:each) do
       keypair = get_keypair(@hp_svc, @key_name)
       keypair.destroy if keypair
     end
@@ -141,9 +141,7 @@ describe "keypairs:add command" do
 
   context "keypairs:add with invalid avl" do
     it "should report error" do
-      @key_name = 'fog-key-205'
-
-      rsp = cptr("keypairs:add #{@key_name} -z blah")
+      rsp = cptr("keypairs:add some_key_name -z blah")
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")

@@ -11,7 +11,7 @@ describe "securitygroups:add command" do
 
   context "when creating security groups" do
     it "should show success message" do
-      rsp = cptr("securitygroups:add mysecgroup sec group desc")
+      rsp = cptr(["securitygroups:add","mysecgroup","sec group desc"])
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Created security group 'mysecgroup'.\n")
@@ -22,7 +22,7 @@ describe "securitygroups:add command" do
       security_group.name.should eql('mysecgroup')
       security_group = get_securitygroup(@hp_svc, 'mysecgroup')
       security_group.description.should eql('sec group desc')
-      rsp = cptr("securitygroups:add mysecgroup 'sec group desc'")
+      rsp = cptr(["securitygroups:add","mysecgroup","sec group desc"])
       rsp.stderr.should eql("Security group 'mysecgroup' already exists.\n")
     end
 

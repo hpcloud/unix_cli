@@ -6,13 +6,7 @@ describe "Images metadata remove command" do
     @flavor_id = AccountsHelper.get_flavor_id()
     @image_id = AccountsHelper.get_image_id()
 
-    @srv = HP::Cloud::ServerHelper.new(Connection.instance.compute)
-    @srv.name = resource_name("meta_srv")
-    @srv.flavor = @flavor_id
-    @srv.image = @image_id
-    @srv.meta.set_metadata('luke=skywalker,han=solo')
-    @srv.save.should be_true
-    @srv.fog.wait_for { ready? }
+    @srv = ServerTestHelper.create("image_meta_remove")
 
     @img = HP::Cloud::ImageHelper.new()
     @img.name = resource_name("meta_img")

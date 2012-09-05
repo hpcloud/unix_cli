@@ -35,7 +35,7 @@ describe "servers:password command" do
 
       rsp = cptr("servers:password #{@server_name} Passw0rd1 -z az-1.region-a.geo-1")
 
-      rsp.stdout.should eq("")
+      rsp.stderr.should eq("")
       rsp.stdout.should eq("Password changed for server '#{@server_name}'.\n")
       rsp.exit_status.should be_exit(:success)
     end

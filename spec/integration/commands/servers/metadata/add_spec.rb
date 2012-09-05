@@ -28,7 +28,7 @@ describe "Servers metadata add command" do
       rsp = cptr("servers:metadata:add #{@server_id} id1=one,id2=2")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("")
+      rsp.stdout.should eq("Server '#{@server_id}' set metadata 'id1=one,id2=2'.\n")
       rsp.exit_status.should be_exit(:success)
       result = Servers.new.get(@server_id)
       still_contains_original(result.meta.to_s)
@@ -42,7 +42,7 @@ describe "Servers metadata add command" do
       rsp = cptr("servers:metadata:add #{@server_name} name1=1,name2=2")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("")
+      rsp.stdout.should eq("Server '#{@server_name}' set metadata 'name1=1,name2=2'.\n")
       rsp.exit_status.should be_exit(:success)
       result = Servers.new.get(@server_id)
       still_contains_original(result.meta.to_s)
@@ -56,7 +56,7 @@ describe "Servers metadata add command" do
       rsp = cptr("servers:metadata:add -z az-1.region-a.geo-1 #{@server_id} avl1=1,avl2=2")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("")
+      rsp.stdout.should eq("Server '#{@server_id}' set metadata 'avl1=1,avl2=2'.\n")
       rsp.exit_status.should be_exit(:success)
       result = Servers.new.get(@server_id)
       still_contains_original(result.meta.to_s)

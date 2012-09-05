@@ -49,7 +49,7 @@ describe "servers:reboot command" do
       rsp = cptr("servers:reboot #{@server_name} -z blah")
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-      rsp.stderr.should eq("")
+      rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
     after(:all) { Connection.instance.clear_options() }

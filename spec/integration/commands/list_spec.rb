@@ -2,7 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe "list command" do
   before(:all) do
-    cptr("containers:add my_container")
+    purge_container("mycontainer")
+    cptr("containers:add mycontainer")
   end
 
   describe "with avl settings from config" do
@@ -10,15 +11,17 @@ describe "list command" do
       it "should report success" do
         rsp = cptr("list")
         rsp.stderr.should eq("")
+        rsp.stdout.should include("mycontainer")
         rsp.exit_status.should be_exit(:success)
       end
     end
 
     context "list container contents" do
       it "should report success" do
-        rsp = cptr("list :my_container")
+        rsp = cptr("list :mycontainer")
+
         rsp.stderr.should eq("")
-        rsp.stdout.should eq("my_container")
+        rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -27,15 +30,15 @@ describe "list command" do
   describe "with avl settings passed in" do
     context "list container with valid avl" do
       it "should report success" do
-        rsp = cptr("list :my_container -z region-a.geo-1")
+        rsp = cptr("list :mycontainer -z region-a.geo-1")
         rsp.stderr.should eq("")
-        rsp.stdout.should eq("my_container")
+        rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:success)
       end
     end
     context "list container with invalid avl" do
       it "should report error" do
-        rsp = cptr("list :my_container -z blah")
+        rsp = cptr("list :mycontainer -z blah")
         rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:general_error)
@@ -48,7 +51,7 @@ describe "list command" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("list :my_container -a bogus")
+      rsp = cptr("list :mycontainer -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
@@ -58,5 +61,5 @@ describe "list command" do
     after(:all) {reset_all()}
   end
 
-  after(:all) { purge_container('my_container') }
+  after(:all) { purge_container('mycontainer') }
 end

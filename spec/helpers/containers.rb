@@ -24,13 +24,16 @@ RSpec.configure do |config|
     rescue Fog::Storage::HP::NotFound # container is listed, but does not currently exist
     rescue Excon::Errors::Conflict # container has files in it
       begin
-        connection.directories.get(container_name).files.each do |file|
-          begin
-            puts "  - removing file '#{file.key}'" if verbose
-            file.destroy
+        tainer = connection.directories.get(container_name)
+        unless tainer.nil?
+          tainer.files.each do |file|
+            begin
+              puts "  - removing file '#{file.key}'" if verbose
+              file.destroy
+            end
           end
+          connection.delete_container(container_name)
         end
-        connection.delete_container(container_name)
       end
     end
   end

@@ -14,10 +14,9 @@ describe "securitygroups:rules:add command" do
       rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 22..22")
 
       rsp.stderr.should eq("")
-      sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
-      @rule_id = sec_group_with_rules.rules[0]["id"]
-      rsp.stdout.should eql("Created rule '#{@rule_id}' for security group 'mysecgroup'.\n")
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
       rsp.exit_status.should be_exit(:success)
+      sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
       @rules = sec_group_with_rules.rules
       @rules.should have(1).rule
       @rules[0]['ip_protocol'].should eql('tcp')
@@ -25,9 +24,6 @@ describe "securitygroups:rules:add command" do
       @rules[0]['ip_range']['cidr'].should eql("0.0.0.0/0")
       @rules[0]['from_port'].should eql(22)
       @rules[0]['to_port'].should eql(22)
-    end
-
-    it "should report rule exists if created again" do
       rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 22..22")
       rsp.stderr.should eq("This rule already exists in group #{@security_group.id}\n")
       rsp.stdout.should eq("")
@@ -40,10 +36,9 @@ describe "securitygroups:rules:add command" do
       rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 80..80 -c 111.111.111.111/1")
 
       rsp.stderr.should eq("")
-      sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
-      @rule_id = sec_group_with_rules.rules[0]["id"]
-      rsp.stdout.should eq("Created rule '#{@rule_id}' for security group 'mysecgroup'.\n")
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
       rsp.exit_status.should be_exit(:success)
+      sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
       @rules = sec_group_with_rules.rules
       @rules.should have(1).rule
       @rules[0]['ip_protocol'].should eql('tcp')
@@ -69,10 +64,9 @@ describe "securitygroups:rules:add command" do
       rsp = cptr("securitygroups:rules:add mysecgroup icmp")
 
       rsp.stderr.should eq("")
-      sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
-      @rule_id = sec_group_with_rules.rules[0]["id"]
-      rsp.stdout.should eq("Created rule '#{@rule_id}' for security group 'mysecgroup'.\n")
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
       rsp.exit_status.should be_exit(:success)
+      sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
       @rules = sec_group_with_rules.rules
       @rules.should have(1).rule
       @rules[0]['ip_protocol'].should eql('icmp')
@@ -89,10 +83,9 @@ describe "securitygroups:rules:add command" do
       rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 22..22 -g default")
 
       rsp.stderr.should eq("")
-      sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
-      @rule_id = sec_group_with_rules.rules[0]["id"]
-      rsp.stdout.should eq("Created rule '#{@rule_id}' for security group 'mysecgroup'.\n")
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
       rsp.exit_status.should be_exit(:success)
+      sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
       @rules = sec_group_with_rules.rules
       @rules.should have(1).rule
       @rules[0]['ip_protocol'].should eql('tcp')
@@ -108,10 +101,9 @@ describe "securitygroups:rules:add command" do
       rsp = cptr("securitygroups:rules:add mysecgroup icmp -g default")
 
       rsp.stderr.should eql("")
-      sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
-      @rule_id = sec_group_with_rules.rules[0]["id"]
-      rsp.stdout.should eql("Created rule '#{@rule_id}' for security group 'mysecgroup'.\n")
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
       rsp.exit_status.should be_exit(:success)
+      sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
       @rules = sec_group_with_rules.rules
       @rules.should have(1).rule
       @rules[0]['ip_protocol'].should eql('icmp')
@@ -175,8 +167,7 @@ describe "securitygroups:rules:add command" do
       rsp = cptr('securitygroups:rules:add mysecgroup icmp -z az-1.region-a.geo-1')
 
       rsp.stderr.should eq("")
-      sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
-      @rule_id = sec_group_with_rules.rules[0]["id"]
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
       rsp.stdout.should eq("Created rule '#{@rule_id}' for security group 'mysecgroup'.\n")
       rsp.exit_status.should be_exit(:success)
     end
@@ -195,9 +186,9 @@ describe "securitygroups:rules:add command" do
 
   context "when creating rules with invalid security group" do
     it "should show error message" do
-      rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 22..22")
+      rsp = cptr("securitygroups:rules:add bogus tcp -p 22..22")
 
-      rsp.stderr.should eq("You don't have a security group 'mysecgroup'.\n")
+      rsp.stderr.should eq("You don't have a security group 'bogus'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end

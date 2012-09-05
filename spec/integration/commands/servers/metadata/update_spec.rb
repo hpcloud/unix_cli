@@ -23,7 +23,7 @@ describe "Servers metadata update command" do
       rsp = cptr("servers:metadata:update #{@server_id} luke=l000001,han=h000001")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("")
+      rsp.stdout.should eq("Server '#{@server_id}' set metadata 'luke=l000001,han=h000001'.\n")
       exit_status.should be_exit(:success)
       result = Servers.new.get(@server_id)
       result.meta.to_s.should include("luke=l000001")
@@ -36,7 +36,7 @@ describe "Servers metadata update command" do
       rsp = cptr("servers:metadata:update #{@server_name} luke=l000002,han=h000002")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("")
+      rsp.stdout.should eq("Server '#{@server_name}' set metadata 'luke=l000002,han=h000002'.\n")
       exit_status.should be_exit(:success)
       result = Servers.new.get(@server_id)
       result.meta.to_s.should include("luke=l000002")
@@ -49,7 +49,7 @@ describe "Servers metadata update command" do
       rsp = cptr("servers:metadata:update -z az-1.region-a.geo-1 #{@server_id} luke=l000003,han=h000003")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("")
+      rsp.stdout.should eq("Server '#{@server_id}' set metadata 'luke=l000003,han=h000003'.\n")
       rsp.exit_status.should be_exit(:success)
       result = Servers.new.get(@server_id)
       result.meta.to_s.should include("luke=l000003")
