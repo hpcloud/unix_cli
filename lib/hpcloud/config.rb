@@ -105,6 +105,9 @@ module HP
         @settings[:connect_timeout] ||= options[:connect_timeout]
         @settings[:read_timeout] ||= options[:read_timeout]
         @settings[:write_timeout] ||= options[:write_timeout]
+        @settings[:connect_timeout] = @settings[:connect_timeout].to_i
+        @settings[:read_timeout] = @settings[:read_timeout].to_i
+        @settings[:write_timeout] = @settings[:write_timeout].to_i
         if @settings[:ssl_verify_peer].nil?
           @settings[:ssl_verify_peer] = options[:ssl_verify_peer]
         end

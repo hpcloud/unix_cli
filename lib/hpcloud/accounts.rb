@@ -176,6 +176,9 @@ module HP
         hsh[:options][:connect_timeout] ||= settings[:connect_timeout]
         hsh[:options][:read_timeout] ||= settings[:read_timeout]
         hsh[:options][:write_timeout] ||= settings[:write_timeout]
+        hsh[:options][:connect_timeout] = hsh[:options][:connect_timeout].to_i
+        hsh[:options][:read_timeout] = hsh[:options][:read_timeout].to_i
+        hsh[:options][:write_timeout] = hsh[:options][:write_timeout].to_i
         if hsh[:options][:ssl_verify_peer].nil?
           hsh[:options][:ssl_verify_peer] = settings[:ssl_verify_peer]
         end

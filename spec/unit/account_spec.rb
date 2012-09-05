@@ -232,9 +232,9 @@ describe "Accounts" do
       accounts.set('Hives', :storage_availability_zone, "Z2").should be_true
       accounts.set('Hives', :cdn_availability_zone, "Z3").should be_true
       accounts.set('Hives', :block_availability_zone, "Z4").should be_true
-      accounts.set('Hives', :connect_timeout, "O1").should be_true
-      accounts.set('Hives', :read_timeout, "O2").should be_true
-      accounts.set('Hives', :write_timeout, "O3").should be_true
+      accounts.set('Hives', :connect_timeout, "1").should be_true
+      accounts.set('Hives', :read_timeout, "2").should be_true
+      accounts.set('Hives', :write_timeout, "3").should be_true
       accounts.set('Hives', :ssl_verify_peer, "O4").should be_true
       accounts.set('Hives', :ssl_ca_path, "O5").should be_true
       accounts.set('Hives', :ssl_ca_file, "O6").should be_true
@@ -250,9 +250,9 @@ describe "Accounts" do
       acct[:zones][:storage_availability_zone].should eq("Z2")
       acct[:zones][:cdn_availability_zone].should eq("Z3")
       acct[:zones][:block_availability_zone].should eq("Z4")
-      acct[:options][:connect_timeout].should eq("O1")
-      acct[:options][:read_timeout].should eq("O2")
-      acct[:options][:write_timeout].should eq("O3")
+      acct[:options][:connect_timeout].should eq(1)
+      acct[:options][:read_timeout].should eq(2)
+      acct[:options][:write_timeout].should eq(3)
       acct[:options][:ssl_verify_peer].should eq("O4")
       acct[:options][:ssl_ca_path].should eq("O5")
       acct[:options][:ssl_ca_file].should eq("O6")

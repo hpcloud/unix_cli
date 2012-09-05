@@ -16,19 +16,22 @@ Examples:
 Aliases: addresses:rm, addresses:delete, addresses:release, addresses:del
       DESC
       CLI.add_common_options
-      define_method "addresses:remove" do |public_ip|
+      define_method "addresses:remove" do |ip, *ips|
         cli_command(options) {
           compute_connection = connection(:compute, options)
-          address = compute_connection.addresses.select {|a| a.ip == public_ip}.first
-          if (address && address.ip == public_ip)
-            # Disassociate any server from this address
-            address.server = nil unless address.instance_id.nil?
-            # Release the address
-            address.destroy
-            display "Removed address '#{public_ip}'."
-          else
-            error "You don't have an address with public IP '#{public_ip}'.", :not_found
-          end
+          ips = [ip] + ips
+          ips.each { |public_ip|
+            address = compute_connection.addresses.select {|a| a.ip == public_ip}.first
+            if (address && address.ip == public_ip)
+              # Disassociate any server from this address
+              address.server = nil unless address.instance_id.nil?
+              # Release the address
+              address.destroy
+              display "Removed address '#{public_ip}'."
+            else
+              error_message "You don't have an address with public IP '#{public_ip}'.", :not_found
+            end
+          }
         }
       end
     end
