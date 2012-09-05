@@ -36,7 +36,7 @@ describe "CDN Containers command" do
   context "cdn:containers with invalid avl" do
     it "should report error" do
       rsp = cptr('cdn:containers -z blah')
-      rsp.stderr.should eq("Please check your HP Cloud Services account to make sure the 'Cdn' service is activated for the appropriate availability zone.\n Exception: Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n Exception: Unable to retrieve endpoint service url for availability zone 'blah' from service catalog. \n")
+      rsp.stderr.should eq("Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n Exception: Unable to retrieve endpoint service url for availability zone 'blah' from service catalog. \n")
       rsp.exit_status.should be_exit(:general_error)
     end
   end

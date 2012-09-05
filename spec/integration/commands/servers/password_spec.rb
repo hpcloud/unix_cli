@@ -46,7 +46,7 @@ describe "servers:password command" do
 
   context "servers with invalid avl" do
     it "should report error" do
-      rsp = cptr("servers:password #{@server_name} Passw0rd1 -z blah")
+      rsp = cptr("servers:password server_name Passw0rd1 -z blah")
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
@@ -59,7 +59,7 @@ describe "servers:password command" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("servers:password #{@server_name} pass -a bogus")
+      rsp = cptr("servers:password server_name pass -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")

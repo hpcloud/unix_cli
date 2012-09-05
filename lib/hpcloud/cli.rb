@@ -127,6 +127,14 @@ module HP
           display_error_message(error, :general_error)
         rescue Fog::HP::Errors::ServiceError => error
           display_error_message(error, :general_error)
+        rescue Fog::BlockStorage::HP::NotFound => error
+          display_error_message(error, :not_found)
+        rescue Fog::CDN::HP::NotFound => error
+          display_error_message(error, :not_found)
+        rescue Fog::Compute::HP::NotFound => error
+          display_error_message(error, :not_found)
+        rescue Fog::Storage::HP::NotFound => error
+          display_error_message(error, :not_found)
         rescue Fog::BlockStorage::HP::Error => error
           display_error_message(error, :general_error)
         rescue Fog::CDN::HP::Error => error

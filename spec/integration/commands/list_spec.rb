@@ -2,8 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe "list command" do
   before(:all) do
-    @hp_svc = storage_connection
-    @hp_svc.put_container('my_container')
+    cptr("containers:add my_container")
   end
 
   describe "with avl settings from config" do

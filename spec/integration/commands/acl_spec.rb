@@ -14,7 +14,7 @@ describe "Acl command (viewing acls)" do
 
       rsp.stderr.should eq("ACL viewing is only supported for containers and objects. See `help acl`.\n")
       rsp.stdout.should eq("")
-      rsp.exit_status be_exit(:general_error)
+      rsp.exit_status.should be_exit(:not_supported)
     end
   end
 

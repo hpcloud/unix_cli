@@ -30,13 +30,13 @@ describe "containers:add command" do
 
   context "when creating a container which already exists" do
     it "should show exists message" do
-      @hp_svc.put_container('already-a-container')
+      cptr('containers:add already-a-container')
 
       rsp = cptr('containers:add already-a-container')
 
       rsp.stderr.should eq("Container 'already-a-container' already exists.\n")
       rsp.stdout.should eq("")
-      rsp.exit_status.should be_exit(:general_error)
+      rsp.exit_status.should be_exit(:conflicted)
     end
 
     after(:all) { purge_container('already-a-container') }

@@ -14,7 +14,8 @@ describe "keypairs:import command" do
     before(:all) { @key_name = 'fog-imp-200' }
 
     it "should import" do
-      rsp = cptr("keypairs:import #{@key_name} #{@fake_public_key}")
+      @key_name = 'fog-imp-200'
+      rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}"])
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Imported key pair '#{@key_name}'.\n")
@@ -28,10 +29,10 @@ describe "keypairs:import command" do
     end
 
     it "should report key exists if imported again" do
-      rsp = cptr("keypairs:import #{@key_name} #{@fake_public_key}")
+      rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}"])
 
-      rsp.stderr.should eq("")
-      rsp.stdout.should eq("Key pair '#{@key_name}' already exists.\n")
+      rsp.stderr.should eq("Key pair '#{@key_name}' already exists.\n")
+      rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
 
@@ -47,7 +48,7 @@ describe "keypairs:import command" do
     end
     context "keypairs:import with valid avl" do
       it "should report success" do
-        rsp = cptr("keypairs:import #{@key_name} #{@fake_public_key} -z az-1.region-a.geo-1")
+        rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}", "-z", "az-1.region-a.geo-1"])
         rsp.stderr.should eq("")
         rsp.stdout.should include("Imported key pair '#{@key_name}'.\n")
         rsp.exit_status.should be_exit(:success)
@@ -59,7 +60,7 @@ describe "keypairs:import command" do
     end
     context "keypairs:import with invalid avl" do
       it "should report error" do
-        rsp = cptr("keypairs:import #{@key_name} #{@fake_public_key} -z blah")
+        rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}", "-z", "blah"])
         rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:general_error)

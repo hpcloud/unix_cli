@@ -41,7 +41,7 @@ describe "servers:remove command" do
 
   context "servers:remove with invalid avl" do
     it "should report error" do
-      rsp = cptr("servers:remove #{@server_name} -z blah")
+      rsp = cptr("servers:remove server_name -z blah")
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")

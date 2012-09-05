@@ -77,7 +77,8 @@ describe "Copy command" do
 
     context "when local file has spaces in name" do
       it "should copy" do
-        rsp = cptr("copy 'spec/fixtures/files/with space.txt' :my_container")
+        rsp = cptr(['copy', 'spec/fixtures/files/with space.txt', ':my_container'])
+
         rsp.stderr.should eql("")
         rsp.stdout.should eql("Copied spec/fixtures/files/with space.txt => :my_container\n")
         rsp.exit_status.should be_exit(:success)
@@ -106,7 +107,7 @@ describe "Copy command" do
       it "should exit with object not found" do
         rsp = cptr("copy :copy_remote_to_local/foo2.txt /tmp/foo.txt")
         rsp.stderr.should eq("No files found matching source 'foo2.txt'\n")
-        rsp.stderr.should eq("")
+        rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end 
     end
@@ -232,7 +233,7 @@ describe "Copy command" do
 
         rsp.stderr.should eq("")
         rsp.stdout.should eq("Copied :copy_inside_container/foo.txt => :copy_inside_container/new/foo.txt\n")
-        @exit_status.should be_exit(:success)
+        rsp.exit_status.should be_exit(:success)
         @get = @hp_svc.get_object('copy_inside_container', 'new/foo.txt')
         @get.status.should eql(200)
         @get.headers['Content-Type'].should eql('application/json')

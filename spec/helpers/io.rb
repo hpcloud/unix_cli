@@ -12,7 +12,8 @@ RSpec.configure do |config|
       eval "$#{stdout} = StringIO.new"
       eval "$#{stderr} = StringIO.new"
       begin
-        HP::Cloud::CLI.start(command.split(' '))
+        command = command.split(' ') if command.instance_of? String
+        HP::Cloud::CLI.start(command)
       rescue SystemExit => system_exit # catch any exit calls
         rsp.exit_status = system_exit.status
       end

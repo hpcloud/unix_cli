@@ -24,7 +24,7 @@ Aliases: none
             begin
               name = Container.container_name_for_service(name)
               if connection(:storage, options).directories.get(name)
-                display "Container '#{name}' already exists."
+                error "Container '#{name}' already exists.", :conflicted
               else
                 # bail if the name does not conform to overall guidelines
                 if Container.valid_name?(name)

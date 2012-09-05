@@ -23,15 +23,14 @@ describe "securitygroups:rules:remove command" do
         rsp.exit_status.should be_exit(:success)
         @rules = get_securitygroup(@hp_svc, 'delsecgroup')
         @rules.should have(0).rules
-        lambda {
-          rsp = cptr("securitygroups:rules:remove delsecgroup #{@rule_id}")
-        }.should raise_error(Fog::Compute::HP::NotFound)
+        rsp = cptr("securitygroups:rules:remove delsecgroup #{@rule_id}")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
 
     context "for invalid security group" do
       it "should show error message" do
-        rsp = cptr("securitygroups:rules:remove blah #{@rule_id}")
+        rsp = cptr("securitygroups:rules:remove blah 333")
 
         rsp.stderr.should eq("You don't have a security group 'blah'.\n")
         rsp.stdout.should eq("")

@@ -5,7 +5,7 @@ describe "containers command" do
     context "containers" do
       it "should report success" do
         rsp = cptr('containers')
-        rsp.stderr("")
+        rsp.stderr.should eq("")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -13,7 +13,7 @@ describe "containers command" do
     context "containers:list" do
       it "should report success" do
         rsp = cptr('containers:list')
-        rsp.stderr("")
+        rsp.stderr.should eq("")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -22,7 +22,7 @@ describe "containers command" do
     context "containers with valid avl" do
       it "should report success" do
         rsp = cptr('containers:list -z region-a.geo-1')
-        rsp.stderr("")
+        rsp.stderr.should eq("")
         rsp.exit_status.should be_exit(:success)
       end
     end
