@@ -14,9 +14,8 @@ describe "addresses:add command" do
       rsp = cptr('addresses:add')
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Created a public IP address")
+      @public_ip = rsp.stdout.scan(/Created a public IP address '([^']+)'.\n/)[0][0]
       rsp.exit_status.should be_exit(:success)
-      @public_ip = @response.scan(/'([^']+)/)[0][0]
       addresses = @hp_svc.addresses.map {|a| a.ip}
       addresses.should include(@public_ip)
     end
@@ -32,11 +31,10 @@ describe "addresses:add command" do
       rsp = cptr('addresses:add -z az-1.region-a.geo-1')
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Created a public IP address")
+      @public_ip = rsp.stdout.scan(/Created a public IP address '([^']+)'.\n/)[0][0]
       rsp.exit_status.should be_exit(:success)
       address = get_address(@hp_svc, @public_ip)
       address.destroy if address
-      @public_ip = response.scan(/'([^']+)/)[0][0]
     end
   end
 
