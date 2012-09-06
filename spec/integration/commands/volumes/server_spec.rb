@@ -20,11 +20,11 @@ describe "volumes:server command" do
       rsp = cptr("volumes:server #{@srv1.name} #{@srv2.id}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("| \e[1mname\e[0m | \e[1mserver\e[0m | \e[1mdevice\e[0m   |\n")
+      rsp.stdout.should match(".*name.*\\|.*server.*\\|.*device")
 
-      rsp.stdout.should include("| svl1 | srv1   | /dev/sdf |\n")
-      rsp.stdout.should include("| svl3 | srv1   | /dev/sdh |\n")
-      rsp.stdout.should include("| svl2 | srv2   | /dev/sdg |\n")
+      rsp.stdout.should match(".*svl1.*\\|.*srv1.*\\|.*/dev/sdf.*\\|\n")
+      rsp.stdout.should match(".*svl3.*\\|.*srv1.*\\|.*/dev/sdh.*\\|\n")
+      rsp.stdout.should match(".*svl2.*\\|.*srv2.*\\|.*/dev/sdg.*\\|\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
@@ -34,9 +34,10 @@ describe "volumes:server command" do
       rsp = cptr("volumes:server #{@srv1.name} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("| \e[1mname\e[0m | \e[1mserver\e[0m | \e[1mdevice\e[0m   |\n")
-      rsp.stdout.should include("| svl1 | srv1   | /dev/sdf |\n")
-      rsp.stdout.should include("| svl3 | srv1   | /dev/sdh |\n")
+      rsp.stdout.should match(".*name.*\\|.*server.*\\|.*device")
+
+      rsp.stdout.should match(".*svl1.*\\|.*srv1.*\\|.*/dev/sdf.*\\|\n")
+      rsp.stdout.should match(".*svl3.*\\|.*srv1.*\\|.*/dev/sdh.*\\|\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
