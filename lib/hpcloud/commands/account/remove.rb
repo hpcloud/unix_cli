@@ -6,7 +6,7 @@ module HP
     
       map %w(account:rm account:delete account:del) => 'account:remove'
 
-      desc 'account:remove', "remove accounts"
+      desc 'account:remove <account_name> ...', "remove accounts"
       long_desc <<-DESC
   Remove accounts
   
