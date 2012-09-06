@@ -13,11 +13,9 @@ Examples:
 
 Aliases: none
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       define_method "addresses:disassociate" do |public_ip|
-        begin
+        cli_command(options) {
           compute_connection = connection(:compute, options)
           # get the address with the IP
           address = compute_connection.addresses.select {|a| a.ip == public_ip}.first
@@ -32,13 +30,8 @@ Aliases: none
           else
             error "You don't have an address with public IP '#{public_ip}', use `hpcloud addresses:add` to create one.", :not_found
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end

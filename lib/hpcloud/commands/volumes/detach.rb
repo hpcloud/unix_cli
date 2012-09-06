@@ -13,12 +13,9 @@ Examples:
   hpcloud volumes:detach myVolume -z az-2.region-a.geo-1 # Optionally specify an availability zone
 
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       define_method "volumes:detach" do |*vol_names|
-        begin
-          Connection.instance.set_options(options)
+        cli_command(options) {
           Volumes.new.get(vol_names).each { |volume|
             if volume.is_valid?
               if (volume.detach() == true)
@@ -30,11 +27,7 @@ Examples:
               error volume.error_string, volume.error_code
             end
           }
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error, Excon::Errors::BadRequest, Excon::Errors::InternalServerError => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
 
     end

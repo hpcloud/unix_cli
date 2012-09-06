@@ -10,16 +10,19 @@ module HP
                       :general_error        => 1,
                       :not_supported        => 3,
                       :not_found            => 4,
+                      :conflicted           => 5,
                       :incorrect_usage      => 64,
                       :permission_denied    => 77,
                       :rate_limited         => 88
                     }
 
-      VALID_SERVICE_NAMES = ['storage','compute','cdn', 'block']
+      GOPTS = {:availability_zone => {:type => :string, :aliases => '-z',
+                                      :desc => 'Set the availability zone.'},
+               :account_name => {:type => :string, :aliases => '-a',
+                                 :desc => 'Select account.'}}
 
       private
       def connection(service = :storage, options = {})
-        begin
         Connection.instance.set_options(options)
         if service == :storage
           return Connection.instance.storage()
@@ -28,9 +31,10 @@ module HP
         elsif service == :cdn
           return Connection.instance.cdn()
         end
-        rescue Exception => e
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the '#{service.to_s.capitalize!}' service is activated for the appropriate availability zone.\n Exception: #{e}"
-        end
+      end
+
+      def self.add_common_options
+        GOPTS.each { |k,v| method_option(k, v) }
       end
 
       # print some non-error output to the user
@@ -86,18 +90,6 @@ module HP
         ENV['HPCLOUD_CLI_NAME'] || 'hpcloud'
       end
 
-      def default_connection_options(options={})
-        # define default connection options
-        {
-            :connect_timeout => Config.settings[:connect_timeout] || options[:connect_timeout] || Config::CONNECT_TIMEOUT,
-            :read_timeout    => Config.settings[:read_timeout]    || options[:read_timeout] || Config::READ_TIMEOUT,
-            :write_timeout   => Config.settings[:write_timeout]   || options[:write_timeout] || Config::WRITE_TIMEOUT,
-            :ssl_verify_peer => Config.settings[:ssl_verify_peer] || options[:ssl_verify_peer] || false,
-            :ssl_ca_path     => Config.settings[:ssl_ca_path]     || options[:ssl_ca_path],
-            :ssl_ca_file     => Config.settings[:ssl_ca_file]     || options[:ssl_ca_file]
-        }
-      end
-
       def tablelize(data, attributes=nil)
         return if data.nil?
         Formatador.display_table(data, attributes)
@@ -110,6 +102,11 @@ module HP
         return response.empty? ? default : response
       end
     
+      def error(message, exit_status=nil)
+        error_message(message, exit_status)
+        exit @exit_status || 1
+      end
+
       def error_message(message, exit_status=nil)
         $stderr.puts message
         if exit_status.is_a?(Symbol)
@@ -119,24 +116,47 @@ module HP
         end
       end
 
-      def error(message, exit_status=nil)
-        error_message(message, exit_status)
-        exit @exit_status || 1
-      end
-
       def cli_command(options)
+        @exit_status = ERROR_TYPES[:success]
         Connection.instance.set_options(options)
         begin
           yield
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
+        rescue Excon::Errors::BadRequest => error
+          display_error_message(error, :incorrect_usage)
+        rescue Excon::Errors::InternalServerError => error
           display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
+        rescue Fog::HP::Errors::ServiceError => error
+          display_error_message(error, :general_error)
+        rescue Fog::BlockStorage::HP::NotFound => error
+          display_error_message(error, :not_found)
+        rescue Fog::CDN::HP::NotFound => error
+          display_error_message(error, :not_found)
+        rescue Fog::Compute::HP::NotFound => error
+          display_error_message(error, :not_found)
+        rescue Fog::Storage::HP::NotFound => error
+          display_error_message(error, :not_found)
+        rescue Fog::BlockStorage::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Fog::CDN::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Fog::Compute::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Fog::Storage::HP::Error => error
+          display_error_message(error, :general_error)
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
           display_error_message(error, :permission_denied)
+        rescue Excon::Errors::Conflict => error
+          display_error_message(error, :conflicted)
         rescue Excon::Errors::NotFound => error
           display_error_message(error, :not_found)
+        rescue Excon::Errors::RequestEntityTooLarge => error
+          display_error_message(error, :rate_limited)
+        rescue SystemExit => error
+        rescue Exception => error
+          display_error_message(error, :general_error)
         end
+        exit @exit_status
       end
-
     end
   end
 end

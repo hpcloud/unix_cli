@@ -14,22 +14,21 @@ Examples:
 
 Aliases: fetch
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       def get(resource)
-        container, path = Container.parse_resource(resource)
-        type = Resource.detect_type(resource)
+        cli_command(options) {
+          container, path = Container.parse_resource(resource)
+          type = Resource.detect_type(resource)
 
-        if :object == type
-          copy(resource, File.basename(path))
-        elsif :container == type
-          error "You can get files, but not containers."
-        else
-          error "The object path '#{resource}' wasn't recognized. Usage: '#{selfname} get :container_name/object_name'.", :incorrect_usage
-        end
+          if :object == type
+            copy(resource, File.basename(path))
+          elsif :container == type
+            error "You can get files, but not containers."
+          else
+            error "The object path '#{resource}' wasn't recognized. Usage: '#{selfname} get :container_name/object_name'.", :incorrect_usage
+          end
+        }
       end
-
     end
   end
 end

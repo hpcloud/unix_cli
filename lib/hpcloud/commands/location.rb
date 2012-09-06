@@ -15,13 +15,10 @@ Examples:
 
 Aliases: loc
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       def location(resource)
-        container, key = Container.parse_resource(resource)
-
-        begin
+        cli_command(options) {
+          container, key = Container.parse_resource(resource)
           storage_connection = connection(:storage, options)
           if container and key
             dir = storage_connection.directories.get(container)
@@ -45,15 +42,8 @@ Aliases: loc
           else
             error "Invalid format, see `help location`.", :incorrect_usage
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::Conflict, Excon::Errors::NotFound => error
-          display_error_message(error, :not_found)
-        end
+        }
       end
-    
     end
   end
 end

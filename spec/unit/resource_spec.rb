@@ -1,20 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 include HP::Cloud
 
-describe "Detecting mime type" do
-  before(:each) do
-    @storage = double("storage")
-  end
-  
-  context "when this file" do
-    it "should return text/plain" do
-      file = Resource.create(@storage, __FILE__)
-      file.get_mime_type().should eq('text/plain')
-    end
-  end
-  
-end
-
 describe "Resource construction" do
   before(:each) do
     @storage = double("storage")

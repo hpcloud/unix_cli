@@ -15,23 +15,14 @@ Examples:
 
 Aliases: addresses:allocate
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       define_method "addresses:add" do
-        begin
+        cli_command(options) {
           compute_connection = connection(:compute, options)
           address = compute_connection.addresses.create
           display "Created a public IP address '#{address.ip}'."
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
-        end
+        }
       end
-
     end
   end
 end

@@ -1,81 +1,92 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "addresses:associate command" do
-  def cli
-    @cli ||= HP::Cloud::CLI.new
-  end
-
   before(:all) do
     @hp_svc = compute_connection
     @server_name = resource_name("ip")
-    response, exit = run_command('addresses:add').stdout_and_exit_status
-    @public_ip = response.scan(/'([^']+)/)[0][0]
-    @server = @hp_svc.servers.create(:flavor_id => OS_COMPUTE_BASE_FLAVOR_ID, :image_id => OS_COMPUTE_BASE_IMAGE_ID, :name => @server_name )
+    rsp = cptr('addresses:add')
+    rsp.stderr.should eq("")
+    @public_ip = rsp.stdout.scan(/'([^']+)/)[0][0]
+    @server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
     @server.wait_for { ready? }
+    rsp = cptr('addresses:add')
+    rsp.stderr.should eq("")
+    @second_ip = rsp.stdout.scan(/'([^']+)/)[0][0]
   end
 
   context "when specifying a bad IP address" do
-    before(:all) do
-      @response, @exit = run_command('addresses:associate 111.111.111.111 myserver').stderr_and_exit_status
-    end
-
     it "should show error message" do
-      @response.should eql("You don't have an address with public IP '111.111.111.111', use `hpcloud addresses:add` to create one.\n")
+      rsp = cptr('addresses:associate 111.111.111.111 myserver')
+
+      rsp.stderr.should eq("You don't have an address with public IP '111.111.111.111', use `hpcloud addresses:add` to create one.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_found)
     end
-    its_exit_status_should_be(:not_found)
   end
+
   context "when specifying a bad server name" do
-    before(:all) do
-      @response, @exit = run_command("addresses:associate #{@public_ip} blah").stderr_and_exit_status
-    end
-
     it "should show error message" do
-      @response.should eql("You don't have a server 'blah'.\n")
+      rsp = cptr("addresses:associate #{@public_ip} blah")
+
+      rsp.stderr.should eql("You don't have a server 'blah'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_found)
     end
-    its_exit_status_should_be(:not_found)
   end
+
   context "when specifying a good IP address and server id" do
-    before(:all) do
-      @response, @exit = run_command("addresses:associate #{@public_ip} #{@server_name}").stdout_and_exit_status
-    end
-
     it "should show success message" do
-      @response.should eql("Associated address '#{@public_ip}' to server '#{@server_name}'.\n")
+      rsp = cptr("addresses:associate #{@public_ip} #{@server_name}")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eql("Associated address '#{@public_ip}' to server '#{@server_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    its_exit_status_should_be(:success)
   end
 
-  context "with avl settings passed in" do
-    before(:all) do
-      resp, exit = run_command('addresses:add').stdout_and_exit_status
-      @second_ip = resp.scan(/'([^']+)/)[0][0]
-    end
 
-    context "associate ip with valid avl" do
-      it "should report success" do
-        response, exit_status = run_command("addresses:associate #{@second_ip} #{@server_name} -z az-1.region-a.geo-1").stdout_and_exit_status
-        exit_status.should be_exit(:success)
-      end
+  context "associate ip with valid avl" do
+    it "should report success" do
+      rsp = cptr("addresses:associate #{@second_ip} #{@server_name} -z az-1.region-a.geo-1")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eql("Associated address '#{@second_ip}' to server '#{@server_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    context "associate ip with invalid avl" do
-      it "should report error" do
-        response, exit_status = run_command("addresses:associate #{@second_ip} #{@server_name} -z blah").stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
-      end
-      after(:all) { Connection.instance.set_options({}) }
+  end
+
+  context "associate ip with invalid avl" do
+    it "should report error" do
+      rsp = cptr("addresses:associate #{@second_ip} #{@server_name} -z blah")
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
     end
-    after(:all) do
-      address = get_address(@hp_svc, @second_ip)
-      address.destroy if address
+    after(:all) { Connection.instance.clear_options() }
+  end
+
+  context "verify the -a option is activated" do
+    it "should report error" do
+      AccountsHelper.use_tmp()
+
+      rsp = cptr("addresses:associate 127.0.0.1 hal -a bogus")
+
+      tmpdir = AccountsHelper.tmp_dir()
+      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
     end
+    after(:all) {reset_all()}
   end
 
   after(:all) do
     address = get_address(@hp_svc, @public_ip)
     address.server = nil if address and !address.instance_id.nil? # disassociate any server
     address.destroy if address # release the address
+
+    address = get_address(@hp_svc, @second_ip)
+    address.destroy if address
     @server.destroy if @server
   end
-
 end

@@ -3,16 +3,10 @@ require 'hpcloud/image_helper'
 
 describe "Images metadata remove command" do
   before(:all) do
-    @flavor_id = OS_COMPUTE_BASE_FLAVOR_ID
-    @image_id = OS_COMPUTE_BASE_IMAGE_ID
+    @flavor_id = AccountsHelper.get_flavor_id()
+    @image_id = AccountsHelper.get_image_id()
 
-    @srv = HP::Cloud::ServerHelper.new(Connection.instance.compute)
-    @srv.name = resource_name("meta_srv")
-    @srv.flavor = @flavor_id
-    @srv.image = @image_id
-    @srv.meta.set_metadata('luke=skywalker,han=solo')
-    @srv.save.should be_true
-    @srv.fog.wait_for { ready? }
+    @srv = ServerTestHelper.create("image_meta_remove")
 
     @img = HP::Cloud::ImageHelper.new()
     @img.name = resource_name("meta_img")
@@ -35,57 +29,73 @@ describe "Images metadata remove command" do
     metastr.should include("han=solo")
   end
 
-  describe "with avl settings from config" do
-    context "images delete one" do
-      it "should report success" do
-        response, exit_status = run_command("images:metadata:remove #{@image_id} aardvark").stdout_and_exit_status
+  context "images delete one" do
+    it "should report success" do
+      rsp = cptr("images:metadata:remove #{@image_id} aardvark")
 
-        exit_status.should be_exit(:success)
-        response.should include("aardvark")
-        result = Images.new.get(@image_id)
-        still_contains_original(result.meta.to_s)
-        result.meta.to_s.should include("kangaroo=two")
-        result.meta.to_s.should_not include("aardvark")
-      end
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+      rsp.stdout.should include("aardvark")
+      result = Images.new.get(@image_id)
+      still_contains_original(result.meta.to_s)
+      result.meta.to_s.should include("kangaroo=two")
+      result.meta.to_s.should_not include("aardvark")
     end
-
-    context "images" do
-      it "should report success" do
-        response, exit_status = run_command("images:metadata:remove #{@image_name} aardvark kangaroo").stdout_and_exit_status
-        exit_status.should be_exit(:success)
-        response.should include("aardvark")
-        response.should include("kangaroo")
-        result = Images.new.get(@image_id)
-        still_contains_original(result.meta.to_s)
-        result.meta.to_s.should_not include("kangaroo")
-        result.meta.to_s.should_not include("aardvark")
-      end
-    end
-
   end
 
-  describe "with avl settings passed in" do
-    context "images with valid avl" do
-      it "should report success" do
-        response, exit_status = run_command("images:metadata:remove -z az-1.region-a.geo-1 #{@image_id} aardvark kangaroo").stdout_and_exit_status
-        exit_status.should be_exit(:success)
-        response.should include("Removed metadata 'aardvark' from image")
-        response.should include("Removed metadata 'kangaroo' from image")
-        result = Images.new.get(@image_id)
-        still_contains_original(result.meta.to_s)
-        result.meta.to_s.should_not include("kangaroo")
-        result.meta.to_s.should_not include("aardvark")
-      end
-    end
+  context "images" do
+    it "should report success" do
+      rsp = cptr("images:metadata:remove #{@image_name} aardvark kangaroo")
 
-    context "images with invalid avl" do
-      it "should report error" do
-        response, exit_status = run_command("images:metadata:remove -z blah #{@image_id} aardvark kangaroo").stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
-      end
-      after(:all) { HP::Cloud::Connection.instance.set_options({}) }
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+      rsp.stdout.should include("aardvark")
+      rsp.stdout.should include("kangaroo")
+      result = Images.new.get(@image_id)
+      still_contains_original(result.meta.to_s)
+      result.meta.to_s.should_not include("kangaroo")
+      result.meta.to_s.should_not include("aardvark")
     end
+  end
+
+  context "images with valid avl" do
+    it "should report success" do
+      rsp = cptr("images:metadata:remove -z az-1.region-a.geo-1 #{@image_id} aardvark kangaroo")
+
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+      rsp.stdout.should include("Removed metadata 'aardvark' from image")
+      rsp.stdout.should include("Removed metadata 'kangaroo' from image")
+      result = Images.new.get(@image_id)
+      still_contains_original(result.meta.to_s)
+      result.meta.to_s.should_not include("kangaroo")
+      result.meta.to_s.should_not include("aardvark")
+    end
+  end
+
+  context "images with invalid avl" do
+    it "should report error" do
+      rsp = cptr("images:metadata:remove -z blah #{@image_id} aardvark kangaroo")
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) { HP::Cloud::Connection.instance.clear_options() }
+  end
+
+  context "verify the -a option is activated" do
+    it "should report error" do
+      AccountsHelper.use_tmp()
+
+      rsp = cptr("images:metadata:remove -a bogus #{@image_id} something")
+
+      tmpdir = AccountsHelper.tmp_dir()
+      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) {reset_all()}
   end
 
   after(:all) do

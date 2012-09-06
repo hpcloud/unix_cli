@@ -17,25 +17,17 @@ Examples:
 
 Aliases: servers:metadata:list
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       define_method "servers:metadata" do |name_or_id|
-        begin
-          Connection.instance.set_options(options)
+        cli_command(options) {
           server = Servers.new.get(name_or_id)
           if server.is_valid?
             tablelize(server.meta.to_hash(), Metadata.get_keys())
           else
             error server.error_string, server.error_code
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end

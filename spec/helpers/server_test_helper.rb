@@ -8,8 +8,8 @@ class ServerTestHelper
     end
     server = servers.create()
     server.name = name
-    server.flavor = OS_COMPUTE_BASE_FLAVOR_ID
-    server.image = OS_COMPUTE_BASE_IMAGE_ID
+    server.flavor = AccountsHelper.get_flavor_id()
+    server.image = AccountsHelper.get_image_id()
     server.save
     server.fog.wait_for { ready? }
     return server

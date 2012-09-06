@@ -22,13 +22,9 @@ Examples:
 
 Aliases: volumes:list
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       def volumes(*arguments)
-        begin
-          @exit_status = nil
-          Connection.instance.set_options(options)
+        cli_command(options) {
           volumes = Volumes.new
           if volumes.empty?
             display "You currently have no block volume devices, use `#{selfname} volumes:add <name>` to create one."
@@ -40,18 +36,8 @@ Aliases: volumes:list
               tablelize(hsh, VolumeHelper.get_keys())
             end
           end
-          if @exit_status.nil? == false
-            exit @exit_status
-          end
-        rescue Fog::HP::Errors::ServiceError, Fog::BlockStorage::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Exception => error
-          display_error_message(error, :general_error)
-        end
+        }
       end
-    
     end
   end
 end

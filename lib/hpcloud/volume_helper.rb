@@ -37,6 +37,8 @@ module HP
           end
           @servers += srv.name
         }
+# Meta issues need to be resolved
+#        @meta = HP::Cloud::Metadata.new(volume.metadata)
       end
 
       def to_hash

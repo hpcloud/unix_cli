@@ -16,34 +16,31 @@ Aliases: none
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
                     :desc => "Don't prompt if container name is not a valid virtual host."
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
-      define_method "containers:add" do |name|
-        begin
-          name = Container.container_name_for_service(name)
-          if connection(:storage, options).directories.get(name)
-            display "Container '#{name}' already exists."
-          else
-            # bail if the name does not conform to overall guidelines
-            if Container.valid_name?(name)
-              if acceptable_name?(name, options)
-                connection(:storage, options).directories.create(:key => name)
-                display "Created container '#{name}'."
+      CLI.add_common_options
+      define_method "containers:add" do |name, *names|
+        cli_command(options) {
+          names = [name] + names
+          names.each { |name|
+            begin
+              name = Container.container_name_for_service(name)
+              if connection(:storage, options).directories.get(name)
+                error "Container '#{name}' already exists.", :conflicted
+              else
+                # bail if the name does not conform to overall guidelines
+                if Container.valid_name?(name)
+                  if acceptable_name?(name, options)
+                    connection(:storage, options).directories.create(:key => name)
+                    display "Created container '#{name}'."
+                  end
+                else
+                  error "The container name specified is invalid. Please see API documentation for valid naming guidelines.", :permission_denied
+                end
               end
-            else
-              error "The container name specified is invalid. Please see API documentation for valid naming guidelines.", :permission_denied
+            rescue Fog::Storage::HP::NotFound => error
+              error 'The container name specified is invalid. Please see API documentation for valid naming guidelines.', :permission_denied
             end
-          end
-        rescue Fog::Storage::HP::NotFound => error
-          error 'The container name specified is invalid. Please see API documentation for valid naming guidelines.', :permission_denied
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::Conflict, Excon::Errors::NotFound => error
-          display_error_message(error, :not_found)
-        end
+          }
+        }
       end
       
       private

@@ -89,12 +89,6 @@ module HP
         end
       end
 
-      def get_mime_type()
-        # this probably needs some security lovin'
-        full_mime = `file --mime -b #{@fname}`
-        full_mime.split(';')[0].chomp
-      end
-
       def valid_source()
         return true
       end
@@ -419,7 +413,7 @@ module HP
         result = true
         if from.isLocal()
           if (from.open() == false) then return false end
-          options = { 'Content-Type' => from.get_mime_type() }
+          options = { }
           @storage.put_object(@container, @destination, {}, options) {
             from.read().to_s
           }

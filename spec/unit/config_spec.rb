@@ -1,211 +1,252 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'fileutils'
 require 'yaml'
+include HP::Cloud
 
 describe "Config directory naming" do
-  before(:all) { reset_config_home_directory }
-  
+  before(:each) { HP::Cloud::Config.home_directory = nil }
   it "should assemble properly" do
-    HP::Cloud::Config.config_directory.should eql(ENV['HOME'] + '/.hpcloud/')
-  end
-  
-  it "should include final slash" do
-    HP::Cloud::Config.config_directory[-1,1].should eql('/')
+    config = HP::Cloud::Config.new()
+    config.directory.should eq(ENV['HOME'] + '/.hpcloud/')
+    config.file.should eq(ENV['HOME'] + '/.hpcloud/config.yml')
   end
 end
 
-describe "Accounts directory naming" do
-  before(:all) { reset_config_home_directory }
-  
-  it "should assemble properly" do
-    HP::Cloud::Config.accounts_directory.should eql(ENV['HOME'] + '/.hpcloud/accounts/')
-  end
-  
-  it "should include final slash" do
-    HP::Cloud::Config.accounts_directory[-1,1].should eql('/')
-  end
-end
-
-describe "Config directory setup" do
-  
-  before(:all) { setup_temp_home_directory } 
-
-  context "with no config directory present" do
-    
-    before(:all) { remove_config_directory } 
-    
-    context "running ensure config" do
-      
-      before(:all) { HP::Cloud::Config.ensure_config_exists }
-      
-      it "should create base config directory" do
-        File.directory?(HP::Cloud::Config.config_directory).should be_true
-      end
-      
-      it "should create accounts directory" do
-        File.directory?(HP::Cloud::Config.accounts_directory).should be_true
-      end
-      
-      it "should create default config file" do
-        File.exists?(HP::Cloud::Config.config_directory + 'config.yml').should be_true
-      end
-      
-      it "should populate config file" do
-        yaml = YAML::load(File.open(HP::Cloud::Config.config_file))
-        yaml[:default_auth_uri].should eql("https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
-        yaml[:compute_availability_zone].should eql("az-1.region-a.geo-1")
-        yaml[:storage_availability_zone].should eql("region-a.geo-1")
-        yaml[:cdn_availability_zone].should eql("region-a.geo-1")
-      end
-      
-    end
-    
-  end
-  
-end
-
-describe "Writing an account file" do
-  
-  before(:all) do
-    setup_temp_home_directory
-    HP::Cloud::Config.ensure_config_exists
-  end
-  
-  context "when account does not exist yet" do
-    
-    context "(default account)" do
-
-      before(:all) do
-        credentials = {:account_id => 'foo', :secret_key => 'bar', :auth_uri => 'http://192.168.1.1:8888/v2.0'}
-        HP::Cloud::Config.write_account(:default, credentials)
-      end
-
-      it "should create a file using account name" do
-        File.exists?(HP::Cloud::Config.accounts_directory + 'default')
-      end
-      
-      it "should have nested credentials" do
-        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
-        yaml.should have_key(:credentials)
-      end
-
-    end
-    
-  end
-end
-
-describe "Modifying an account file" do
-
-  before(:all) do
-    setup_temp_home_directory
-    HP::Cloud::Config.ensure_config_exists
-  end
-
-  context "when default account exists" do
-
-    context "and account credentials are modified" do
-      before(:all) do
-        # setup default account settings
-        setup_account_file(:default)
-      end
-      it "should have updated the credential fields" do
-        yaml = YAML::load(File.open(HP::Cloud::Config.accounts_directory + 'default'))
-        yaml[:credentials][:account_id].should eql('foo1')
-        yaml[:credentials][:secret_key].should eql('bar1')
-        yaml[:credentials][:auth_uri].should eql('http://192.168.1.1:9999/v2.0')
-        yaml[:credentials][:tenant_id].should eql('222222')
-      end
-    end
-
-  end
-  
-end
-
-describe "Credential detection" do
-  
-  before(:all) do
-    setup_temp_home_directory
-    HP::Cloud::Config.ensure_config_exists
-  end
-  
-  context "when default account exists" do
-    
-    before(:all) do
-      File.open(HP::Cloud::Config.accounts_directory + "default", 'w') do |file|
-        file.write(read_account_file('default'))
-      end
-    end
-    
-    #it "should detect default account file"
-
-    it "should provide credentials for account from file" do
-      credentials = HP::Cloud::Config.read_credentials
-      credentials[:account_id].should eql('foo')
-      credentials[:secret_key].should eql('bar')
-      credentials[:auth_uri].should eql('http://192.168.1.1:8888/v2.0')
-      credentials[:tenant_id].should eql('111111')
-    end
-
-  end
-  
-  context "when no account file exists" do
-    
-    before(:all) do
-      # remove any existing account files
-    end
-    
-  end
-  
-end
-
-describe "Getting settings" do
-  
+describe "Config reading" do
   context "with no config file present" do
-    
-    before(:all) do
-      remove_config_directory
-      HP::Cloud::Config.flush_settings
+    before(:each) do
+      ConfigHelper.use_tmp()
     end
     
-    it "should return default auth uri" do
-      HP::Cloud::Config.settings[:default_auth_uri].should eql('https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
-    end
-    it "should return availability zone for compute service" do
-      HP::Cloud::Config.settings[:compute_availability_zone].should eql('az-1.region-a.geo-1')
-    end
-    it "should return availability zone for storage service" do
-      HP::Cloud::Config.settings[:storage_availability_zone].should eql('region-a.geo-1')
-    end
-    it "should return availability zone for cdn service" do
-      HP::Cloud::Config.settings[:cdn_availability_zone].should eql('region-a.geo-1')
+    it "should have settings" do
+      config = HP::Cloud::Config.new
+      config.settings[:default_auth_uri].should eq('https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
+      config.settings[:block_availability_zone].should eq('az-1.region-a.geo-1')
+      config.settings[:cdn_availability_zone].should eq('region-a.geo-1')
+      config.settings[:compute_availability_zone].should eq('az-1.region-a.geo-1')
+      config.settings[:storage_availability_zone].should eq('region-a.geo-1')
+      config.settings[:connect_timeout].should eq(30)
+      config.settings[:read_timeout].should eq(30)
+      config.settings[:write_timeout].should eq(30)
+      config.settings[:ssl_verify_peer].should be_true
+      config.settings[:ssl_ca_path].should be_nil
+      config.settings[:ssl_ca_file].should be_nil
     end
 
+    after(:each) do
+      ConfigHelper.reset()
+    end
   end
   
   context "with config file present" do
-    
-    before(:all) do
-      setup_temp_home_directory
-      HP::Cloud::Config.ensure_config_exists
-      File.open(HP::Cloud::Config.config_file, 'w') do |file|
-        file.write(read_fixture(:config, 'personalized.yml'))
-      end
-      HP::Cloud::Config.flush_settings
+    before(:each) do
+      ConfigHelper.use_fixtures()
     end
     
-    it "should return default auth uri" do
-      HP::Cloud::Config.settings[:default_auth_uri].should eql('https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
-    end
-    it "should return availability zone for compute service" do
-      HP::Cloud::Config.settings[:compute_availability_zone].should eql('az-1.region-a.geo-1')
-    end
-    it "should return availability zone for storage service" do
-      HP::Cloud::Config.settings[:storage_availability_zone].should eql('region-a.geo-1')
-    end
-    it "should return availability zone for cdn service" do
-      HP::Cloud::Config.settings[:cdn_availability_zone].should eql('region-a.geo-1')
+    it "should have settings" do
+      config = HP::Cloud::Config.new
+      config.settings[:default_auth_uri].should eq('https://127.0.0.1:35357/v2.0/')
+      config.settings[:block_availability_zone].should eq('az-1.region-z.geo-1')
+      config.settings[:cdn_availability_zone].should eq('region-z.geo-1')
+      config.settings[:compute_availability_zone].should eq('az-1.region-z.geo-1')
+      config.settings[:storage_availability_zone].should eq('region-z.geo-1')
+      config.settings[:connect_timeout].should eq(35)
+      config.settings[:read_timeout].should eq(40)
+      config.settings[:write_timeout].should eq(45)
+      config.settings[:ssl_verify_peer].should be_true
+      config.settings[:ssl_ca_path].should eq('capath')
+      config.settings[:ssl_ca_file].should eq('cafile')
     end
 
+    after(:all) {reset_all()}
   end
   
+  context "with bad configuration" do
+    before(:each) do
+      ConfigHelper.use_tmp()
+      config = HP::Cloud::Config.new
+      Dir.mkdir(config.directory) 
+      File.open("#{config.file}", 'w') do |file|
+        file.write "garbage"
+      end
+    end
+    
+    it "should raise error" do
+      directory = ConfigHelper.tmp_directory
+      lambda {
+        config = HP::Cloud::Config.new
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Error reading configuration file: #{directory}/.hpcloud/config.yml\ncan't convert Symbol into Integer")
+      }
+    end
+
+    after(:each) do
+      ConfigHelper.reset()
+    end
+  end
+end
+
+describe "Config set and get" do
+  before(:each) do
+    ConfigHelper.use_tmp()
+  end
+    
+  context "with good value" do
+    it "should return value" do
+      config = HP::Cloud::Config.new()
+      config.set('connect_timeout', '99').should be_true
+      config.get('connect_timeout').should eq('99')
+      config.set('connect_timeout', '').should be_true
+      config.get('connect_timeout').should be_nil
+    end
+  end
+
+  context "with nil availability zones" do
+    it "should raise exception" do
+      config = HP::Cloud::Config.new()
+      lambda {
+        config.set("block_availability_zone", "")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("The value of 'block_availability_zone' may not be empty")
+      }
+      lambda {
+        config.set("storage_availability_zone", "")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("The value of 'storage_availability_zone' may not be empty")
+      }
+      lambda {
+        config.set("compute_availability_zone", "")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("The value of 'compute_availability_zone' may not be empty")
+      }
+      lambda {
+        config.set("cdn_availability_zone", "")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("The value of 'cdn_availability_zone' may not be empty")
+      }
+    end
+  end
+
+  context "set bogus" do
+    it "should throw exception" do
+      config = HP::Cloud::Config.new()
+      lambda {
+        config.set("bogus", "99")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Unknown configuration key value 'bogus'")
+      }
+    end
+  end
+
+  after(:each) do
+    ConfigHelper.reset()
+  end
+end
+
+describe "Config write" do
+  before(:each) do
+    ConfigHelper.use_tmp()
+    @config = HP::Cloud::Config.new
+    @config.write()
+  end
+
+  context "set nothing" do
+    it "should create empty file" do
+      ConfigHelper.contents.should eq("--- {}\n")
+    end
+  end
+
+  context "set something" do
+    it "should have the value" do
+      @config.set("connect_timeout", "44")
+      @config.write()
+      ConfigHelper.contents.should eq("---\n:connect_timeout: '44'\n")
+    end
+  end
+
+  context "set everything" do
+    it "should have the value" do
+      @config.set('default_auth_uri', '1val')
+      @config.set('block_availability_zone', '2val')
+      @config.set('storage_availability_zone', '3val')
+      @config.set('compute_availability_zone', '4val')
+      @config.set('cdn_availability_zone', '5val')
+      @config.set('connect_timeout', '6val')
+      @config.set('read_timeout', '7val')
+      @config.set('write_timeout', '8val')
+      @config.set('ssl_verify_peer', '9val')
+      @config.set('ssl_ca_path', '10val')
+      @config.set("ssl_ca_file", "11val")
+      @config.write()
+      ConfigHelper.contents.should eq("---\n" +
+        ":default_auth_uri: 1val\n" +
+        ":block_availability_zone: 2val\n" +
+        ":storage_availability_zone: 3val\n" +
+        ":compute_availability_zone: 4val\n" +
+        ":cdn_availability_zone: 5val\n" +
+        ":connect_timeout: 6val\n" +
+        ":read_timeout: 7val\n" +
+        ":write_timeout: 8val\n" +
+        ":ssl_verify_peer: 9val\n" +
+        ":ssl_ca_path: 10val\n" +
+        ":ssl_ca_file: 11val\n")
+    end
+  end
+
+  context "clear something" do
+    it "should have the value" do
+      @config.set("connect_timeout", "33")
+      @config.write()
+      ConfigHelper.contents.should eq("---\n:connect_timeout: '33'\n")
+      @config.set("connect_timeout", "")
+      @config.write()
+      ConfigHelper.contents.should eq("--- {}\n")
+    end
+  end
+
+  after(:each) do
+    ConfigHelper.reset()
+  end
+end
+
+describe "Config split nvp" do
+  context "should split valid nvp" do
+    it "should handle valid cases" do
+      k, v = HP::Cloud::Config.split("abc=123")
+      k.should eq("abc")
+      v.should eq("123")
+    end
+
+    it "should handle nil cases" do
+      k, v = HP::Cloud::Config.split("abc=")
+      k.should eq("abc")
+      v.should eq("")
+    end
+  end
+
+  context "should throw exceptions on bad cases" do
+    it "should handle no equal" do
+      lambda {
+        HP::Cloud::Config.split("abc")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Invalid name value pair: 'abc'")
+      }
+    end
+
+    it "should handle too many equal" do
+      lambda {
+        HP::Cloud::Config.split("abc=123=22")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Invalid name value pair: 'abc=123=22'")
+      }
+    end
+
+    it "should handle nothing" do
+      lambda {
+        HP::Cloud::Config.split("")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Invalid name value pair: ''")
+      }
+    end
+  end
 end

@@ -8,90 +8,97 @@ describe "Remove command" do
 
   context "removing an object from container" do
 
-    before(:all) do
+    def given_foo
       purge_container('my_container')
       create_container_with_files('my_container', 'foo.txt')
     end
 
+    before(:all) do
+      given_foo
+    end
+
     context "when object does not exist" do
       it "should exit with object not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['remove', ':my_container/nonexistant.txt']) }
-        response.should eql("You don't have a object named 'nonexistant.txt'.\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr('remove :my_container/nonexistant.txt')
+        rsp.stderr.should eq("You don't have a object named 'nonexistant.txt'.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
 
     context "when container does not exist" do
       it "should exit with container not found" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['remove', ':nonexistant_container']) }
-        response.should eql("You don't have a container named 'nonexistant_container'\n")
-        exit_status.should be_exit(:not_found)
+        rsp = cptr("remove :nonexistant_container")
+        rsp.stderr.should eql("You don't have a container named 'nonexistant_container'\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
 
     context "when removing an object that isn't controlled by the user" do
-      before(:all) do
-        @hp_svc_other_user = storage_connection(:secondary)
-        @hp_svc_other_user.put_container('notmycontainer')
-        @hp_svc_other_user.put_object('notmycontainer', 'foo.txt', read_file('foo.txt'), {'Content-Type' => 'text/plain'})
-        @response, @exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['rm', ':notmycontainer/foo.txt']) }
-      end
-
       #### Swift does not have acls, so it just cannot see the container
       it "should exit with access denied" do
-        @response.should eql("You don't have a container named 'notmycontainer'\n")
-      end
+        @file_name='spec/fixtures/files/Matryoshka/Putin/Medvedev.txt'
+        cptr("containers:add -a secondary :notmycontainer")
+        cptr("copy -a secondary #{@file_name} :notmycontainer")
 
-      #### Swift does not have acls, so it just cannot see the container
-      pending "should exit with denied status" do
-        @exit_status.should be_exit(:permission_denied)
-      end
+        rsp = cptr("rm :notmycontainer/#{@file_name}")
 
-      after(:all) do
-        purge_container('notmycontainer', {:connection => @hp_svc_other_user})
+        rsp.stderr.should eq("You don't have a container named 'notmycontainer'\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:not_found)
       end
     end
 
     context "when syntax is not correct" do
       it "should exit with message about bad syntax" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['remove', '/foo/foo']) }
-        response.should eql("Could not find resource '/foo/foo'. Correct syntax is :containername/objectname.\n")
-        exit_status.should be_exit(:incorrect_usage)
+        rsp = cptr("remove /foo/foo")
+        rsp.stderr.should eql("Could not find resource '/foo/foo'. Correct syntax is :containername/objectname.\n")
+        rsp.stdout.should eql("")
+        rsp.exit_status.should be_exit(:incorrect_usage)
       end
     end
 
     context "when object and container exist" do
       it "should report success" do
-        response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['remove', ':my_container/foo.txt']) }
-        response.should eql("Removed object ':my_container/foo.txt'.\n")
-        exit_status.should be_exit(:success)
-      end
-      describe "with avl settings passed in" do
-        before(:all) do
-          purge_container('my_container')
-          create_container_with_files('my_container', 'foo.txt')
-        end
-        context "remove with valid avl" do
-          it "should report success" do
-            response, exit_status = run_command('remove :my_container/foo.txt -z region-a.geo-1').stdout_and_exit_status
-            response.should eql("Removed object ':my_container/foo.txt'.\n")
-            exit_status.should be_exit(:success)
-          end
-        end
-        context "remove with invalid avl" do
-          it "should report error" do
-            response, exit_status = run_command('remove :my_container/foo.txt -z blah').stderr_and_exit_status
-            response.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
-            exit_status.should be_exit(:general_error)
-          end
-          after(:all) { Connection.instance.set_options({}) }
-        end
-        after(:all) do
-          purge_container('my_container')
-        end
+        given_foo
+
+        rsp = cptr("remove :my_container/foo.txt")
+
+        rsp.stderr.should eql("")
+        rsp.stdout.should eql("Removed object ':my_container/foo.txt'.\n")
+        rsp.exit_status.should be_exit(:success)
       end
     end
 
+    context "remove with valid avl" do
+      it "should report success" do
+        given_foo
+
+        rsp = cptr("remove :my_container/foo.txt -z region-a.geo-1")
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("Removed object ':my_container/foo.txt'.\n")
+        rsp.exit_status.should be_exit(:success)
+      end
+    end
+
+    context "remove with invalid avl" do
+      it "should report error" do
+        given_foo
+
+        rsp = cptr("remove :my_container/foo.txt -z blah")
+
+        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:general_error)
+      end
+      after(:all) { Connection.instance.clear_options() }
+    end
+
+    after(:all) do
+      purge_container('my_container')
+    end
   end
 
   context "removing a container" do
@@ -114,7 +121,7 @@ describe "Remove command" do
         rescue SystemExit => system_exit # catch any exit calls
           exit_status = system_exit.status
         end
-        exit_status.should eql(:success)
+        exit_status.should be_exit(:success)
       end
 
       it "should remove container" do
@@ -129,8 +136,8 @@ describe "Remove command" do
       before(:all) do
         create_container_with_files('non_empty_container', 'foo.txt')
       end
-      context "when force option is not used" do
 
+      context "when force option is not used" do
         it "should not remove container" do
           exit_status = :success
           $stdout.should_receive(:print).with("Are you sure you want to remove the container 'non_empty_container'? ")
@@ -144,26 +151,33 @@ describe "Remove command" do
           exit_status.should be_exit(:general_error)
         end
       end
+
       context "when force option is used" do
-        before(:all) do
-          @response, @exit = run_command('remove -f :non_empty_container').stdout_and_exit_status
-        end
         it "should show success message" do
-          @response.should eql("Removed container 'non_empty_container'.\n")
-        end
+          rsp = cptr('remove -f :non_empty_container')
 
-        it "should remove container" do
+          rsp.stderr.should eq("")
+          rsp.stdout.should eq("Removed container 'non_empty_container'.\n")
           lambda{ @hp_svc.get_container('non_empty_container') }.should raise_error(Fog::Storage::HP::NotFound)
-        end
-
-        it "should have success exit status" do
-          @exit.should be_exit(:success)
+          rsp.exit_status.should be_exit(:success)
         end
       end
 
       after(:all) { purge_container('non_empty_container') }
-
     end
+  end
 
+  context "verify the -a option is activated" do
+    it "should report error" do
+      AccountsHelper.use_tmp()
+
+      rsp = cptr("remove -a bogus :non_empty_container")
+
+      tmpdir = AccountsHelper.tmp_dir()
+      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) {reset_all()}
   end
 end

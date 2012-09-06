@@ -268,18 +268,20 @@ describe "Read directory" do
       res.foreach { |x| ray.push(x.fname) }
 
       ray.sort!
-      ray[0].should eq("spec/fixtures/accounts/default")
-      ray[1].should eq("spec/fixtures/configs/personalized.yml")
-      ray[2].should eq("spec/fixtures/files/Matryoshka/Putin/Medvedev.txt")
-      ray[3].should eq("spec/fixtures/files/Matryoshka/Putin/Vladimir.txt")
-      ray[4].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Boris.txt")
-      ray[5].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Andropov.txt")
-      ray[6].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Chernenko.txt")
-      ray[7].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Mikhail.txt")
-      ray[8].should eq("spec/fixtures/files/cantread.txt")
-      ray[9].should eq("spec/fixtures/files/foo.txt")
-      ray[10].should eq("spec/fixtures/files/with space.txt")
-      ray.length.should eq(11)
+      ray[0].should eq("spec/fixtures/accounts/.hpcloud/accounts/bad")
+      ray[1].should eq("spec/fixtures/accounts/.hpcloud/accounts/default")
+      ray[2].should eq("spec/fixtures/accounts/.hpcloud/accounts/pro")
+      ray[3].should eq("spec/fixtures/config/.hpcloud/config.yml")
+      ray[4].should eq("spec/fixtures/files/Matryoshka/Putin/Medvedev.txt")
+      ray[5].should eq("spec/fixtures/files/Matryoshka/Putin/Vladimir.txt")
+      ray[6].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Boris.txt")
+      ray[7].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Andropov.txt")
+      ray[8].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Chernenko.txt")
+      ray[9].should eq("spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Mikhail.txt")
+      ray[10].should eq("spec/fixtures/files/cantread.txt")
+      ray[11].should eq("spec/fixtures/files/foo.txt")
+      ray[12].should eq("spec/fixtures/files/with space.txt")
+      ray.length.should eq(13)
     end
   end
 

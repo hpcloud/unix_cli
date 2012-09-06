@@ -1,42 +1,55 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+include HP::Cloud
 
 describe "Connection options" do
   context "when we create" do
     before(:each) do
-      HP::Cloud::Config.set_credentials('default', 'account_id', 'secret_key', 'auth_uri', 'tenant_id')
-      HP::Cloud::Config.stub(:settings).and_return({:storage_availability_zone=>'storage_availability'})
-      HP::Cloud::Config.stub(:connection_options).and_return({})
+      AccountsHelper.use_fixtures()
+      ConfigHelper.use_tmp()
+      Connection.instance.set_options({})
+    end
+
+    def expected_options()
+      eopts = HP::Cloud::Config.default_options.clone
+      eopts.delete_if{ |k,v| v.nil? }
+      return eopts
     end
 
     it "should have expected values with avail zone" do
-      options = Connection.instance.set_options({:availability_zone=>'somethingelse'})
-      options = Connection.instance.create_options('default', :storage_availability_zone)
+      Connection.instance.set_options({:availability_zone=>'somethingelse'})
+
+      options = Connection.instance.create_options(:storage_availability_zone)
 
       options[:provider].should eql('HP')
-      options[:connection_options].should eql({})
-      options[:hp_account_id].should eql('account_id')
-      options[:hp_secret_key].should eql('secret_key')
-      options[:hp_auth_uri].should eql('auth_uri')
-      options[:hp_tenant_id].should eql('tenant_id')
+      options[:connection_options].should eql(expected_options)
+      options[:hp_account_id].should eql('foo')
+      options[:hp_secret_key].should eql('bar')
+      options[:hp_auth_uri].should eql('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eql('111111')
       options[:hp_avl_zone].should eql('somethingelse')
       options[:user_agent].should eql("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
     end
 
     it "should have expected values" do
-      options = Connection.instance.create_options('default', :storage_availability_zone)
+      options = Connection.instance.create_options(:storage_availability_zone)
 
       options[:provider].should eql('HP')
-      options[:connection_options].should eql({})
-      options[:hp_account_id].should eql('account_id')
-      options[:hp_secret_key].should eql('secret_key')
-      options[:hp_auth_uri].should eql('auth_uri')
-      options[:hp_tenant_id].should eql('tenant_id')
-      options[:hp_avl_zone].should eql('storage_availability')
+      options[:connection_options].should eql(expected_options())
+      options[:hp_account_id].should eql('foo')
+      options[:hp_secret_key].should eql('bar')
+      options[:hp_auth_uri].should eql('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eql('111111')
+      options[:hp_avl_zone].should eql('region-a.geo-1')
       options[:user_agent].should eql("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
     end
 
     it "should throw exception" do
-      lambda { Connection.instance.create_options('bogus', :storage_availability_zone) }.should raise_error(Fog::Storage::HP::Error, "Error getting service credentials. Please check your HP Cloud Services account to make sure the account credentials are correct.")
+      directory = Accounts.new.directory
+      Connection.instance.set_options({:account_name => 'bogus'})
+      lambda {
+        Connection.instance.create_options(:storage_availability_zone)
+      }.should raise_error(Exception, "Could not find account file: #{directory}bogus")
     end
   end
+  after(:all) {reset_all()}
 end

@@ -1,0 +1,6 @@
+---
+:credentials:
+  :account_id: DrDog
+  :secret_key: BeTheVoid
+  :auth_uri: http://TurningTheCentury/
+  :tenant_id: '350'

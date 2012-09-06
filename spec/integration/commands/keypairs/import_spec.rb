@@ -11,34 +11,29 @@ describe "keypairs:import command" do
   end
 
   context "when importing a keypair" do
-    before(:all) do
+    before(:all) { @key_name = 'fog-imp-200' }
+
+    it "should import" do
       @key_name = 'fog-imp-200'
-      @response, @exit = capture_with_status(:stdout){ HP::Cloud::CLI.start(['keypairs:import', @key_name, @fake_public_key]) }
-    end
+      rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}"])
 
-    it "should show success message" do
-      @response.should eql("Imported key pair '#{@key_name}'.\n")
-    end
-    its_exit_status_should_be(:success)
-
-    it "should list in keypairs" do
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Imported key pair '#{@key_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
       keypairs = @hp_svc.key_pairs.map {|kp| kp.name}
       keypairs.should include(@key_name)
-    end
-
-    it "should have a name" do
       keypair = get_keypair(@hp_svc, @key_name)
       keypair.name.should eql(@key_name)
-    end
-
-    it "should have a fingerprint data" do
       keypair = get_keypair(@hp_svc, @key_name)
       keypair.fingerprint.should_not be_nil
     end
 
     it "should report key exists if imported again" do
-      @response, @exit = capture_with_status(:stderr){ HP::Cloud::CLI.start(['keypairs:import', @key_name, @fake_public_key]) }
-      @response.should eql("Key pair '#{@key_name}' already exists.\n")
+      rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}"])
+
+      rsp.stderr.should eq("Key pair '#{@key_name}' already exists.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
     end
 
     after(:all) do
@@ -53,10 +48,10 @@ describe "keypairs:import command" do
     end
     context "keypairs:import with valid avl" do
       it "should report success" do
-        response, exit_status = capture_with_status(:stdout){ HP::Cloud::CLI.start(['keypairs:import', @key_name, @fake_public_key, '-z', 'az-1.region-a.geo-1']) }
-        #response, exit_status = run_command("keypairs:add #{@key_name} -z az-1.region-a.geo-1").stdout_and_exit_status
-        response.should include("Imported key pair '#{@key_name}'.\n")
-        exit_status.should be_exit(:success)
+        rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}", "-z", "az-1.region-a.geo-1"])
+        rsp.stderr.should eq("")
+        rsp.stdout.should include("Imported key pair '#{@key_name}'.\n")
+        rsp.exit_status.should be_exit(:success)
       end
       after(:all) do
         keypair = get_keypair(@hp_svc, @key_name)
@@ -65,12 +60,26 @@ describe "keypairs:import command" do
     end
     context "keypairs:import with invalid avl" do
       it "should report error" do
-        response, exit_status = capture_with_status(:stderr){ HP::Cloud::CLI.start(['keypairs:import', @key_name, @fake_public_key, '-z', 'blah']) }
-        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
+        rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}", "-z", "blah"])
+        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+        rsp.stdout.should eq("")
+        rsp.exit_status.should be_exit(:general_error)
       end
-      after(:all) { Connection.instance.set_options({}) }
+      after(:all) { Connection.instance.clear_options() }
     end
   end
 
+  context "verify the -a option is activated" do
+    it "should report error" do
+      AccountsHelper.use_tmp()
+
+      rsp = cptr("keypairs:import -a bogus nameo keyo")
+
+      tmpdir = AccountsHelper.tmp_dir()
+      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) {reset_all()}
+  end
 end

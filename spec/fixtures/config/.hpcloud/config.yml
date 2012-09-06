@@ -1,0 +1,12 @@
+--- 
+:default_auth_uri: 'https://127.0.0.1:35357/v2.0/'
+:block_availability_zone: az-1.region-z.geo-1
+:cdn_availability_zone: region-z.geo-1
+:compute_availability_zone: az-1.region-z.geo-1
+:storage_availability_zone: region-z.geo-1
+:connect_timeout: 35
+:read_timeout: 40
+:write_timeout: 45
+:ssl_verify_peer: true
+:ssl_ca_path: 'capath'
+:ssl_ca_file: 'cafile'

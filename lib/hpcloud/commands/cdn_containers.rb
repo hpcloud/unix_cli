@@ -16,19 +16,17 @@ module HP
 
 Examples:
   hpcloud cdn:containers                    # list only the CDN-enabled containers
-  hpcloud cdn:containers -a                 # list all the container on the CDN
+  hpcloud cdn:containers -l                 # list all the container on the CDN
   hpcloud cdn:containers -z region-a.geo-1  # Optionally specify an availability zone
 
 Aliases: cdn:containers:list
       DESC
       method_option :all, :default => false,
-                    :type => :boolean, :aliases => '-a',
+                    :type => :boolean, :aliases => '-l',
                     :desc => 'List all the CDN containers, either enabled or disabled.'
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       define_method "cdn:containers" do
-        begin
+        cli_command(options) {
           cdn_connection = connection(:cdn, options)
           response = if options[:all]
             cdn_connection.get_containers()
@@ -41,15 +39,8 @@ Aliases: cdn:containers:list
           else
             cdn_containers.each { |cdn_container| display cdn_container['name'] }
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::CDN::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::Conflict, Excon::Errors::NotFound => error
-          display_error_message(error, :not_found)
-        end
+        }
       end
-
     end
   end
 end

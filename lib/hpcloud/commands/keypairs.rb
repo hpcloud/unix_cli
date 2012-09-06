@@ -18,24 +18,17 @@ Examples:
 
 Aliases: keypairs:list
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       def keypairs
-        begin
+        cli_command(options) {
           keypairs = connection(:compute, options).key_pairs
           if keypairs.empty?
             display "You currently have no keypairs to use."
           else
             keypairs.table([:name, :fingerprint])
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden, Excon::Errors::Conflict => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end

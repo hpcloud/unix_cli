@@ -14,11 +14,9 @@ Examples:
 
 Aliases: keypairs:rm, keypairs:delete, keypairs:del
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       define_method "keypairs:remove" do |key_name|
-        begin
+        cli_command(options) {
           compute_connection = connection(:compute, options)
           keypair = compute_connection.key_pairs.select {|k| k.name == key_name}.first
           if (keypair && keypair.name == key_name)
@@ -27,13 +25,8 @@ Aliases: keypairs:rm, keypairs:delete, keypairs:del
           else
             error "You don't have a key pair with '#{key_name}'.", :not_found
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-
     end
   end
 end

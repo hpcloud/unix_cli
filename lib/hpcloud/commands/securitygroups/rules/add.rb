@@ -28,15 +28,11 @@ Aliases: securitygroups:rules:authorize
       method_option :source_group,
                     :type => :string, :aliases => '-g',
                     :desc => 'Specify a source group.'
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       define_method "securitygroups:rules:add" do |sec_group_name, ip_protocol|
-        begin
-          # defaults
+        cli_command(options) {
           src_group_id = nil
           port_range = Range.new(-1, -1)
-          # get the options
           port_range_str = options[:port_range]
           ip_address = options[:cidr]
           src_group = options[:source_group]
@@ -74,15 +70,8 @@ Aliases: securitygroups:rules:authorize
           else
             error "You don't have a security group '#{sec_group_name}'.", :not_found
           end
-        rescue Fog::HP::Errors::ServiceError, Excon::Errors::BadRequest, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
-        end
+        }
       end
-
     end
   end
 end

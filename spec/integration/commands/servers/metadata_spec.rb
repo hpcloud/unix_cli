@@ -3,8 +3,8 @@ require 'hpcloud/server_helper'
 
 describe "Servers command" do
   before(:all) do
-    @flavor_id = OS_COMPUTE_BASE_FLAVOR_ID
-    @image_id = OS_COMPUTE_BASE_IMAGE_ID
+    @flavor_id = AccountsHelper.get_flavor_id()
+    @image_id = AccountsHelper.get_image_id()
 
     @srv = HP::Cloud::ServerHelper.new(Connection.instance.compute)
     @srv.name = resource_name("meta_srv")
@@ -18,51 +18,73 @@ describe "Servers command" do
     @server_name = @srv.name
   end
 
-  describe "with avl settings from config" do
-    context "servers" do
-      it "should report success" do
-        response, exit_status = run_command("servers:metadata #{@server_id}").stdout_and_exit_status
-        exit_status.should be_exit(:success)
-        response.should include("luke")
-        response.should include("skywalker")
-        response.should include("han")
-        response.should include("solo")
-      end
-    end
+  context "servers" do
+    it "should report success" do
+      rsp = cptr("servers:metadata #{@server_id}")
 
-    context "servers" do
-      it "should report success" do
-        response, exit_status = run_command("servers:metadata #{@server_name}").stdout_and_exit_status
-        exit_status.should be_exit(:success)
-        response.should include("luke")
-        response.should include("skywalker")
-        response.should include("han")
-        response.should include("solo")
-      end
-    end
-
-    context "servers:metadata:list" do
-      it "should report success" do
-        response, exit_status = run_command("servers:metadata:list #{@server_id}").stdout_and_exit_status
-        exit_status.should be_exit(:success)
-      end
+      rsp.stderr.should eq("")
+      rsp.stdout.should include("luke")
+      rsp.stdout.should include("skywalker")
+      rsp.stdout.should include("han")
+      rsp.stdout.should include("solo")
+      rsp.exit_status.should be_exit(:success)
     end
   end
-  describe "with avl settings passed in" do
-    context "servers with valid avl" do
-      it "should report success" do
-        response, exit_status = run_command("servers:metadata:list -z az-1.region-a.geo-1 #{@server_id}").stdout_and_exit_status
-        exit_status.should be_exit(:success)
-      end
+
+  context "servers" do
+    it "should report success" do
+      rsp = cptr("servers:metadata #{@server_name}")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should include("luke")
+      rsp.stdout.should include("skywalker")
+      rsp.stdout.should include("han")
+      rsp.stdout.should include("solo")
+      rsp.exit_status.should be_exit(:success)
     end
-    context "servers with invalid avl" do
-      it "should report error" do
-        response, exit_status = run_command("servers:metadata -z blah #{@server_id}").stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
-      end
-      after(:all) { HP::Cloud::Connection.instance.set_options({}) }
+  end
+
+  context "servers:metadata:list" do
+    it "should report success" do
+      rsp = cptr("servers:metadata:list #{@server_id}")
+
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
     end
+  end
+
+  context "servers with valid avl" do
+    it "should report success" do
+      rsp = cptr("servers:metadata:list -z az-1.region-a.geo-1 #{@server_id}")
+
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
+  context "servers with invalid avl" do
+    it "should report error" do
+      rsp = cptr("servers:metadata -z blah #{@server_id}")
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) { HP::Cloud::Connection.instance.clear_options() }
+  end
+
+  context "verify the -a option is activated" do
+    it "should report error" do
+      AccountsHelper.use_tmp()
+
+      rsp = cptr("servers:metadata #{@server_id} -a bogus")
+
+      tmpdir = AccountsHelper.tmp_dir()
+      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) {reset_all()}
   end
 
   after(:all) do

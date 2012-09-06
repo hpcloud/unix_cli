@@ -1,6 +1,10 @@
+require 'hpcloud/accounts'
+
 module HP
   module Cloud
     class CLI < Thor
+
+      map 'account:edit' => 'account:setup'
     
       desc 'account:setup', "set up or modify your credentials"
       long_desc <<-DESC
@@ -12,34 +16,49 @@ module HP
   but in most cases you will want to use the default.  
   
   You can re-run this command to modify your settings at anytime.
+
+Aliases: account:edit
       DESC
       method_option 'no-validate', :type => :boolean, :default => false,
                     :desc => "Don't verify account settings during setup"
-      define_method "account:setup" do
-        credentials = {}
-        # remove the existing config directory
-        Config.remove_config_directory
+      define_method "account:setup" do |name='default'|
+        accounts = HP::Cloud::Accounts.new()
+        begin
+          acct = accounts.read(name)
+        rescue Exception => e
+          acct = accounts.create(name)
+        end
+        cred = acct[:credentials]
+        zones = acct[:zones]
+
         # ask for credentials
-        display "****** Setup your HP Cloud Services account ******"
-        credentials[:account_id] = ask 'Access Key Id:'
-        credentials[:secret_key] = ask 'Secret Key:'
-        credentials[:auth_uri] = ask_with_default 'Auth Uri:',
-                                      Config.settings[:default_auth_uri]
-        credentials[:tenant_id] = ask 'Tenant Id:'
-        # validate credentials
+        display "****** Setup your HP Cloud Services #{name} account ******"
+        cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
+        cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
+        cred[:auth_uri] = ask_with_default 'Auth Uri:', "#{cred[:auth_uri]}"
+        cred[:tenant_id] = ask_with_default 'Tenant Id:', "#{cred[:tenant_id]}"
+        zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
+        accounts.rejigger_zones(zones)
+        zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
+        zones[:cdn_availability_zone] = ask_with_default 'CDN zone:', "#{zones[:cdn_availability_zone]}"
+        zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
+
         unless options['no-validate']
           display "Verifying your HP Cloud Services account..."
           begin
-            Connection.instance.validate_account(credentials)
+            Connection.instance.validate_account(cred)
           rescue Exception => e
-            error "Account setup failed. Error connecting to the service endpoint at: '#{credentials[:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
+            error "Account setup failed. Error connecting to the service endpoint at: '#{cred[:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
           end
         end
+
         # update credentials and stash in config directory
-        Config.update_credentials :default, credentials
+        accounts.set_credentials(name, cred[:account_id], cred[:secret_key], cred[:auth_uri], cred[:tenant_id])
+        accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:cdn_availability_zone], zones[:block_availability_zone])
+        accounts.write(name)
+
         display "Account credentials for HP Cloud Services have been set up."
       end
-    
     end
   end
 end

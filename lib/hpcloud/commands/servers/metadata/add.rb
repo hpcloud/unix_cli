@@ -13,12 +13,9 @@ Examples:
 
 Aliases: servers:metadata:update
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       define_method "servers:metadata:add" do |name_or_id, metadata|
-        begin
-          Connection.instance.set_options(options)
+        cli_command(options) {
           server = Servers.new.get(name_or_id.to_s)
           if server.is_valid? == false
             error server.error_string, server.error_code
@@ -30,13 +27,7 @@ Aliases: servers:metadata:update
             end
           end
 
-        rescue Fog::HP::Errors::ServiceError, Excon::Errors::BadRequest, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
-        end
+        }
       end
     end
   end

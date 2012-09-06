@@ -3,8 +3,8 @@ require 'hpcloud/image_helper'
 
 describe "Images metadata update command" do
   before(:all) do
-    @flavor_id = OS_COMPUTE_BASE_FLAVOR_ID
-    @image_id = OS_COMPUTE_BASE_IMAGE_ID
+    @flavor_id = AccountsHelper.get_flavor_id()
+    @image_id = AccountsHelper.get_image_id()
 
     @srv = HP::Cloud::ServerHelper.new(Connection.instance.compute)
     @srv.name = resource_name("meta_srv")
@@ -28,9 +28,10 @@ describe "Images metadata update command" do
   describe "with avl settings from config" do
     context "images" do
       it "should report success" do
-        response, exit_status = run_command("images:metadata:update #{@image_id} luke=l000001,han=h000001").stdout_and_exit_status
+        rsp = cptr("images:metadata:update #{@image_id} luke=l000001,han=h000001")
 
-        exit_status.should be_exit(:success)
+        rsp.stderr.should eq("")
+        rsp.exit_status.should be_exit(:success)
         result = Images.new.get(@image_id)
         result.meta.to_s.should include("luke=l000001")
         result.meta.to_s.should include("han=h000001")
@@ -39,9 +40,10 @@ describe "Images metadata update command" do
 
     context "images" do
       it "should report success" do
-        response, exit_status = run_command("images:metadata:update #{@image_name} luke=l000002,han=h000002").stdout_and_exit_status
+        rsp = cptr("images:metadata:update #{@image_name} luke=l000002,han=h000002")
 
-        exit_status.should be_exit(:success)
+        rsp.stderr.should eq("")
+        rsp.exit_status.should be_exit(:success)
         result = Images.new.get(@image_id)
         result.meta.to_s.should include("luke=l000002")
         result.meta.to_s.should include("han=h000002")
@@ -50,25 +52,41 @@ describe "Images metadata update command" do
 
   end
 
-  describe "with avl settings passed in" do
-    context "images with valid avl" do
-      it "should report success" do
-        response, exit_status = run_command("images:metadata:update -z az-1.region-a.geo-1 #{@image_id} luke=l000003,han=h000003").stdout_and_exit_status
+  context "images with valid avl" do
+    it "should report success" do
+      rsp = cptr("images:metadata:update -z az-1.region-a.geo-1 #{@image_id} luke=l000003,han=h000003")
 
-        exit_status.should be_exit(:success)
-        result = Images.new.get(@image_id)
-        result.meta.to_s.should include("luke=l000003")
-        result.meta.to_s.should include("han=h000003")
-      end
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+      result = Images.new.get(@image_id)
+      result.meta.to_s.should include("luke=l000003")
+      result.meta.to_s.should include("han=h000003")
     end
-    context "images with invalid avl" do
-      it "should report error" do
-        response, exit_status = run_command("images:metadata:update -z blah #{@image_id} blah1=1,blah2=2").stderr_and_exit_status
-        response.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        exit_status.should be_exit(:general_error)
-      end
-      after(:all) { HP::Cloud::Connection.instance.set_options({}) }
+  end
+
+  context "images with invalid avl" do
+    it "should report error" do
+      rsp = cptr("images:metadata:update -z blah #{@image_id} blah1=1,blah2=2")
+
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
     end
+    after(:all) { HP::Cloud::Connection.instance.clear_options() }
+  end
+
+  context "verify the -a option is activated" do
+    it "should report error" do
+      AccountsHelper.use_tmp()
+
+      rsp = cptr("images:metadata:update -a bogus #{@image_id} blah1=1,blah2=2")
+
+      tmpdir = AccountsHelper.tmp_dir()
+      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) {reset_all()}
   end
 
   after(:all) do

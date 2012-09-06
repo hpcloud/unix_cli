@@ -12,11 +12,9 @@ Examples:
 
 Aliases: none
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       define_method "securitygroups:add" do |sec_group_name, sg_desc|
-        begin
+        cli_command(options) {
           compute_connection = connection(:compute, options)
           security_group = compute_connection.security_groups.select {|sg| sg.name == sec_group_name}.first
           if (security_group && security_group.name == sec_group_name)
@@ -26,15 +24,8 @@ Aliases: none
             security_group.save
             display "Created security group '#{sec_group_name}'."
           end
-        rescue Fog::HP::Errors::ServiceError, Excon::Errors::BadRequest, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
-        end
+        }
       end
-
     end
   end
 end

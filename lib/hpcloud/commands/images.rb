@@ -22,12 +22,9 @@ Examples:
 
 Aliases: images:list
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
+      CLI.add_common_options
       def images(*arguments)
-        begin
-          Connection.instance.set_options(options)
+        cli_command(options) {
           images = Images.new()
           if images.empty?
             display "You currently have no images, use `#{selfname} images:add` to create one."
@@ -39,11 +36,7 @@ Aliases: images:list
               tablelize(hsh, ImageHelper.get_keys())
             end
           end
-        rescue Fog::HP::Errors::ServiceError, Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
 
     end

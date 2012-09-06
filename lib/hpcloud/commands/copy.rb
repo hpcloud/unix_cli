@@ -1,5 +1,3 @@
-require 'progressbar'
-
 module HP
   module Cloud
     class CLI < Thor
@@ -23,12 +21,12 @@ Examples:
 Aliases: cp
 
       DESC
-      method_option :availability_zone,
-                    :type => :string, :aliases => '-z',
-                    :desc => 'Set the availability zone.'
-      def copy(*source, destination)
-        begin
-          Connection.instance.set_options(options)
+      CLI.add_common_options
+      def copy(source, *destination)
+        cli_command(options) {
+          last = destination.pop
+          source = [source] + destination
+          destination = last
           to = Resource.create(Connection.instance.storage, destination)
           if source.length > 1 && to.isDirectory() == false
             error("The destination '#{destination}' for multiple files must be a directory or container", :general_error)
@@ -41,13 +39,8 @@ Aliases: cp
               error to.error_string, to.error_code
             end
           }
-        rescue Fog::HP::Errors::ServiceError, Fog::Storage::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized => error
-          display_error_message(error, :permission_denied)
-        end
+        }
       end
-    
     end
   end
 end
