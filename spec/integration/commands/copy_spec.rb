@@ -71,7 +71,7 @@ describe "Copy command" do
         rsp.exit_status.should be_exit(:success)
         @head = @hp_svc.head_object('my_container', 'foo.txt')
         @head.status.should eql(200)
-        @head.headers["Content-Type"].should eq('text/plain')
+        @head.headers["Content-Type"].should eq('application/json')
       end
     end
 

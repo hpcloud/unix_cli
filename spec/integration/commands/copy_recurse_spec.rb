@@ -22,7 +22,6 @@ describe "Copy command recrusive" do
     FileUtils.mkpath('spec/tmp/recurse/single')
     FileUtils.mkpath('spec/tmp/recurse/nested')
     rsp = cptr("copy spec/fixtures/files/Matryoshka :recurse_remote")
-    rsp.exit_status.should be_exit(:success)
   end
   
   context "copying local directory to remote container" do
