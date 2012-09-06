@@ -1,5 +1,6 @@
 v1.1.0 09/06/12
 ================
+- Support for US East
 - Support for multiple account files
   - account:list lists accounts and shows account settings
   - account:update modify accounts settings
