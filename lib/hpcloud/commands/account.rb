@@ -11,7 +11,7 @@ module HP
     
       map 'account:list' => 'account'
 
-      desc 'account', "list your accounts and account settings"
+      desc 'account [account_name]', "list your accounts and account settings"
       long_desc <<-DESC
   List your accounts and your account settings.
   
@@ -30,7 +30,7 @@ Alias: account:list
           else
             begin
               acct = accounts.read(name)
-              display acct.to_yaml
+              display acct.to_yaml.gsub(/---\n/,'').gsub(/^:/,'').gsub(/^[ ]*:/,'  ')
             rescue Exception => e
               error_message(e.to_s, :general_error)
             end

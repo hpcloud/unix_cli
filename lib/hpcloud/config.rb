@@ -81,7 +81,7 @@ module HP
       end
 
       def list
-        return @settings.to_yaml
+        return @settings.to_yaml.gsub(/---\n/,'').gsub(/^:/,'')
       end
 
       def read

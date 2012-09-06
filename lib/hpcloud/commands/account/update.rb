@@ -6,7 +6,7 @@ module HP
     
       map 'account:add' => 'account:update'
 
-      desc 'account:update', "modify your account credentials, zones, or options"
+      desc 'account:update <account_name> <name_value_pair> ...', "modify your account credentials, zones, or options"
       long_desc <<-DESC
   Add or update account credentials, zones, or options.  Valid settings include:
 #{Accounts.get_known}

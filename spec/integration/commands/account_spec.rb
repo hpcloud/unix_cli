@@ -25,7 +25,7 @@ describe "Account list" do
       rsp = cptr("account:list mike")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("---\n:credentials:\n  :auth_uri: one\n:zones:\n  :compute_availability_zone: az-1.region-a.geo-1\n  :storage_availability_zone: region-a.geo-1\n  :cdn_availability_zone: region-a.geo-1\n  :block_availability_zone: az-1.region-a.geo-1\n:options: {}\n")
+      rsp.stdout.should eq("credentials:\n  auth_uri: one\nzones:\n  compute_availability_zone: az-1.region-a.geo-1\n  storage_availability_zone: region-a.geo-1\n  cdn_availability_zone: region-a.geo-1\n  block_availability_zone: az-1.region-a.geo-1\noptions: {}\n")
       rsp.exit_status.should be_exit(:success)
     end
   end

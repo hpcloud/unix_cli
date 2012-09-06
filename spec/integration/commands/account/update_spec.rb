@@ -11,7 +11,7 @@ describe "Account add and update" do
       rsp = cptr("account:add foo auth_uri=one block_availability_zone=2 read_timeout=3")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Account foo set auth_uri=one block_availability_zone=2 read_timeout=3\n")
+      rsp.stdout.should eq("Account 'foo' set auth_uri=one block_availability_zone=2 read_timeout=3\n")
       rsp.exit_status.should be_exit(:success)
       AccountsHelper.value('foo', :credentials, :auth_uri).should eq("one")
       AccountsHelper.value('foo', :zones, :block_availability_zone).should eq("2")
@@ -24,7 +24,7 @@ describe "Account add and update" do
       rsp = cptr("account:update foo auth_uri=one block_availability_zone=2 read_timeout=3")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Account foo set auth_uri=one block_availability_zone=2 read_timeout=3\n")
+      rsp.stdout.should eq("Account 'foo' set auth_uri=one block_availability_zone=2 read_timeout=3\n")
       rsp.exit_status.should be_exit(:success)
       AccountsHelper.value('foo', :credentials, :auth_uri).should eq("one")
       AccountsHelper.value('foo', :zones, :block_availability_zone).should eq("2")
@@ -37,7 +37,7 @@ describe "Account add and update" do
       rsp = cptr("account:add foo account_id=1 secret_key=2 auth_uri=3 tenant_id=4")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Account foo set account_id=1 secret_key=2 auth_uri=3 tenant_id=4\n")
+      rsp.stdout.should eq("Account 'foo' set account_id=1 secret_key=2 auth_uri=3 tenant_id=4\n")
       rsp.exit_status.should be_exit(:success)
       AccountsHelper.value('foo', :credentials, :account_id).should eq("1")
       AccountsHelper.value('foo', :credentials, :secret_key).should eq("2")
@@ -51,7 +51,7 @@ describe "Account add and update" do
       rsp = cptr("account:add foo compute_availability_zone=1 storage_availability_zone=2 cdn_availability_zone=3 block_availability_zone=4")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Account foo set compute_availability_zone=1 storage_availability_zone=2 cdn_availability_zone=3 block_availability_zone=4\n")
+      rsp.stdout.should eq("Account 'foo' set compute_availability_zone=1 storage_availability_zone=2 cdn_availability_zone=3 block_availability_zone=4\n")
       rsp.exit_status.should be_exit(:success)
       AccountsHelper.value('foo', :zones, :compute_availability_zone).should eq("1")
       AccountsHelper.value('foo', :zones, :storage_availability_zone).should eq("2")
@@ -65,7 +65,7 @@ describe "Account add and update" do
       rsp = cptr("account:add foo connect_timeout=1 read_timeout=2 write_timeout=3 ssl_verify_peer=4 ssl_ca_path=5 ssl_ca_file=6")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Account foo set connect_timeout=1 read_timeout=2 write_timeout=3 ssl_verify_peer=4 ssl_ca_path=5 ssl_ca_file=6\n")
+      rsp.stdout.should eq("Account 'foo' set connect_timeout=1 read_timeout=2 write_timeout=3 ssl_verify_peer=4 ssl_ca_path=5 ssl_ca_file=6\n")
       rsp.exit_status.should be_exit(:success)
       AccountsHelper.value('foo', :options, :connect_timeout).should eq("1")
       AccountsHelper.value('foo', :options, :read_timeout).should eq("2")
