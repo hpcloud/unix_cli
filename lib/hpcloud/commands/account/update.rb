@@ -34,7 +34,7 @@ Alias: account:add
           }
           if updated.empty? == false
             accounts.write(name)
-            display "Account #{name} set " + updated
+            display "Account '#{name}' set " + updated
           end
         }
       end
