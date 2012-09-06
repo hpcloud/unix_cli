@@ -35,7 +35,7 @@ describe "Images metadata remove command" do
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
-      response.should include("aardvark")
+      rsp.stdout.should include("aardvark")
       result = Images.new.get(@image_id)
       still_contains_original(result.meta.to_s)
       result.meta.to_s.should include("kangaroo=two")
@@ -49,8 +49,8 @@ describe "Images metadata remove command" do
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
-      response.should include("aardvark")
-      response.should include("kangaroo")
+      rsp.stdout.should include("aardvark")
+      rsp.stdout.should include("kangaroo")
       result = Images.new.get(@image_id)
       still_contains_original(result.meta.to_s)
       result.meta.to_s.should_not include("kangaroo")
@@ -64,8 +64,8 @@ describe "Images metadata remove command" do
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
-      response.should include("Removed metadata 'aardvark' from image")
-      response.should include("Removed metadata 'kangaroo' from image")
+      rsp.stdout.should include("Removed metadata 'aardvark' from image")
+      rsp.stdout.should include("Removed metadata 'kangaroo' from image")
       result = Images.new.get(@image_id)
       still_contains_original(result.meta.to_s)
       result.meta.to_s.should_not include("kangaroo")

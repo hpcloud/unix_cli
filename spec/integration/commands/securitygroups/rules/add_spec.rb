@@ -6,7 +6,8 @@ describe "securitygroups:rules:add command" do
   end
 
   before(:all) do
-    @security_group = @hp_svc.security_groups.create(:name => 'mysecgroup', :description => 'sec group desc')
+    cptr("securitygroups:remove mysecgroup")
+    cptr("securitygroups:add mysecgroup rules")
   end
 
   context "tcp with port range" do
@@ -14,7 +15,7 @@ describe "securitygroups:rules:add command" do
       rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 22..22")
 
       rsp.stderr.should eq("")
-      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)[0][0]
       rsp.exit_status.should be_exit(:success)
       sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
       @rules = sec_group_with_rules.rules
@@ -25,7 +26,7 @@ describe "securitygroups:rules:add command" do
       @rules[0]['from_port'].should eql(22)
       @rules[0]['to_port'].should eql(22)
       rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 22..22")
-      rsp.stderr.should eq("This rule already exists in group #{@security_group.id}\n")
+      rsp.stderr.should include("This rule already exists in group ")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:incorrect_usage)
     end
@@ -36,7 +37,7 @@ describe "securitygroups:rules:add command" do
       rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 80..80 -c 111.111.111.111/1")
 
       rsp.stderr.should eq("")
-      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)[0][0]
       rsp.exit_status.should be_exit(:success)
       sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
       @rules = sec_group_with_rules.rules
@@ -64,7 +65,7 @@ describe "securitygroups:rules:add command" do
       rsp = cptr("securitygroups:rules:add mysecgroup icmp")
 
       rsp.stderr.should eq("")
-      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)[0][0]
       rsp.exit_status.should be_exit(:success)
       sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
       @rules = sec_group_with_rules.rules
@@ -83,7 +84,7 @@ describe "securitygroups:rules:add command" do
       rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 22..22 -g default")
 
       rsp.stderr.should eq("")
-      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)[0][0]
       rsp.exit_status.should be_exit(:success)
       sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
       @rules = sec_group_with_rules.rules
@@ -101,7 +102,7 @@ describe "securitygroups:rules:add command" do
       rsp = cptr("securitygroups:rules:add mysecgroup icmp -g default")
 
       rsp.stderr.should eql("")
-      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)[0][0]
       rsp.exit_status.should be_exit(:success)
       sec_group_with_rules = get_securitygroup(@hp_svc, 'mysecgroup')
       @rules = sec_group_with_rules.rules
@@ -167,8 +168,7 @@ describe "securitygroups:rules:add command" do
       rsp = cptr('securitygroups:rules:add mysecgroup icmp -z az-1.region-a.geo-1')
 
       rsp.stderr.should eq("")
-      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)
-      rsp.stdout.should eq("Created rule '#{@rule_id}' for security group 'mysecgroup'.\n")
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)[0][0]
       rsp.exit_status.should be_exit(:success)
     end
   end
@@ -209,11 +209,9 @@ describe "securitygroups:rules:add command" do
   end
 
   after(:each) do
-    @security_group.delete_rule(@rule_id) unless @rule_id.nil?
+    unless @rule_id.nil?
+      cptr("securitygroups:rules:remove mysecgroup #{@rule_id}")
+    end
     @rule_id = nil
-  end
-
-  after(:all) do
-    @security_group.destroy if @security_group
   end
 end
