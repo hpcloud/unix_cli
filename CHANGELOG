@@ -1,13 +1,17 @@
-v1.1.0 08/30/12
+v1.1.0 09/06/12
 ================
 - Support for multiple account files
   - account:list lists accounts and shows account settings
   - account:update modify accounts settings
   - account:remove remove accounts
   - account:use command makes the specified account default
+  - account:copy command copies an account file
   - The -a option was added to commands to select an account
 - Clean up of configuration
+  - Changed the config:set command to take name value pairs
+  - Added config:list command to print current configuration
 - Changed the cdn:containers -a option to -l for long listing
+- Removed poorly performing mime type detection from copy command
 
 v1.0.1 08/28/12
 ================
