@@ -3,25 +3,12 @@ require 'hpcloud/image_helper'
 
 describe "Images metadata remove command" do
   before(:all) do
-    @flavor_id = AccountsHelper.get_flavor_id()
-    @image_id = AccountsHelper.get_image_id()
-
     @srv = ServerTestHelper.create("cli_test_srv1")
-
-    @img = HP::Cloud::ImageHelper.new()
-    @img.name = resource_name("meta_img")
-    @img.set_server("#{@srv.id}")
-    @img.meta.set_metadata('aardvark=three,luke=skywalker,han=solo,kangaroo=two')
-    @img.save.should be_true
-    @img = Images.new.get(@img.id)
-
-    @image_id = "#{@img.id}"
-    @image_name = @img.name
+    @img = ImageTestHelper.create("cli_test_img1", @srv)
   end
 
   before(:each) do
-    @img = Images.new.get(@image_id)
-    @img.meta.set_metadata('aardvark=three,luke=skywalker,han=solo,kangaroo=two')
+    cptr('images:metadata:update aardvark=three,luke=skywalker,han=solo,kangaroo=two')
   end
 
   def still_contains_original(metastr)
@@ -31,12 +18,12 @@ describe "Images metadata remove command" do
 
   context "images delete one" do
     it "should report success" do
-      rsp = cptr("images:metadata:remove #{@image_id} aardvark")
+      rsp = cptr("images:metadata:remove #{@img.id} aardvark")
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
       rsp.stdout.should include("aardvark")
-      result = Images.new.get(@image_id)
+      result = Images.new.get("#{@img.id}")
       still_contains_original(result.meta.to_s)
       result.meta.to_s.should include("kangaroo=two")
       result.meta.to_s.should_not include("aardvark")
@@ -45,13 +32,13 @@ describe "Images metadata remove command" do
 
   context "images" do
     it "should report success" do
-      rsp = cptr("images:metadata:remove #{@image_name} aardvark kangaroo")
+      rsp = cptr("images:metadata:remove #{@img.name} aardvark kangaroo")
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
       rsp.stdout.should include("aardvark")
       rsp.stdout.should include("kangaroo")
-      result = Images.new.get(@image_id)
+      result = Images.new.get("#{@img.id}")
       still_contains_original(result.meta.to_s)
       result.meta.to_s.should_not include("kangaroo")
       result.meta.to_s.should_not include("aardvark")
@@ -60,13 +47,13 @@ describe "Images metadata remove command" do
 
   context "images with valid avl" do
     it "should report success" do
-      rsp = cptr("images:metadata:remove -z az-1.region-a.geo-1 #{@image_id} aardvark kangaroo")
+      rsp = cptr("images:metadata:remove -z az-1.region-a.geo-1 #{@img.id} aardvark kangaroo")
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
       rsp.stdout.should include("Removed metadata 'aardvark' from image")
       rsp.stdout.should include("Removed metadata 'kangaroo' from image")
-      result = Images.new.get(@image_id)
+      result = Images.new.get("#{@img.id}")
       still_contains_original(result.meta.to_s)
       result.meta.to_s.should_not include("kangaroo")
       result.meta.to_s.should_not include("aardvark")
@@ -75,7 +62,7 @@ describe "Images metadata remove command" do
 
   context "images with invalid avl" do
     it "should report error" do
-      rsp = cptr("images:metadata:remove -z blah #{@image_id} aardvark kangaroo")
+      rsp = cptr("images:metadata:remove -z blah #{@img.id} aardvark kangaroo")
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
@@ -88,7 +75,7 @@ describe "Images metadata remove command" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("images:metadata:remove -a bogus #{@image_id} something")
+      rsp = cptr("images:metadata:remove -a bogus #{@img.id} something")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
@@ -96,9 +83,5 @@ describe "Images metadata remove command" do
       rsp.exit_status.should be_exit(:general_error)
     end
     after(:all) {reset_all()}
-  end
-
-  after(:all) do
-    @img.destroy() unless @img.nil?
   end
 end

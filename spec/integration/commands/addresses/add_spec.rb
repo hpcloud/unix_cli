@@ -20,9 +20,8 @@ describe "addresses:add command" do
       addresses.should include(@public_ip)
     end
 
-    after(:all) do
-      address = get_address(@hp_svc, @public_ip)
-      address.destroy if address
+    after(:each) do
+      cptr("addresses:remove #{@public_ip}")
     end
   end
 
@@ -33,8 +32,10 @@ describe "addresses:add command" do
       rsp.stderr.should eq("")
       @public_ip = rsp.stdout.scan(/Created a public IP address '([^']+)'.\n/)[0][0]
       rsp.exit_status.should be_exit(:success)
-      address = get_address(@hp_svc, @public_ip)
-      address.destroy if address
+    end
+
+    after(:each) do
+      cptr("addresses:remove #{@public_ip}")
     end
   end
 

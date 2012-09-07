@@ -3,16 +3,14 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "images:add command" do
   before(:all) do
     @hp_svc = Connection.instance.compute
-    @flavor_id = AccountsHelper.get_flavor_id()
-    @image_id = AccountsHelper.get_image_id()
   end
 
   context "when creating image with name, server and defaults" do
     it "should show success message" do
       @image_name = resource_name("add")
-      ServerTestHelper.create('cli_test_srv1')
+      @server = ServerTestHelper.create('cli_test_srv1')
 
-      rsp = cptr("images:add #{@image_name} #{@server_name} -m e=mc2,pv=nRT")
+      rsp = cptr("images:add #{@image_name} #{@server.name} -m e=mc2,pv=nRT")
 
       rsp.stderr.should eq("")
       rsp.stdout.should include("Created image '#{@image_name}'")
@@ -27,24 +25,27 @@ describe "images:add command" do
       images[0].meta.hsh['e'].should eq('mc2')
       images[0].meta.hsh['pv'].should eq('nRT')
     end
+
+    after(:each) do
+      cptr("images:remove #{@image_name}")
+    end
   end
 
   context "images:add with valid avl" do
     it "should report success" do
-      @server_name2 = "image_add2"
-      ServerTestHelper.create('cli_test_srv1')
+      @image_name = resource_name("add2")
+      @server = ServerTestHelper.create('cli_test_srv2')
 
-      rsp = cptr("images:add #{@image_name2} #{@server_name2} -z az-1.region-a.geo-1")
+      rsp = cptr("images:add #{@image_name} #{@server.name} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Created image '#{@image_name2}'")
+      rsp.stdout.should include("Created image '#{@image_name}'")
       rsp.exit_status.should be_exit(:success)
       @image_id2 = rsp.stdout.scan(/'([^']+)/)[2][0]
     end
 
     after(:each) do
-      img = @hp_svc.images.get(@image_id2)
-      img.destroy unless img.nil?
+      cptr("images:remove #{@image_name}")
     end
   end
 
@@ -61,9 +62,10 @@ describe "images:add command" do
 
   context "verify the -a option is activated" do
     it "should report error" do
+      @server = ServerTestHelper.create('cli_test_srv3')
       AccountsHelper.use_tmp()
 
-      rsp = cptr("images:add -a bogus image_name server_name")
+      rsp = cptr("images:add -a bogus image_name #{@server.name}")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")

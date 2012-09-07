@@ -4,13 +4,7 @@ require 'hpcloud/image_helper'
 describe "Images command" do
   before(:all) do
     @srv = ServerTestHelper.create('cli_test_srv1')
-
-    @img = HP::Cloud::ImageHelper.new()
-    @img.name = resource_name("meta_img")
-    @img.set_server("#{@srv.name}")
-    @img.meta.set_metadata('darth=vader,count=dooku')
-    @img.save.should be_true
-    @img = Images.new.get(@img.name)
+    @img = ImageTestHelper.create("cli_test_img1", @srv)
   end
 
   describe "with avl settings from config" do
@@ -78,9 +72,5 @@ describe "Images command" do
       rsp.exit_status.should be_exit(:general_error)
     end
     after(:all) {reset_all()}
-  end
-
-  after(:all) do
-    @img.destroy() unless @img.nil?
   end
 end
