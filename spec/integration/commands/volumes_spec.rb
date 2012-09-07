@@ -8,8 +8,8 @@ describe "Volumes command" do
   end
 
   before(:all) do
-    VolumeTestHelper.create("one")
-    VolumeTestHelper.create("two")
+    VolumeTestHelper.create("cli_test_vol1")
+    VolumeTestHelper.create("cli_test_vol2")
   end
 
   describe "with avl settings from config" do

@@ -2,12 +2,12 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "volumes:detach command" do
   before(:all) do
-    @server = ServerTestHelper.create("detach")
+    @server = ServerTestHelper.create("cli_test_srv1")
   end
 
   context "when detach volume with name" do
     it "should succeed" do
-      @vol1 = VolumeTestHelper.create("one")
+      @vol1 = VolumeTestHelper.create("cli_test_vol1")
       @vol1.detach()
       @vol1.fog.wait_for { ready? }
       @vol1.attach(@server, '/dev/sdf').should be_true
@@ -30,7 +30,7 @@ describe "volumes:detach command" do
 
   context "volumes:detach with valid avl" do
     it "should be successful" do
-      @vol2 = VolumeTestHelper.create("two")
+      @vol2 = VolumeTestHelper.create("cli_test_vol2")
       @vol2.detach()
       @vol2.fog.wait_for { ready? }
       @vol2.attach(@server, '/dev/sdg').should be_true
@@ -53,7 +53,7 @@ describe "volumes:detach command" do
 
   context "volumes:detach with invalid avl" do
     it "should report error" do
-      @vol3 = VolumeTestHelper.create("three")
+      @vol3 = VolumeTestHelper.create("cli_test_vol3")
       @vol3.detach()
       @vol3.fog.wait_for { ready? }
       @vol3.attach(@server, '/dev/sdh').should be_true

@@ -9,9 +9,8 @@ describe "images:add command" do
 
   context "when creating image with name, server and defaults" do
     it "should show success message" do
-      @server_name = "image_add"
       @image_name = resource_name("add")
-      ServerTestHelper.create(@server_name)
+      ServerTestHelper.create('cli_test_srv1')
 
       rsp = cptr("images:add #{@image_name} #{@server_name} -m e=mc2,pv=nRT")
 
@@ -32,9 +31,8 @@ describe "images:add command" do
 
   context "images:add with valid avl" do
     it "should report success" do
-      @image_name2 = resource_name("add2")
       @server_name2 = "image_add2"
-      ServerTestHelper.create(@server_name2)
+      ServerTestHelper.create('cli_test_srv1')
 
       rsp = cptr("images:add #{@image_name2} #{@server_name2} -z az-1.region-a.geo-1")
 

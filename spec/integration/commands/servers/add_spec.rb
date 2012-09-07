@@ -103,8 +103,7 @@ describe "servers:add command" do
 
   context "when creating server with a name that already exists" do
     before(:all) do
-      @server_name = "server-already-exists"
-      ServerTestHelper.create(@server_name)
+      ServerTestHelper.create("cli_test_srv1")
 
       rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()}")
 

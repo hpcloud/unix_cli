@@ -7,8 +7,7 @@ describe "servers:reboot command" do
 
   before(:all) do
     @hp_svc = compute_connection
-    @server_name = "reboot"
-    server = ServerTestHelper.create(@server_name)
+    server = ServerTestHelper.create("cli_test_srv1")
   end
 
   ### Server creation returns status "failed to spawn", hence test fails

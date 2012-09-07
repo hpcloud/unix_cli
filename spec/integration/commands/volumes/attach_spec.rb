@@ -2,10 +2,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "volumes:attach command" do
   before(:all) do
-    @server = ServerTestHelper.create("attach")
-    @vol1 = VolumeTestHelper.create("one")
-    @vol2 = VolumeTestHelper.create("two")
-    @vol3 = VolumeTestHelper.create("three")
+    @server = ServerTestHelper.create("cli_test_srv1")
+    @vol1 = VolumeTestHelper.create("cli_test_vol1")
+    @vol2 = VolumeTestHelper.create("cli_test_vol2")
+    @vol3 = VolumeTestHelper.create("cli_test_vol3")
     if @vol1.fog.in_use?
       @vol1.detach()
       @vol1.fog.wait_for { ready? }

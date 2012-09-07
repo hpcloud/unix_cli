@@ -11,7 +11,7 @@ describe "servers:password command" do
 
   context "when changing password for server" do
     it "should show success message" do
-      ServerTestHelper.create("srv1")
+      ServerTestHelper.create("cli_test_srv1")
 
       rsp = cptr("servers:password srv1 Passw0rd1 ")
 
@@ -23,7 +23,7 @@ describe "servers:password command" do
 
   context "servers:password with valid avl" do
     it "should report success" do
-      ServerTestHelper.create("srv1")
+      ServerTestHelper.create("cli_test_srv1")
 
       rsp = cptr("servers:password srv1 Passw0rd2 -z az-1.region-a.geo-1")
 

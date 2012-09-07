@@ -2,13 +2,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "volumes:server command" do
   before(:all) do
-    @srv1 = ServerTestHelper.create("srv1")
-    @srv2 = ServerTestHelper.create("srv2")
-    @vol1 = VolumeTestHelper.create("svl1")
+    @srv1 = ServerTestHelper.create("cli_test_srv1")
+    @srv2 = ServerTestHelper.create("cli_test_srv2")
+    @vol1 = VolumeTestHelper.create("cli_test_vol1")
     @vol1.attach(@srv1, '/dev/sdf')
-    @vol2 = VolumeTestHelper.create("svl2")
+    @vol2 = VolumeTestHelper.create("cli_test_vol2")
     @vol2.attach(@srv2, '/dev/sdg')
-    @vol3 = VolumeTestHelper.create("svl3")
+    @vol3 = VolumeTestHelper.create("cli_test_vol3")
     @vol3.attach(@srv1, '/dev/sdh')
     @vol1.fog.wait_for { in_use? }
     @vol2.fog.wait_for { in_use? }

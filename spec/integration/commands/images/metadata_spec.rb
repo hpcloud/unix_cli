@@ -3,7 +3,7 @@ require 'hpcloud/image_helper'
 
 describe "Images command" do
   before(:all) do
-    @srv = ServerTestHelper.create('srv1')
+    @srv = ServerTestHelper.create('cli_test_srv1')
 
     @img = HP::Cloud::ImageHelper.new()
     @img.name = resource_name("meta_img")
