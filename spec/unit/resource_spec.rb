@@ -7,7 +7,7 @@ describe "Detecting mime type" do
   end
   
   context "when this file" do
-    it "should return text/plain" do
+    it "should return application/x-ruby" do
       file = Resource.create(@storage, __FILE__)
       file.get_mime_type().should eq('application/x-ruby')
     end
@@ -21,7 +21,7 @@ describe "Detecting mime type" do
   end
 
   context "when unknown file" do
-    it "should return text/plain" do
+    it "should return application/octet-stream" do
       file = Resource.create(@storage, 'file')
       file.get_mime_type().should eq('application/octet-stream')
     end
