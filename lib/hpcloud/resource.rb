@@ -1,4 +1,5 @@
 require 'hpcloud/connection.rb'
+require 'mime/types'
 require 'progressbar'
 
 module HP
@@ -87,6 +88,14 @@ module HP
           rest = @fname.split('/')
           @path = rest.empty? ? '' : rest.join('/')
         end
+      end
+
+      def get_mime_type()
+        filename = ::File.basename(@fname)
+        unless (mime_types = ::MIME::Types.of(filename)).empty?
+          return mime_types.first.content_type
+        end
+        return 'application/octet-stream'
       end
 
       def valid_source()
@@ -413,7 +422,7 @@ module HP
         result = true
         if from.isLocal()
           if (from.open() == false) then return false end
-          options = { }
+          options = { 'Content-Type' => from.get_mime_type() }
           @storage.put_object(@container, @destination, {}, options) {
             from.read().to_s
           }
