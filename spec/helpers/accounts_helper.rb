@@ -38,20 +38,20 @@ class AccountsHelper
 
   def self.get_flavor_id()
     return @@flavor_id unless @@flavor_id.nil?
-    acct = HP::Cloud::Accounts.new.get('primary')
-    @@flavor_id = acct[:options][:preferred_flavor] || "set options flavor in primary acct"
+    acct = HP::Cloud::Accounts.new.get('default')
+    @@flavor_id = acct[:options][:preferred_flavor] || "set options flavor in default acct"
     return @@flavor_id
   end
 
   def self.get_image_id()
     return @@image_id unless @@image_id.nil?
-    acct = HP::Cloud::Accounts.new.get('primary')
-    @@image_id = acct[:options][:preferred_image] || "set options image in primary acct"
+    acct = HP::Cloud::Accounts.new.get('default')
+    @@image_id = acct[:options][:preferred_image] || "set options image in default acct"
     return @@image_id
   end
 
   def self.get_uri()
-    acct = HP::Cloud::Accounts.new.get('primary')
+    acct = HP::Cloud::Accounts.new.get('default')
     return acct[:credentials][:auth_uri]
   end
 end
