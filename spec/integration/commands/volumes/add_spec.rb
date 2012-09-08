@@ -52,11 +52,11 @@ describe "volumes:add command" do
 
   context "when creating volume with a name that already exists" do
     it "should fail" do
-      @volume_name = "volume-already-exists"
-      cptr("volumes:add #{@volume_name} 1")
-      rsp = cptr("volumes:add #{@volume_name} 1")
+      @vol1 = VolumeTestHelper.create("cli_test_vol1")
 
-      rsp.stderr.should eq("Volume with the name '#{@volume_name}' already exists\n")
+      rsp = cptr("volumes:add #{@vol1.name} 1")
+
+      rsp.stderr.should eq("Volume with the name '#{@vol1.name}' already exists\n")
       rsp.exit_status.should be_exit(:general_error)
     end
   end

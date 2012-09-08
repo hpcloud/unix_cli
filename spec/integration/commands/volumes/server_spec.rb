@@ -22,9 +22,9 @@ describe "volumes:server command" do
       rsp.stderr.should eq("")
       rsp.stdout.should match(".*name.*\\|.*server.*\\|.*device")
 
-      rsp.stdout.should match(".*svl1.*\\|.*srv1.*\\|.*/dev/sdf.*\\|\n")
-      rsp.stdout.should match(".*svl3.*\\|.*srv1.*\\|.*/dev/sdh.*\\|\n")
-      rsp.stdout.should match(".*svl2.*\\|.*srv2.*\\|.*/dev/sdg.*\\|\n")
+      rsp.stdout.should match(".*#{@vol1.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdf.*\\|\n")
+      rsp.stdout.should match(".*#{@vol2.name}.*\\|.*#{@srv2.name}.*\\|.*/dev/sdh.*\\|\n")
+      rsp.stdout.should match(".*#{@vol3.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdg.*\\|\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
@@ -36,8 +36,8 @@ describe "volumes:server command" do
       rsp.stderr.should eq("")
       rsp.stdout.should match(".*name.*\\|.*server.*\\|.*device")
 
-      rsp.stdout.should match(".*svl1.*\\|.*srv1.*\\|.*/dev/sdf.*\\|\n")
-      rsp.stdout.should match(".*svl3.*\\|.*srv1.*\\|.*/dev/sdh.*\\|\n")
+      rsp.stdout.should match(".*#{@vol1.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdf.*\\|\n")
+      rsp.stdout.should match(".*#{@vol3.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdh.*\\|\n")
       rsp.exit_status.should be_exit(:success)
     end
   end

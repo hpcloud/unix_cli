@@ -19,13 +19,6 @@ describe "volumes:detach command" do
       rsp.stdout.should eq("Detached volume '#{@vol1.name}' from '#{@server.name}'.\n")
       rsp.exit_status.should be_exit(:success)
     end
-
-    after(:all) do
-      begin
-        @vol1.destroy
-      rescue Exception => e
-      end
-    end
   end
 
   context "volumes:detach with valid avl" do
@@ -41,13 +34,6 @@ describe "volumes:detach command" do
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Detached volume '#{@vol2.name}' from '#{@server.name}'.\n")
       rsp.exit_status.should be_exit(:success)
-    end
-
-    after(:all) do
-      begin
-        @vol2.destroy
-      rescue Exception => e
-      end
     end
   end
 
@@ -65,14 +51,6 @@ describe "volumes:detach command" do
       rsp.stderr.should include("Exception: Unable to retrieve endpoint service url for availability zone 'blah' from service catalog.")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
-    end
-
-    after(:all) do
-      HP::Cloud::Connection.instance.clear_options()
-      begin
-        @vol3.destroy
-      rescue Exception => e
-      end
     end
   end
 
@@ -99,12 +77,4 @@ describe "volumes:detach command" do
     end
     after(:all) {reset_all()}
   end
-
-  after(:all) do
-    begin
-      @server.destroy
-    rescue Exception => e
-    end
-  end
-
 end

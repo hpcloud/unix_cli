@@ -82,24 +82,4 @@ describe "volumes:attach command" do
     end
     after(:all) {reset_all()}
   end
-
-  after(:all) do
-    begin
-      @vol1.destroy
-    rescue Exception => e
-    end
-    begin
-      @vol2.destroy
-    rescue Exception => e
-    end
-    begin
-      @vol3.destroy
-    rescue Exception => e
-    end
-    begin
-      @server.destroy
-    rescue Exception => e
-    end
-  end
-
 end

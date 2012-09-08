@@ -15,7 +15,7 @@ describe "volumes:remove command" do
 
   context "when deleting volume with name" do
     it "should succeed" do
-      @volume = VolumeTestHelper.create("cli_test_vol1")
+      @volume = VolumeTestHelper.create(resource_name("del1"))
 
       rsp = cptr("volumes:remove #{@volume.name}")
 
@@ -28,7 +28,7 @@ describe "volumes:remove command" do
 
   context "volumes:remove with valid avl" do
     it "should be successful" do
-      @volume = VolumeTestHelper.create("cli_test_vol2")
+      @volume = VolumeTestHelper.create(resource_name("del2"))
 
       rsp = cptr("volumes:remove #{@volume.name} -z az-1.region-a.geo-1")
 
@@ -41,9 +41,7 @@ describe "volumes:remove command" do
 
   context "volumes:remove with invalid avl" do
     it "should report error" do
-      @volume = VolumeTestHelper.create("cli_test_vol3")
-
-      rsp = cptr("volumes:remove #{@volume.name} -z blah")
+      rsp = cptr("volumes:remove volume_name -z blah")
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")

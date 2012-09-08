@@ -3,19 +3,19 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe "Volumes command" do
   def then_expected_table(response)
     response.should match("| .*id.*|.*name.*|.*size.*|.*type.*|.*created.*|.*status.*|.*description.*|.*servers.*|\n")
-    response.should match("| one *| 1 *| *|")
-    response.should match("| two *| 1 *| *|")
+    response.should match("| #{@vol1.name} *| 1 *| *|")
+    response.should match("| #{@vol2.name} *| 1 *| *|")
   end
 
   before(:all) do
-    VolumeTestHelper.create("cli_test_vol1")
-    VolumeTestHelper.create("cli_test_vol2")
+    @vol1 = VolumeTestHelper.create("cli_test_vol1")
+    @vol2= VolumeTestHelper.create("cli_test_vol2")
   end
 
   describe "with avl settings from config" do
     context "volumes" do
       it "should report success" do
-        rsp = cptr("volumes one two")
+        rsp = cptr("volumes #{@vol1.name} #{@vol2.name}")
 
         rsp.stderr.should eq("")
         then_expected_table(rsp.stdout)
@@ -25,7 +25,7 @@ describe "Volumes command" do
 
     context "volumes:list" do
       it "should report success" do
-        rsp = cptr("volumes:list one two")
+        rsp = cptr("volumes:list #{@vol1.name} #{@vol2.name}")
 
         rsp.stderr.should eq("")
         then_expected_table(rsp.stdout)
@@ -36,7 +36,7 @@ describe "Volumes command" do
 
   context "volumes with valid avl" do
     it "should report success" do
-      rsp = cptr('volumes one two -z az-1.region-a.geo-1')
+      rsp = cptr('volumes #{@vol1.name} #{@vol2.name} -z az-1.region-a.geo-1')
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
