@@ -8,7 +8,7 @@ describe "Images metadata remove command" do
   end
 
   before(:each) do
-    cptr('images:metadata:update aardvark=three,luke=skywalker,han=solo,kangaroo=two')
+    cptr("images:metadata:update #{@img.id} aardvark=three,luke=skywalker,han=solo,kangaroo=two")
   end
 
   def still_contains_original(metastr)

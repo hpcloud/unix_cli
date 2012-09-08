@@ -16,14 +16,10 @@ describe "images:add command" do
       rsp.stdout.should include("Created image '#{@image_name}'")
       rsp.exit_status.should be_exit(:success)
       @new_image_id = rsp.stdout.scan(/'([^']+)/)[2][0]
-      images = @hp_svc.images.map {|i| i.id}
-      images.should include(@new_image_id)
-      images = @hp_svc.images.map {|i| i.name}
-      images.should include(@image_name)
-      images = Images.new.get([@new_image_id])
-      images.length.should eq(1)
-      images[0].meta.hsh['e'].should eq('mc2')
-      images[0].meta.hsh['pv'].should eq('nRT')
+
+      image = ImageTestHelper.create(@image_name, @server)
+      image.id.should eq(@new_image_id)
+      image.meta.to_s.should eq("e=mc2,pv=nRT")
     end
 
     after(:each) do

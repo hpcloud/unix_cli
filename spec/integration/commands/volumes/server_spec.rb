@@ -23,8 +23,8 @@ describe "volumes:server command" do
       rsp.stdout.should match(".*name.*\\|.*server.*\\|.*device")
 
       rsp.stdout.should match(".*#{@vol1.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdf.*\\|\n")
-      rsp.stdout.should match(".*#{@vol2.name}.*\\|.*#{@srv2.name}.*\\|.*/dev/sdh.*\\|\n")
-      rsp.stdout.should match(".*#{@vol3.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdg.*\\|\n")
+      rsp.stdout.should match(".*#{@vol2.name}.*\\|.*#{@srv2.name}.*\\|.*/dev/sdg.*\\|\n")
+      rsp.stdout.should match(".*#{@vol3.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdh.*\\|\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
