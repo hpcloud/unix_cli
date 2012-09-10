@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
 
   s.authors   = ["Matt Sanders", "Rupak Ganguly"]
   s.email     = %w{rupak.ganguly@hp.com}
-  # s.homepage  = '' #TODO
+  s.homepage  = 'https://docs.hpcloud.com/cli/unix'
   # s.licenses = [""]
 
   s.executables         = ["hpcloud"]
