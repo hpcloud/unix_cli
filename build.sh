@@ -5,10 +5,12 @@ DEST=":${CONTAINER}/${VERSION}/"
 #
 # Prepare for release gem
 #
-grep -v '# Comment out for delivery' lib/hpcloud.rb >out
-mv out lib/hpcloud.rb
-sed -e 's/# Comment in for delivery//g' hpcloud.gemspec >out
-mv out hpcloud.gemspec
+grep -v '# Comment out for delivery' lib/hpcloud.rb >out$$
+mv out$$ lib/hpcloud.rb
+sed -e 's/# Comment in for delivery//g' hpcloud.gemspec >out$$
+mv out$$ hpcloud.gemspec
+grep -v '# Comment out for delivery' Gemfile >out$$
+mv out$$ Gemfile
 
 #
 # Build the gem
@@ -21,6 +23,7 @@ gem install hpcloud-${VERSION}.gem
 #
 git checkout lib/hpcloud.rb
 git checkout hpcloud.gemspec
+git checkout Gemfile
 
 #
 # Build the reference page
@@ -29,7 +32,8 @@ hpcloud help | grep hpcloud | while read HPCLOUD COMMAND ROL
 do
   SAVE=''
   STATE='start'
-  hpcloud help $COMMAND | sed -e 's/Alias:/###Aliases\n /' |
+  hpcloud help $COMMAND |
+  sed -e 's/Alias:/###Aliases\n /' -e 's/Aliases:/###Aliases\n /' |
   while LINE=$(line)
   do
     case ${STATE} in
@@ -46,7 +50,12 @@ do
         echo "## ${COMMAND}"
         STATE='description'
       else
-        SAVE="${SAVE}${LINE}\n"
+        if [ "${LINE}" == "Options:" ]
+        then
+          SAVE="###Options\n"
+        else
+          SAVE="${SAVE}${LINE}\n"
+        fi
       fi
       ;;
     description)
