@@ -87,6 +87,7 @@ fi
 hpcloud copy hpcloud-${VERSION}.gem $DEST
 hpcloud copy CHANGELOG $DEST
 hpcloud copy reference CHANGELOG $DEST
+hpcloud acl:set :${CONTAINER} public-read
 hpcloud acl:set ${DEST}CHANGELOG public-read
 hpcloud acl:set ${DEST}reference public-read
 hpcloud acl:set ${DEST}hpcloud-${VERSION}.gem public-read
