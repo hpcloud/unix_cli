@@ -7,41 +7,42 @@ describe "images:add command" do
 
   context "when creating image with name, server and defaults" do
     it "should show success message" do
-      @image_name = resource_name("add")
+      @image_name1 = resource_name("add")
       @server = ServerTestHelper.create('cli_test_srv1')
 
-      rsp = cptr("images:add #{@image_name} #{@server.name} -m e=mc2,pv=nRT")
+      rsp = cptr("images:add #{@image_name1} #{@server.name} -m e=mc2,pv=nRT")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Created image '#{@image_name}'")
+      rsp.stdout.should include("Created image '#{@image_name1}'")
       rsp.exit_status.should be_exit(:success)
-      @new_image_id = rsp.stdout.scan(/'([^']+)/)[2][0]
+      new_image_id = rsp.stdout.scan(/'([^']+)/)[2][0]
 
-      image = ImageTestHelper.create(@image_name, @server)
-      image.id.should eq(@new_image_id)
-      image.meta.to_s.should eq("e=mc2,pv=nRT")
+      image = HP::Cloud::Images.new.get(@image_name1)
+      image.id.should eq(new_image_id)
+      hshstr = image.meta.to_s
+      hshstr.should include('e=mc2')
+      hshstr.should include('pv=nRT')
     end
 
     after(:each) do
-      cptr("images:remove #{@image_name}")
+      cptr("images:remove #{@image_name1}")
     end
   end
 
   context "images:add with valid avl" do
     it "should report success" do
-      @image_name = resource_name("add2")
+      @image_name2 = resource_name("add2")
       @server = ServerTestHelper.create('cli_test_srv2')
 
-      rsp = cptr("images:add #{@image_name} #{@server.name} -z az-1.region-a.geo-1")
+      rsp = cptr("images:add #{@image_name2} #{@server.name} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Created image '#{@image_name}'")
+      rsp.stdout.should include("Created image '#{@image_name2}'")
       rsp.exit_status.should be_exit(:success)
-      @image_id2 = rsp.stdout.scan(/'([^']+)/)[2][0]
     end
 
     after(:each) do
-      cptr("images:remove #{@image_name}")
+      cptr("images:remove #{@image_name2}")
     end
   end
 
