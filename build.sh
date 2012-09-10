@@ -3,9 +3,24 @@ CONTAINER="unixcli"
 DEST=":${CONTAINER}/${VERSION}/"
 
 #
+# Prepare for release gem
+#
+grep -v '# Comment out for delivery' lib/hpcloud.rb >out
+mv out lib/hpcloud.rb
+sed -e 's/# Comment in for delivery//g' hpcloud.gemspec >out
+mv out hpcloud.gemspec
+
+#
 # Build the gem
 #
 gem build hpcloud.gemspec
+gem install hpcloud-${VERSION}.gem
+
+#
+# Restore modified files
+#
+git checkout lib/hpcloud.rb
+git checkout hpcloud.gemspec
 
 #
 # Build the reference page
