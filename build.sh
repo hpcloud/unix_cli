@@ -4,6 +4,13 @@ DEST=":${CONTAINER}/${VERSION}/"
 FOG_GEM=hpfog-0.0.16.gem
 
 #
+# Install fog
+#
+curl -sL https://docs.hpcloud.com/file/${FOG_GEM} >${FOG_GEM}
+gem install ${FOG_GEM}
+rm -f ${FOG_GEM}
+
+#
 # Prepare for release gem
 #
 grep -v '# Comment out for delivery' lib/hpcloud.rb >out$$
@@ -18,19 +25,6 @@ mv out$$ Gemfile
 #
 gem build hpcloud.gemspec
 gem install hpcloud-${VERSION}.gem
-
-#
-# Restore modified files
-#
-git checkout lib/hpcloud.rb
-git checkout hpcloud.gemspec
-git checkout Gemfile
-
-#
-# Install fog
-#
-curl -sL https://docs.hpcloud.com/file/${FOG_GEM} >${FOG_GEM}
-gem install ${FOG_GEM}
 
 #
 # Build the reference page
@@ -100,6 +94,13 @@ hpcloud acl:set ${DEST}reference public-read
 hpcloud acl:set ${DEST}hpcloud-${VERSION}.gem public-read
 
 rm -f reference hpcloud-${VERSION}.gem
+
+#
+# Restore modified files
+#
+git checkout lib/hpcloud.rb
+git checkout hpcloud.gemspec
+git checkout Gemfile
 
 #
 # Tag
