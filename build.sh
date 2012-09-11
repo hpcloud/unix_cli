@@ -1,7 +1,7 @@
 TOP=$(pwd)
 export `grep VERSION lib/hpcloud/version.rb | sed -e 's/ //g' -e "s/'//g"`
-CONTAINER="unixcli"
-DEST=":${CONTAINER}/${VERSION}/"
+CONTAINER="documentation-downloads"
+DEST=":${CONTAINER}/unixcli/${VERSION}/"
 FOG_GEM=hpfog-0.0.16.gem
 
 #
@@ -86,13 +86,12 @@ if ! hpcloud containers | grep ${CONTAINER} >/dev/null
 then
   hpcloud containers:add :${CONTAINER}
 fi
-hpcloud copy hpcloud-${VERSION}.gem $DEST
-hpcloud copy CHANGELOG $DEST
-hpcloud copy reference CHANGELOG $DEST
-hpcloud acl:set :${CONTAINER} public-read
-hpcloud acl:set ${DEST}CHANGELOG public-read
-hpcloud acl:set ${DEST}reference public-read
-hpcloud acl:set ${DEST}hpcloud-${VERSION}.gem public-read
+hpcloud copy -a deploy hpcloud-${VERSION}.gem $DEST
+hpcloud copy -a deploy CHANGELOG $DEST
+hpcloud copy -a deploy reference CHANGELOG $DEST
+hpcloud acl:set -a deploy ${DEST}CHANGELOG public-read
+hpcloud acl:set -a deploy ${DEST}reference public-read
+hpcloud acl:set -a deploy ${DEST}hpcloud-${VERSION}.gem public-read
 
 rm -f reference hpcloud-${VERSION}.gem
 
