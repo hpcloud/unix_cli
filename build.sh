@@ -100,3 +100,10 @@ hpcloud acl:set ${DEST}reference public-read
 hpcloud acl:set ${DEST}hpcloud-${VERSION}.gem public-read
 
 rm -f reference hpcloud-${VERSION}.gem
+
+#
+# Tag
+#
+set -x
+git tag -a v${VERSION}.${BUILD_NUMBER}
+git push --tags
