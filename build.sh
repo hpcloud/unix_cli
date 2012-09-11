@@ -1,4 +1,5 @@
-#!/bin/bash -e -x
+#!/bin/bash -e
+set -x
 TOP=$(pwd)
 export `grep VERSION lib/hpcloud/version.rb | sed -e 's/ //g' -e "s/'//g"`
 CONTAINER="documentation-downloads"
@@ -50,6 +51,7 @@ gem install hpcloud-${VERSION}.gem
 #
 # Build the reference page
 #
+set +x
 hpcloud help | grep hpcloud | while read HPCLOUD COMMAND ROL
 do
   SAVE=''
@@ -98,6 +100,7 @@ do
   done
   echo
 done >reference
+set -x
 
 #
 # Copy it up
