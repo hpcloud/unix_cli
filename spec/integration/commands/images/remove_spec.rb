@@ -12,18 +12,12 @@ describe "images:remove command" do
   end
 
   context "when deleting an image by name" do
-    before(:all) do
-      @image_name = resource_name("del")
-      @server_name = resource_name("idel")
-      @server = @hp_svc.servers.create(:flavor_id => @flavor_id, :image_id => @image_id, :name => @server_name )
-      @server.wait_for { ready? }
-
-      resp = @server.create_image(@image_name)
-      sleep(10)
-      @new_image_id = resp.headers["Location"].split("/")[5]
-    end
-
     it "should show success message" do
+      @image_name = resource_name("del")
+      @server = ServerTestHelper.create("cli_test_srv3")
+      new_image_id = @server.create_image(@image_name, {})
+      sleep(10)
+
       rsp = cptr("images:remove #{@image_name}")
 
       rsp.stderr.should eq("")
@@ -31,35 +25,24 @@ describe "images:remove command" do
       rsp.exit_status.should be_exit(:success)
       sleep(10)
       images = @hp_svc.images.map {|i| i.id}
-      images.should_not include(@new_image_id)
-      image = @hp_svc.images.get(@new_image_id)
+      images.should_not include(new_image_id)
+      image = @hp_svc.images.get(new_image_id)
       image.should be_nil
-    end
-
-    after(:all) do
-      @server.destroy
     end
   end
 
   context "images:add with valid avl" do
-    before(:all) do
-      @image_name2 = resource_name("del2")
-      @server_name2 = resource_name("idel2")
-      @server2 = @hp_svc.servers.create(:flavor_id => @flavor_id, :image_id => @image_id, :name => @server_name2 )
-      @server2.wait_for { ready? }
-      resp = @server2.create_image(@image_name2)
-      sleep(10)
-      @image_id2 = resp.headers["Location"].split("/")[5]
-    end
     it "should report success" do
+      @image_name2 = resource_name("del2")
+      @server2 = ServerTestHelper.create("cli_test_srv2")
+      @server2.create_image(@image_name2, {})
+      sleep(10)
+
       rsp = cptr("images:remove #{@image_name2} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed image '#{@image_name2}'.\n")
       rsp.exit_status.should be_exit(:success)
-    end
-    after(:all) do
-      @server2.destroy
     end
   end
 
