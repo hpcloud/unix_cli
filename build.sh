@@ -106,5 +106,5 @@ git checkout Gemfile
 # Tag
 #
 set -x
-git tag -a v${VERSION}.${BUILD_NUMBER}
+git tag -a v${VERSION}.${BUILD_NUMBER} -m "v${VERSION}.${BUILD_NUMBER}"
 git push --tags
