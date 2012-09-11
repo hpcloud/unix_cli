@@ -1,6 +1,7 @@
 export `grep VERSION lib/hpcloud/version.rb | sed -e 's/ //g' -e "s/'//g"`
 CONTAINER="unixcli"
 DEST=":${CONTAINER}/${VERSION}/"
+FOG_GEM=hpfog-0.0.16.gem
 
 #
 # Prepare for release gem
@@ -24,6 +25,12 @@ gem install hpcloud-${VERSION}.gem
 git checkout lib/hpcloud.rb
 git checkout hpcloud.gemspec
 git checkout Gemfile
+
+#
+# Install fog
+#
+curl -sL https://docs.hpcloud.com/file/${FOG_GEM} >${FOG_GEM}
+gem install ${FOG_GEM}
 
 #
 # Build the reference page
