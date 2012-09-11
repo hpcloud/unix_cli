@@ -1,7 +1,8 @@
+#!/bin/bash -e -x
 TOP=$(pwd)
 export `grep VERSION lib/hpcloud/version.rb | sed -e 's/ //g' -e "s/'//g"`
 CONTAINER="documentation-downloads"
-DEST=":${CONTAINER}/unixcli/${VERSION}/"
+DEST=":${CONTAINER}/unixcli/v${VERSION}/"
 FOG_GEM=hpfog-0.0.16.gem
 
 #
@@ -10,6 +11,16 @@ FOG_GEM=hpfog-0.0.16.gem
 curl -sL https://docs.hpcloud.com/file/${FOG_GEM} >${FOG_GEM}
 gem install ${FOG_GEM}
 rm -f ${FOG_GEM}
+
+#
+# Move to the release branch
+#
+BRANCH="release/v${VERSION}"
+GIT_SCRIPT=${TOP}/ucssh.sh
+echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
+chmod 755 ${GIT_SCRIPT}
+export GIT_SSH=${GIT_SCRIPT}
+git checkout -b ${BRANCH} || git checkout ${BRANCH}
 
 #
 # Prepare for release gem
@@ -96,19 +107,9 @@ hpcloud acl:set -a deploy ${DEST}hpcloud-${VERSION}.gem public-read
 rm -f reference hpcloud-${VERSION}.gem
 
 #
-# Restore modified files
+# Commit, push and tag
 #
-git checkout lib/hpcloud.rb
-git checkout hpcloud.gemspec
-git checkout Gemfile
-
-#
-# Tag
-#
-set -x
-GIT_SCRIPT=${TOP}/ucssh.sh
-echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
-chmod 755 ${GIT_SCRIPT}
-export GIT_SSH=${GIT_SCRIPT}
+git commit -m 'Jenkins build new release' -a
+git push origin ${BRANCH}
 git tag -a v${VERSION}.${BUILD_NUMBER} -m "v${VERSION}.${BUILD_NUMBER}"
 git push --tags
