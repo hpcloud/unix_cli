@@ -1,3 +1,4 @@
+TOP=$(pwd)
 export `grep VERSION lib/hpcloud/version.rb | sed -e 's/ //g' -e "s/'//g"`
 CONTAINER="unixcli"
 DEST=":${CONTAINER}/${VERSION}/"
@@ -106,5 +107,9 @@ git checkout Gemfile
 # Tag
 #
 set -x
+GIT_SCRIPT=${TOP}/ucssh.sh
+echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
+chmod 755 ${GIT_SCRIPT}
+export GIT_SSH=${GIT_SCRIPT}
 git tag -a v${VERSION}.${BUILD_NUMBER} -m "v${VERSION}.${BUILD_NUMBER}"
 git push --tags
