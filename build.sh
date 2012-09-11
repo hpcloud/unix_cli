@@ -36,7 +36,7 @@ mv out$$ Gemfile
 #
 # Commit, push and tag
 #
-git commit -m 'Jenkins build new release' -a
+git commit -m 'Jenkins build new release' -a || true
 git push origin ${BRANCH}
 git tag -a v${VERSION}.${BUILD_NUMBER} -m "v${VERSION}.${BUILD_NUMBER}"
 git push --tags
