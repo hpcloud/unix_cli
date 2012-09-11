@@ -20,6 +20,7 @@ GIT_SCRIPT=${TOP}/ucssh.sh
 echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
 chmod 755 ${GIT_SCRIPT}
 export GIT_SSH=${GIT_SCRIPT}
+git push origin ${BRANCH}
 git checkout -b ${BRANCH} || git checkout ${BRANCH}
 
 #
@@ -31,6 +32,14 @@ sed -e 's/# Comment in for delivery//g' hpcloud.gemspec >out$$
 mv out$$ hpcloud.gemspec
 grep -v '# Comment out for delivery' Gemfile >out$$
 mv out$$ Gemfile
+
+#
+# Commit, push and tag
+#
+git commit -m 'Jenkins build new release' -a
+git push origin ${BRANCH}
+git tag -a v${VERSION}.${BUILD_NUMBER} -m "v${VERSION}.${BUILD_NUMBER}"
+git push --tags
 
 #
 # Build the gem
@@ -104,12 +113,4 @@ hpcloud acl:set -a deploy ${DEST}CHANGELOG public-read
 hpcloud acl:set -a deploy ${DEST}reference public-read
 hpcloud acl:set -a deploy ${DEST}hpcloud-${VERSION}.gem public-read
 
-rm -f reference hpcloud-${VERSION}.gem
-
-#
-# Commit, push and tag
-#
-git commit -m 'Jenkins build new release' -a
-git push origin ${BRANCH}
-git tag -a v${VERSION}.${BUILD_NUMBER} -m "v${VERSION}.${BUILD_NUMBER}"
-git push --tags
+rm -f reference hpcloud-${VERSION}.gem ucssh.sh
