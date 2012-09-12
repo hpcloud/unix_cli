@@ -111,6 +111,11 @@ module HP
         if @settings[:ssl_verify_peer].nil?
           @settings[:ssl_verify_peer] = options[:ssl_verify_peer]
         end
+        if @settings[:ssl_verify_peer].to_s == "false" || @settings[:ssl_verify_peer].to_s == "no"
+          @settings[:ssl_verify_peer] == false
+        else
+          @settings[:ssl_verify_peer] == true
+        end
         @settings[:ssl_ca_path] ||= options[:ssl_ca_path]
         @settings[:ssl_ca_file] ||= options[:ssl_ca_file]
         @settings.delete_if { |k,v| v.nil? }
