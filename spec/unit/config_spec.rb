@@ -76,7 +76,7 @@ describe "Config reading" do
       lambda {
         config = HP::Cloud::Config.new
       }.should raise_error(Exception) {|e|
-        e.to_s.should eq("Error reading configuration file: #{directory}/.hpcloud/config.yml\ncan't convert Symbol into Integer")
+        e.to_s.should include("Error reading configuration file: #{directory}/.hpcloud/config.yml\n")
       }
     end
 
@@ -152,7 +152,7 @@ describe "Config write" do
 
   context "set nothing" do
     it "should create empty file" do
-      ConfigHelper.contents.should eq("--- {}\n")
+      ConfigHelper.contents.should match("--- {}\n*")
     end
   end
 
@@ -160,7 +160,7 @@ describe "Config write" do
     it "should have the value" do
       @config.set("connect_timeout", "44")
       @config.write()
-      ConfigHelper.contents.should eq("---\n:connect_timeout: '44'\n")
+      ConfigHelper.contents.should match("--- *\n:connect_timeout: ['\"]44['\"]\n")
     end
   end
 
@@ -178,18 +178,18 @@ describe "Config write" do
       @config.set('ssl_ca_path', '10val')
       @config.set("ssl_ca_file", "11val")
       @config.write()
-      ConfigHelper.contents.should eq("---\n" +
-        ":default_auth_uri: 1val\n" +
-        ":block_availability_zone: 2val\n" +
-        ":storage_availability_zone: 3val\n" +
-        ":compute_availability_zone: 4val\n" +
-        ":cdn_availability_zone: 5val\n" +
-        ":connect_timeout: 6val\n" +
-        ":read_timeout: 7val\n" +
-        ":write_timeout: 8val\n" +
-        ":ssl_verify_peer: 9val\n" +
-        ":ssl_ca_path: 10val\n" +
-        ":ssl_ca_file: 11val\n")
+      contents = ConfigHelper.contents
+      contents.should include(":default_auth_uri: 1val\n")
+      contents.should include(":block_availability_zone: 2val\n")
+      contents.should include(":storage_availability_zone: 3val\n")
+      contents.should include(":compute_availability_zone: 4val\n")
+      contents.should include(":cdn_availability_zone: 5val\n")
+      contents.should include(":connect_timeout: 6val\n")
+      contents.should include(":read_timeout: 7val\n")
+      contents.should include(":write_timeout: 8val\n")
+      contents.should include(":ssl_verify_peer: 9val\n")
+      contents.should include(":ssl_ca_path: 10val\n")
+      contents.should include(":ssl_ca_file: 11val\n")
     end
   end
 
@@ -197,10 +197,10 @@ describe "Config write" do
     it "should have the value" do
       @config.set("connect_timeout", "33")
       @config.write()
-      ConfigHelper.contents.should eq("---\n:connect_timeout: '33'\n")
+      ConfigHelper.contents.should match("--- *\n:connect_timeout: ['\"]33['\"]\n")
       @config.set("connect_timeout", "")
       @config.write()
-      ConfigHelper.contents.should eq("--- {}\n")
+      ConfigHelper.contents.should match("--- {}\n*")
     end
   end
 

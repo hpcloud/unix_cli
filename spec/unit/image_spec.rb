@@ -61,7 +61,7 @@ describe "Image class" do
       img.name.should eql("Slackware")
       img.created_at.should eql("yesterday")
       img.status.should eql("g2g")
-      img.meta.to_s.should eql("graupel=balls,dendrite=flakes")
+      img.meta.to_s.should eql("dendrite=flakes,graupel=balls")
     end
   end
 

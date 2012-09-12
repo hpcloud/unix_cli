@@ -23,6 +23,7 @@ module HP
       def to_hash()
         ray = []
         @hsh.each { |k,v| ray << {"key"=>k,"value"=>v} }
+        ray.sort!{|a, b| a["key"] <=> b["key"]}
         return ray
       end
 
@@ -87,9 +88,10 @@ module HP
       def to_s
         found=false
         metadata=""
-        @hsh.each { |k,v|
+        ray = to_hash()
+        ray.each { |val|
           metadata << "," unless found == false
-          metadata << k.to_s + "=" + v.to_s
+          metadata << val["key"].to_s + "=" + val["value"].to_s
           found = true
         }
         return metadata

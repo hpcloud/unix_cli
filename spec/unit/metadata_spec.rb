@@ -26,10 +26,10 @@ describe "Metadata class" do
     it "it returns some expected hash" do
       hsh = HP::Cloud::Metadata.new(@fog_metadata).to_hash()
 
-      hsh[0]["key"].should eql("superfly")
-      hsh[0]["value"].should eql("xc")
-      hsh[1]["key"].should eql("rumblefish")
-      hsh[1]["value"].should eql("am")
+      hsh[0]["key"].should eql("rumblefish")
+      hsh[0]["value"].should eql("am")
+      hsh[1]["key"].should eql("superfly")
+      hsh[1]["value"].should eql("xc")
       hsh.length.should eql(2)
     end
   end
@@ -38,7 +38,7 @@ describe "Metadata class" do
     it "it parses the fog metadata" do
       mta = HP::Cloud::Metadata.new(@fog_metadata)
 
-      mta.to_s.should eq('superfly=xc,rumblefish=am')
+      mta.to_s.should eq('rumblefish=am,superfly=xc')
       mta.hsh['superfly'].should eq('xc')
       mta.hsh['rumblefish'].should eq('am')
       mta.hsh.to_a.length.should eq(2)
@@ -51,7 +51,7 @@ describe "Metadata class" do
 
       mta.set_metadata('one=1,two=2,three=3').should be_true
 
-      mta.to_s.should eq('one=1,two=2,three=3')
+      mta.to_s.should eq('one=1,three=3,two=2')
       mta.hsh['one'].should eq('1')
       mta.hsh['two'].should eq('2')
       mta.hsh['three'].should eq('3')

@@ -37,5 +37,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'ruby-progressbar', '0.0.10'
   s.add_development_dependency 'rspec', '~>2.4.0'
   s.add_runtime_dependency 'multi_json', '~>1.0.4'
+  s.add_runtime_dependency 'json', '~>1.7.5'
 
 end
