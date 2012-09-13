@@ -182,6 +182,11 @@ module HP
         if hsh[:options][:ssl_verify_peer].nil?
           hsh[:options][:ssl_verify_peer] = settings[:ssl_verify_peer]
         end
+        if hsh[:options][:ssl_verify_peer].to_s == "false" || hsh[:options][:ssl_verify_peer].to_s == "no"
+          hsh[:options][:ssl_verify_peer] = false
+        else
+          hsh[:options][:ssl_verify_peer] = true
+        end
         hsh[:options][:ssl_ca_path] ||= settings[:ssl_ca_path]
         hsh[:options][:ssl_ca_file] ||= settings[:ssl_ca_file]
         hsh[:options].delete_if{ |k,v| v.nil? }

@@ -99,7 +99,7 @@ describe "Config command" do
       ConfigHelper.value(:connect_timeout).should eq("6")
       ConfigHelper.value(:read_timeout).should eq("7")
       ConfigHelper.value(:write_timeout).should eq("8")
-      ConfigHelper.value(:ssl_verify_peer).should eq("9")
+      ConfigHelper.value(:ssl_verify_peer).should eq(true)
       ConfigHelper.value(:ssl_ca_path).should eq("10")
       ConfigHelper.value(:ssl_ca_file).should eq("11")
     end

@@ -152,7 +152,7 @@ describe "Config write" do
 
   context "set nothing" do
     it "should create empty file" do
-      ConfigHelper.contents.should match("--- {}\n*")
+      ConfigHelper.contents.should match("--- \\{\\}\n*")
     end
   end
 
@@ -187,9 +187,26 @@ describe "Config write" do
       contents.should include(":connect_timeout: 6val\n")
       contents.should include(":read_timeout: 7val\n")
       contents.should include(":write_timeout: 8val\n")
-      contents.should include(":ssl_verify_peer: 9val\n")
+      contents.should include(":ssl_verify_peer: true\n")
       contents.should include(":ssl_ca_path: 10val\n")
       contents.should include(":ssl_ca_file: 11val\n")
+    end
+  end
+
+
+  context "set ssl_verify_peer" do
+    it "should be boolean" do
+      @config.set('ssl_verify_peer', 'yeh')
+      @config.get('ssl_verify_peer').should eq(true)
+      @config.write()
+      @config = HP::Cloud::Config.new
+      @config.get('ssl_verify_peer').should eq(true)
+
+      @config.set('ssl_verify_peer', 'false')
+      @config.get('ssl_verify_peer').should eq(false)
+      @config.write()
+      @config = HP::Cloud::Config.new
+      @config.get('ssl_verify_peer').should eq(false)
     end
   end
 
@@ -200,7 +217,7 @@ describe "Config write" do
       ConfigHelper.contents.should match("--- *\n:connect_timeout: ['\"]33['\"]\n")
       @config.set("connect_timeout", "")
       @config.write()
-      ConfigHelper.contents.should match("--- {}\n*")
+      ConfigHelper.contents.should match("--- \\{\\}\n*")
     end
   end
 

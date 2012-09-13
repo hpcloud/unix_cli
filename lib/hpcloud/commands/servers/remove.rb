@@ -23,7 +23,7 @@ Aliases: servers:rm, servers:delete, servers:del
             begin
               if server.is_valid?
                 server.destroy
-                display "Removed server '#{name}'."
+                display "Removed server '#{server.name}'."
               else
                 error_message(server.error_string, server.error_code)
               end
