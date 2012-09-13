@@ -112,9 +112,9 @@ module HP
           @settings[:ssl_verify_peer] = options[:ssl_verify_peer]
         end
         if @settings[:ssl_verify_peer].to_s == "false" || @settings[:ssl_verify_peer].to_s == "no"
-          @settings[:ssl_verify_peer] == false
+          @settings[:ssl_verify_peer] = false
         else
-          @settings[:ssl_verify_peer] == true
+          @settings[:ssl_verify_peer] = true
         end
         @settings[:ssl_ca_path] ||= options[:ssl_ca_path]
         @settings[:ssl_ca_file] ||= options[:ssl_ca_file]
@@ -138,6 +138,13 @@ module HP
           @file_settings.delete(key)
           @settings.delete(key)
         else
+          if key.to_s == 'ssl_verify_peer'
+            if value.to_s == "false" || value.to_s == "no"
+              value = false
+            else
+              value = true
+            end
+          end
           @file_settings[key] = value
           @settings[key] = value
         end

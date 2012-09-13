@@ -253,7 +253,7 @@ describe "Accounts" do
       acct[:options][:connect_timeout].should eq(1)
       acct[:options][:read_timeout].should eq(2)
       acct[:options][:write_timeout].should eq(3)
-      acct[:options][:ssl_verify_peer].should eq("O4")
+      acct[:options][:ssl_verify_peer].should eq(true)
       acct[:options][:ssl_ca_path].should eq("O5")
       acct[:options][:ssl_ca_file].should eq("O6")
     end
