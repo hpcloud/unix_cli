@@ -1,6 +1,6 @@
 require 'hpcloud/connection.rb'
 require 'mime/types'
-require 'progressbar'
+require 'ruby-progressbar'
 
 module HP
   module Cloud
@@ -261,11 +261,13 @@ module HP
         @lastread = 0
         begin
           if (output == true)
-            @pbar = ProgressBar.new(File.basename(@destination), siz)
+            args = { :title => File.basename(@destination), :total => siz}
+            @pbar = ProgressBar.create(args)
             @file = File.open(@destination, 'w')
           else
             if (@disable_pbar == false)
-              @pbar = ProgressBar.new(File.basename(@fname), get_size())
+              args = { :title => File.basename(@fname), :total => get_size()}
+              @pbar = ProgressBar.create(args)
             end
             @file = File.open(@fname, 'r')
           end
@@ -278,22 +280,26 @@ module HP
       end
 
       def read()
-        @pbar.inc(@lastread) unless @pbar.nil?
+        unless @pbar.nil?
+          @pbar.progress += @lastread unless @lastread == 0
+        end
         val = @file.read(Excon::CHUNK_SIZE).to_s
         @lastread = val.length
         return val
       end
 
       def write(data)
-        @pbar.inc(data.length) unless @pbar.nil?
+        @pbar.progress += data.length unless @pbar.nil?
         @file.write(data)
         return true
       end
 
       def close()
         unless @pbar.nil?
-          @pbar.inc(@lastread) unless @lastread.nil?
-          @pbar.finish
+          unless @lastread.nil?
+            @pbar.progress += @lastread unless @lastread == 0
+          end
+          @pbar.finish if @pbar.progress < @pbar.total
         end
         @lastread = 0
         @pbar = nil
