@@ -48,6 +48,16 @@ describe 'Parsing container names' do
     end
   end
   
+  context "when given an object string" do
+    it 'should throw an exception' do
+      lambda {
+        HP::Cloud::Container.container_name_for_service(':my_container/object.txt')
+      }.should raise_error(Exception) {|e|
+        e.to_s.should include("Valid container names do not contain the '/' character: :my_container/object.txt")
+      }
+    end
+  end
+  
 end
 
 describe 'Parsing container resources' do
