@@ -21,7 +21,7 @@ GIT_SCRIPT=${TOP}/ucssh.sh
 echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
 chmod 755 ${GIT_SCRIPT}
 export GIT_SSH=${GIT_SCRIPT}
-git push origin ${BRANCH}
+git push origin remotes/origin/${BRANCH}
 git checkout -b ${BRANCH} || git checkout ${BRANCH}
 
 #
@@ -38,7 +38,7 @@ mv out$$ Gemfile
 # Commit, push and tag
 #
 git commit -m 'Jenkins build new release' -a || true
-git push origin ${BRANCH}
+git push origin remotes/origin/${BRANCH}
 git tag -a v${VERSION}.${BUILD_NUMBER} -m "v${VERSION}.${BUILD_NUMBER}"
 git push --tags
 
