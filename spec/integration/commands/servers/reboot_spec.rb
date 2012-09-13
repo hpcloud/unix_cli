@@ -5,15 +5,11 @@ describe "servers:reboot command" do
     @cli ||= HP::Cloud::CLI.new
   end
 
-  before(:all) do
-    @hp_svc = compute_connection
-    @server_name = "reboot"
-    server = ServerTestHelper.create(@server_name)
-  end
-
-  ### Server creation returns status "failed to spawn", hence test fails
   pending "when soft rebooting server" do
     it "should show success message" do
+      @server_name = "cli_test_srv4"
+      server = ServerTestHelper.create(@server_name)
+
       rsp = cptr("servers:reboot #{@server_name}")
 
       rsp.stderr.should eql("")
@@ -24,6 +20,9 @@ describe "servers:reboot command" do
 
   pending "when hard rebooting server" do
     it "should show success message" do
+      @server_name = "cli_test_srv5"
+      server = ServerTestHelper.create(@server_name)
+
       rsp = cptr("servers:reboot #{@server_name} -h")
 
       rsp.stderr.should eql("")
@@ -34,6 +33,9 @@ describe "servers:reboot command" do
 
   context "servers:reboot with valid avl" do
     it "should report success" do
+      @server_name = "cli_test_srv6"
+      server = ServerTestHelper.create(@server_name)
+
       rsp = cptr("servers:reboot #{@server_name} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eql("")
@@ -44,7 +46,7 @@ describe "servers:reboot command" do
 
   context "servers:reboot with invalid avl" do
     it "should report error" do
-      rsp = cptr("servers:reboot #{@server_name} -z blah")
+      rsp = cptr("servers:reboot server_name -z blah")
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
@@ -57,7 +59,7 @@ describe "servers:reboot command" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("servers:reboot #{@server_name} -a bogus")
+      rsp = cptr("servers:reboot server_name -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")

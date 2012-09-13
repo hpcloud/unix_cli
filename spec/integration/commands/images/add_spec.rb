@@ -3,50 +3,46 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "images:add command" do
   before(:all) do
     @hp_svc = Connection.instance.compute
-    @flavor_id = AccountsHelper.get_flavor_id()
-    @image_id = AccountsHelper.get_image_id()
   end
 
   context "when creating image with name, server and defaults" do
     it "should show success message" do
-      @server_name = "image_add"
-      @image_name = resource_name("add")
-      ServerTestHelper.create(@server_name)
+      @image_name1 = resource_name("add")
+      @server = ServerTestHelper.create('cli_test_srv1')
 
-      rsp = cptr("images:add #{@image_name} #{@server_name} -m e=mc2,pv=nRT")
+      rsp = cptr("images:add #{@image_name1} #{@server.name} -m e=mc2,pv=nRT")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Created image '#{@image_name}'")
+      rsp.stdout.should include("Created image '#{@image_name1}'")
       rsp.exit_status.should be_exit(:success)
-      @new_image_id = rsp.stdout.scan(/'([^']+)/)[2][0]
-      images = @hp_svc.images.map {|i| i.id}
-      images.should include(@new_image_id)
-      images = @hp_svc.images.map {|i| i.name}
-      images.should include(@image_name)
-      images = Images.new.get([@new_image_id])
-      images.length.should eq(1)
-      images[0].meta.hsh['e'].should eq('mc2')
-      images[0].meta.hsh['pv'].should eq('nRT')
+      new_image_id = rsp.stdout.scan(/'([^']+)/)[2][0]
+
+      image = HP::Cloud::Images.new.get(@image_name1)
+      image.id.should eq(new_image_id)
+      hshstr = image.meta.to_s
+      hshstr.should include('e=mc2')
+      hshstr.should include('pv=nRT')
+    end
+
+    after(:each) do
+      cptr("images:remove #{@image_name1}")
     end
   end
 
   context "images:add with valid avl" do
     it "should report success" do
       @image_name2 = resource_name("add2")
-      @server_name2 = "image_add2"
-      ServerTestHelper.create(@server_name2)
+      @server = ServerTestHelper.create('cli_test_srv2')
 
-      rsp = cptr("images:add #{@image_name2} #{@server_name2} -z az-1.region-a.geo-1")
+      rsp = cptr("images:add #{@image_name2} #{@server.name} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should include("Created image '#{@image_name2}'")
       rsp.exit_status.should be_exit(:success)
-      @image_id2 = rsp.stdout.scan(/'([^']+)/)[2][0]
     end
 
     after(:each) do
-      img = @hp_svc.images.get(@image_id2)
-      img.destroy unless img.nil?
+      cptr("images:remove #{@image_name2}")
     end
   end
 
@@ -63,9 +59,10 @@ describe "images:add command" do
 
   context "verify the -a option is activated" do
     it "should report error" do
+      @server = ServerTestHelper.create('cli_test_srv3')
       AccountsHelper.use_tmp()
 
-      rsp = cptr("images:add -a bogus image_name server_name")
+      rsp = cptr("images:add -a bogus image_name #{@server.name}")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")

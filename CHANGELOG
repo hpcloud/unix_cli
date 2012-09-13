@@ -1,6 +1,5 @@
 v1.1.0 09/06/12
 ================
-- Support for US East
 - Support for multiple account files
   - account:list lists accounts and shows account settings
   - account:update modify accounts settings
@@ -12,7 +11,8 @@ v1.1.0 09/06/12
   - Changed the config:set command to take name value pairs
   - Added config:list command to print current configuration
 - Changed the cdn:containers -a option to -l for long listing
-- Removed poorly performing mime type detection from copy command
+- Used better mime type detection system
+- Fixed 1.8.7 compatibility issues
 
 v1.0.1 08/28/12
 ================

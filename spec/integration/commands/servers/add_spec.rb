@@ -29,8 +29,8 @@ describe "servers:add command" do
       servers.should include(@server_name)
     end
 
-    after(:all) do
-      @hp_svc.delete_server(@new_server_id)
+    after(:each) do
+      cptr("servers:remove #{@server_name}")
     end
   end
 
@@ -54,8 +54,8 @@ describe "servers:add command" do
       servers[0].meta.hsh['PV'].should eq('nRT')
     end
 
-    after(:all) do
-      compute_connection.delete_server(@new_server_id)
+    after(:each) do
+      cptr("servers:remove #{@server_name}")
     end
   end
 
@@ -75,8 +75,8 @@ describe "servers:add command" do
       servers.should include(@server_name)
     end
 
-    after(:all) do
-      compute_connection.delete_server(@new_server_id)
+    after(:each) do
+      cptr("servers:remove #{@server_name}")
     end
   end
 
@@ -96,26 +96,20 @@ describe "servers:add command" do
       servers.should include(@server_name)
     end
 
-    after(:all) do
-      @hp_svc.delete_server(@new_server_id)
+    after(:each) do
+      cptr("servers:remove #{@server_name}")
     end
   end
 
   context "when creating server with a name that already exists" do
     before(:all) do
-      @server_name = "server-already-exists"
-      @server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
-      @server.wait_for { ready? }
+      ServerTestHelper.create("cli_test_srv1")
 
       rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()}")
 
       rsp.stderr.should eq("Server with the name '#{@server_name}' already exists\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
-    end
-
-    after(:all) do
-      @hp_svc.delete_server(@server.id) unless @server.nil?
     end
   end
 
@@ -134,8 +128,9 @@ describe "servers:add command" do
       servers = @hp_svc.servers.map {|s| s.name}
       servers.should include(@server_name)
     end
-    after(:all) do
-      @hp_svc.delete_server(@server_id2)
+
+    after(:each) do
+      cptr("servers:remove #{@server_name}")
     end
   end
 
@@ -168,5 +163,4 @@ describe "servers:add command" do
     @keypair.destroy if @keypair
     @sgroup.destroy if @sgroup
   end
-
 end

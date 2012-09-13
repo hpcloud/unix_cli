@@ -2,13 +2,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "volumes:server command" do
   before(:all) do
-    @srv1 = ServerTestHelper.create("srv1")
-    @srv2 = ServerTestHelper.create("srv2")
-    @vol1 = VolumeTestHelper.create("svl1")
+    @srv1 = ServerTestHelper.create("cli_test_srv1")
+    @srv2 = ServerTestHelper.create("cli_test_srv2")
+    @vol1 = VolumeTestHelper.create("cli_test_vol1")
     @vol1.attach(@srv1, '/dev/sdf')
-    @vol2 = VolumeTestHelper.create("svl2")
+    @vol2 = VolumeTestHelper.create("cli_test_vol2")
     @vol2.attach(@srv2, '/dev/sdg')
-    @vol3 = VolumeTestHelper.create("svl3")
+    @vol3 = VolumeTestHelper.create("cli_test_vol3")
     @vol3.attach(@srv1, '/dev/sdh')
     @vol1.fog.wait_for { in_use? }
     @vol2.fog.wait_for { in_use? }
@@ -22,9 +22,9 @@ describe "volumes:server command" do
       rsp.stderr.should eq("")
       rsp.stdout.should match(".*name.*\\|.*server.*\\|.*device")
 
-      rsp.stdout.should match(".*svl1.*\\|.*srv1.*\\|.*/dev/sdf.*\\|\n")
-      rsp.stdout.should match(".*svl3.*\\|.*srv1.*\\|.*/dev/sdh.*\\|\n")
-      rsp.stdout.should match(".*svl2.*\\|.*srv2.*\\|.*/dev/sdg.*\\|\n")
+      rsp.stdout.should match(".*#{@vol1.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdf.*\\|\n")
+      rsp.stdout.should match(".*#{@vol2.name}.*\\|.*#{@srv2.name}.*\\|.*/dev/sdg.*\\|\n")
+      rsp.stdout.should match(".*#{@vol3.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdh.*\\|\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
@@ -36,8 +36,8 @@ describe "volumes:server command" do
       rsp.stderr.should eq("")
       rsp.stdout.should match(".*name.*\\|.*server.*\\|.*device")
 
-      rsp.stdout.should match(".*svl1.*\\|.*srv1.*\\|.*/dev/sdf.*\\|\n")
-      rsp.stdout.should match(".*svl3.*\\|.*srv1.*\\|.*/dev/sdh.*\\|\n")
+      rsp.stdout.should match(".*#{@vol1.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdf.*\\|\n")
+      rsp.stdout.should match(".*#{@vol3.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdh.*\\|\n")
       rsp.exit_status.should be_exit(:success)
     end
   end

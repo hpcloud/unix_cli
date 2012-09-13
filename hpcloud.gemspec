@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
 
   s.authors   = ["Matt Sanders", "Rupak Ganguly"]
   s.email     = %w{rupak.ganguly@hp.com}
-  # s.homepage  = '' #TODO
+  s.homepage  = 'https://docs.hpcloud.com/cli/unix'
   # s.licenses = [""]
 
   s.executables         = ["hpcloud"]
@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
 
   # Dependencies, this syntax requires RubyGems > 1.2.0
   s.add_runtime_dependency 'thor', '~>0.16.0'
-#  s.add_runtime_dependency 'hpfog', '~>0.0.16' # Comment in for delivery
+# Comment in for delivery  s.add_runtime_dependency 'hpfog', '~>0.0.16'
   s.add_runtime_dependency 'ruby-progressbar', '0.0.10'
   s.add_development_dependency 'rspec', '~>2.4.0'
   s.add_runtime_dependency 'multi_json', '~>1.0.4'
