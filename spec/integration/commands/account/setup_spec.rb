@@ -48,7 +48,19 @@ describe "account:setup command" do
       rsp = cptr('account:setup --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
-      AccountsHelper.contents('deluxe').should eq("---\n:credentials:\n  :account_id: mumford\n  :secret_key: sons\n  :auth_uri: https://timshel/\n  :tenant_id: '322'\n:zones:\n  :compute_availability_zone: A\n  :storage_availability_zone: B\n  :cdn_availability_zone: C\n  :block_availability_zone: D\n:options: {}\n")
+      contents = AccountsHelper.contents('deluxe')
+      contents.gsub!('"', "'")
+      contents.should include(":credentials:")
+      contents.should include("  :account_id: mumford")
+      contents.should include("  :secret_key: sons")
+      contents.should include("  :auth_uri: https://timshel/")
+      contents.should include("  :tenant_id: '322'")
+      contents.should include(":zones:")
+      contents.should include("  :compute_availability_zone: A")
+      contents.should include("  :storage_availability_zone: B")
+      contents.should include("  :cdn_availability_zone: C")
+      contents.should include("  :block_availability_zone: D")
+      contents.should include(":options: {}")
     end
 
     it "over existing" do
@@ -56,7 +68,19 @@ describe "account:setup command" do
       rsp = cptr('account:setup --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
-      AccountsHelper.contents('deluxe').should eq("---\n:credentials:\n  :account_id: LaSera\n  :secret_key: SeesTheLight\n  :auth_uri: https://please/\n  :tenant_id: '227'\n:zones:\n  :compute_availability_zone: E\n  :storage_availability_zone: F\n  :cdn_availability_zone: G\n  :block_availability_zone: H\n:options: {}\n")
+      contents = AccountsHelper.contents('deluxe')
+      contents.gsub!('"', "'")
+      contents.should include(":credentials:")
+      contents.should include("  :account_id: LaSera")
+      contents.should include("  :secret_key: SeesTheLight")
+      contents.should include("  :auth_uri: https://please/")
+      contents.should include("  :tenant_id: '227'")
+      contents.should include(":zones:")
+      contents.should include("  :compute_availability_zone: E")
+      contents.should include("  :storage_availability_zone: F")
+      contents.should include("  :cdn_availability_zone: G")
+      contents.should include("  :block_availability_zone: H")
+      contents.should include(":options: {}")
     end
 
     it "over existing" do
@@ -64,7 +88,19 @@ describe "account:setup command" do
       rsp = cptr('account:edit --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
-      AccountsHelper.contents('deluxe').should eq("---\n:credentials:\n  :account_id: LaSera\n  :secret_key: SeesTheLight\n  :auth_uri: https://please/\n  :tenant_id: '227'\n:zones:\n  :compute_availability_zone: '1'\n  :storage_availability_zone: '2'\n  :cdn_availability_zone: '3'\n  :block_availability_zone: '4'\n:options: {}\n")
+      contents = AccountsHelper.contents('deluxe')
+      contents.gsub!('"', "'")
+      contents.should include(":credentials:")
+      contents.should include("  :account_id: LaSera")
+      contents.should include("  :secret_key: SeesTheLight")
+      contents.should include("  :auth_uri: https://please/")
+      contents.should include("  :tenant_id: '227'")
+      contents.should include(":zones:")
+      contents.should include("  :compute_availability_zone: '1'")
+      contents.should include("  :storage_availability_zone: '2'")
+      contents.should include("  :cdn_availability_zone: '3'")
+      contents.should include("  :block_availability_zone: '4'")
+      contents.should include(":options: {}")
     end
   end
 

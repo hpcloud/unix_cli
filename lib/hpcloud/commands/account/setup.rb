@@ -21,7 +21,12 @@ Aliases: account:edit
       DESC
       method_option 'no-validate', :type => :boolean, :default => false,
                     :desc => "Don't verify account settings during setup"
-      define_method "account:setup" do |name='default'|
+      define_method "account:setup" do |*names|
+        if names.empty?
+          name = 'default'
+        else
+          name = names[0]
+        end
         accounts = HP::Cloud::Accounts.new()
         begin
           acct = accounts.read(name)

@@ -22,7 +22,7 @@ Examples:
 
 Alias: account:list
       DESC
-      define_method "account" do |name=nil|
+      def account(name=nil)
         cli_command(options) {
           accounts = HP::Cloud::Accounts.new()
           if name.nil?
