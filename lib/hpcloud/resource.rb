@@ -270,7 +270,6 @@ module HP
             @file = File.open(@fname, 'r')
           end
         rescue Exception => e
-puts e.backtrace
           @error_string = e.to_s
           @error_code = :permission_denied
           return false
