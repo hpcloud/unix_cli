@@ -58,6 +58,23 @@ describe 'Parsing container names' do
     end
   end
   
+  context "when given too long a string" do
+    it 'should throw an exception' do
+      lambda {
+        HP::Cloud::Container.container_name_for_service('A'*257)
+      }.should raise_error(Exception) {|e|
+        e.to_s.should include("Valid container names must be less than 256 characters long")
+      }
+    end
+  end
+  
+  context "when given super long string" do
+    it 'should throw an exception' do
+      long_container_name = 'B'*256
+      HP::Cloud::Container.container_name_for_service(long_container_name).should eql(long_container_name)
+    end
+  end
+  
 end
 
 describe 'Parsing container resources' do
