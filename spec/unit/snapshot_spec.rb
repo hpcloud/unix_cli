@@ -22,11 +22,18 @@ describe "Snapshot methods" do
     @fog_snapshot = double("fog_snapshot")
     @fog_snapshot.stub(:id).and_return(1)
     @fog_snapshot.stub(:name).and_return("MyDisk")
-    @fog_snapshot.stub(:volume).and_return("volley")
+    @fog_snapshot.stub(:volume_id).and_return(908)
     @fog_snapshot.stub(:size).and_return(2)
     @fog_snapshot.stub(:created_at).and_return(Date.new(2011, 10, 31))
     @fog_snapshot.stub(:status).and_return("available")
     @fog_snapshot.stub(:description).and_return("My cool disk")
+    @volume = double("volume")
+    @volume.stub(:is_valid?).and_return(true)
+    @volume.stub(:id).and_return(908)
+    @volume.stub(:name).and_return("volley")
+    @volumes = double("volumes")
+    @volumes.stub(:get).and_return(@volume)
+    Volumes.stub(:new).and_return(@volumes)
   end
 
   context "when given fog object" do
@@ -87,8 +94,8 @@ describe "Snapshot methods" do
       @connection.stub(:block).and_return(@block)
       snappy = HP::Cloud::SnapshotHelper.new(@connection)
       snappy.name = 'lion'
-      snappy.size = 100
       snappy.description = 'mt lion'
+      snappy.set_volume(@volume.name)
 
       snappy.save.should be_true
 
@@ -106,8 +113,8 @@ describe "Snapshot methods" do
       @connection.stub(:block).and_return(@block)
       snappy = HP::Cloud::SnapshotHelper.new(@connection)
       snappy.name = 'lion'
-      snappy.size = 100
       snappy.description = 'mt lion'
+      snappy.set_volume(@volume.name)
 
       snappy.save.should be_false
 

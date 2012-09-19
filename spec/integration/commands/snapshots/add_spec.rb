@@ -3,28 +3,30 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "snapshots:add command" do
   before(:all) do
     @vol = VolumeTestHelper.create("cli_test_vol2")
+    @hp_svc = Connection.instance.block
   end
 
   context "when creating snapshot with name description" do
     it "should show success message" do
+puts '================================================='
+puts Connection.instance.block.snapshots.class.name
+puts '================================================='
       @snapshot_description = 'Add_snapshot'
       @snapshot_name = resource_name("add1")
 
       rsp = cptr("snapshots:add #{@snapshot_name} #{@vol.name} -d #{@snapshot_description}")
 
       rsp.stderr.should eq("")
-      @new_snapshot_id = rsp.stdout.scan(/Created snapshot '#{@snapshot_name}' with id '([^']+)/)[2][0]
+      @new_snapshot_id = rsp.stdout.scan(/Created snapshot '#{@snapshot_name}' with id '([^']+)/)[0][0]
       rsp.exit_status.should be_exit(:success)
-      snapshots = @hp_svc.snapshots.map {|s| s.id}
-      snapshots.should include(@new_snapshot_id.to_i)
-      snapshots = @hp_svc.snapshots.map {|s| s.name}
-      snapshots.should include(@snapshot_name)
-      snapshots = @hp_svc.snapshots.map {|s| s.description}
-      snapshots.should include(@snapshot_description)
+      snappy = @hp_svc.snapshots
+      snappy = snappy.select {|s| s.id.to_s == @new_snapshot_id }.first
+      snappy.name.should eq(@snapshot_name)
+      snappy.description.should eq(@snapshot_description)
     end
 
     after(:all) do
-      @hp_svc.delete_snapshot(@new_snapshot_id) unless @new_snapshot_id.nil?
+      @hp_svc.snapshots.get(@new_snapshot_id).destroy unless @new_snapshot_id.nil?
     end
   end
 
@@ -35,27 +37,38 @@ describe "snapshots:add command" do
       rsp = cptr("snapshots:add #{@snapshot_name} #{@vol.name}")
 
       rsp.stderr.should eq("")
-      @new_snapshot_id = rsp.stdout.scan(/'([^']+)/)[2][0]
-      rsp.stdout.should eq("Created snapshot '#{@snapshot_name}' with id '#{@new_snapshot_id}'.\n")
+      @new_snapshot_id = rsp.stdout.scan(/Created snapshot '#{@snapshot_name}' with id '([^']+)/)[0][0]
       rsp.exit_status.should be_exit(:success)
-      snapshots = @hp_svc.snapshots.map {|s| s.id}
-      snapshots.should include(@new_snapshot_id.to_i)
-      snapshots = @hp_svc.snapshots.map {|s| s.name}
-      snapshots.should include(@snapshot_name)
+      snappy = @hp_svc.snapshots
+      snappy = snappy.select {|s| s.id.to_s == @new_snapshot_id }.first
+      snappy.name.should eq(@snapshot_name)
+      snappy.description.should be_nil
     end
 
     after(:all) do
-      @hp_svc.delete_snapshot(@new_snapshot_id) unless @new_snapshot_id.nil?
+      @hp_svc.snapshots.get(@new_snapshot_id).destroy unless @new_snapshot_id.nil?
     end
   end
 
   context "when creating snapshot with a name that already exists" do
     it "should fail" do
-      #@snapshot1 = VolumeTestHelper.create("cli_test_snapshot1")
+      @snapshot1 = SnapshotTestHelper.create("cli_test_snapshot1", @vol)
 
       rsp = cptr("snapshots:add #{@snapshot1.name} #{@vol.name}")
 
       rsp.stderr.should eq("Snapshot with the name '#{@snapshot1.name}' already exists\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+  end
+
+  context "Create a snap shot with a bad volume name" do
+    it "should report error" do
+      rsp = cptr("snapshots:add snappy bogus")
+
+      tmpdir = AccountsHelper.tmp_dir()
+      rsp.stderr.should eq("Cannot find volume 'bogus'\n")
+      rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
   end
@@ -64,7 +77,7 @@ describe "snapshots:add command" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("snapshots:add snappy #{@vol.name} 1 -a bogus")
+      rsp = cptr("snapshots:add snappy #{@vol.name} -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")

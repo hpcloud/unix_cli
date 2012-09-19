@@ -41,5 +41,6 @@ require 'hpcloud/commands/images'
 require 'hpcloud/commands/keypairs'
 require 'hpcloud/commands/addresses'
 require 'hpcloud/commands/securitygroups'
+require 'hpcloud/commands/snapshots'
 
 require 'hpcloud/commands/cdn_containers'

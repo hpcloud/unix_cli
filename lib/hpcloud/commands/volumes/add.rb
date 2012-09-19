@@ -7,9 +7,8 @@ module HP
   Add a new volume to your compute account with the specified name and size.  Optionally, a description, metadata or availability zone may be specified.
 
 Examples:
-  hpcloud volumes:add :my_volume 10               # Creates a new volume named 'my_volume' using an image and flavor \n
-  hpcloud volumes:add :my_volume 10 -d 'test vol' # Creates a new volume named 'my_volume' using an image, flavor and a key \n
-  hpcloud volumes:add :my_volume 7 1 -z az-2.region-a.geo-1  # Optionally specify an availability zone
+  hpcloud volumes:add :my_volume 10               # Creates a new volume named 'my_volume' of size 10
+  hpcloud volumes:add :my_volume 10 -d 'test vol' # Creates a new volume named 'my_volume' of size 10 with a description
 
 Aliases: none
       DESC

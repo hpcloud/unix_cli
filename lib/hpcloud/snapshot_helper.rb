@@ -16,12 +16,21 @@ module HP
         return if snapshot.nil?
         @id = snapshot.id
         @name = snapshot.name
-        @volume = snapshot.volume
+        set_volume(snapshot.volume_id)
         @size = snapshot.size
         @created = snapshot.created_at
         @status = snapshot.status
         @description = snapshot.description
         list = Servers.new
+      end
+
+      def set_volume(volume_name_id)
+        @volume_obj = Volumes.new.get(volume_name_id.to_s)
+        if @volume_obj.is_valid? == false
+          return false
+        end
+        @volume = @volume_obj.name
+        return true
       end
 
       def to_hash
@@ -34,8 +43,8 @@ module HP
         return false if is_valid? == false
         if @fog.nil?
           hsh = {:name => @name,
-             :description => @description,
-             :size => @size }
+             :volume_id => @volume_obj.id,
+             :description => @description}
           snapshot = @connection.block.snapshots.create(hsh)
           if snapshot.nil?
             @error_string = "Error creating snapshot '#{@name}'"
