@@ -8,9 +8,6 @@ describe "snapshots:add command" do
 
   context "when creating snapshot with name description" do
     it "should show success message" do
-puts '================================================='
-puts Connection.instance.block.snapshots.class.name
-puts '================================================='
       @snapshot_description = 'Add_snapshot'
       @snapshot_name = resource_name("add1")
 

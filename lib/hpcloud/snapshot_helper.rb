@@ -1,6 +1,7 @@
 module HP
   module Cloud
     class SnapshotHelper
+      @@volumous = nil
       attr_accessor :error_string, :error_code, :fog
       attr_accessor :id, :name, :volume, :size, :created, :status, :description
     
@@ -25,7 +26,8 @@ module HP
       end
 
       def set_volume(volume_name_id)
-        @volume_obj = Volumes.new.get(volume_name_id.to_s)
+        @@volumous = Volumes.new if @@volumous.nil?
+        @volume_obj = @@volumous.get(volume_name_id.to_s)
         if @volume_obj.is_valid? == false
           return false
         end

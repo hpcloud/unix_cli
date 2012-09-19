@@ -1,4 +1,5 @@
 require 'hpcloud/commands/snapshots/add'
+require 'hpcloud/commands/snapshots/remove'
 require 'hpcloud/snapshots'
 
 module HP
