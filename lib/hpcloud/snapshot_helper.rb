@@ -22,7 +22,6 @@ module HP
         @created = snapshot.created_at
         @status = snapshot.status
         @description = snapshot.description
-        list = Servers.new
       end
 
       def set_volume(volume_name_id)
@@ -67,6 +66,10 @@ module HP
 
       def destroy
         @fog.destroy unless @fog.nil?
+      end
+
+      def self.clear_cache
+        @@volumous = nil
       end
     end
   end

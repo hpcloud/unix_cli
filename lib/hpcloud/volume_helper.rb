@@ -1,6 +1,7 @@
 module HP
   module Cloud
     class VolumeHelper
+      @@serverous = nil
       attr_accessor :error_string, :error_code, :fog
       attr_accessor :id, :name, :size, :type, :created, :status, :description, :servers
       attr_accessor :meta
@@ -26,9 +27,9 @@ module HP
         @status = volume.status
         @description = volume.description
         @servers = ''
-        list = Servers.new
+        @@serverous = Servers.new if @@serverous.nil?
         volume.attachments.each { |x|
-          srv = list.get(x["serverId"].to_s)
+          srv = @@serverous.get(x["serverId"].to_s)
           if srv.is_valid? == false
             next
           end
@@ -100,6 +101,10 @@ module HP
 
       def destroy
         @fog.destroy unless @fog.nil?
+      end
+
+      def self.clear_cache
+        @@serverous = nil
       end
     end
   end

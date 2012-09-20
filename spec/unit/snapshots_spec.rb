@@ -8,6 +8,7 @@ describe "Snapshots getter" do
     @id += 1
     fog_snapshot.stub(:name).and_return(name)
     fog_snapshot.stub(:volume).and_return("volley")
+    fog_snapshot.stub(:volume_id).and_return(444)
     fog_snapshot.stub(:size).and_return(0)
     fog_snapshot.stub(:created_at).and_return(Date.new(2011, 10, 31))
     fog_snapshot.stub(:status).and_return("available")
@@ -16,10 +17,18 @@ describe "Snapshots getter" do
   end
 
   before(:each) do
+    SnapshotHelper.clear_cache
     @snapshots = [ mock_snapshot("snap1"), mock_snapshot("snap2"), mock_snapshot("snap3"), mock_snapshot("snap3") ]
     @block = double("block")
     @block.stub(:snapshots).and_return(@snapshots)
 
+    @volume = double("volume")
+    @volume.stub(:is_valid?).and_return(true)
+    @volume.stub(:id).and_return(444)
+    @volume.stub(:name).and_return("volley")
+    @volumes = double("vvvolumes")
+    @volumes.stub(:get).and_return(@volume)
+    Volumes.stub(:new).and_return(@volumes)
 
     @compute = double("compute")
     @compute.stub(:servers).and_return([])

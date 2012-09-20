@@ -19,6 +19,7 @@ end
 
 describe "Snapshot methods" do
   before(:each) do
+    SnapshotHelper.clear_cache
     @fog_snapshot = double("fog_snapshot")
     @fog_snapshot.stub(:id).and_return(1)
     @fog_snapshot.stub(:name).and_return("MyDisk")

@@ -20,6 +20,7 @@ end
 
 describe "Volume methods" do
   before(:each) do
+    VolumeHelper.clear_cache
     @fog_volume = double("fog_volume")
     @fog_volume.stub(:id).and_return(1)
     @fog_volume.stub(:name).and_return("MyDisk")
