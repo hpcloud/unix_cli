@@ -50,6 +50,28 @@ describe "volumes:add command" do
     end
   end
 
+  context "when creating volume from a snapshot" do
+    it "should show success message" do
+      @snap2= VolumeTestHelper.create("cli_test_snap2")
+      @volume_name = resource_name("add3")
+
+      rsp = cptr("volumes:add #{@volume_name} #{@snap2.name} -s")
+
+      rsp.stderr.should eq("")
+      @new_volume_id = rsp.stdout.scan(/'([^']+)/)[2][0]
+      rsp.stdout.should eq("Created volume '#{@volume_name}' with id '#{@new_volume_id}'.\n")
+      rsp.exit_status.should be_exit(:success)
+      volumes = @hp_svc.volumes.map {|s| s.id}
+      volumes.should include(@new_volume_id.to_i)
+      volumes = @hp_svc.volumes.map {|s| s.name}
+      volumes.should include(@volume_name)
+    end
+
+    after(:all) do
+      @hp_svc.delete_volume(@new_volume_id) unless @new_volume_id.nil?
+    end
+  end
+
   context "when creating volume with a name that already exists" do
     it "should fail" do
       @vol1 = VolumeTestHelper.create("cli_test_vol1")

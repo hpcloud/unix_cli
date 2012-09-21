@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "volumes:add <name> <size>", "add a volume"
+      desc "volumes:add <name> <size_or_snapshot>", "add a volume"
       long_desc <<-DESC
   Add a new volume to your compute account with the specified name and size.  Optionally, a description, metadata or availability zone may be specified.
 
@@ -18,15 +18,28 @@ Aliases: none
       method_option :metadata,
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'
+      method_option :snapshot,
+                    :type => :boolean, :aliases => '-s',
+                    :desc => 'Create volume from snapshot.'
       CLI.add_common_options
-      define_method "volumes:add" do |name, size|
+      define_method "volumes:add" do |name, size_or_snapshot|
         cli_command(options) {
           if Volumes.new.get(name).is_valid? == true
             error "Volume with the name '#{name}' already exists", :general_error
           end
           vol = HP::Cloud::VolumeHelper.new(Connection.instance)
           vol.name = name
-          vol.size = size
+          if options[:snapshot].nil?
+            vol.size = size_or_snapshot
+          else
+            snapshot = HP::Cloud::Snapshots.new.get(size_or_snapshot)
+            if snapshot.is_valid?
+              vol.snapshot_id = snapshot.id.to_s
+              vol.size = snapshot.size.to_s
+            else
+              error(snapshot.error_string, snapshot.error_code)
+            end
+          end
           vol.description = options[:description]
           vol.meta.set_metadata(options[:metadata])
           if vol.save == true
