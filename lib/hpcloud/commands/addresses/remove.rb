@@ -18,18 +18,16 @@ Aliases: addresses:rm, addresses:delete, addresses:release, addresses:del
       CLI.add_common_options
       define_method "addresses:remove" do |ip, *ips|
         cli_command(options) {
-          compute_connection = connection(:compute, options)
+          addresses = Addresses.new
           ips = [ip] + ips
-          ips.each { |public_ip|
-            address = compute_connection.addresses.select {|a| a.ip == public_ip}.first
-            if (address && address.ip == public_ip)
-              # Disassociate any server from this address
-              address.server = nil unless address.instance_id.nil?
-              # Release the address
-              address.destroy
-              display "Removed address '#{public_ip}'."
+          ips.each { |ip_or_id|
+            address = addresses.get(ip_or_id)
+            if address.is_valid? == false
+              error_message address.error_string, address.error_code
             else
-              error_message "You don't have an address with public IP '#{public_ip}'.", :not_found
+              address.fog.server = nil unless address.instance_id.nil?
+              address.destroy
+              display "Removed address '#{ip_or_id}'."
             end
           }
         }
