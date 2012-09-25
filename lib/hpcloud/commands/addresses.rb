@@ -20,13 +20,18 @@ Examples:
 Aliases: addresses:list
       DESC
       CLI.add_common_options
-      def addresses
+      def addresses(*arguments)
         cli_command(options) {
-          addresses = connection(:compute, options).addresses
+          addresses = Addresses.new
           if addresses.empty?
             display "You currently have no public IP addresses, use `#{selfname} addresses:add` to create one."
           else
-            addresses.table([:id, :ip, :fixed_ip, :instance_id])
+            hsh = addresses.get_hash(arguments)
+            if hsh.empty?
+              display "There are no ip addresses that match the provided arguments"
+            else
+              tablelize(hsh, AddressHelper.get_keys())
+            end
           end
         }
       end

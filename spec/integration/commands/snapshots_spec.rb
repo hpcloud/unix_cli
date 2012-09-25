@@ -12,25 +12,23 @@ describe "Snapshots command" do
     @snap2= VolumeTestHelper.create("cli_test_snap2")
   end
 
-  describe "with avl settings from config" do
-    context "snapshots" do
-      it "should report success" do
-        rsp = cptr("snapshots #{@snap1.name} #{@snap2.name}")
+  context "snapshots" do
+    it "should report success" do
+      rsp = cptr("snapshots #{@snap1.name} #{@snap2.name}")
 
-        rsp.stderr.should eq("")
-        then_expected_table(rsp.stdout)
-        rsp.exit_status.should be_exit(:success)
-      end
+      rsp.stderr.should eq("")
+      then_expected_table(rsp.stdout)
+      rsp.exit_status.should be_exit(:success)
     end
+  end
 
-    context "snapshots:list" do
-      it "should report success" do
-        rsp = cptr("snapshots:list #{@snap1.name} #{@snap2.name}")
+  context "snapshots:list" do
+    it "should report success" do
+      rsp = cptr("snapshots:list #{@snap1.name} #{@snap2.name}")
 
-        rsp.stderr.should eq("")
-        then_expected_table(rsp.stdout)
-        rsp.exit_status.should be_exit(:success)
-      end
+      rsp.stderr.should eq("")
+      then_expected_table(rsp.stdout)
+      rsp.exit_status.should be_exit(:success)
     end
   end
 
