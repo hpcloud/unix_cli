@@ -14,7 +14,7 @@ describe "snapshots:add command" do
       rsp = cptr("snapshots:add #{@snapshot_name} #{@vol.name} -d #{@snapshot_description}")
 
       rsp.stderr.should eq("")
-      @new_snapshot_id = rsp.stdout.scan(/Created snapshot '#{@snapshot_name}' with id '([^']+)/)[0][0]
+      @new_snapshot_id = rsp.stdout.scan(/Created snapshot '#{@snapshot_name}' from volume with id '([^']+)/)[0][0]
       rsp.exit_status.should be_exit(:success)
       snappy = @hp_svc.snapshots
       snappy = snappy.select {|s| s.id.to_s == @new_snapshot_id }.first
@@ -34,7 +34,7 @@ describe "snapshots:add command" do
       rsp = cptr("snapshots:add #{@snapshot_name} #{@vol.name}")
 
       rsp.stderr.should eq("")
-      @new_snapshot_id = rsp.stdout.scan(/Created snapshot '#{@snapshot_name}' with id '([^']+)/)[0][0]
+      @new_snapshot_id = rsp.stdout.scan(/Created snapshot '#{@snapshot_name}' from volume with id '([^']+)/)[0][0]
       rsp.exit_status.should be_exit(:success)
       snappy = @hp_svc.snapshots
       snappy = snappy.select {|s| s.id.to_s == @new_snapshot_id }.first

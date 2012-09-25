@@ -29,7 +29,7 @@ Aliases: none
           vol.description = options[:description]
           if vol.set_volume(volume_name_id)
             if vol.save == true
-              display "Created snapshot '#{name}' with id '#{vol.id}'."
+              display "Created snapshot '#{name}' from volume with id '#{vol.id}'."
             else
               error(vol.error_string, vol.error_code)
             end
