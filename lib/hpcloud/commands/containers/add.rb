@@ -26,14 +26,9 @@ Aliases: none
               if connection(:storage, options).directories.get(name)
                 error "Container '#{name}' already exists.", :conflicted
               else
-                # bail if the name does not conform to overall guidelines
-                if Container.valid_name?(name)
-                  if acceptable_name?(name, options)
-                    connection(:storage, options).directories.create(:key => name)
-                    display "Created container '#{name}'."
-                  end
-                else
-                  error "The container name specified is invalid. Please see API documentation for valid naming guidelines.", :permission_denied
+                if acceptable_name?(name, options)
+                  connection(:storage, options).directories.create(:key => name)
+                  display "Created container '#{name}'."
                 end
               end
             rescue Fog::Storage::HP::NotFound => error

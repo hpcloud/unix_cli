@@ -25,7 +25,11 @@ Aliases: account:edit
         if names.empty?
           name = 'default'
         else
-          name = names[0]
+          if names.length == 1
+            name = names[0]
+          else
+            error "Expected only one argument", :incorrect_usage
+          end
         end
         accounts = HP::Cloud::Accounts.new()
         begin

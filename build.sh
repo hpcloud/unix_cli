@@ -4,7 +4,7 @@ TOP=$(pwd)
 export `grep VERSION lib/hpcloud/version.rb | sed -e 's/ //g' -e "s/'//g"`
 CONTAINER="documentation-downloads"
 DEST=":${CONTAINER}/unixcli/v${VERSION}/"
-FOG_GEM=hpfog-0.0.16.gem
+FOG_GEM=${FOG_GEM:="hpfog-0.0.16.gem"}
 
 #
 # Install fog

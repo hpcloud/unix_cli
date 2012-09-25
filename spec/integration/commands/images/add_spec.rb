@@ -8,7 +8,7 @@ describe "images:add command" do
   context "when creating image with name, server and defaults" do
     it "should show success message" do
       @image_name1 = resource_name("add")
-      @server = ServerTestHelper.create('cli_test_srv1')
+      @server = ServerTestHelper.create('cli_test_srv3')
 
       rsp = cptr("images:add #{@image_name1} #{@server.name} -m e=mc2,pv=nRT")
 
@@ -59,7 +59,7 @@ describe "images:add command" do
 
   context "verify the -a option is activated" do
     it "should report error" do
-      @server = ServerTestHelper.create('cli_test_srv3')
+      @server = ServerTestHelper.create('cli_test_srv1')
       AccountsHelper.use_tmp()
 
       rsp = cptr("images:add -a bogus image_name #{@server.name}")

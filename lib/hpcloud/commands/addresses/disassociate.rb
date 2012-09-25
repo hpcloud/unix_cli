@@ -2,6 +2,8 @@ module HP
   module Cloud
     class CLI < Thor
 
+      map 'addresses:detach' => 'addresses:disassociate'
+
       desc "addresses:disassociate <public_ip>", "disassociate any server instance associated to the public IP address"
       long_desc <<-DESC
   Disassociate any server instance associated to the public IP address. The public IP address is

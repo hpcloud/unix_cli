@@ -18,8 +18,12 @@ Examples:
           if server.is_valid?
             volume = Volumes.new.get(vol_name)
             if volume.is_valid?
-              volume.attach(server, device)
-              display "Attached volume '#{volume.name}' to '#{server.name}' on '#{device}'."
+              if volume.fog.ready?
+                volume.attach(server, device)
+                display "Attached volume '#{volume.name}' to '#{server.name}' on '#{device}'."
+              else
+                error "Error attaching volume already in use '#{volume.name}'", :conflicted
+              end
             else
               error volume.error_string, volume.error_code
             end

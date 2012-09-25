@@ -104,5 +104,15 @@ describe "account:setup command" do
     end
   end
 
+  context "without too many arguments because of 1.8.7 define_method problem" do
+    it "it should print error" do
+      rsp = cptr('account:setup --no-validate arg1 arg2')
+
+      rsp.stderr.should eq("Expected only one argument\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:incorrect_usage)
+    end
+  end
+
   after(:all) {reset_all()}
 end

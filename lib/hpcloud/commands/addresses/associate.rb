@@ -2,6 +2,8 @@ module HP
   module Cloud
     class CLI < Thor
 
+      map 'addresses:attach' => 'addresses:associate'
+
       desc "addresses:associate <public_ip> <server_name>", "associate a public IP address to a server instance"
       long_desc <<-DESC
   Associate an existing and unassigned public IP address, to the specified server instance.
