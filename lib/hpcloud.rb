@@ -3,6 +3,8 @@ require 'fog'
 
 require 'hpcloud/version'
 require 'hpcloud/accounts'
+require 'hpcloud/addresses'
+require 'hpcloud/address_helper'
 require 'hpcloud/volumes'
 require 'hpcloud/volume_helper'
 require 'hpcloud/volume_attachment'
