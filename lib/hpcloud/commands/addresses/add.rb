@@ -18,9 +18,12 @@ Aliases: addresses:allocate
       CLI.add_common_options
       define_method "addresses:add" do
         cli_command(options) {
-          compute_connection = connection(:compute, options)
-          address = compute_connection.addresses.create
-          display "Created a public IP address '#{address.ip}'."
+          address = AddressHelper.new(Connection.instance)
+          if address.save
+            display "Created a public IP address '#{address.ip}'."
+          else
+            error address.error_string, address.error_code
+          end
         }
       end
     end

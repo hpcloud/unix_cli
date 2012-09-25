@@ -3,10 +3,11 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "addresses:associate command" do
   before(:all) do
     @hp_svc = compute_connection
-    @srv = ServerTestHelper.create('cli_test_srv1')
+    @srv1 = ServerTestHelper.create('cli_test_srv1')
+    @srv2 = ServerTestHelper.create('cli_test_srv2')
     rsp = cptr('addresses:add')
     rsp.stderr.should eq("")
-    @public_ip = rsp.stdout.scan(/'([^']+)/)[0][0]
+    @first_ip = rsp.stdout.scan(/'([^']+)/)[0][0]
     rsp = cptr('addresses:add')
     rsp.stderr.should eq("")
     @second_ip = rsp.stdout.scan(/'([^']+)/)[0][0]
@@ -14,9 +15,9 @@ describe "addresses:associate command" do
 
   context "when specifying a bad IP address" do
     it "should show error message" do
-      rsp = cptr('addresses:associate 111.111.111.111 myserver')
+      rsp = cptr("addresses:associate 111.111.111.111 #{@srv1.name}")
 
-      rsp.stderr.should eq("You don't have an address with public IP '111.111.111.111', use `hpcloud addresses:add` to create one.\n")
+      rsp.stderr.should eq("Cannot find a ip address matching '111.111.111.111'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
@@ -24,9 +25,9 @@ describe "addresses:associate command" do
 
   context "when specifying a bad server name" do
     it "should show error message" do
-      rsp = cptr("addresses:associate #{@public_ip} blah")
+      rsp = cptr("addresses:associate #{@first_ip} blah")
 
-      rsp.stderr.should eql("You don't have a server 'blah'.\n")
+      rsp.stderr.should eql("Cannot find a server matching 'blah'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
@@ -34,28 +35,51 @@ describe "addresses:associate command" do
 
   context "when specifying a good IP address and server id" do
     it "should show success message" do
-      rsp = cptr("addresses:associate #{@public_ip} #{@srv.name}")
+      rsp = cptr("addresses:associate #{@first_ip} #{@srv1.name}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eql("Associated address '#{@public_ip}' to server '#{@srv.name}'.\n")
+      rsp.stdout.should eql("Associated address '#{@first_ip}' to server '#{@srv1.name}'.\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
 
+  context "when IP address is already used" do
+    it "should show failure message" do
+      rsp = cptr("addresses:associate #{@first_ip} #{@srv1.name}")
+      rsp.stderr.should eq("")
+
+      rsp = cptr("addresses:associate #{@first_ip} #{@srv2.name}")
+      rsp.stderr.should eql("The IP address '#{@first_ip}' is in use by another server '#{@srv1.id}'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:conflicted)
+    end
+  end
+
+  context "when IP address is already associated" do
+    it "should show success message" do
+      rsp = cptr("addresses:associate #{@first_ip} #{@srv1.name}")
+      rsp.stderr.should eq("")
+
+      rsp = cptr("addresses:associate #{@first_ip} #{@srv1.name}")
+      rsp.stderr.should eq("")
+      rsp.stdout.should eql("The IP address '#{@first_ip}' is already associated with '#{@srv1.name}'.\n")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
 
   context "associate ip with valid avl" do
     it "should report success" do
-      rsp = cptr("addresses:associate #{@second_ip} #{@srv.name} -z az-1.region-a.geo-1")
+      rsp = cptr("addresses:associate #{@second_ip} #{@srv1.name} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eql("Associated address '#{@second_ip}' to server '#{@srv.name}'.\n")
+      rsp.stdout.should eql("Associated address '#{@second_ip}' to server '#{@srv1.name}'.\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
 
   context "associate ip with invalid avl" do
     it "should report error" do
-      rsp = cptr("addresses:associate #{@second_ip} #{@srv.name} -z blah")
+      rsp = cptr("addresses:associate #{@second_ip} #{@srv1.name} -z blah")
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
@@ -79,7 +103,7 @@ describe "addresses:associate command" do
   end
 
   after(:all) do
-    rsp = cptr("addresses:remove #{@public_ip}")
+    rsp = cptr("addresses:remove #{@first_ip}")
     rsp = cptr("addresses:remove #{@second_ip}")
   end
 end
