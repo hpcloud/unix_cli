@@ -61,7 +61,7 @@ describe "snapshots:add command" do
 
   context "Create a snap shot with a bad volume name" do
     it "should report error" do
-      rsp = cptr("snapshots:add snappy bogus")
+      rsp = cptr("snapshots:add polaroid bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Cannot find volume 'bogus'\n")
