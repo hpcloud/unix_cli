@@ -10,6 +10,7 @@ Examples:
   hpcloud volumes:add :my_volume 10               # Creates a new volume named 'my_volume' of size 10
   hpcloud volumes:add :my_volume 10 -d 'test vol' # Creates a new volume named 'my_volume' of size 10 with a description
   hpcloud volumes:add :my_volume -s 'snappy'      # Creates a new volume named 'my_volume' based on the snapshot 'snappy'
+  hpcloud volumes:add :my_volume 1 -z az-2.region-a.geo-1 # Creates volume in specified zone
 
 Aliases: none
       DESC
