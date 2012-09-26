@@ -41,35 +41,38 @@ Aliases: securitygroups:rules:authorize
           if (src_group && ip_address)
             error "You can either specify a source group or an ip address, not both.", :incorrect_usage
           end
-          compute_connection = connection(:compute, options)
-          security_group = compute_connection.security_groups.select {|sg| sg.name == sec_group_name}.first
-          if (security_group && security_group.name == sec_group_name)
-            # incase of icmp it defaults to -1..-1 and 0.0.0.0/0
-            unless ip_protocol == 'icmp'
-              if port_range_str.nil?
-                error "You have to specify a port range for any ip protocol other than 'icmp'.", :incorrect_usage
-              end
-            end
-            # if a source group is specified, get its id
-            if src_group
-              source_group = compute_connection.security_groups.select {|srg| srg.name == src_group}.first
-              if (source_group && source_group.name == src_group)
-                src_group_id = source_group.id
-              else
-                error "You don't have a source security group '#{src_group}'.", :not_found
-              end
-            end
-            # resolve port range
-            unless port_range_str.nil?
-              port_range = port_range_str.split('..').inject { |s,e| s.to_i..e.to_i }
-            end
-            # create the security group rule
-            response = security_group.create_rule(port_range, ip_protocol, ip_address, src_group_id)
-            rule_id = response.body["security_group_rule"]["id"]
-            display "Created rule '#{rule_id}' for security group '#{sec_group_name}'."
-          else
+
+          security_group = SecurityGroups.new.get(sec_group_name)
+          if security_group.is_valid? == false
             error "You don't have a security group '#{sec_group_name}'.", :not_found
           end
+
+          # incase of icmp it defaults to -1..-1 and 0.0.0.0/0
+          unless ip_protocol == 'icmp'
+            if port_range_str.nil?
+              error "You have to specify a port range for any ip protocol other than 'icmp'.", :incorrect_usage
+            end
+          end
+
+          # if a source group is specified, get its id
+          if src_group
+            source_group = compute_connection.security_groups.select {|srg| srg.name == src_group}.first
+            if (source_group && source_group.name == src_group)
+              src_group_id = source_group.id
+            else
+              error "You don't have a source security group '#{src_group}'.", :not_found
+            end
+          end
+
+          # resolve port range
+          unless port_range_str.nil?
+            port_range = port_range_str.split('..').inject { |s,e| s.to_i..e.to_i }
+          end
+
+          # create the security group rule
+          response = security_group.fog.create_rule(port_range, ip_protocol, ip_address, src_group_id)
+          rule_id = response.body["security_group_rule"]["id"]
+          display "Created rule '#{rule_id}' for security group '#{sec_group_name}'."
         }
       end
     end

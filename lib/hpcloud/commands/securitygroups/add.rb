@@ -15,14 +15,17 @@ Aliases: none
       CLI.add_common_options
       define_method "securitygroups:add" do |sec_group_name, sg_desc|
         cli_command(options) {
-          compute_connection = connection(:compute, options)
-          security_group = compute_connection.security_groups.select {|sg| sg.name == sec_group_name}.first
-          if (security_group && security_group.name == sec_group_name)
-            display "Security group '#{sec_group_name}' already exists."
+          if SecurityGroups.new.get(sec_group_name).is_valid? == true
+            error "Security group '#{sec_group_name}' already exists.", :general_error
+          end
+
+          security_group = SecurityGroupHelper.new(Connection.instance)
+          security_group.name = sec_group_name
+          security_group.description = sg_desc
+          if security_group.save == true
+            display "Created security group '#{sec_group_name}' with id '#{security_group.id}'."
           else
-            security_group = compute_connection.security_groups.new(:name => sec_group_name, :description => sg_desc)
-            security_group.save
-            display "Created security group '#{sec_group_name}'."
+            error(security_group.error_string, security_group.error_code)
           end
         }
       end

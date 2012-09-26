@@ -17,14 +17,13 @@ Aliases: securitygroups:rules:rm, securitygroups:rules:revoke, securitygroups:ru
       CLI.add_common_options
       define_method "securitygroups:rules:remove" do |sec_group_name, rule_id|
         cli_command(options) {
-          compute_connection = connection(:compute, options)
-          security_group = compute_connection.security_groups.select {|sg| sg.name == sec_group_name}.first
-          if (security_group && security_group.name == sec_group_name)
-            security_group.delete_rule(rule_id)
-            display "Removed rule '#{rule_id}' for security group '#{sec_group_name}'."
-          else
+          security_group = SecurityGroups.new.get(sec_group_name)
+          if security_group.is_valid? == false
             error "You don't have a security group '#{sec_group_name}'.", :not_found
           end
+
+          security_group.fog.delete_rule(rule_id)
+          display "Removed rule '#{rule_id}' for security group '#{sec_group_name}'."
         }
       end
     end

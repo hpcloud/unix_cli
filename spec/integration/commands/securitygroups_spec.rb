@@ -1,21 +1,28 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe "Security Groups command" do
-  describe "with avl settings from config" do
-    context "securitygroups" do
-      it "should report success" do
-        rsp = cptr('securitygroups')
-        rsp.stderr.should eq("")
-        rsp.exit_status.should be_exit(:success)
-      end
+  context "securitygroups" do
+    it "should report success" do
+      rsp = cptr('securitygroups')
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
     end
+  end
 
-    context "securitygroups:list" do
-      it "should report success" do
-        rsp = cptr('securitygroups:list')
-        rsp.stderr.should eq("")
-        rsp.exit_status.should be_exit(:success)
-      end
+  context "securitygroups with bogus argument" do
+    it "should report success" do
+      rsp = cptr('securitygroups bogusbogus')
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("There are no security groups that match the provided arguments\n")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
+  context "securitygroups:list" do
+    it "should report success" do
+      rsp = cptr('securitygroups:list')
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
     end
   end
 

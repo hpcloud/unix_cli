@@ -37,6 +37,16 @@ describe "securitygroups:remove command" do
 
   end
 
+  context "when deleting bogus security group" do
+    it "should show failure message" do
+      rsp = cptr("securitygroups:remove bogus")
+
+      rsp.stderr.should eq("Cannot find a security group matching 'bogus'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_found)
+    end
+  end
+
   context "securitygroups:remove with valid avl" do
     it "should report success" do
       securitygroup = @hp_svc.security_groups.new(:name => 'mysggroup2', :description => 'sec group desc')
