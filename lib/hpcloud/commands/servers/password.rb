@@ -18,13 +18,12 @@ Aliases: servers:passwd
       CLI.add_common_options
       define_method "servers:password" do |name, password|
         cli_command(options) {
-          compute_connection = connection(:compute, options)
-          server = compute_connection.servers.select {|s| s.name == name}.first
-          if server
-              server.change_password(password)
+          server = Servers.new.get(name)
+          if server.is_valid?
+              server.fog.change_password(password)
               display "Password changed for server '#{name}'."
           else
-            error "You don't have a server '#{name}'.", :not_found
+            error server.error_string, server.error_code
           end
         }
       end
