@@ -19,13 +19,18 @@ Examples:
 Aliases: securitygroups:list
       DESC
       CLI.add_common_options
-      def securitygroups
+      def securitygroups(*arguments)
         cli_command(options) {
-          securitygroups = connection(:compute, options).security_groups
+          securitygroups = SecurityGroups.new
           if securitygroups.empty?
-            display "You currently have no security groups."
+            display "You currently have no security groups, , use `#{selfname} securitygroups:add <name>` to create one."
           else
-            securitygroups.table([:id, :name, :description])
+            hsh = securitygroups.get_hash(arguments)
+            if hsh.empty?
+              display "There are no security groups that match the provided arguments"
+            else
+              tablelize(hsh, SecurityGroupHelper.get_keys())
+            end
           end
         }
       end

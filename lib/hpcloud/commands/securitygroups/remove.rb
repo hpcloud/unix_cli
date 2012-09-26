@@ -15,16 +15,22 @@ Examples:
 Aliases: securitygroups:rm, securitygroups:delete, securitygroups:del
       DESC
       CLI.add_common_options
-      define_method "securitygroups:remove" do |sec_group_name|
+      define_method "securitygroups:remove" do |name, *names|
         cli_command(options) {
-          compute_connection = connection(:compute, options)
-          security_group = compute_connection.security_groups.select {|sg| sg.name == sec_group_name}.first
-          if (security_group && security_group.name == sec_group_name)
-            security_group.destroy
-            display "Removed security group '#{sec_group_name}'."
-          else
-            error "You don't have a security group '#{sec_group_name}'.", :not_found
-          end
+          names = [name] + names
+          securitygroups = SecurityGroups.new.get(names, false)
+          securitygroups.each { |securitygroup|
+            begin
+              if securitygroup.is_valid?
+                securitygroup.destroy
+                display "Removed security group '#{securitygroup.name}'."
+              else
+                error_message(securitygroup.error_string, securitygroup.error_code)
+              end
+            rescue Exception => e
+              error_message("Error removing security group: " + e.to_s, :general_error)
+            end
+          }
         }
       end
     end

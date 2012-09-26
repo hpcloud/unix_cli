@@ -14,7 +14,6 @@ describe "securitygroups:add command" do
       rsp = cptr(["securitygroups:add","mysecgroup","sec group desc"])
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Created security group 'mysecgroup'.\n")
       rsp.exit_status.should be_exit(:success)
       security_groups = @hp_svc.security_groups.map {|sg| sg.name}
       security_groups.should include('mysecgroup')
@@ -22,8 +21,9 @@ describe "securitygroups:add command" do
       security_group.name.should eql('mysecgroup')
       security_group = get_securitygroup(@hp_svc, 'mysecgroup')
       security_group.description.should eql('sec group desc')
+      rsp.stdout.should eq("Created security group 'mysecgroup' with id '#{security_group.id}'.\n")
       rsp = cptr(["securitygroups:add","mysecgroup","sec group desc"])
-      rsp.stdout.should eql("Security group 'mysecgroup' already exists.\n")
+      rsp.stderr.should eq("Security group 'mysecgroup' already exists.\n")
     end
 
     after(:all) do
