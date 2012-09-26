@@ -18,7 +18,7 @@ describe "addresses:disassociate command" do
     it "should show error message" do
       rsp = cptr('addresses:disassociate 111.111.111.111')
 
-      rsp.stderr.should eq("Cannot find a ip address matching '111.111.111.111'.\n")
+      rsp.stderr.should eq("Cannot find a address matching '111.111.111.111'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end

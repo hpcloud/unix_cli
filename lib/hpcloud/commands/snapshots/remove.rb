@@ -9,7 +9,8 @@ module HP
   Remove snapshots by specifying their names or ids. Optionally, an availability zone may be passed.
 
 Examples:
-  hpcloud snapshots:remove my-snapshot 998                # delete snapshots my-snapshot and 998
+  hpcloud snapshots:remove snappy1 snappy2                # delete two snapshots snappy1 and snappy2
+  hpcloud snapshots:remove 998                            # delete snapshot by id 998
   hpcloud snapshots:remove snappy -z az-2.region-a.geo-1  # delete snapshot snappy with availability zone specified
 
 Aliases: snapshots:rm, snapshots:delete, snapshots:del

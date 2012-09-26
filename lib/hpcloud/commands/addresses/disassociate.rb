@@ -16,11 +16,11 @@ Examples:
 Aliases: none
       DESC
       CLI.add_common_options
-      define_method "addresses:disassociate" do |ip, *ips|
+      define_method "addresses:disassociate" do |ip_or_id, *ip_or_ids|
         cli_command(options) {
           addresses = Addresses.new
-          ips = [ip] + ips
-          ips.each { |ip_or_id|
+          ip_or_ids = [ip_or_id] + ip_or_ids
+          ip_or_ids.each { |ip_or_id|
             address = addresses.get(ip_or_id)
             if address.is_valid? == false
               error_message address.error_string, address.error_code
