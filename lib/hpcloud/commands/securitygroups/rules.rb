@@ -21,17 +21,16 @@ Aliases: securitygroups:rules:list
       CLI.add_common_options
       define_method "securitygroups:rules" do |sec_group_name|
         cli_command(options) {
-          compute_connection = connection(:compute, options)
-          security_group = compute_connection.security_groups.select {|sg| sg.name == sec_group_name}.first
-          if (security_group && security_group.name == sec_group_name)
-            rules = security_group.rules
-            if rules.empty?
-              display "You currently have no rules for the security group '#{sec_group_name}'."
-            else
-              Rules.table(rules)
-            end
-          else
+          security_group = SecurityGroups.new.get(sec_group_name)
+          if security_group.is_valid? == false
             error "You don't have a security group '#{sec_group_name}'.", :not_found
+          end
+
+          rules = security_group.fog.rules
+          if rules.empty?
+            display "You currently have no rules for the security group '#{sec_group_name}'."
+          else
+            Rules.table(rules)
           end
         }
       end

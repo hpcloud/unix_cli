@@ -9,7 +9,7 @@ module HP
   Remove an existing security group by name. Optionally, an availability zone can be passed.
 
 Examples:
-  hpcloud securitygroups:remove mysecgroup
+  hpcloud securitygroups:remove group1 group2 # Remove two groups group1 and group2
   hpcloud securitygroups:remove mysecgroup -z az-2.region-a.geo-1   # Optionally specify an availability zone
 
 Aliases: securitygroups:rm, securitygroups:delete, securitygroups:del
