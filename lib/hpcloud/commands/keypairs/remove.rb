@@ -15,16 +15,22 @@ Examples:
 Aliases: keypairs:rm, keypairs:delete, keypairs:del
       DESC
       CLI.add_common_options
-      define_method "keypairs:remove" do |key_name|
+      define_method "keypairs:remove" do |name, *names|
         cli_command(options) {
-          compute_connection = connection(:compute, options)
-          keypair = compute_connection.key_pairs.select {|k| k.name == key_name}.first
-          if (keypair && keypair.name == key_name)
-            keypair.destroy
-            display "Removed key pair '#{key_name}'."
-          else
-            error "You don't have a key pair with '#{key_name}'.", :not_found
-          end
+          names = [name] + names
+          keypairs = Keypairs.new.get(names, false)
+          keypairs.each { |keypair|
+            begin
+              if keypair.is_valid?
+                keypair.destroy
+                display "Removed key pair '#{keypair.name}'."
+              else
+                error_message(keypair.error_string, keypair.error_code)
+              end
+            rescue Exception => e
+              error_message("Error removing keypair: " + e.to_s, :general_error)
+            end
+          }
         }
       end
     end

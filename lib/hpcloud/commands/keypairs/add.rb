@@ -29,23 +29,24 @@ Aliases: none
       CLI.add_common_options
       define_method "keypairs:add" do |key_name|
         cli_command(options) {
-          # get the options
-          fingerprint = options[:fingerprint]
-          private_key = options[:private_key]
-          # connect
-          compute_connection = connection(:compute, options)
-          kp = compute_connection.key_pairs.select {|k| k.name == key_name}.first
-          if (kp && kp.name == key_name)
-            error "Key pair '#{key_name}' already exists.", :general_error
-          else
-            keypair = compute_connection.key_pairs.create(:name => key_name, :fingerprint => fingerprint, :private_key => private_key)
+          if Keypairs.new.get(key_name).is_valid? == true
+            error "Key pair '#{key_name}' already exists.", :conflicted
+          end
+
+          keypair = KeypairHelper.new(Connection.instance)
+          keypair.name = key_name
+          keypair.fingerprint = options[:fingerprint]
+          keypair.private_key = options[:private_key]
+          if keypair.save == true
             if options.output?
-              keypair.write("./#{keypair.name}.pem")
+              keypair.fog.write("./#{keypair.name}.pem")
               display "Created key pair '#{key_name}' and saved it to a file at './#{keypair.name}.pem'."
             else
               display keypair.private_key
               display "Created key pair '#{key_name}'."
             end
+          else
+            error keypair.error_string, keypair.error_code
           end
         }
       end

@@ -30,8 +30,12 @@ module HP
       def save
         return false if is_valid? == false
         if @fog.nil?
-          hsh = {:name => @name, :fingerprint => @fingerprint, :public_key => @public_key, :private_key => @private_key}
-          keypair = @connection.compute.key_pairs.create(hsh)
+          if @public_key.nil?
+            hsh = {:name => @name, :fingerprint => @fingerprint, :private_key => @private_key}
+            keypair = @connection.compute.key_pairs.create(hsh)
+          else
+            keypair = @connection.compute.create_key_pair(@name, @public_key)
+          end
           if keypair.nil?
             @error_string = "Error creating ip keypair"
             @error_code = :general_error

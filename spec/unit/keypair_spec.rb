@@ -63,7 +63,7 @@ describe "Keypair methods" do
   end
 
   context "when we save successfully" do
-    it "it is true and we get id" do
+    it "it is true and we get true" do
       @new_keypair = double("new_keypair")
       @keypairs = double("keypairs")
       @keypairs.stub(:create).and_return(@new_keypair)
@@ -73,9 +73,26 @@ describe "Keypair methods" do
       @connection.stub(:compute).and_return(@compute)
       keyp = HP::Cloud::KeypairHelper.new(@connection)
       keyp.name = "roll"
+      keyp.private_key = "away"
+      keyp.fingerprint = "your"
+
+      keyp.save.should be_true
+
+      keyp.error_string.should be_nil
+      keyp.error_code.should be_nil
+    end
+  end
+
+  context "when we save public_key successfully" do
+    it "it is true and we get true" do
+      @new_keypair = double("new_keypair")
+      @compute = double("compute")
+      @compute.stub(:create_key_pair).and_return(@new_keypair)
+      @connection = double("connection")
+      @connection.stub(:compute).and_return(@compute)
+      keyp = HP::Cloud::KeypairHelper.new(@connection)
+      keyp.name = "roll"
       keyp.public_key = "away"
-      keyp.private_key = "your"
-      keyp.fingerprint = "stone"
 
       keyp.save.should be_true
 
