@@ -123,7 +123,9 @@ module HP
             :user_agent      => "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
         }
         # authenticate with Identity service
-        Fog::HP.authenticate_v2(options, Config.default_options)
+        options = Config.default_options.clone
+        options[:ssl_verify_peer] = false
+        Fog::HP.authenticate_v2(options, options)
       end
     end
   end

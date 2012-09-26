@@ -8,6 +8,10 @@ module HP
         @connection = Connection.instance if connection.nil?
       end
 
+      def matches(arg, item)
+        return ((arg == item.id.to_s) || (arg == item.name.to_s))
+      end
+
       def filter(arguments = [], multimatch=true)
         if @ray.nil?
           @ray = []
@@ -20,7 +24,7 @@ module HP
         arguments.each { |arg|
           found = []
           @ray.each { |item|
-            if ((arg == item.id.to_s) || (arg == item.name.to_s))
+            if matches(arg, item)
               if (multimatch == true)
                 found << item
               else
