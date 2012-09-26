@@ -1,3 +1,4 @@
+require 'hpcloud/fog_collection'
 require 'hpcloud/image_helper'
 
 module HP
