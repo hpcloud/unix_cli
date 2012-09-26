@@ -261,13 +261,11 @@ module HP
         @lastread = 0
         begin
           if (output == true)
-            args = { :title => File.basename(@destination), :total => siz}
-            @pbar = ProgressBar.create(args)
+            @pbar = Progress.new(@destination, siz)
             @file = File.open(@destination, 'w')
           else
             if (@disable_pbar == false)
-              args = { :title => File.basename(@fname), :total => get_size()}
-              @pbar = ProgressBar.create(args)
+              @pbar = Progress.new(@fname, get_size())
             end
             @file = File.open(@fname, 'r')
           end
@@ -280,27 +278,21 @@ module HP
       end
 
       def read()
-        unless @pbar.nil?
-          @pbar.progress += @lastread unless @lastread == 0
-        end
+        @pbar.increment(@lastread) unless @pbar.nil?
         val = @file.read(Excon::CHUNK_SIZE).to_s
         @lastread = val.length
         return val
       end
 
       def write(data)
-        @pbar.progress += data.length unless @pbar.nil?
+        @pbar.increment(data.length) unless @pbar.nil?
         @file.write(data)
         return true
       end
 
       def close()
-        unless @pbar.nil?
-          unless @lastread.nil?
-            @pbar.progress += @lastread unless @lastread == 0
-          end
-          @pbar.finish if @pbar.progress < @pbar.total
-        end
+        @pbar.increment(@lastread) unless @pbar.nil?
+        @pbar.finish unless @pbar.nil?
         @lastread = 0
         @pbar = nil
         @file.close unless @file.nil?

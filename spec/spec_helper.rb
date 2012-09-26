@@ -29,6 +29,7 @@ require 'helpers/addresses'
 require 'helpers/securitygroups'
 require 'helpers/image_test_helper'
 require 'helpers/server_test_helper'
+require 'helpers/snapshot_test_helper'
 require 'helpers/volume_test_helper'
 require 'helpers/volume_attachment_helper'
 

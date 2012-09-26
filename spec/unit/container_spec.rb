@@ -58,6 +58,23 @@ describe 'Parsing container names' do
     end
   end
   
+  context "when given too long a string" do
+    it 'should throw an exception' do
+      lambda {
+        HP::Cloud::Container.container_name_for_service('A'*257)
+      }.should raise_error(Exception) {|e|
+        e.to_s.should include("Valid container names must be less than 256 characters long")
+      }
+    end
+  end
+  
+  context "when given super long string" do
+    it 'should throw an exception' do
+      long_container_name = 'B'*256
+      HP::Cloud::Container.container_name_for_service(long_container_name).should eql(long_container_name)
+    end
+  end
+  
 end
 
 describe 'Parsing container resources' do
@@ -142,20 +159,6 @@ describe "Validating container names for virtual host" do
   
   it "should return true for valid names" do
     @container.valid_virtualhost?('my-bucket').should be_true
-  end
-
-end
-
-describe "Validating container names as per naming guidelines" do
-
-  before(:all) { @container = HP::Cloud::Container }
-
-  it "should not allow more than 256 bytes" do
-    @container.valid_name?('A'*257).should be_false
-  end
-
-  it "should not allow / character" do
-    @container.valid_name?('/').should be_false
   end
 
 end

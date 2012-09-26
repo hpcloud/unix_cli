@@ -1,7 +1,8 @@
 module HP
   module Cloud
     class VolumeHelper
-      attr_accessor :error_string, :error_code, :fog
+      @@serverous = nil
+      attr_accessor :error_string, :error_code, :fog, :snapshot_id
       attr_accessor :id, :name, :size, :type, :created, :status, :description, :servers
       attr_accessor :meta
     
@@ -26,9 +27,9 @@ module HP
         @status = volume.status
         @description = volume.description
         @servers = ''
-        list = Servers.new
+        @@serverous = Servers.new if @@serverous.nil?
         volume.attachments.each { |x|
-          srv = list.get(x["serverId"].to_s)
+          srv = @@serverous.get(x["serverId"].to_s)
           if srv.is_valid? == false
             next
           end
@@ -58,6 +59,7 @@ module HP
              :description => @description,
              :size => @size,
              :metadata => @meta.hsh}
+          hsh[:snapshot_id] = @snapshot_id unless @snapshot_id.nil?
           volume = @connection.block.volumes.create(hsh)
           if volume.nil?
             @error_string = "Error creating volume '#{@name}'"
@@ -100,6 +102,10 @@ module HP
 
       def destroy
         @fog.destroy unless @fog.nil?
+      end
+
+      def self.clear_cache
+        @@serverous = nil
       end
     end
   end

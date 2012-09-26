@@ -29,9 +29,9 @@ describe "containers:remove command" do
   
   context "when bad container name" do
     it "should report error" do
-      rsp = cptr("containers:remove :bogus/container.txt")
+      rsp = cptr("containers:remove :bogustotally")
 
-      rsp.stderr.should eq("You don't have a container named 'bogus/container.txt'.\n")
+      rsp.stderr.should eq("You don't have a container named 'bogustotally'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end

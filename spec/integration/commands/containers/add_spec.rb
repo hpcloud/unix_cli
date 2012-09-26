@@ -46,9 +46,9 @@ describe "containers:add command" do
     it "should show error message" do
       rsp = cptr('containers:add my/container --force')
 
-      rsp.stderr.should eq("The container name specified is invalid. Please see API documentation for valid naming guidelines.\n")
+      rsp.stderr.should eq("Valid container names do not contain the '/' character: my/container\n")
       rsp.stdout.should eq("")
-      rsp.exit_status.should be_exit(:permission_denied)
+      rsp.exit_status.should be_exit(:general_error)
     end
   end
   

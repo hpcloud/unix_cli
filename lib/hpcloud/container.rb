@@ -27,6 +27,9 @@ module HP
         unless container_string.index('/').nil?
           raise Exception.new("Valid container names do not contain the '/' character: #{container_string}")
         end
+        unless container_string.length < 257
+          raise Exception.new("Valid container names must be less than 256 characters long")
+        end
         if container_string[0,1] == ':'
           container_string[1..-1]
         else
@@ -48,17 +51,6 @@ module HP
         end
         false
       end
-
-      # is container name valid - cannot be more than 256 bytes and cannot contain / char
-      def self.valid_name?(container_name)
-        if (1..256).include?(container_name.length)
-          unless (container_name.include?('/'))
-            return true
-          end
-        end
-        false
-      end
-    
     end
   end
 end

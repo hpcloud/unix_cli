@@ -34,6 +34,22 @@ describe "volumes:attach command" do
     end
   end
 
+  context "when attaching in-use volume" do
+    it "should fail" do
+      rsp = cptr("volumes:attach #{@vol1.name} #{@server.name} /dev/sdk")
+
+      rsp = cptr("volumes:attach #{@vol1.name} #{@server.name} /dev/sdl")
+
+      rsp.stderr.should eq("Error attaching volume already in use '#{@vol1.name}'\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:conflicted)
+    end
+
+    after(:all) do
+      @vol1.detach()
+    end
+  end
+
   context "volumes:attach with valid avl" do
     it "should be successful" do
       rsp = cptr("volumes:attach #{@vol2.name} -z az-1.region-a.geo-1 #{@server.name} /dev/sdg")

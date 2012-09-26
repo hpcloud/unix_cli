@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary       = 'HP Cloud CLI'
   s.description   = 'Useful command-line tools for managing your HP Cloud services'
 
-  s.authors   = ["Matt Sanders", "Rupak Ganguly"]
+  s.authors   = ["Matt Sanders", "Rupak Ganguly", "Terry Howe"]
   s.email     = %w{rupak.ganguly@hp.com}
   s.homepage  = 'https://docs.hpcloud.com/cli/unix'
   # s.licenses = [""]

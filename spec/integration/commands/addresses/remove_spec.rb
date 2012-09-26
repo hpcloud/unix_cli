@@ -28,13 +28,22 @@ describe "addresses:remove command" do
   end
 
   context "remove ip with valid avl" do
-
     it "should report success" do
       rsp = cptr("addresses:remove #{@second_ip} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed address '#{@second_ip}'.\n")
       rsp.exit_status.should be_exit(:success)
+    end
+  end
+
+  context "remove two invalid ips" do
+    it "should report success" do
+      rsp = cptr("addresses:remove 127.0.0.1 127.0.0.2")
+
+      rsp.stderr.should eq("Cannot find a ip address matching '127.0.0.1'.\nCannot find a ip address matching '127.0.0.2'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_found)
     end
   end
 

@@ -60,6 +60,7 @@ describe "SecurityGroup methods" do
     it "it is true and we get true" do
       @new_security_group = double("new_security_group")
       @new_security_group.stub(:id).and_return(3333)
+      @new_security_group.stub(:save).and_return(true)
       @security_groups = double("security_groups")
       @security_groups.stub(:new).and_return(@new_security_group)
       @compute = double("compute")
