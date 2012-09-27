@@ -4,13 +4,14 @@ module HP
 
       map 'addresses:detach' => 'addresses:disassociate'
 
-      desc "addresses:disassociate <public_ip>", "disassociate any server instance associated to the public IP address"
+      desc "addresses:disassociate ip_or_id [ip_or_id ...]", "disassociate any server instance associated to the public IP address"
       long_desc <<-DESC
   Disassociate any server instance associated to the public IP address. The public IP address is
   not removed or released to the pool. Optionally, an availability zone can be passed.
 
 Examples:
-  hpcloud addresses:disassociate 111.111.111.111
+  hpcloud addresses:disassociate 111.111.111.111 127.0.0.1 # Disassociate two IP addresses
+  hpcloud addresses:disassociate 9709 # Disassciate address with id '9709'
   hpcloud addresses:disassociate 111.111.111.111 -z az-2.region-a.geo-1
 
 Aliases: none

@@ -4,13 +4,14 @@ module HP
 
       map %w(config:set config:update) => 'config:add'
 
-      desc 'config:add', "set the value for a configuration value"
+      desc 'config:add key=value [key=value ...]', "set the value for a configuration value"
       long_desc <<-DESC
-  Set values in the configuration file.  Valid settings include:
+  Set values in the configuration file.  You may specify multiple name value pairs separated by spaces on a single command line.  Valid settings include:
 #{Config.get_known}
 
 Examples:
-  hpcloud config:update compute_availability_zone=az-2.region-a.geo-1     # Sets the default availability zone for the compute service.
+  hpcloud config:set compute_availability_zone=az-2.region-a.geo-1     # Sets the default availability zone for the compute service.
+  hpcloud config:set block_availability_zone=az-2.region-a.geo-1 ssl_verify_peer=false read_time=60    # Sets multiple values
 
 Alias: config:add, config:update
       DESC

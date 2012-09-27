@@ -6,12 +6,13 @@ module HP
 
       map 'volumes:metadata:list' => 'volumes:metadata'
 
-      desc "volumes:metadata <volumeName|volumeId>", "list metadata for a volume"
+      desc "volumes:metadata <volume_name_or_id>", "list metadata for a volume"
       long_desc <<-DESC
   List the metadata for a volume in your compute account. You may specify either the name or the id of the volume.  Optionally, an availability zone can be passed.
 
 Examples:
-  hpcloud volumes:metadata Skynet                        # List volume metadata
+  hpcloud volumes:metadata Skynet   # List metadata for volume 'Skynet'
+  hpcloud volumes:metadata 2929     # List metadata for volume with id 2929
   hpcloud volumes:metadata -z az-2.region-a.geo-1 565394 # List volume metadata for an availability zone
 
 Aliases: volumes:metadata:list

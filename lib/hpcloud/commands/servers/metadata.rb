@@ -7,7 +7,7 @@ module HP
 
       map 'servers:metadata:list' => 'servers:metadata'
 
-      desc "servers:metadata <serverName|serverId>", "list metadata for a server"
+      desc "servers:metadata <name_or_id>", "list metadata for a server"
       long_desc <<-DESC
   List the metadata for a server in your compute account. You may specify either the name or the id of the server.  Optionally, an availability zone can be passed.
 

@@ -6,12 +6,12 @@ module HP
     
       map %w(account:rm account:delete account:del) => 'account:remove'
 
-      desc 'account:remove <account_name> ...', "remove accounts"
+      desc 'account:remove account_name [account_name ...]', "remove accounts"
       long_desc <<-DESC
-  Remove accounts
+  Remove accounts.  You may specify one or more account to remove on the command line.
   
 Examples:
-  hpcloud account:remove useast uswest
+  hpcloud account:remove useast uswest # remove the useast and uswest accounts
 
 Alias: account:rm, account:delete, account:del
       DESC

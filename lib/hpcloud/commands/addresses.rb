@@ -9,12 +9,13 @@ module HP
 
       map 'addresses:list' => 'addresses'
 
-      desc "addresses", "list of available addresses"
+      desc "addresses [ip_or_id ...]", "list of available addresses"
       long_desc <<-DESC
-  List the available addresses for your account. Optionally, an availability zone can be passed.
+  List the available addresses for your account. You may filter the addresses listed by specifying one or more ips or ids on the command line.  Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud addresses                            # List addresses
+  hpcloud addresses 127.0.0.2                  # List address 127.0.0.2
   hpcloud addresses -z az-2.region-a.geo-1     # Optionally specify an availability zone
 
 Aliases: addresses:list

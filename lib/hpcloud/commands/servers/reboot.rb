@@ -10,8 +10,9 @@ module HP
   do a hard reboot. Optionally, an availability zone can be passed.
 
 Examples:
-  hpcloud servers:reboot my-server          # reboot 'my-server'
-  hpcloud servers:reboot my-server -z az-2.region-a.geo-1    # Optionally specify an availability zone
+  hpcloud servers:reboot Hal9000    # reboot 'Hal9000'
+  hpcloud servers:reboot 1003 222   # reboot server with id 1003 and 222
+  hpcloud servers:reboot DeepThought -z az-2.region-a.geo-1    # Optionally specify an availability zone
 
 Aliases: none
       DESC
@@ -19,10 +20,10 @@ Aliases: none
                     :type => :boolean, :aliases => '-h',
                     :desc => 'Hard reboot a server.'
       CLI.add_common_options
-      define_method "servers:reboot" do |name, *names|
+      define_method "servers:reboot" do |name_or_id, *name_or_ids|
         cli_command(options) {
-          names = [name] + names
-          servers = Servers.new.get(names, false)
+          name_or_ids = [name_or_id] + name_or_ids
+          servers = Servers.new.get(name_or_ids, false)
           servers.each { |server|
             begin
               if server.is_valid?

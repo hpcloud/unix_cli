@@ -4,10 +4,9 @@ module HP
     
       map 'cp' => 'copy'
 
-      desc 'copy <resource> <resource>', "copy files from one resource to another"
+      desc 'copy <source> [source ...] <destination>', "copy files from one resource to another"
       long_desc <<-DESC
-  Copy a file between your file system and a container, inside a container, or
-  between containers. Optionally, an availability zone can be passed.
+  Copy a file between your file system and a container, inside a container, or between containers. You may copy multiple files to a directory or container on one command line.  Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud copy my_file.txt :my_container        # Copy file to container 'my_container'
@@ -16,6 +15,7 @@ Examples:
   hpcloud copy :one/file.txt :two/file.txt      # Copy file.txt between containers
   hpcloud copy :one /usr/local                  # Copy container to /usr/local
   hpcloud copy /usr/local :two                  # Copy /usr/local to container
+  hpcloud copy one.txt two.txt :numbers         # Copy two text files to a container
   hpcloud copy my_file.txt :my_container -z region-a.geo-1   # Optionally specify an availability zone
 
 Aliases: cp
