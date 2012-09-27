@@ -22,7 +22,8 @@ Aliases: volumes:metadata:list
         cli_command(options) {
           volume = Volumes.new.get(name_or_id)
           if volume.is_valid?
-            tablelize(volume.meta.to_hash(), Metadata.get_keys())
+            hsh = volume.meta.to_hash()
+            Tableizer.new(options, Metadata.get_keys(), hsh).print
           else
             error volume.error_string, volume.error_code
           end

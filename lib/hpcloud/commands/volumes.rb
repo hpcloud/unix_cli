@@ -33,7 +33,7 @@ Aliases: volumes:list
             if hsh.empty?
               display "There are no volumes that match the provided arguments"
             else
-              tablelize(hsh, VolumeHelper.get_keys())
+              Tableizer.new(options, VolumeHelper.get_keys(), hsh).print
             end
           end
         }

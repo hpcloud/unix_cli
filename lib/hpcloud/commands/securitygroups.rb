@@ -30,7 +30,7 @@ Aliases: securitygroups:list
             if hsh.empty?
               display "There are no security groups that match the provided arguments"
             else
-              tablelize(hsh, SecurityGroupHelper.get_keys())
+              Tableizer.new(options, SecurityGroupHelper.get_keys(), hsh).print
             end
           end
         }

@@ -30,7 +30,7 @@ Aliases: keypairs:list
             if hsh.empty?
               display "There are no keypairs that match the provided arguments"
             else
-              tablelize(hsh, KeypairHelper.get_keys())
+              Tableizer.new(options, KeypairHelper.get_keys(), hsh).print
             end
           end
         }

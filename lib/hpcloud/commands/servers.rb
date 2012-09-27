@@ -35,7 +35,7 @@ Aliases: servers:list
             if hsh.empty?
               display "There are no servers that match the provided arguments"
             else
-              tablelize(hsh, ServerHelper.get_keys())
+              Tableizer.new(options, ServerHelper.get_keys(), hsh).print
             end
           end
         }

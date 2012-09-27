@@ -34,7 +34,7 @@ Aliases: images:list
             if hsh.empty?
               display "There are no images that match the provided arguments"
             else
-              tablelize(hsh, ImageHelper.get_keys())
+              Tableizer.new(options, ImageHelper.get_keys(), hsh).print
             end
           end
         }

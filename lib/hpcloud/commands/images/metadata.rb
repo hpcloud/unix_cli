@@ -20,7 +20,8 @@ Aliases: images:metadata:list
         cli_command(options) {
           image = Images.new.get(name_or_id.to_s)
           if image.is_valid?
-            tablelize(image.meta.to_hash(), Metadata.get_keys())
+            hsh = image.meta.to_hash()
+            Tableizer.new(options, Metadata.get_keys(), hsh).print
           else
             error(image.error_string, image.error_code)
           end

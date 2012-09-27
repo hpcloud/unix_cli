@@ -22,7 +22,8 @@ Aliases: servers:metadata:list
         cli_command(options) {
           server = Servers.new.get(name_or_id)
           if server.is_valid?
-            tablelize(server.meta.to_hash(), Metadata.get_keys())
+            hsh = server.meta.to_hash()
+            Tableizer.new(options, Metadata.get_keys(), hsh).print
           else
             error server.error_string, server.error_code
           end

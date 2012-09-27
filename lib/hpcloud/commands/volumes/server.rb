@@ -16,7 +16,7 @@ Examples:
       CLI.add_common_options
       define_method "volumes:server" do |*arguments|
         cli_command(options) {
-          hshes = []
+          hsh = []
           servers = Servers.new.get(arguments)
           servers.each { |server|
             if server.is_valid? == false
@@ -28,10 +28,10 @@ Examples:
               error_message "Cannot find any volumes for '#{server.name}'.", :not_found
               next
             end
-            hshes += ray
+            hsh += ray
           }
-          if hshes.empty? == false
-            tablelize(hshes, VolumeAttachment.get_keys())
+          if hsh.empty? == false
+            Tableizer.new(options, VolumeAttachment.get_keys(), hsh).print
           end
         }
       end

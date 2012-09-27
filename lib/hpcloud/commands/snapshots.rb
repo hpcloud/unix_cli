@@ -30,7 +30,7 @@ Aliases: snapshots:list
             if hsh.empty?
               display "There are no snapshots that match the provided arguments"
             else
-              tablelize(hsh, SnapshotHelper.get_keys())
+              Tableizer.new(options, SnapshotHelper.get_keys(), hsh).print
             end
           end
         }

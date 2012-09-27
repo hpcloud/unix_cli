@@ -90,11 +90,6 @@ module HP
         ENV['HPCLOUD_CLI_NAME'] || 'hpcloud'
       end
 
-      def tablelize(data, attributes=nil)
-        return if data.nil?
-        Formatador.display_table(data, attributes)
-      end
-
       ### Thor extensions
     
       def ask_with_default(statement, default, color = nil)

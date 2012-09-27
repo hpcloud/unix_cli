@@ -31,7 +31,7 @@ Aliases: addresses:list
             if hsh.empty?
               display "There are no ip addresses that match the provided arguments"
             else
-              tablelize(hsh, AddressHelper.get_keys())
+              Tableizer.new(options, AddressHelper.get_keys(), hsh).print
             end
           end
         }
