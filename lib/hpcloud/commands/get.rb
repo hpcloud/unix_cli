@@ -4,29 +4,31 @@ module HP
 
       map %w(fetch) => 'get'
 
-      desc 'get <object>', 'fetch an object to your local directory'
+      desc 'get object [object ...]', 'fetch objects to your local directory'
       long_desc <<-DESC
-  Copy an object from a container to your current directory. Optionally, an availability zone can be passed.
+  Copy remote objects from a container to your current directory. Optionally, an availability zone can be passed.
 
 Examples: 
-  hpcloud get :my_container/file.txt
+  hpcloud get :my_container/file.txt :my_container/resume.txt # copy file.txt and resume.txt to current directory
   hpcloud get :my_container/file.txt -z region-a.geo-1   # Optionally specify an availability zone
 
 Aliases: fetch
       DESC
       CLI.add_common_options
-      def get(resource)
+      def get(source, *sources)
         cli_command(options) {
-          container, path = Container.parse_resource(resource)
-          type = Resource.detect_type(resource)
-
-          if :object == type
-            copy(resource, File.basename(path))
-          elsif :container == type
-            error "You can get files, but not containers."
-          else
-            error "The object path '#{resource}' wasn't recognized. Usage: '#{selfname} get :container_name/object_name'.", :incorrect_usage
-          end
+          sources = [source] + sources
+          to = Resource.create(Connection.instance.storage, ".")
+          sources.each { |name|
+            from = Resource.create(Connection.instance.storage, name)
+            if from.isRemote() == false
+              error_message "Source object does not appear to be remote '#{from.fname}'.", :incorrect_usage
+            elsif to.copy(from)
+              display "Copied #{from.fname} => #{to.fname}"
+            else
+              error to.error_string, to.error_code
+            end
+          }
         }
       end
     end

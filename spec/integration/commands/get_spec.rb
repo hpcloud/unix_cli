@@ -33,7 +33,7 @@ describe "Get command" do
     it "should exit with message about bad syntax" do
       rsp = cptr("get /foo/foo")
 
-      rsp.stderr.should eq("The object path '/foo/foo' wasn't recognized. Usage: 'hpcloud get :container_name/object_name'.\n")
+      rsp.stderr.should eq("Source object does not appear to be remote '/foo/foo'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:incorrect_usage)
     end
@@ -44,7 +44,7 @@ describe "Get command" do
       rsp = cptr("get :get_container/highly_unusual_file_name.txt")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Copied :get_container/highly_unusual_file_name.txt => highly_unusual_file_name.txt\n")
+      rsp.stdout.should eq("Copied :get_container/highly_unusual_file_name.txt => .\n")
       rsp.exit_status.should be_exit(:success)
       File.exist?('highly_unusual_file_name.txt').should be_true
     end
@@ -59,7 +59,7 @@ describe "Get command" do
       rsp = cptr("get :get_container/folder/highly_unusual_file_name.txt")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Copied :get_container/folder/highly_unusual_file_name.txt => highly_unusual_file_name.txt\n")
+      rsp.stdout.should eq("Copied :get_container/folder/highly_unusual_file_name.txt => .\n")
       rsp.exit_status.should be_exit(:success)
       File.exist?('highly_unusual_file_name.txt').should be_true
     end
@@ -74,7 +74,7 @@ describe "Get command" do
       rsp = cptr('get :get_container/highly_unusual_file_name.txt -z region-a.geo-1')
 
       rsp.stderr.should eql("")
-      rsp.stdout.should eql("Copied :get_container/highly_unusual_file_name.txt => highly_unusual_file_name.txt\n")
+      rsp.stdout.should eql("Copied :get_container/highly_unusual_file_name.txt => .\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
