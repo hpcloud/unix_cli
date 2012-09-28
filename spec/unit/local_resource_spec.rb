@@ -175,20 +175,6 @@ describe "Set destination" do
       to.destination.should eq("#{dir}/spec/fixtures/files/foo.txt/impossible/subdir/file.txt")
     end
   end
-  
-  context "when local directory path empty" do
-    it "valid destination true" do
-      to = Resource.create(@co, "")
-
-      rc = to.set_destination("file.txt")
-
-      rc.should be_true
-      to.error_string.should be_nil
-      to.error_code.should be_nil
-      to.destination.should eq("file.txt")
-    end
-  end
-  
 end
 
 describe "Open read close" do

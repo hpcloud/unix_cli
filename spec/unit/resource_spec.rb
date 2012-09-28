@@ -161,4 +161,19 @@ describe "Resource construction" do
     end
   end
   
+  context "when nothing" do
+    it "should return :object_store" do
+      file = Resource.create(@storage, '')
+
+      file.fname.should eql('')
+      file.ftype.should eql(:object_store)
+      file.container.should be_nil
+      file.path.should be_nil
+      file.isLocal().should be_false
+      file.isRemote().should be_true
+      file.isDirectory().should be_true
+      file.isFile().should be_false
+      file.isObject().should be_false
+    end
+  end
 end

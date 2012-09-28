@@ -2,6 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
     
+# map %w(images:rm images:delete images:del) => 'images:remove'
       map 'ls' => 'list'
     
       desc 'list <container>', "list container contents"
@@ -18,16 +19,32 @@ Aliases: ls
 Note: Listing details on files will be available in a future release.
       DESC
       CLI.add_common_options
-      def list(name='')
+      def list(*sources)
         cli_command(options) {
-          return containers if name.empty?
-          name = Container.container_name_for_service(name)
-          directory = connection(:storage, options).directories.get(name)
-          if directory
-            directory.files.each { |file| display file.key }
-          else
-            error "You don't have a container named '#{name}'", :not_found
-          end
+          sources = [""] if sources.empty?
+          sources.each { |name|
+            begin
+              from = Resource.create(Connection.instance.storage, name)
+              if from.valid_source()
+                found = false
+                from.foreach { |file|
+                  display file.fname
+                  found = true
+                }
+                unless found
+                  if from.is_object_store?
+                    error_message "Cannot find any containers, use `#{selfname} containers:add <name>` to create one.", :not_found
+                  elsif from.isDirectory() == false
+                    error_message "Cannot find resource named '#{name}'.", :not_found
+                  end
+                end
+              else
+                error_message from.error_string, from.error_code
+              end
+            rescue Exception => e
+              error_message "Exception reading '#{name}': " + e.to_s, :general_error
+            end
+          }
         }
       end
     end

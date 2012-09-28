@@ -8,12 +8,16 @@ module HP
       attr_reader :fname, :ftype, :container, :path
       attr_reader :destination, :error_string, :error_code
     
-      REMOTE_TYPES = [:container, :container_directory, :object]
+      REMOTE_TYPES = [:container, :container_directory, :object, :object_store]
       LOCAL_TYPES = [:directory, :file]
     
       def self.create(storage, fname)
-        if LOCAL_TYPES.include?(detect_type(fname))
+        ftype = detect_type(fname)
+        if LOCAL_TYPES.include?(ftype)
           return LocalResource.new(storage, fname)
+        end
+        if ftype == :object_store
+          return ObjectStore.new(storage, fname)
         end
         return RemoteResource.new(storage, fname)
       end
@@ -40,10 +44,15 @@ module HP
         return Resource::REMOTE_TYPES.include?(@ftype)
       end
 
+      def is_object_store?
+        return @ftype == :object_store
+      end
+
       def isDirectory()
         return @ftype == :directory ||
                @ftype == :container_directory ||
-               @ftype == :container
+               @ftype == :container ||
+               @ftype == :object_store
       end
 
       def isFile()
@@ -55,6 +64,9 @@ module HP
       end
 
       def self.detect_type(resource)
+        if resource.empty?
+          return :object_store
+        end
         if resource[0,1] == ':'
           if resource[-1,1] == '/'
             :container_directory
@@ -458,6 +470,19 @@ module HP
 
       def get_destination()
         return ':' + @container.to_s + '/' + @destination.to_s
+      end
+    end
+
+    class ObjectStore < Resource
+      def valid_destination(source)
+        return false
+      end
+
+      def foreach(&block)
+        containers = @storage.directories
+        containers.each { |x|
+          yield Resource.create(@storage, ':' + x.key)
+        }
       end
     end
   end
