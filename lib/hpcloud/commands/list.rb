@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
     
-# map %w(images:rm images:delete images:del) => 'images:remove'
+      map %w(ls containers containers:list) => 'list'
       map 'ls' => 'list'
     
       desc 'list <container>', "list container contents"

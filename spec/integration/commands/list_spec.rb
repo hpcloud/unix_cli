@@ -25,6 +25,30 @@ describe "list command" do
     end
   end
 
+  context "containers" do
+    it "should report success" do
+      rsp = cptr('ls')
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
+  context "containers" do
+    it "should report success" do
+      rsp = cptr('containers')
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
+  context "containers:list" do
+    it "should report success" do
+      rsp = cptr('containers:list')
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
   context "list on object" do
     it "should report failure" do
       rsp = cptr("list :mycontainer/object.txt")
