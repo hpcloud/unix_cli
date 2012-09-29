@@ -305,6 +305,17 @@ describe "Get size" do
       res.get_size().should eq(0)
     end
   end
-
 end
 
+describe "Remove" do
+  context "remove of local" do
+    it "fails" do
+      res = Resource.create(@co, "spec/fixtures/files/foo.txt")
+
+      res.remove.should be_false
+
+      res.error_string.should eq("Remove of local objects is not supported: spec/fixtures/files/foo.txt")
+      res.error_code.should eq(:general_error)
+    end
+  end
+end

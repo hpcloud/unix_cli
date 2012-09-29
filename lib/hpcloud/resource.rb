@@ -48,6 +48,10 @@ module HP
         return @ftype == :object_store
       end
 
+      def is_container?
+        return @ftype == :container
+      end
+
       def isDirectory()
         return @ftype == :directory ||
                @ftype == :container_directory ||
@@ -203,6 +207,12 @@ module HP
 
       def get_destination()
         return @destination.to_s
+      end
+
+      def remove()
+        @error_string = "Removal of local objects is not supported: #{@fname}"
+        @error_code = :general_error
+        return false
       end
     end
 
@@ -470,6 +480,35 @@ module HP
 
       def get_destination()
         return ':' + @container.to_s + '/' + @destination.to_s
+      end
+
+      def remove()
+        begin
+          directory = @storage.directories.head(@container)
+          if directory.nil?
+             @error_string = "You don't have a container named ':#{@container}'"
+             @error_code = :not_found
+             return false
+          end
+
+          file = directory.files.head(@path)
+          if file.nil?
+             @error_string = "You don't have an object named '#{@fname}'"
+             @error_code = :not_found
+             return false
+          end
+
+          file.destroy
+        rescue Excon::Errors::Forbidden => error
+          @error_string = "Permission denied for '#{@fname}."
+          @error_code = :permission_denied
+          return false
+        rescue Exception => e
+          @error_string = "Exception removing '#{@fname}': " + e.to_s
+          @error_code = :general_error
+          return false
+        end
+        return true
       end
     end
 
