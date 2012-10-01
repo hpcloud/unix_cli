@@ -31,8 +31,8 @@ Aliases: rm, delete, destroy, del
                 end
               end
             end
-            if resource.remove
-              display "Removed object '#{name}'."
+            if resource.remove(options.force)
+              display "Removed '#{name}'."
             else
               error_message resource.error_string, resource.error_code
             end

@@ -312,10 +312,49 @@ describe "Remove" do
     it "fails" do
       res = Resource.create(@co, "spec/fixtures/files/foo.txt")
 
-      res.remove.should be_false
+      res.remove(false).should be_false
 
-      res.error_string.should eq("Remove of local objects is not supported: spec/fixtures/files/foo.txt")
+      res.error_string.should eq("Removal of local objects is not supported: spec/fixtures/files/foo.txt")
       res.error_code.should eq(:general_error)
     end
   end
+end
+
+describe "is container" do
+  before(:each) do
+    @co = double("connection")
+  end
+
+  context "local file" do
+    it "returns size" do
+      res = Resource.create(@co, "spec/fixtures/files/foo.txt")
+
+      res.is_container?.should be_false
+    end
+  end
+
+  context "remote object" do
+    it "returns size" do
+      res = Resource.create(@co, ":tainer/foo.txt")
+
+      res.is_container?.should be_false
+    end
+  end
+
+  context "remote directory" do
+    it "returns size" do
+      res = Resource.create(@co, ":tainer/subdir/")
+
+      res.is_container?.should be_false
+    end
+  end
+
+  context "remote container" do
+    it "returns size" do
+      res = Resource.create(@co, ":tainer")
+
+      res.is_container?.should be_true
+    end
+  end
+
 end

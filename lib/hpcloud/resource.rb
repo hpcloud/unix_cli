@@ -209,9 +209,9 @@ module HP
         return @destination.to_s
       end
 
-      def remove()
+      def remove(force)
         @error_string = "Removal of local objects is not supported: #{@fname}"
-        @error_code = :general_error
+        @error_code = :incorrect_usage
         return false
       end
     end
@@ -482,23 +482,37 @@ module HP
         return ':' + @container.to_s + '/' + @destination.to_s
       end
 
-      def remove()
+      def remove(force)
         begin
           directory = @storage.directories.head(@container)
           if directory.nil?
-             @error_string = "You don't have a container named ':#{@container}'"
+             @error_string = "You don't have a container named ':#{@container}'."
              @error_code = :not_found
              return false
           end
 
-          file = directory.files.head(@path)
-          if file.nil?
-             @error_string = "You don't have an object named '#{@fname}'"
-             @error_code = :not_found
-             return false
+          # container should be a class
+          if is_container?
+            if force == true
+              directory.files.each { |file| file.destroy }
+            end
+            begin
+              directory.destroy
+            rescue Excon::Errors::Conflict
+              @error_string = "The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it."
+              @error_code = :conflicted
+              return false
+            end
+          else
+            file = directory.files.head(@path)
+            if file.nil?
+               @error_string = "You don't have an object named '#{@fname}'."
+               @error_code = :not_found
+               return false
+            end
+            file.destroy
           end
 
-          file.destroy
         rescue Excon::Errors::Forbidden => error
           @error_string = "Permission denied for '#{@fname}."
           @error_code = :permission_denied
