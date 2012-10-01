@@ -27,6 +27,7 @@ Aliases: rm, delete, destroy, del
             if resource.is_container?
               unless options.force?
                 unless yes?("Are you sure you want to remove the container '#{name}'?")
+                  display "Container '#{name}' not removed."
                   next
                 end
               end

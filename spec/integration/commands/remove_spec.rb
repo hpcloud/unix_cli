@@ -132,24 +132,34 @@ describe "Remove command" do
         create_container_with_files('non_empty_container', 'foo.txt')
       end
 
+      context "when negative answer" do
+        it "should not remove container" do
+          rsp = cptr('remove :non_empty_container', ['n'])
+
+          rsp.stderr.should eq("")
+          rsp.stdout.should eq("Are you sure you want to remove the container ':non_empty_container'? Container ':non_empty_container' not removed.\n")
+          rsp.exit_status.should be_exit(:success)
+        end
+      end
+
       context "when force option is not used" do
         it "should not remove container" do
-          exit_status = :success
           rsp = cptr('remove :non_empty_container', ['y'])
+
           rsp.stderr.should eq("The container ':non_empty_container' is not empty. Please use -f option to force deleting a container with objects in it.\n")
           rsp.stdout.should eq("Are you sure you want to remove the container ':non_empty_container'? ")
-          rsp.exit_status.should be_exit(:general_error)
+          rsp.exit_status.should be_exit(:conflicted)
         end
       end
 
       context "when force option is used" do
         it "should show success message" do
-          rsp = cptr('remove -f :non_empty_container', ['y'])
+          rsp = cptr('remove -f :non_empty_container')
 
           rsp.stderr.should eq("")
           rsp.stdout.should eq("Removed ':non_empty_container'.\n")
-          lambda{ @hp_svc.get_container('non_empty_container') }.should raise_error(Fog::Storage::HP::NotFound)
           rsp.exit_status.should be_exit(:success)
+          lambda{ @hp_svc.get_container('non_empty_container') }.should raise_error(Fog::Storage::HP::NotFound)
         end
       end
 
