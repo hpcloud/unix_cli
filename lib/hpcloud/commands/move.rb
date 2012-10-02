@@ -18,28 +18,34 @@ Examples:
 Aliases: mv
       DESC
       CLI.add_common_options
-      def move(from,to)
+      def move(source, *destination)
         cli_command(options) {
-          from_type = Resource.detect_type(from)
-          to_type   = Resource.detect_type(to)
-          if from_type != :object
-            error "Move is limited to objects within containers. Please use '#{selfname} copy' instead.", :incorrect_usage
-          else
-            silence_display do
-              begin
-                copy(from, to)
-              rescue SystemExit => error
-                exit error.status if error.success? == false
-              end
-              begin
-                remove(from)
-              rescue SystemExit => error
-                exit error.status if error.success? == false
-              end
-            end
-            # any errors will be handled by above functions
-            display "Moved #{from} => #{to}"
+          last = destination.pop
+          if last.nil?
+            error "To move you must specify a source and a destination", :incorrect_usage
           end
+          source = [source] + destination
+          destination = last
+          to = Resource.create(Connection.instance.storage, destination)
+          if source.length > 1 && to.isDirectory() == false
+            error("The destination '#{destination}' for multiple files must be a directory or container", :general_error)
+          end
+          source.each { |name|
+            from = Resource.create(Connection.instance.storage, name)
+            if from.isLocal()
+              error_message "Move is limited to remote objects. Please use '#{selfname} copy' instead.", :incorrect_usage
+              next
+            end
+            if to.copy(from)
+              if from.remove(options.force)
+                display "Moved #{from.fname} => #{to.fname}"
+              else
+                error_message from.error_string, from.error_code
+              end
+            else
+              error_message to.error_string, to.error_code
+            end
+          }
         }
       end
     end

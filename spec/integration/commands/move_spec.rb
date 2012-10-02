@@ -215,7 +215,7 @@ describe "Move command" do
     it "should give error message" do
       rsp = cptr("move spec/fixtures/files/foo.txt :my_container")
 
-      rsp.stderr.should eq("Move is limited to objects within containers. Please use 'hpcloud copy' instead.\n")
+      rsp.stderr.should eq("Move is limited to remote objects. Please use 'hpcloud copy' instead.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:incorrect_usage)
     end
