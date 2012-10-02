@@ -4,15 +4,14 @@ module HP
     
       map 'mv' => 'move'
     
-      desc 'move <object> <object>', 'move objects inside or between containers'
+      desc 'move <source ...> <destination>', 'move objects inside or between containers'
       long_desc <<-DESC
-  Move objects inside a container or between containers. The source file will be
-  removed after transfer is successful. Optionally specify an availability zone can be passed.
-  For copying files to and from your local filesystem see `copy`.
+  Move objects inside a container or between containers. The source file will be removed after transfer is successful. If more than one source is specified, the destination must be a directory ending in / or a container.  Optionally specify an availability zone can be passed.  For copying files to and from your local filesystem see `copy`.
 
 Examples:
   hpcloud move :my_container/file.txt :my_container/old/backup.txt
   hpcloud move :my_container/file.txt :other_container/file.txt
+  hpcloud move :tain/f1.txt :tain/f2.txt :othertain/directory/
   hpcloud move :my_container/file.txt :my_container/old/backup.txt -z region-a.geo-1  # Optionally specify an availability zone
 
 Aliases: mv
@@ -37,7 +36,7 @@ Aliases: mv
               next
             end
             if to.copy(from)
-              if from.remove(options.force)
+              if from.remove(false)
                 display "Moved #{from.fname} => #{to.fname}"
               else
                 error_message from.error_string, from.error_code

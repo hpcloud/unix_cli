@@ -452,7 +452,7 @@ describe "Remote resource get size" do
       @storage.stub(:directories).and_return(@directories)
       res = Resource.create(@storage, ":container/files/river.txt")
 
-      res.remove.should be_true
+      res.remove(false).should be_true
     end
   end
 
@@ -463,9 +463,9 @@ describe "Remote resource get size" do
       @storage.stub(:directories).and_return(@directories)
       res = Resource.create(@storage, ":container/files/river.txt")
 
-      res.remove.should be_false
+      res.remove(false).should be_false
 
-      res.error_string.should eq("You don't have a container named ':container'")
+      res.error_string.should eq("You don't have a container named ':container'.")
       res.error_code.should eq(:not_found)
     end
   end
@@ -481,9 +481,9 @@ describe "Remote resource get size" do
       @storage.stub(:directories).and_return(@directories)
       res = Resource.create(@storage, ":container/files/river.txt")
 
-      res.remove.should be_false
+      res.remove(false).should be_false
 
-      res.error_string.should eq("You don't have an object named ':container/files/river.txt'")
+      res.error_string.should eq("You don't have an object named ':container/files/river.txt'.")
       res.error_code.should eq(:not_found)
     end
   end

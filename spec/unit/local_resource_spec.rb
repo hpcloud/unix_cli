@@ -315,7 +315,7 @@ describe "Remove" do
       res.remove(false).should be_false
 
       res.error_string.should eq("Removal of local objects is not supported: spec/fixtures/files/foo.txt")
-      res.error_code.should eq(:general_error)
+      res.error_code.should eq(:incorrect_usage)
     end
   end
 end

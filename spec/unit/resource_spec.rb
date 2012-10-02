@@ -46,6 +46,7 @@ describe "Resource construction" do
       file.isDirectory().should be_false
       file.isFile().should be_true
       file.isObject().should be_false
+      file.is_valid?.should be_true
     end
   end
   
@@ -62,6 +63,7 @@ describe "Resource construction" do
       file.isDirectory().should be_false
       file.isFile().should be_true
       file.isObject().should be_false
+      file.is_valid?.should be_true
     end
   end
   
@@ -78,6 +80,7 @@ describe "Resource construction" do
       file.isDirectory().should be_true
       file.isFile().should be_false
       file.isObject().should be_false
+      file.is_valid?.should be_true
     end
   end
   
@@ -94,6 +97,7 @@ describe "Resource construction" do
       file.isDirectory().should be_true
       file.isFile().should be_false
       file.isObject().should be_false
+      file.is_valid?.should be_true
     end
   end
   
@@ -110,6 +114,7 @@ describe "Resource construction" do
       file.isDirectory().should be_true
       file.isFile().should be_false
       file.isObject().should be_false
+      file.is_valid?.should be_true
     end
   end
   
@@ -126,6 +131,7 @@ describe "Resource construction" do
       file.isDirectory().should be_true
       file.isFile().should be_false
       file.isObject().should be_false
+      file.is_valid?.should be_true
     end
   end
   
@@ -142,6 +148,7 @@ describe "Resource construction" do
       file.isDirectory().should be_false
       file.isFile().should be_false
       file.isObject().should be_true
+      file.is_valid?.should be_true
     end
   end
   
@@ -158,6 +165,7 @@ describe "Resource construction" do
       file.isDirectory().should be_true
       file.isFile().should be_false
       file.isObject().should be_false
+      file.is_valid?.should be_true
     end
   end
   
@@ -174,6 +182,7 @@ describe "Resource construction" do
       file.isDirectory().should be_true
       file.isFile().should be_false
       file.isObject().should be_false
+      file.is_valid?.should be_true
     end
   end
 end

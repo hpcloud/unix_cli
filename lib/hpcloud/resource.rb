@@ -5,7 +5,7 @@ require 'ruby-progressbar'
 module HP
   module Cloud
     class Resource
-      attr_reader :fname, :ftype, :container, :path
+      attr_reader :fname, :ftype, :container, :path, :public_url
       attr_reader :destination, :error_string, :error_code
     
       REMOTE_TYPES = [:container, :container_directory, :object, :object_store]
@@ -34,6 +34,10 @@ module HP
 
       class << self
         protected :new
+      end
+
+      def is_valid?
+        return @error_string.nil?
       end
 
       def isLocal()
@@ -136,6 +140,10 @@ module HP
 
       def set_destination(from)
         return true
+      end
+
+      def read_header()
+        return false
       end
 
       def open(output=false, siz=0)
@@ -386,6 +394,38 @@ module HP
         rescue
           return 0
         end
+      end
+
+      def read_header()
+        begin
+          if is_valid? == false
+            return false
+          end
+
+          directory = @storage.directories.get(@container)
+          if directory.nil?
+            @error_string = "Cannot find container ':#{@container}'."
+            @error_code = :not_found
+            return false
+          end
+
+          if is_container?
+            @public_url = directory.public_url
+          else
+            file = directory.files.head(@path)
+            if file.nil?
+               @error_string = "Cannot find object named '#{@fname}'."
+               @error_code = :not_found
+               return false
+            end
+            @public_url = file.public_url
+          end
+        rescue Exception => error
+          @error_string = "Error reading '#{@fname}': " + error.to_s
+          @error_code = :general_error
+          return false
+        end
+        return true
       end
 
       def valid_source()
