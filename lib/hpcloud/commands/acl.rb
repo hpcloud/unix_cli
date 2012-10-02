@@ -18,34 +18,17 @@ Examples:
 Aliases: none
       DESC
       CLI.add_common_options
-      def acl(resource)
+      def acl(name, *names)
         cli_command(options) {
-          acls = "private"
-          type = Resource.detect_type(resource)
-          container, key = Container.parse_resource(resource)
-          dir = connection(:storage, options).directories.get(container)
-          if type == :object
-            if dir
-              file = dir.files.get(key)
-              if file
-                acls = file.directory.public? ? "public-read" : "private"
-                display acls
-              else
-                error "No object exists at '#{container}/#{key}'.", :not_found
-              end
+          names = [name] + names
+          names.each { |name|
+            resource = Resource.create(Connection.instance.storage, name)
+            if resource.read_header
+              display resource.acl
             else
-              error "No object exists at '#{container}/#{key}'.", :not_found
+              error_message resource.error_string, resource.error_code
             end
-          elsif type == :container
-            if dir
-              acls = dir.public? ? "public-read" : "private"
-              display acls
-            else
-              error "No container named '#{container}' exists.", :not_found
-            end
-          else
-            error "ACL viewing is only supported for containers and objects. See `help acl`.", :not_supported
-          end
+          }
         }
       end
     end

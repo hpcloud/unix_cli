@@ -5,7 +5,7 @@ require 'ruby-progressbar'
 module HP
   module Cloud
     class Resource
-      attr_reader :fname, :ftype, :container, :path, :public_url
+      attr_reader :fname, :ftype, :container, :path, :public_url, :acl
       attr_reader :destination, :error_string, :error_code
     
       REMOTE_TYPES = [:container, :container_directory, :object, :object_store]
@@ -143,6 +143,8 @@ module HP
       end
 
       def read_header()
+        @error_string = "Not supported on local object '#{@fname}'."
+        @error_code = :not_supported
         return false
       end
 
@@ -411,6 +413,7 @@ module HP
 
           if is_container?
             @public_url = directory.public_url
+            @acl = directory.public? ? "public-read" : "private"
           else
             file = directory.files.head(@path)
             if file.nil?
@@ -419,6 +422,7 @@ module HP
                return false
             end
             @public_url = file.public_url
+            @acl = file.directory.public? ? "public-read" : "private"
           end
         rescue Exception => error
           @error_string = "Error reading '#{@fname}': " + error.to_s

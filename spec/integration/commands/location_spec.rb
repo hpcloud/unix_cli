@@ -19,6 +19,16 @@ describe 'location command' do
     end
   end
 
+  context "run on local file" do
+    it "should show fail message" do
+      rsp = cptr("location #{__FILE__}")
+
+      rsp.stderr.should eq("Not supported on local object '#{__FILE__}'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_supported)
+    end
+  end
+
   context "run on missing object" do
     it "should show fail message" do
       @hp_svc.put_container('my_empty_container')
@@ -38,6 +48,7 @@ describe 'location command' do
       rsp = cptr('location :someone_elses')
 
       rsp.stderr.should eq("Cannot find container ':someone_elses'.\n")
+      rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
   end
@@ -50,6 +61,7 @@ describe 'location command' do
       rsp = cptr("location :someone_elses/#{@file_name}")
 
       rsp.stderr.should eq("Cannot find container ':someone_elses'.\n")
+      rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
   end
