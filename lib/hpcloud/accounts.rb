@@ -119,6 +119,9 @@ module HP
                                           :auth_uri => uri,
                                           :tenant_id => tenant
                                         }
+        if uri.match(/hpcloud.net/)
+          @accts[account][:options][:ssl_verify_peer] = false
+        end
       end
 
       def set_zones(account, compute, storage, cdn, block)
