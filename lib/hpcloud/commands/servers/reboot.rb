@@ -19,21 +19,27 @@ Aliases: none
                     :type => :boolean, :aliases => '-h',
                     :desc => 'Hard reboot a server.'
       CLI.add_common_options
-      define_method "servers:reboot" do |name|
+      define_method "servers:reboot" do |name, *names|
         cli_command(options) {
-          compute_connection = connection(:compute, options)
-          server = compute_connection.servers.select {|s| s.name == name}.first
-          if server
-            if options.hard?
-              server.reboot("HARD")
-              display "Hard rebooting server '#{name}'."
-            else
-              server.reboot
-              display "Soft rebooting server '#{name}'."
+          names = [name] + names
+          servers = Servers.new.get(names, false)
+          servers.each { |server|
+            begin
+              if server.is_valid?
+                if options.hard?
+                  server.fog.reboot("HARD")
+                  display "Hard rebooting server '#{name}'."
+                else
+                  server.fog.reboot
+                  display "Soft rebooting server '#{name}'."
+                end
+              else
+                error_message server.error_string, server.error_code
+              end
+            rescue Exception => e
+              error_message("Error removing image: " + e.to_s, :general_error)
             end
-          else
-            error "You don't have a server '#{name}'.", :not_found
-          end
+          }
         }
       end
     end

@@ -35,7 +35,7 @@ Aliases: none
               error "The IP address '#{ip_or_id}' is in use by another server '#{address.instance_id}'.", :conflicted
             end
           else
-            address.fog.server = server
+            address.fog.server = server.fog
             display "Associated address '#{ip_or_id}' to server '#{server_name_id}'."
           end
         }
