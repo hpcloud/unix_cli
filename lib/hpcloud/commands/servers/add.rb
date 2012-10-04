@@ -15,7 +15,7 @@ Examples:
 
 Aliases: none
       DESC
-      method_option :key_name,
+      method_option :key_name, :required => true,
                     :type => :string, :aliases => '-k',
                     :desc => 'Specify a key name to be used.'
       method_option :security_group,
@@ -41,7 +41,7 @@ Aliases: none
           if srv.save == true
             display "Created server '#{name}' with id '#{srv.id}'."
             if srv.is_windows?
-              display "Windows password: " + server.windows_password
+              display "Windows password: " + srv.windows_password
             end
           else
             error(srv.error_string, srv.error_code)

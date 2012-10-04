@@ -1,23 +1,19 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "servers:add command" do
-  def cli
-    @cli ||= HP::Cloud::CLI.new
-  end
-
   before(:all) do
     @hp_svc = compute_connection
-    @keypair_name = ('fog-serv-key-100')
-    @sg_name = resource_name('fog-serv-sg-100')
-    @keypair = @hp_svc.key_pairs.create(:name => @keypair_name)
-    @sgroup = @hp_svc.security_groups.create(:name => @sg_name, :description => "#{@sg_name} desc")
+    @sg_name = 'cli_test_sg1'
+    @keypair_name = 'cli_test_keypair1'
+    SecurityGroupTestHelper.create(@sg_name)
+    KeypairTestHelper.create(@keypair_name)
   end
 
   context "when creating server with name, image and flavor (no keyname or security group)" do
     it "should show success message" do
       @server_name = resource_name("add1")
 
-      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()}")
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name}")
 
       rsp.stderr.should eq("")
       @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
@@ -59,32 +55,11 @@ describe "servers:add command" do
     end
   end
 
-  context "when creating server with name, image, flavor and only keyname" do
-    it "should show success message" do
-      @server_name = resource_name("add3")
-
-      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name}")
-
-      rsp.stderr.should eq("")
-      @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
-      rsp.stdout.should eql("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
-      rsp.exit_status.should be_exit(:success)
-      servers = @hp_svc.servers.map {|s| s.id}
-      servers.should include(@new_server_id.to_i)
-      servers = @hp_svc.servers.map {|s| s.name}
-      servers.should include(@server_name)
-    end
-
-    after(:each) do
-      cptr("servers:remove #{@server_name}")
-    end
-  end
-
-  context "when creating server with name, image, flavor and only security group" do
+  context "when creating server with name, image, flavor, keypair and only security group" do
     it "should show success message" do
       @server_name = resource_name("add4")
 
-      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -s #{@sg_name}")
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()}  -k #{@keypair_name} -s #{@sg_name}")
 
       rsp.stderr.should eq("")
       @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
@@ -104,9 +79,9 @@ describe "servers:add command" do
   context "when creating windows image server" do
     it "should show success message" do
       @server_name = resource_name("add5")
-      @pem_file = "bogus.pem"
+      @pem_file = Dir.home + "/.ssh/id_rsa"
 
-      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_win_image_id()} #{AccountsHelper.get_flavor_id()} -p #{@pem_file}")
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_win_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name} -p #{@pem_file}")
 
       rsp.stderr.should eq("")
       @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
@@ -123,11 +98,37 @@ describe "servers:add command" do
     end
   end
 
+  context "when creating windows image server with bogus pem" do
+    it "should show failure message" do
+      @server_name = resource_name("add5")
+      @pem_file = "bogus.pem"
+
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_win_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name} -p #{@pem_file}")
+
+      rsp.stderr.should eq("Error reading private key file 'bogus.pem': No such file or directory - bogus.pem\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:incorrect_usage)
+    end
+  end
+
+  context "when creating windows image server with no pem" do
+    it "should show failure message" do
+      @server_name = resource_name("add5")
+      @pem_file = "bogus.pem"
+
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_win_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name}")
+
+      rsp.stderr.should eq("You must specify the private key file if you want to create a windows instance\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:incorrect_usage)
+    end
+  end
+
   context "when creating server with a name that already exists" do
     before(:all) do
       ServerTestHelper.create("cli_test_srv1")
 
-      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()}")
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name}")
 
       rsp.stderr.should eq("Server with the name '#{@server_name}' already exists\n")
       rsp.stdout.should eq("")
@@ -139,7 +140,7 @@ describe "servers:add command" do
     it "should report success" do
       @server_name = resource_name("add5")
 
-      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -z az-1.region-a.geo-1")
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eq("")
       @server_id2 = rsp.stdout.scan(/'([^']+)/)[2][0]
@@ -158,7 +159,7 @@ describe "servers:add command" do
 
   context "servers:add with invalid avl" do
     it "should report error" do
-      rsp = cptr("servers:add other_name #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -z blah")
+      rsp = cptr("servers:add other_name #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name} -z blah")
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
@@ -167,11 +168,21 @@ describe "servers:add command" do
     after(:all) { HP::Cloud::Connection.instance.clear_options() }
   end
 
+  context "verify the -k option is mandatory" do
+    it "should report error" do
+      rsp = cptr("servers:add other_name #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()}")
+
+      rsp.stderr.should eq("No value provided for required options '--key-name'\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
   context "verify the -a option is activated" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("servers:add other_name #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -a bogus")
+      rsp = cptr("servers:add other_name #{AccountsHelper.get_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name} -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
@@ -183,6 +194,5 @@ describe "servers:add command" do
 
   after(:all) do
     @keypair.destroy if @keypair
-    @sgroup.destroy if @sgroup
   end
 end
