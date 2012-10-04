@@ -20,7 +20,7 @@ describe "Remove command" do
     context "when object does not exist" do
       it "should exit with object not found" do
         rsp = cptr('remove :my_container/nonexistant.txt')
-        rsp.stderr.should eq("You don't have a object named 'nonexistant.txt'.\n")
+        rsp.stderr.should eq("You don't have an object named ':my_container/nonexistant.txt'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end
@@ -28,9 +28,9 @@ describe "Remove command" do
 
     context "when container does not exist" do
       it "should exit with container not found" do
-        rsp = cptr("remove :nonexistant_container")
-        rsp.stderr.should eql("You don't have a container named 'nonexistant_container'\n")
-        rsp.stdout.should eq("")
+        rsp = cptr("remove :nonexistant_container", ['yes'])
+        rsp.stderr.should eql("You don't have a container named ':nonexistant_container'.\n")
+        rsp.stdout.should eq("Are you sure you want to remove the container ':nonexistant_container'? ")
         rsp.exit_status.should be_exit(:not_found)
       end
     end
@@ -44,7 +44,7 @@ describe "Remove command" do
 
         rsp = cptr("rm :notmycontainer/#{@file_name}")
 
-        rsp.stderr.should eq("You don't have a container named 'notmycontainer'\n")
+        rsp.stderr.should eq("You don't have a container named ':notmycontainer'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end
@@ -53,7 +53,7 @@ describe "Remove command" do
     context "when syntax is not correct" do
       it "should exit with message about bad syntax" do
         rsp = cptr("remove /foo/foo")
-        rsp.stderr.should eql("Could not find resource '/foo/foo'. Correct syntax is :containername/objectname.\n")
+        rsp.stderr.should eql("Removal of local objects is not supported: /foo/foo\n")
         rsp.stdout.should eql("")
         rsp.exit_status.should be_exit(:incorrect_usage)
       end
@@ -66,7 +66,7 @@ describe "Remove command" do
         rsp = cptr("remove :my_container/foo.txt")
 
         rsp.stderr.should eql("")
-        rsp.stdout.should eql("Removed object ':my_container/foo.txt'.\n")
+        rsp.stdout.should eql("Removed ':my_container/foo.txt'.\n")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -78,7 +78,7 @@ describe "Remove command" do
         rsp = cptr("remove :my_container/foo.txt -z region-a.geo-1")
 
         rsp.stderr.should eq("")
-        rsp.stdout.should eq("Removed object ':my_container/foo.txt'.\n")
+        rsp.stdout.should eq("Removed ':my_container/foo.txt'.\n")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -112,16 +112,11 @@ describe "Remove command" do
       end
 
       it "should ask for confirmation to delete" do
-        exit_status = :success
-        $stdout.should_receive(:print).with("Are you sure you want to remove the container 'container_to_remove'? ")
-        $stdin.should_receive(:gets).and_return('y')
-        $stdout.should_receive(:puts).with("Removed container 'container_to_remove'.")
-        begin
-          cli.send('remove', ':container_to_remove')
-        rescue SystemExit => system_exit # catch any exit calls
-          exit_status = system_exit.status
-        end
-        exit_status.should be_exit(:success)
+        rsp = cptr('remove :container_to_remove', ['y'])
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("Are you sure you want to remove the container ':container_to_remove'? Removed ':container_to_remove'.\n")
+        rsp.exit_status.should be_exit(:success)
       end
 
       it "should remove container" do
@@ -137,18 +132,23 @@ describe "Remove command" do
         create_container_with_files('non_empty_container', 'foo.txt')
       end
 
+      context "when negative answer" do
+        it "should not remove container" do
+          rsp = cptr('remove :non_empty_container', ['n'])
+
+          rsp.stderr.should eq("")
+          rsp.stdout.should eq("Are you sure you want to remove the container ':non_empty_container'? Container ':non_empty_container' not removed.\n")
+          rsp.exit_status.should be_exit(:success)
+        end
+      end
+
       context "when force option is not used" do
         it "should not remove container" do
-          exit_status = :success
-          $stdout.should_receive(:print).with("Are you sure you want to remove the container 'non_empty_container'? ")
-          $stdin.should_receive(:gets).and_return('y')
-          $stderr.should_receive(:puts).with("The container 'non_empty_container' is not empty. Please use -f option to force deleting a container with objects in it.")
-          begin
-            cli.send('remove', ':non_empty_container')
-          rescue SystemExit => system_exit # catch any exit calls
-            exit_status = system_exit.status
-          end
-          exit_status.should be_exit(:general_error)
+          rsp = cptr('remove :non_empty_container', ['y'])
+
+          rsp.stderr.should eq("The container ':non_empty_container' is not empty. Please use -f option to force deleting a container with objects in it.\n")
+          rsp.stdout.should eq("Are you sure you want to remove the container ':non_empty_container'? ")
+          rsp.exit_status.should be_exit(:conflicted)
         end
       end
 
@@ -157,9 +157,9 @@ describe "Remove command" do
           rsp = cptr('remove -f :non_empty_container')
 
           rsp.stderr.should eq("")
-          rsp.stdout.should eq("Removed container 'non_empty_container'.\n")
-          lambda{ @hp_svc.get_container('non_empty_container') }.should raise_error(Fog::Storage::HP::NotFound)
+          rsp.stdout.should eq("Removed ':non_empty_container'.\n")
           rsp.exit_status.should be_exit(:success)
+          lambda{ @hp_svc.get_container('non_empty_container') }.should raise_error(Fog::Storage::HP::NotFound)
         end
       end
 

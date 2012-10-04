@@ -175,20 +175,6 @@ describe "Set destination" do
       to.destination.should eq("#{dir}/spec/fixtures/files/foo.txt/impossible/subdir/file.txt")
     end
   end
-  
-  context "when local directory path empty" do
-    it "valid destination true" do
-      to = Resource.create(@co, "")
-
-      rc = to.set_destination("file.txt")
-
-      rc.should be_true
-      to.error_string.should be_nil
-      to.error_code.should be_nil
-      to.destination.should eq("file.txt")
-    end
-  end
-  
 end
 
 describe "Open read close" do
@@ -319,6 +305,56 @@ describe "Get size" do
       res.get_size().should eq(0)
     end
   end
-
 end
 
+describe "Remove" do
+  context "remove of local" do
+    it "fails" do
+      res = Resource.create(@co, "spec/fixtures/files/foo.txt")
+
+      res.remove(false).should be_false
+
+      res.error_string.should eq("Removal of local objects is not supported: spec/fixtures/files/foo.txt")
+      res.error_code.should eq(:incorrect_usage)
+    end
+  end
+end
+
+describe "is container" do
+  before(:each) do
+    @co = double("connection")
+  end
+
+  context "local file" do
+    it "returns size" do
+      res = Resource.create(@co, "spec/fixtures/files/foo.txt")
+
+      res.is_container?.should be_false
+    end
+  end
+
+  context "remote object" do
+    it "returns size" do
+      res = Resource.create(@co, ":tainer/foo.txt")
+
+      res.is_container?.should be_false
+    end
+  end
+
+  context "remote directory" do
+    it "returns size" do
+      res = Resource.create(@co, ":tainer/subdir/")
+
+      res.is_container?.should be_false
+    end
+  end
+
+  context "remote container" do
+    it "returns size" do
+      res = Resource.create(@co, ":tainer")
+
+      res.is_container?.should be_true
+    end
+  end
+
+end

@@ -2,13 +2,13 @@ module HP
   module Cloud
     class CLI < Thor
     
-      desc "containers:add <name>", "add a container"
+      desc "containers:add name [name ...]", "add a container"
       long_desc <<-DESC
-  Add a new container to your storage account. Container name can be specified with
-  or without the preceding colon: 'my_container' or ':my_container'. Optionally, an availability zone can be passed.
+  Add a new container to your storage account. You may creeate multiple containers by specifying more than one container name on the command line.  Container name can be specified with or without the preceding colon: 'my_container' or ':my_container'. Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud containers:add :my_container                    # Creates a new container called 'my_container'
+  hpcloud containers:add :con :tainer                     # Create two new containers called 'con' and 'tainer'
   hpcloud containers:add :my_container -z region-a.geo-1  # Optionally specify an availability zone
 
 Aliases: none

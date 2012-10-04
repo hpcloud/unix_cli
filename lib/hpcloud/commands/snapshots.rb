@@ -8,7 +8,7 @@ module HP
 
       map 'snapshots:list' => 'snapshots'
     
-      desc 'snapshots [id|displayName] ...', "list block devices available optionally filtered by identifer or display name"
+      desc 'snapshots [name_or_id ...]', "list block devices available optionally filtered by identifer or display name"
       long_desc <<-DESC
   The snapshots list command will list all the block snapshots that are associated with the account on the server. The list starts with identifier and contains name, size, type, create date, status, description and servers on which it is attached.  Optionally, the list may be filtered by specifying identifiers or names on the command line.
 
@@ -30,7 +30,7 @@ Aliases: snapshots:list
             if hsh.empty?
               display "There are no snapshots that match the provided arguments"
             else
-              tablelize(hsh, SnapshotHelper.get_keys())
+              Tableizer.new(options, SnapshotHelper.get_keys(), hsh).print
             end
           end
         }

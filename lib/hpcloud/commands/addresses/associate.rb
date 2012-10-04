@@ -4,7 +4,7 @@ module HP
 
       map 'addresses:attach' => 'addresses:associate'
 
-      desc "addresses:associate <public_ip> <server_name_id>", "associate a public IP address to a server instance"
+      desc "addresses:associate <ip_or_id> <server_name_or_id>", "associate a public IP address to a server instance"
       long_desc <<-DESC
   Associate an existing and unassigned public IP address, to the specified server instance.
   Optionally, an availability zone can be passed.
@@ -16,9 +16,9 @@ Examples:
 Aliases: none
       DESC
       CLI.add_common_options
-      define_method "addresses:associate" do |ip_or_id, server_name_id|
+      define_method "addresses:associate" do |ip_or_id, server_name_or_id|
         cli_command(options) {
-          server = Servers.new.get(server_name_id)
+          server = Servers.new.get(server_name_or_id)
           if server.is_valid? == false
             error server.error_string, server.error_code
           end
@@ -30,13 +30,13 @@ Aliases: none
 
           if address.instance_id.nil? == false
             if address.instance_id == server.id
-              display "The IP address '#{ip_or_id}' is already associated with '#{server_name_id}'."
+              display "The IP address '#{ip_or_id}' is already associated with '#{server_name_or_id}'."
             else
               error "The IP address '#{ip_or_id}' is in use by another server '#{address.instance_id}'.", :conflicted
             end
           else
             address.fog.server = server.fog
-            display "Associated address '#{ip_or_id}' to server '#{server_name_id}'."
+            display "Associated address '#{ip_or_id}' to server '#{server_name_or_id}'."
           end
         }
       end

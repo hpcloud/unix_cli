@@ -13,12 +13,13 @@ module HP
 
       map 'servers:list' => 'servers'
 
-      desc "servers", "list of available servers"
+      desc "servers [name_or_id ...]", "list of available servers"
       long_desc <<-DESC
-  List the servers in your compute account. Optionally, an availability zone can be passed.
+  List the servers in your compute account. You may filter the list by naming the servers by name or id which you wish to display.  Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud servers                         # List servers
+  hpcloud servers hal                     # List server named hal
   hpcloud servers -z az-2.region-a.geo-1  # List servers for an availability zone
 
 Aliases: servers:list
@@ -34,7 +35,7 @@ Aliases: servers:list
             if hsh.empty?
               display "There are no servers that match the provided arguments"
             else
-              tablelize(hsh, ServerHelper.get_keys())
+              Tableizer.new(options, ServerHelper.get_keys(), hsh).print
             end
           end
         }

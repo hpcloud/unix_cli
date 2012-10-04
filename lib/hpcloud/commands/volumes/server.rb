@@ -14,10 +14,10 @@ Examples:
   hpcloud volumes:server myServer -z az-2.region-a.geo-1 # Optionally specify an availability zone
       DESC
       CLI.add_common_options
-      define_method "volumes:server" do |*srv_name_or_ids|
+      define_method "volumes:server" do |*arguments|
         cli_command(options) {
-          hshes = []
-          servers = Servers.new.get(srv_name_or_ids)
+          hsh = []
+          servers = Servers.new.get(arguments)
           servers.each { |server|
             if server.is_valid? == false
               error_message server.error_string, server.error_code
@@ -28,10 +28,10 @@ Examples:
               error_message "Cannot find any volumes for '#{server.name}'.", :not_found
               next
             end
-            hshes += ray
+            hsh += ray
           }
-          if hshes.empty? == false
-            tablelize(hshes, VolumeAttachment.get_keys())
+          if hsh.empty? == false
+            Tableizer.new(options, VolumeAttachment.get_keys(), hsh).print
           end
         }
       end

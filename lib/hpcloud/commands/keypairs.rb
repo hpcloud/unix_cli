@@ -8,12 +8,13 @@ module HP
 
       map 'keypairs:list' => 'keypairs'
 
-      desc "keypairs", "list of available keypairs"
+      desc "keypairs [name ...]", "list of available keypairs"
       long_desc <<-DESC
-  List the keypairs in your compute account. Optionally, an availability zone can be passed.
+  List the keypairs in your compute account. You may filter the output of keys displayed by specifying the keypairs you want displayed on the command line.  Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud keypairs                           # List keypairs
+  hpcloud keypairs brat                      # List keypair 'brat'
   hpcloud keypairs -z az-2.region-a.geo-1    # Optionally specify an availability zone
 
 Aliases: keypairs:list
@@ -29,7 +30,7 @@ Aliases: keypairs:list
             if hsh.empty?
               display "There are no keypairs that match the provided arguments"
             else
-              tablelize(hsh, KeypairHelper.get_keys())
+              Tableizer.new(options, KeypairHelper.get_keys(), hsh).print
             end
           end
         }

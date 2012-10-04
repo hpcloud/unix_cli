@@ -439,4 +439,52 @@ describe "Remote resource get size" do
     end
   end
 
+  context "remove succeeds" do
+    it "still gets zero" do
+      @file = double("file")
+      @file.should_receive(:destroy).and_return(true)
+      @files = double("files")
+      @files.stub(:head).and_return(@file)
+      @directory = double("directory")
+      @directory.stub(:files).and_return(@files)
+      @directories = double("directories")
+      @directories.stub(:head).and_return(@directory)
+      @storage.stub(:directories).and_return(@directories)
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.remove(false).should be_true
+    end
+  end
+
+  context "remove container not found" do
+    it "still gets zero" do
+      @directories = double("directories")
+      @directories.stub(:head).and_return(nil)
+      @storage.stub(:directories).and_return(@directories)
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.remove(false).should be_false
+
+      res.error_string.should eq("You don't have a container named ':container'.")
+      res.error_code.should eq(:not_found)
+    end
+  end
+
+  context "remove file not found" do
+    it "still gets zero" do
+      @files = double("files")
+      @files.stub(:head).and_return(nil)
+      @directory = double("directory")
+      @directory.stub(:files).and_return(@files)
+      @directories = double("directories")
+      @directories.stub(:head).and_return(@directory)
+      @storage.stub(:directories).and_return(@directories)
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.remove(false).should be_false
+
+      res.error_string.should eq("You don't have an object named ':container/files/river.txt'.")
+      res.error_code.should eq(:not_found)
+    end
+  end
 end

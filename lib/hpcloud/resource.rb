@@ -5,15 +5,19 @@ require 'ruby-progressbar'
 module HP
   module Cloud
     class Resource
-      attr_reader :fname, :ftype, :container, :path
+      attr_reader :fname, :ftype, :container, :path, :public_url, :acl
       attr_reader :destination, :error_string, :error_code
     
-      REMOTE_TYPES = [:container, :container_directory, :object]
+      REMOTE_TYPES = [:container, :container_directory, :object, :object_store]
       LOCAL_TYPES = [:directory, :file]
     
       def self.create(storage, fname)
-        if LOCAL_TYPES.include?(detect_type(fname))
+        ftype = detect_type(fname)
+        if LOCAL_TYPES.include?(ftype)
           return LocalResource.new(storage, fname)
+        end
+        if ftype == :object_store
+          return ObjectStore.new(storage, fname)
         end
         return RemoteResource.new(storage, fname)
       end
@@ -32,6 +36,10 @@ module HP
         protected :new
       end
 
+      def is_valid?
+        return @error_string.nil?
+      end
+
       def isLocal()
         return Resource::LOCAL_TYPES.include?(@ftype)
       end
@@ -40,10 +48,19 @@ module HP
         return Resource::REMOTE_TYPES.include?(@ftype)
       end
 
+      def is_object_store?
+        return @ftype == :object_store
+      end
+
+      def is_container?
+        return @ftype == :container
+      end
+
       def isDirectory()
         return @ftype == :directory ||
                @ftype == :container_directory ||
-               @ftype == :container
+               @ftype == :container ||
+               @ftype == :object_store
       end
 
       def isFile()
@@ -55,6 +72,9 @@ module HP
       end
 
       def self.detect_type(resource)
+        if resource.empty?
+          return :object_store
+        end
         if resource[0,1] == ':'
           if resource[-1,1] == '/'
             :container_directory
@@ -120,6 +140,12 @@ module HP
 
       def set_destination(from)
         return true
+      end
+
+      def read_header()
+        @error_string = "Not supported on local object '#{@fname}'."
+        @error_code = :not_supported
+        return false
       end
 
       def open(output=false, siz=0)
@@ -191,6 +217,12 @@ module HP
 
       def get_destination()
         return @destination.to_s
+      end
+
+      def remove(force)
+        @error_string = "Removal of local objects is not supported: #{@fname}"
+        @error_code = :incorrect_usage
+        return false
       end
     end
 
@@ -366,6 +398,40 @@ module HP
         end
       end
 
+      def read_header()
+        begin
+          if is_valid? == false
+            return false
+          end
+
+          directory = @storage.directories.get(@container)
+          if directory.nil?
+            @error_string = "Cannot find container ':#{@container}'."
+            @error_code = :not_found
+            return false
+          end
+
+          if is_container?
+            @public_url = directory.public_url
+            @acl = directory.public? ? "public-read" : "private"
+          else
+            file = directory.files.head(@path)
+            if file.nil?
+               @error_string = "Cannot find object named '#{@fname}'."
+               @error_code = :not_found
+               return false
+            end
+            @public_url = file.public_url
+            @acl = file.directory.public? ? "public-read" : "private"
+          end
+        rescue Exception => error
+          @error_string = "Error reading '#{@fname}': " + error.to_s
+          @error_code = :general_error
+          return false
+        end
+        return true
+      end
+
       def valid_source()
         return valid_container()
       end
@@ -458,6 +524,62 @@ module HP
 
       def get_destination()
         return ':' + @container.to_s + '/' + @destination.to_s
+      end
+
+      def remove(force)
+        begin
+          directory = @storage.directories.head(@container)
+          if directory.nil?
+             @error_string = "You don't have a container named ':#{@container}'."
+             @error_code = :not_found
+             return false
+          end
+
+          # container should be a class
+          if is_container?
+            if force == true
+              directory.files.each { |file| file.destroy }
+            end
+            begin
+              directory.destroy
+            rescue Excon::Errors::Conflict
+              @error_string = "The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it."
+              @error_code = :conflicted
+              return false
+            end
+          else
+            file = directory.files.head(@path)
+            if file.nil?
+               @error_string = "You don't have an object named '#{@fname}'."
+               @error_code = :not_found
+               return false
+            end
+            file.destroy
+          end
+
+        rescue Excon::Errors::Forbidden => error
+          @error_string = "Permission denied for '#{@fname}."
+          @error_code = :permission_denied
+          return false
+        rescue Exception => e
+          @error_string = "Exception removing '#{@fname}': " + e.to_s
+          @error_code = :general_error
+          return false
+        end
+        return true
+      end
+    end
+
+    class ObjectStore < Resource
+      def valid_destination(source)
+        return false
+      end
+
+      def foreach(&block)
+        containers = @storage.directories
+        containers.each { |x|
+          yield Resource.create(@storage, ':' + x.key)
+        }
       end
     end
   end

@@ -12,12 +12,13 @@ module HP
 
       map 'images:list' => 'images'
 
-      desc "images", "list of available images"
+      desc "images [name_or_id ...]", "list of available images"
       long_desc <<-DESC
-  List the images in your compute account. Optionally, an availability zone can be passed.
+  List the images in your compute account. You may filter the images displayed by specifying one ore more image names or ids on the command line.  Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud images                         # List images
+  hpcloud images 1239                    # List image '1239'
   hpcloud images -z az-2.region-a.geo-1  # List images for an availability zone
 
 Aliases: images:list
@@ -33,7 +34,7 @@ Aliases: images:list
             if hsh.empty?
               display "There are no images that match the provided arguments"
             else
-              tablelize(hsh, ImageHelper.get_keys())
+              Tableizer.new(options, ImageHelper.get_keys(), hsh).print
             end
           end
         }

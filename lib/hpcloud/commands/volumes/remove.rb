@@ -4,21 +4,22 @@ module HP
 
       map %w(volumes:rm volumes:delete volumes:del) => 'volumes:remove'
 
-      desc "volumes:remove <id|name> ...", "remove a volume by id or name"
+      desc "volumes:remove name_or_id [name_or_id ...]", "remove a volume by id or name"
       long_desc <<-DESC
-  Remove volumes by specifying their names or ids. Optionally, an availability zone may be passed.
+  Remove volumes by specifying their names or ids. More than one volume name or id may be specified on a command line.  Optionally, an availability zone may be passed.
 
 Examples:
-  hpcloud volumes:remove my-volume 998                     # delete 'my-volume' and 998
+  hpcloud volumes:remove tome treatise   # delete volumes 'tome' and 'treatise'
+  hpcloud volumes:remove 998             # delete volume with id 998
   hpcloud volumes:remove my-volume -z az-2.region-a.geo-1  # Optionally specify an availability zone
 
 Aliases: volumes:rm, volumes:delete, volumes:del
       DESC
       CLI.add_common_options
-      define_method "volumes:remove" do |name, *names|
+      define_method "volumes:remove" do |name_or_id, *name_or_ids|
         cli_command(options) {
-          names = [name] + names
-          volumes = Volumes.new.get(names, false)
+          name_or_ids = [name_or_id] + name_or_ids
+          volumes = Volumes.new.get(name_or_ids, false)
           volumes.each { |volume|
             begin
               if volume.is_valid?

@@ -13,9 +13,19 @@ describe 'location command' do
     it "should show fail message" do
       rsp = cptr('location :my_missing_container')
 
-      rsp.stderr.should eq("No container named 'my_missing_container' exists.\n")
+      rsp.stderr.should eq("Cannot find container ':my_missing_container'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
+    end
+  end
+
+  context "run on local file" do
+    it "should show fail message" do
+      rsp = cptr("location #{__FILE__}")
+
+      rsp.stderr.should eq("Not supported on local object '#{__FILE__}'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_supported)
     end
   end
 
@@ -25,7 +35,7 @@ describe 'location command' do
 
       rsp = cptr('location :my_empty_container/file')
 
-      rsp.stderr.should eq("No object exists at 'my_empty_container/file'.\n")
+      rsp.stderr.should eq("Cannot find object named ':my_empty_container/file'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
@@ -37,7 +47,8 @@ describe 'location command' do
     it "should display error message" do
       rsp = cptr('location :someone_elses')
 
-      rsp.stderr.should eql("No container named 'someone_elses' exists.\n")
+      rsp.stderr.should eq("Cannot find container ':someone_elses'.\n")
+      rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
   end
@@ -49,7 +60,8 @@ describe 'location command' do
 
       rsp = cptr("location :someone_elses/#{@file_name}")
 
-      rsp.stderr.should eq("No object exists at 'someone_elses/#{@file_name}'.\n")
+      rsp.stderr.should eq("Cannot find container ':someone_elses'.\n")
+      rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
   end

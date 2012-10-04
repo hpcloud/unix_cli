@@ -12,7 +12,7 @@ describe "Acl command (viewing acls)" do
     it "should exit with message about not supported resource" do
       rsp = cptr('acl /foo/foo')
 
-      rsp.stderr.should eq("ACL viewing is only supported for containers and objects. See `help acl`.\n")
+      rsp.stderr.should eq("Not supported on local object '/foo/foo'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_supported)
     end

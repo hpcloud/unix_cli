@@ -4,21 +4,22 @@ module HP
 
       map %w(snapshots:rm snapshots:delete snapshots:del) => 'snapshots:remove'
 
-      desc "snapshots:remove <id|name> ...", "remove a snapshot by id or name"
+      desc "snapshots:remove <name_or_id> [name_or_id ...]", "remove a snapshots by id or name"
       long_desc <<-DESC
   Remove snapshots by specifying their names or ids. Optionally, an availability zone may be passed.
 
 Examples:
-  hpcloud snapshots:remove my-snapshot 998                # delete snapshots my-snapshot and 998
+  hpcloud snapshots:remove snappy1 snappy2                # delete two snapshots snappy1 and snappy2
+  hpcloud snapshots:remove 998                            # delete snapshot by id 998
   hpcloud snapshots:remove snappy -z az-2.region-a.geo-1  # delete snapshot snappy with availability zone specified
 
 Aliases: snapshots:rm, snapshots:delete, snapshots:del
       DESC
       CLI.add_common_options
-      define_method "snapshots:remove" do |name, *names|
+      define_method "snapshots:remove" do |name_or_id, *name_or_ids|
         cli_command(options) {
-          names = [name] + names
-          snapshots = Snapshots.new.get(names, false)
+          name_or_ids = [name_or_id] + name_or_ids
+          snapshots = Snapshots.new.get(name_or_ids, false)
           snapshots.each { |snapshot|
             begin
               if snapshot.is_valid?

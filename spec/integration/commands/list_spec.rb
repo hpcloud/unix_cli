@@ -25,13 +25,37 @@ describe "list command" do
     end
   end
 
+  context "containers" do
+    it "should report success" do
+      rsp = cptr('ls')
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
+  context "containers" do
+    it "should report success" do
+      rsp = cptr('containers')
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
+  context "containers:list" do
+    it "should report success" do
+      rsp = cptr('containers:list')
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
   context "list on object" do
     it "should report failure" do
       rsp = cptr("list :mycontainer/object.txt")
 
-      rsp.stderr.should eq("Valid container names do not contain the '/' character: :mycontainer/object.txt\n")
+      rsp.stderr.should eq("Cannot find resource named ':mycontainer/object.txt'.\n")
       rsp.stdout.should eq("")
-      rsp.exit_status.should be_exit(:general_error)
+      rsp.exit_status.should be_exit(:not_found)
     end
   end
 
@@ -61,11 +85,11 @@ describe "list command" do
       rsp = cptr("list :mycontainer -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
-      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stderr.should eq("Exception reading ':mycontainer': Could not find account file: /home/terry/hp/unix_cli/spec/tmp/home/.hpcloud/accounts/bogus\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
-    after(:all) {reset_all()}
+    after(:each) {reset_all()}
   end
 
   after(:all) { purge_container('mycontainer') }

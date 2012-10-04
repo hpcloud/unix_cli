@@ -8,7 +8,7 @@ module HP
 
       desc 'account:update <account_name> <name_value_pair> ...', "modify your account credentials, zones, or options"
       long_desc <<-DESC
-  Add or update account credentials, zones, or options.  Valid settings include:
+  Add or update account credentials, zones, or options.  You may specify one or more name value pairs to update on a single command line.  Valid settings include:
 #{Accounts.get_known}
   
 Examples:

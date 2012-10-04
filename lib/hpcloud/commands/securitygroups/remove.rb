@@ -4,21 +4,22 @@ module HP
 
       map %w(securitygroups:rm securitygroups:delete securitygroups:del) => 'securitygroups:remove'
 
-      desc "securitygroups:remove <name>", "remove a security group"
+      desc "securitygroups:remove name_or_id [name_or_id ...]", "remove security groups"
       long_desc <<-DESC
-  Remove an existing security group by name. Optionally, an availability zone can be passed.
+  Remove existing security groups by name or id. Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud securitygroups:remove group1 group2 # Remove two groups group1 and group2
+  hpcloud securitygroups:remove 30725         # Remove group by identifier
   hpcloud securitygroups:remove mysecgroup -z az-2.region-a.geo-1   # Optionally specify an availability zone
 
 Aliases: securitygroups:rm, securitygroups:delete, securitygroups:del
       DESC
       CLI.add_common_options
-      define_method "securitygroups:remove" do |name, *names|
+      define_method "securitygroups:remove" do |name_or_id, *name_or_ids|
         cli_command(options) {
-          names = [name] + names
-          securitygroups = SecurityGroups.new.get(names, false)
+          name_or_ids = [name_or_id] + name_or_ids
+          securitygroups = SecurityGroups.new.get(name_or_ids, false)
           securitygroups.each { |securitygroup|
             begin
               if securitygroup.is_valid?
