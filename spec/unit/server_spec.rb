@@ -130,6 +130,55 @@ describe "Server class" do
     end
   end
 
+  context "when we call set_keypair with nothing" do
+    it "it returns true and does nothing" do
+      @compute = double("compute")
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_keypair(nil).should be_true
+
+      srv.error_string.should be_nil
+      srv.error_code.should be_nil
+      srv.keyname.should be_nil
+    end
+  end
+
+  context "when we call set_keypair with bogus value" do
+    it "it returns false and sets error" do
+      @compute = double("compute")
+      @compute.stub(:key_pairs).and_return([])
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_keypair('bogus').should be_false
+
+      srv.error_string.should eq("Cannot find a keypair matching 'bogus'.")
+      srv.error_code.should eq(:not_found)
+      srv.keyname.should be_nil
+    end
+  end
+
+  context "when we call set_keypair with something good" do
+    it "it returns true and sets keyname" do
+      @compute = double("compute")
+      keypair = double("keypair")
+      keypair.stub(:name).and_return('good')
+      keypair.stub(:fingerprint).and_return('fingerprint')
+      keypair.stub(:public_key).and_return('public')
+      keypair.stub(:private_key).and_return('private')
+      @compute.stub(:key_pairs).and_return([keypair])
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_keypair('good').should be_true
+
+      srv.error_string.should be_nil
+      srv.error_code.should be_nil
+      srv.keyname.should eq('good')
+    end
+  end
+
   context "when we call set_private_key with good file" do
     it "it gets the private key data" do
       @compute = double("compute")

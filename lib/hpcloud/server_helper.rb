@@ -53,7 +53,17 @@ module HP
       end
 
       def set_keypair(value)
-        @keyname = value
+        if value.nil?
+          return true
+        end
+        keypair = Keypairs.new.get(value, false)
+        unless keypair.is_valid?
+          @error_string = keypair.error_string
+          @error_code = keypair.error_code
+          return false
+        end
+        @keyname = keypair.name
+        return true
       end
 
       def set_security_groups(value)
@@ -109,6 +119,10 @@ module HP
         hash = {}
         instance_variables.each {|var| hash[var.to_s.delete("@")] = instance_variable_get(var) }
         hash
+      end
+
+      def windows_password
+        @compute.get_windows_password(@id, @private_key)
       end
 
       def create_image(name, hash)

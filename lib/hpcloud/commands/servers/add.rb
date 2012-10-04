@@ -2,18 +2,16 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "servers:add <name> <image_id> <flavor_id>", "add a server"
+      desc "servers:add <name> <image> <flavor> -k <keypair>", "add a server"
       long_desc <<-DESC
-  Add a new server to your compute account. Optionally, a key name and a security group can be specified.  Optionally, the you can pass in security group, key name, metadata and availability zone.
+  Add a new server to your compute account. You must specify an name for the server, an image to use to create the server, a flavor, and a keypair.  If you are creating a windows image, the flavor must be at least a large image and you must specify a security group that has the RDP port open.  Optionally, you can pass in security group, key name, metadata and availability zone.
 
 Examples:
-  hpcloud servers:add my_server 7 1                  # Creates a new server named 'my_server' using an image and flavor \n
-  hpcloud servers:add my_server 7 1 -k key1          # Creates a new server named 'my_server' using an image, flavor and a key \n
-  hpcloud servers:add my_server 7 1 -s sg1           # Creates a new server named 'my_server' using an image, flavor and a security group \n
-  hpcloud servers:add my_server 7 1 -k key1 -s sg1   # Creates a new server named 'my_server' using an image, flavor, key and security group \n
-  hpcloud servers:add my_server 7 1 -m this=that     # Creates a new server named 'my_server' using an image, flavor and metadata this=that \n
-  hpcloud servers:add my_server 7 1 -z az-2.region-a.geo-1  # Optionally specify an availability zone
-  hpcloud servers:add winserv 55 1 -z az-2.region-a.geo-1  # Optionally specify an availability zone
+  hpcloud servers:add my_server 7 1 -k key1          # Creates a new server named 'my_server' using an image, flavor and a key
+  hpcloud servers:add my_server 7 1 -k key1 -s sg1   # Creates a new server named 'my_server' using an image, flavor, key and security group
+  hpcloud servers:add my_server 7 1 -k key1 -m this=that     # Creates a new server named 'my_server' using an image, flavor, key and metadata this=that
+  hpcloud servers:add my_server 7 1 -k key1 -z az-2.region-a.geo-1  # Optionally specify an availability zone
+  hpcloud servers:add winserv 55 1 -k key1 -z az-2.region-a.geo-1  # Optionally specify an availability zone
 
 Aliases: none
       DESC
@@ -43,7 +41,7 @@ Aliases: none
           if srv.save == true
             display "Created server '#{name}' with id '#{srv.id}'."
             if srv.is_windows?
-              display "Windows password: " + srv.fog.windows_password
+              display "Windows password: " + server.windows_password
             end
           else
             error(srv.error_string, srv.error_code)
