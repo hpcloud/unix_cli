@@ -65,6 +65,16 @@ describe "Image class" do
     end
   end
 
+  context "when we construct something that aint windows" do
+    it "should have expected values" do
+      img = HP::Cloud::ImageHelper.new(@fog_image)
+      img.is_windows?.should be_false
+
+      img.meta.hsh['hp_image_license'] = '1003'
+      img.is_windows?.should be_true
+    end
+  end
+
   context "when we construct with nothing" do
     it "should have expected values" do
       img = HP::Cloud::ImageHelper.new()

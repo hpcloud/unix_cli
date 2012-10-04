@@ -101,6 +101,28 @@ describe "servers:add command" do
     end
   end
 
+  context "when creating windows image server" do
+    it "should show success message" do
+      @server_name = resource_name("add5")
+      @pem_file = "bogus.pem"
+
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_win_image_id()} #{AccountsHelper.get_flavor_id()} -p #{@pem_file}")
+
+      rsp.stderr.should eq("")
+      @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
+      rsp.stdout.should eq("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
+      rsp.exit_status.should be_exit(:success)
+      servers = @hp_svc.servers.map {|s| s.id}
+      servers.should include(@new_server_id.to_i)
+      servers = @hp_svc.servers.map {|s| s.name}
+      servers.should include(@server_name)
+    end
+
+    after(:each) do
+      cptr("servers:remove #{@server_name}")
+    end
+  end
+
   context "when creating server with a name that already exists" do
     before(:all) do
       ServerTestHelper.create("cli_test_srv1")

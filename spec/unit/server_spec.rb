@@ -89,6 +89,114 @@ describe "Server class" do
     end
   end
 
+  context "when we call set_image with bogus image" do
+    it "it returns false and sets error" do
+      @compute = double("compute")
+      @compute.stub(:images).and_return([])
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_image('bogus').should be_false
+
+      srv.error_string.should eq("Cannot find a image matching 'bogus'.")
+      srv.error_code.should eq(:not_found)
+      srv.is_windows?.should be_false
+      srv.image.should be_nil
+    end
+  end
+
+  context "when we call set_image with good image" do
+    it "it sets the image and returns true" do
+      meta = double("metadata")
+      meta.stub(:key).and_return('hp_image_license')
+      meta.stub(:value).and_return('999')
+      @compute = double("compute")
+      image = double("windows_image")
+      image.stub(:id).and_return(2222)
+      image.stub(:name).and_return('good')
+      image.stub(:created_at).and_return('now')
+      image.stub(:status).and_return('g2g')
+      image.stub(:metadata).and_return([meta])
+      @compute.stub(:images).and_return([image])
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_image('good').should be_true
+
+      srv.error_string.should be_nil
+      srv.error_code.should be_nil
+      srv.is_windows?.should be_true
+      srv.image.should eq(2222)
+    end
+  end
+
+  context "when we call set_private_key with good file" do
+    it "it gets the private key data" do
+      @compute = double("compute")
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_private_key("spec/fixtures/files/foo.txt").should be_true
+
+      srv.private_key.should eq("This is a foo file.")
+      srv.error_string.should be_nil
+      srv.error_code.should be_nil
+    end
+  end
+
+  context "when we call set_private_key with bad file" do
+    it "it gets the private key data" do
+      @compute = double("compute")
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_private_key("non/existent/file.txt").should be_false
+
+      srv.private_key.should be_nil
+      srv.error_string.should eq("Error reading private key file 'non/existent/file.txt': No such file or directory - non/existent/file.txt")
+      srv.error_code.should eq(:incorrect_usage)
+    end
+  end
+
+  context "when we call set_private_key with nothing on non windows" do
+    it "it returns true and sets nothing" do
+      @compute = double("compute")
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_private_key(nil).should be_true
+
+      srv.private_key.should be_nil
+      srv.error_string.should be_nil
+      srv.error_code.should be_nil
+    end
+  end
+
+  context "when we call set_private_key with nothing on windows" do
+    it "it returns returns false and an error" do
+      meta = double("metadata")
+      meta.stub(:key).and_return('hp_image_license')
+      meta.stub(:value).and_return('999')
+      @compute = double("compute")
+      image = double("windows_image")
+      image.stub(:id).and_return(2222)
+      image.stub(:name).and_return('good')
+      image.stub(:created_at).and_return('now')
+      image.stub(:status).and_return('g2g')
+      image.stub(:metadata).and_return([meta])
+      @compute.stub(:images).and_return([image])
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+      srv.set_image('good').should be_true
+
+      srv.set_private_key(nil).should be_false
+
+      srv.private_key.should be_nil
+      srv.error_string.should eq("You must specify the private key file if you want to create a windows instance")
+      srv.error_code.should eq(:incorrect_usage)
+    end
+  end
+
   context "when we call set_security_groups" do
     it "it changes the security_groups and returns true" do
       srv = HP::Cloud::ServerHelper.new(double("compute"))

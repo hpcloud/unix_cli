@@ -3,7 +3,7 @@ require 'hpcloud/metadata'
 module HP
   module Cloud
     class ServerHelper
-      attr_reader :meta, :fog
+      attr_reader :meta, :private_key, :windows, :fog
       attr_accessor :error_string, :error_code, :meta
       attr_accessor :id, :name, :flavor, :image, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state
     
@@ -35,6 +35,27 @@ module HP
         @meta = HP::Cloud::Metadata.new(s.metadata)
       end
 
+      def set_flavor(value)
+        @flavor = value
+      end
+
+      def set_image(value)
+        @windows = false
+        image = Images.new().get(value, false)
+        unless image.is_valid?
+          @error_string = image.error_string
+          @error_code = image.error_code
+          return false
+        end
+        @windows = image.is_windows?
+        @image = image.id
+        return true
+      end
+
+      def set_keypair(value)
+        @keyname = value
+      end
+
       def set_security_groups(value)
         if value.nil?
           return true
@@ -42,6 +63,9 @@ module HP
         if value.empty?
           @security = []
           @security_groups = ''
+          if @windows
+            puts 'Make sure the default security group has RDP port open'
+          end
           return true
         end
         begin
@@ -49,6 +73,9 @@ module HP
           if (ray.kind_of? Array)
             @security = ray
             @security_groups = value
+            if @windows
+              puts "Make sure the #{value} security group has RDP port open"
+            end
             return true
           end
         rescue SyntaxError => se
@@ -57,6 +84,25 @@ module HP
         @error_string = "Invalid security group '#{value}' should be comma separated list"
         @error_code = :incorrect_usage
         return false
+      end
+
+      def set_private_key(value)
+        if value.nil?
+          if @windows
+            @error_string = "You must specify the private key file if you want to create a windows instance"
+            @error_code = :incorrect_usage
+            return false
+          end
+          return true
+        end
+        begin
+          @private_key = File.read(value)
+        rescue Exception => e
+          @error_string = "Error reading private key file '#{value}': " + e.to_s
+          @error_code = :incorrect_usage
+          return false
+        end
+        return true
       end
 
       def to_hash
@@ -100,6 +146,10 @@ module HP
         else
           raise "Update not implemented"
         end
+      end
+
+      def is_windows?
+        return @windows
       end
 
       def is_valid?
