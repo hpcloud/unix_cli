@@ -41,6 +41,8 @@ Aliases: none
           if srv.save == true
             display "Created server '#{name}' with id '#{srv.id}'."
             if srv.is_windows?
+              display "Retrieving password, this may take several minutes..."
+              srv.fog.wait_for { ready? }
               display "Windows password: " + srv.windows_password
             end
           else
