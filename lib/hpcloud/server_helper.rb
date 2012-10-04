@@ -106,7 +106,8 @@ module HP
           return true
         end
         begin
-          @private_key = File.read(value)
+          @private_key_path = File.expand_path(value)
+          @private_key = File.read(File.expand_path(value))
         rescue Exception => e
           @error_string = "Error reading private key file '#{value}': " + e.to_s
           @error_code = :incorrect_usage
@@ -122,7 +123,11 @@ module HP
       end
 
       def windows_password
-        @compute.get_windows_password(@id, @private_key)
+        begin
+          @compute.get_windows_password(@id, @private_key)
+        rescue Exception => e
+          puts "Error getting windows password: " + e.to_s
+        end
       end
 
       def create_image(name, hash)

@@ -44,6 +44,9 @@ Aliases: none
               display "Retrieving password, this may take several minutes..."
               srv.fog.wait_for { ready? }
               display "Windows password: " + srv.windows_password
+              if srv.is_valid?
+                error srv.error_string, srv.error_code
+              end
             end
           else
             error(srv.error_string, srv.error_code)
