@@ -1,5 +1,6 @@
 require 'hpcloud/commands/keypairs/import'
 require 'hpcloud/commands/keypairs/add'
+require 'hpcloud/commands/keypairs/public_key'
 require 'hpcloud/commands/keypairs/remove'
 
 module HP
