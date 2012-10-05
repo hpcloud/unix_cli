@@ -2,10 +2,10 @@ module HP
   module Cloud
     class FogCollection
     
-      def initialize(name, connection=nil)
+      def initialize(name, article='a')
         @name = name
-        @connection = connection
-        @connection = Connection.instance if connection.nil?
+        @article = article
+        @connection = Connection.instance
       end
 
       def matches(arg, item)
@@ -40,7 +40,7 @@ module HP
           if found.length == 0
             item = create()
             item.name = arg
-            item.error_string = "Cannot find a #{@name} matching '#{arg}'."
+            item.error_string = "Cannot find #{@article} #{@name} matching '#{arg}'."
             item.error_code = :not_found
             retray << item
           else

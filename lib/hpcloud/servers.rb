@@ -4,8 +4,8 @@ require 'hpcloud/server_helper'
 module HP
   module Cloud
     class Servers < FogCollection
-      def initialize(connection = nil)
-        super("server", connection)
+      def initialize
+        super("server")
         @items = @connection.compute.servers
       end
 

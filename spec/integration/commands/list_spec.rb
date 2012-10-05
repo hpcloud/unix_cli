@@ -85,7 +85,8 @@ describe "list command" do
       rsp = cptr("list :mycontainer -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
-      rsp.stderr.should eq("Exception reading ':mycontainer': Could not find account file: /home/terry/hp/unix_cli/spec/tmp/home/.hpcloud/accounts/bogus\n")
+      path = File.expand_path(File.dirname(__FILE__) + '/../../..')
+      rsp.stderr.should eq("Exception reading ':mycontainer': Could not find account file: #{path}/spec/tmp/home/.hpcloud/accounts/bogus\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end

@@ -90,7 +90,7 @@ describe "Addresses getter" do
 
       addresses[0].is_valid?.should be_false
       addresses[0].error_code.should eq(:not_found)
-      addresses[0].error_string.should eq("Cannot find a ip address matching 'bogus'.")
+      addresses[0].error_string.should eq("Cannot find an ip address matching 'bogus'.")
       addresses.length.should eql(1)
     end
   end
