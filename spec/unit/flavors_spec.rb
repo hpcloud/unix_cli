@@ -36,7 +36,7 @@ describe "Flavors getter" do
 
   context "when we specify name" do
     it "should return them all" do
-      flavors = Flavors.new.get(["small"])
+      flavors = Flavors.new.get(["standard.small"])
 
       flavors[0].name.should eql("small")
       flavors.length.should eql(1)
