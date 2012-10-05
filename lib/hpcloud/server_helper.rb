@@ -81,9 +81,6 @@ module HP
         if value.empty?
           @security = []
           @security_groups = ''
-          if @windows
-            puts 'Make sure the default security group has RDP port 3389 open'
-          end
           return true
         end
         begin
@@ -91,9 +88,6 @@ module HP
           if (ray.kind_of? Array)
             @security = ray
             @security_groups = value
-            if @windows
-              puts "Make sure the #{value} security group has RDP port 3389 open"
-            end
             return true
           end
         rescue SyntaxError => se
