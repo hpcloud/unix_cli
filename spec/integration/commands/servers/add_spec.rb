@@ -83,9 +83,9 @@ describe "servers:add command" do
 
       rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_win_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name} -p #{@pem_file}")
 
-      rsp.stderr.should eq("")
+      rsp.stderr.should eq("\n")
       @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
-      rsp.stdout.should eq("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
+      rsp.stdout.should include("Created server '#{@server_name}' with id '#{@new_server_id}'.\nRetrieving password, this may take several minutes...\nWindows password: ")
       rsp.exit_status.should be_exit(:success)
       servers = @hp_svc.servers.map {|s| s.id}
       servers.should include(@new_server_id.to_i)

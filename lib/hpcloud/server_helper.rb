@@ -82,7 +82,7 @@ module HP
           @security = []
           @security_groups = ''
           if @windows
-            puts 'Make sure the default security group has RDP port open'
+            puts 'Make sure the default security group has RDP port 3389 open'
           end
           return true
         end
@@ -92,7 +92,7 @@ module HP
             @security = ray
             @security_groups = value
             if @windows
-              puts "Make sure the #{value} security group has RDP port open"
+              puts "Make sure the #{value} security group has RDP port 3389 open"
             end
             return true
           end
