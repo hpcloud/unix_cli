@@ -13,6 +13,7 @@ module HP
         
       def initialize(compute, s = nil)
         @compute = compute
+        @windows = false
         @error_string = nil
         @error_code = nil
         @fog = s
@@ -36,7 +37,14 @@ module HP
       end
 
       def set_flavor(value)
-        @flavor = value
+        flav = Flavors.new.get(value, false)
+        unless flav.is_valid?
+          @error_string = flav.error_string
+          @error_code = flav.error_code
+          return false
+        end
+        @flavor = flav.id
+        return true
       end
 
       def set_image(value)

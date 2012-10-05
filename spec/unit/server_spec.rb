@@ -89,6 +89,42 @@ describe "Server class" do
     end
   end
 
+  context "when we call set_flavor with bogus flavor" do
+    it "it returns false and sets error" do
+      @compute = double("compute")
+      @compute.stub(:flavors).and_return([])
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_flavor('bogus').should be_false
+
+      srv.error_string.should eq("Cannot find a flavor matching 'bogus'.")
+      srv.error_code.should eq(:not_found)
+      srv.is_windows?.should be_false
+      srv.image.should be_nil
+    end
+  end
+
+  context "when we call set_flavor with good flavor" do
+    it "it sets the flavor and returns true" do
+      @compute = double("compute")
+      flavor = double("flavor_flav")
+      flavor.stub(:id).and_return(1959)
+      flavor.stub(:name).and_return('flavor_flav')
+      flavor.stub(:ram).and_return(1024)
+      flavor.stub(:disk).and_return(60)
+      @compute.stub(:flavors).and_return([flavor])
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_flavor('flavor_flav').should be_true
+
+      srv.error_string.should be_nil
+      srv.error_code.should be_nil
+      srv.flavor.should eq(1959)
+    end
+  end
+
   context "when we call set_image with bogus image" do
     it "it returns false and sets error" do
       @compute = double("compute")
