@@ -124,9 +124,21 @@ module HP
 
       def windows_password
         begin
-          @compute.get_windows_password(@id, @private_key)
+          (1..10).each { |x| 
+            @epass = @fog.windows_password()
+            break unless @epass.empty?
+            sleep (x*10)
+          }
+          return "Failed to get password" if @epass.empty?
+          begin
+            private_key = OpenSSL::PKey::RSA.new(@private_key)
+            from_base64 = Base64.decode64(@epass)
+            return private_key.private_decrypt(from_base64).strip
+          rescue Exception => error
+          end
+          return "Failed to decrypt: " + @epass
         rescue Exception => e
-          puts "Error getting windows password: " + e.to_s
+          return "Error getting windows password: " + e.to_s
         end
       end
 

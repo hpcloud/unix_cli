@@ -21,6 +21,13 @@ Aliases: none
           else
             keypair = KeypairHelper.new(Connection.instance)
             keypair.name = key_name
+            begin
+              path = File.expand_path(public_key_data)
+              if File.exists?(path)
+                public_key_data = File.read(path)
+              end
+            rescue
+            end
             keypair.public_key = public_key_data
             if keypair.save == true
               display "Imported key pair '#{key_name}'."
