@@ -22,6 +22,12 @@ namespace :spec do
     t.rspec_opts = '--color --format html'
   end
   
+  desc "Run specs with html report"
+  RSpec::Core::RakeTask.new('unit') do |t|
+    t.rspec_opts = '--color'
+    t.pattern = 'spec/unit/'
+  end
+  
   desc "Run specs and generate code coverage"
   task :coverage do
     ENV['SPEC_CODE_COVERAGE'] = 'true'
@@ -40,7 +46,7 @@ namespace :jenkins do
   task :spec => ['jenkins:setup:rspec'] do
     #puts "SPEC_OPTS => #{ENV['SPEC_OPTS']}"
     ENV['SPEC_OPTS'] = ''
-    Rake::Task['jenkins:spec:special'].invoke
+    Rake::Task['jenkins:spec:unit'].invoke
   end
   
   namespace :setup do
@@ -56,8 +62,15 @@ namespace :jenkins do
   end
   
   # Hijack RSpec options with our own triple formatter.
-  desc ''
-  RSpec::Core::RakeTask.new('spec:special') do |t|
+  desc 'jenkins:spec:unit'
+  RSpec::Core::RakeTask.new('spec:unit') do |t|
+    t.pattern = 'spec/unit'
+    t.rspec_opts = %Q{--color --require "#{File.dirname(__FILE__)}/jenkins/triple_formatter.rb"}
+  end
+
+  desc 'jenkins:spec:integration'
+  RSpec::Core::RakeTask.new('spec:integration') do |t|
+    t.pattern = 'spec/integration/**/*rb'
     t.rspec_opts = %Q{--color --require "#{File.dirname(__FILE__)}/jenkins/triple_formatter.rb"}
   end
 end
