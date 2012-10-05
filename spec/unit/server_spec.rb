@@ -202,7 +202,8 @@ describe "Server class" do
       srv.set_private_key("non/existent/file.txt").should be_false
 
       srv.private_key.should be_nil
-      srv.error_string.should eq("Error reading private key file 'non/existent/file.txt': No such file or directory - non/existent/file.txt")
+      path = File.expand_path(File.dirname(__FILE__) + '/../..')
+      srv.error_string.should eq("Error reading private key file 'non/existent/file.txt': No such file or directory - #{path}/non/existent/file.txt")
       srv.error_code.should eq(:incorrect_usage)
     end
   end

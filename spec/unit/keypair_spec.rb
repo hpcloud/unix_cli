@@ -113,7 +113,7 @@ describe "Keypair methods" do
 
       keyp.save.should be_false
 
-      keyp.error_string.should eq("Error creating ip keypair")
+      keyp.error_string.should eq("Error creating keypair")
       keyp.error_code.should eq(:general_error)
     end
   end
