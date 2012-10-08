@@ -103,9 +103,11 @@ describe "servers:add command" do
       @server_name = resource_name("add5")
       @pem_file = "bogus.pem"
 
+      puts "servers:add #{@server_name} #{AccountsHelper.get_win_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name} -p #{@pem_file}"
       rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_win_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name} -p #{@pem_file}")
 
-      rsp.stderr.should eq("Error reading private key file 'bogus.pem': No such file or directory - bogus.pem\n")
+      path = File.expand_path(File.dirname(__FILE__) + '/../../../..')
+      rsp.stderr.should eq("Error reading private key file 'bogus.pem': No such file or directory - #{path}/bogus.pem\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:incorrect_usage)
     end
