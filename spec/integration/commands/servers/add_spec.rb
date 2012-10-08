@@ -103,7 +103,6 @@ describe "servers:add command" do
       @server_name = resource_name("add5")
       @pem_file = "bogus.pem"
 
-      puts "servers:add #{@server_name} #{AccountsHelper.get_win_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name} -p #{@pem_file}"
       rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_win_image_id()} #{AccountsHelper.get_flavor_id()} -k #{@keypair_name} -p #{@pem_file}")
 
       path = File.expand_path(File.dirname(__FILE__) + '/../../../..')

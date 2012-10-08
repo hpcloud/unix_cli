@@ -1,6 +1,7 @@
 v1.2.0 10/08/12
 ================
 - Support for windows images
+- Support for temporary URLs
 - Snapshot support
 - Standarize reports and command line arguments
   - addresses
