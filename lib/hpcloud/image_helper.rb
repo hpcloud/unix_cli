@@ -61,6 +61,10 @@ module HP
         raise "Update not implemented"
       end
 
+      def is_windows?
+        return (@meta.hsh['hp_image_license'].nil? == false)
+      end
+
       def is_valid?
         return @error_string.nil?
       end

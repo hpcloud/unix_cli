@@ -37,7 +37,7 @@ module HP
             keypair = @connection.compute.create_key_pair(@name, @public_key)
           end
           if keypair.nil?
-            @error_string = "Error creating ip keypair"
+            @error_string = "Error creating keypair"
             @error_code = :general_error
             return false
           end

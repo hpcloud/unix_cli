@@ -1,3 +1,15 @@
+v1.2.0 10/08/12
+================
+- Support for windows images
+- Snapshot support
+- Standarize reports and command line arguments
+  - addresses
+  - flavors
+  - keypairs
+  - security groups
+  - servers
+  - object store commands
+
 v1.1.0 09/06/12
 ================
 - Support for multiple account files

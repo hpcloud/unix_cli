@@ -4,8 +4,7 @@ module HP
 
       desc "keypairs:add <key_name>", "add a key pair"
       long_desc <<-DESC
-  Add a key pair by specifying the name. Optionally you can specify a fingerprint and private key data too.
-  Additionally you can use the -o option to save the key into a file. Optionally, an availability zone can be passed.
+  Add a key pair by specifying the name. Optionally you can specify a fingerprint and private key data too.  Additionally you can use the -o option to save the key into a file. Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud keypairs:add mykey                                           # creates a key 'mykey'
@@ -42,7 +41,7 @@ Aliases: none
               keypair.fog.write("./#{keypair.name}.pem")
               display "Created key pair '#{key_name}' and saved it to a file at './#{keypair.name}.pem'."
             else
-              display keypair.private_key
+              display keypair.fog.private_key
               display "Created key pair '#{key_name}'."
             end
           else

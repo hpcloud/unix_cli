@@ -1,6 +1,7 @@
 class AccountsHelper
   @@flavor_id = nil
   @@image_id = nil
+  @@win_image_id = nil
   @@tmpdir = nil
 
   def self.use_fixtures()
@@ -48,6 +49,13 @@ class AccountsHelper
     acct = HP::Cloud::Accounts.new.get('default')
     @@image_id = acct[:options][:preferred_image] || "set options image in default acct"
     return @@image_id
+  end
+
+  def self.get_win_image_id()
+    return @@win_image_id unless @@win_image_id.nil?
+    acct = HP::Cloud::Accounts.new.get('default')
+    @@win_image_id = acct[:options][:preferred_win_image] || "set options win_image in default acct"
+    return @@win_image_id
   end
 
   def self.get_uri()

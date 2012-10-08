@@ -17,7 +17,7 @@ describe "addresses:associate command" do
     it "should show error message" do
       rsp = cptr("addresses:associate 111.111.111.111 #{@srv1.name}")
 
-      rsp.stderr.should eq("Cannot find a ip address matching '111.111.111.111'.\n")
+      rsp.stderr.should eq("Cannot find an ip address matching '111.111.111.111'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end

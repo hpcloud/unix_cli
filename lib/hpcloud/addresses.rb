@@ -5,7 +5,7 @@ module HP
   module Cloud
     class Addresses < FogCollection
       def initialize()
-        super("ip address")
+        super("ip address", "an")
         @items = @connection.compute.addresses
       end
 

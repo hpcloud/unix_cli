@@ -115,16 +115,15 @@ module HP
       end
 
       def validate_account(account_credentials)
-        options = {
-            :hp_account_id   => account_credentials[:account_id],
-            :hp_secret_key   => account_credentials[:secret_key],
-            :hp_auth_uri     => account_credentials[:auth_uri],
-            :hp_tenant_id    => account_credentials[:tenant_id],
-            :user_agent      => "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
-        }
-        # authenticate with Identity service
         options = Config.default_options.clone
-        options[:ssl_verify_peer] = false
+        options[:hp_account_id] = account_credentials[:account_id]
+        options[:hp_secret_key] = account_credentials[:secret_key]
+        options[:hp_auth_uri] = account_credentials[:auth_uri]
+        options[:hp_tenant_id] = account_credentials[:tenant_id]
+        options[:user_agent] = "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
+        if options[:hp_auth_uri].match(/hpcloud.net/)
+          options[:ssl_verify_peer] = false
+        end
         Fog::HP.authenticate_v2(options, options)
       end
     end
