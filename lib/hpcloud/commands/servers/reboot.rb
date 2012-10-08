@@ -13,8 +13,6 @@ Examples:
   hpcloud servers:reboot Hal9000    # reboot 'Hal9000'
   hpcloud servers:reboot 1003 222   # reboot server with id 1003 and 222
   hpcloud servers:reboot DeepThought -z az-2.region-a.geo-1    # Optionally specify an availability zone
-
-Aliases: none
       DESC
       method_option :hard, :default => false,
                     :type => :boolean, :aliases => '-h',

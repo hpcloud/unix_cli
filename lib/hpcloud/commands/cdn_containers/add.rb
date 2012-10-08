@@ -4,14 +4,11 @@ module HP
 
       desc "cdn:containers:add <name>", "add a container to the CDN"
       long_desc <<-DESC
-  Add an existing container from your storage account to the CDN. Container name can be specified with
-  or without the preceding colon: 'my_container' or ':my_container'. Optionally, an availability zone can be passed.
+  Add an existing container from your storage account to the CDN. Container name can be specified with or without the preceding colon: 'my_container' or ':my_container'. Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud cdn:containers:add :my_cdn_container                    # Creates a new container called 'my_cdn_container'
   hpcloud cdn:containers:add :my_cdn_container -z region-a.geo-1  # Optionally specify an availability zone
-
-Aliases: none
       DESC
       CLI.add_common_options
       define_method "cdn:containers:add" do |name|

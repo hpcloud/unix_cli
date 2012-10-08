@@ -9,8 +9,6 @@ module HP
 Examples:
   hpcloud snapshots:add my_snapshot vol10               # Creates a new snapshot named 'my_snapshot' from the specified volume
   hpcloud snapshots:add my_snapshot vol10 -d 'test vol' # Creates a new snapshot named 'my_snapshot' from the specified volume
-
-Aliases: none
       DESC
       method_option :description,
                     :type => :string, :aliases => '-d',

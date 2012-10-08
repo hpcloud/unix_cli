@@ -10,8 +10,6 @@ Examples:
   hpcloud images:add my_image my_server                           # Creates a new image named 'my_image' from an existing server named 'my_server'
   hpcloud images:add my_image my_server -m this=that              # Creates a new image named 'my_image' from an existing server named 'my_server' with metadata
   hpcloud images:add my_image my_server -z az-2.region-a.geo-1    # Optionally specify an availability zone
-
-Aliases: none
       DESC
       CLI.add_common_options
       method_option :metadata,

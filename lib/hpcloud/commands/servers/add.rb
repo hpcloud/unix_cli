@@ -13,8 +13,6 @@ Examples:
   hpcloud servers:add my_server 7 small -k key1 -m this=that     # Creates a new server named 'my_server' using an image, flavor, key and metadata this=that
   hpcloud servers:add my_server 7 xlarge -k key1 -z az-2.region-a.geo-1  # Optionally specify an availability zone
   hpcloud servers:add winserv 55 xsmall -k key1 -z az-2.region-a.geo-1  # Optionally specify an availability zone
-
-Aliases: none
       DESC
       method_option :key_name, :required => true,
                     :type => :string, :aliases => '-k',

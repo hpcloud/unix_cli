@@ -6,8 +6,7 @@ module HP
 
       desc "addresses:remove ip_or_id [ip_or_id ...]", "remove or release a public IP address"
       long_desc <<-DESC
-  Remove or release a previously allocated public IP address. Any server instances that
-  were associated to this address, will be disassociated. You may specify one ore more address IPs or ids on the command line.  Optionally, an availability zone can be passed.
+  Remove or release a previously allocated public IP address. Any server instances that were associated to this address, will be disassociated. You may specify one ore more address IPs or ids on the command line.  Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud addresses:remove 111.111.111.111 # Remove IP address '111.111.111.111'

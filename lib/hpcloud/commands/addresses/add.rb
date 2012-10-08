@@ -6,8 +6,7 @@ module HP
 
       desc "addresses:add", "add or allocate a new public IP address"
       long_desc <<-DESC
-  Add or allocate a new public IP address from the pool of available IP addresses.
-  Optionally, an availability zone can be passed.
+  Add or allocate a new public IP address from the pool of available IP addresses.  Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud addresses:add

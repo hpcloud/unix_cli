@@ -8,7 +8,7 @@ module HP
       long_desc <<-DESC
   Print the URI of the specified object or container. Optionally, an availability zone can be passed.
 
-Examples: 
+Examples:
   hpcloud location :my_container/file.txt
   hpcloud location :my_container
   hpcloud location :my_container/file.txt :my_container/other.txt # multiple files or containers
