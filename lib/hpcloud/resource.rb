@@ -225,7 +225,7 @@ module HP
         return false
       end
 
-      def tempurl
+      def tempurl(period = 172800)
         @error_string = "Temporary URLs of local objects is not supported: #{@fname}"
         @error_code = :incorrect_usage
         return nil
@@ -575,7 +575,7 @@ module HP
         return true
       end
 
-      def tempurl
+      def tempurl(period = 172800)
         begin
           directory = @storage.directories.head(@container)
           if directory.nil?
@@ -597,7 +597,7 @@ module HP
              @error_code = :not_found
              return nil
           end
-          return file.temp_signed_url(240, "GET")
+          return file.temp_signed_url(period, "GET")
         rescue Excon::Errors::Forbidden => error
           @error_string = "Permission denied for '#{@fname}."
           @error_code = :permission_denied
