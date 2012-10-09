@@ -1,4 +1,4 @@
-require 'hpcloud/commands/config/add'
+require 'hpcloud/commands/config/set'
 
 module HP
   module Cloud
