@@ -9,8 +9,6 @@ module HP
 Examples:
   hpcloud securitygroups:add mysecgroup "seg group desc"
   hpcloud securitygroups:add mysecgroup "seg group desc" -z az-2.region-a.geo-1  # Optionally specify an availability zone
-
-Aliases: none
       DESC
       CLI.add_common_options
       define_method "securitygroups:add" do |sec_group_name, sg_desc|

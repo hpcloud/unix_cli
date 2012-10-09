@@ -13,8 +13,6 @@ Examples:
   hpcloud keypairs:add mykey -f <fingerprint> -p 'private key data'    # creates a key 'mykey' using the supplied fingerprint and private key data
   hpcloud keypairs:add mykey -o                                        # creates a key and saves it to mykey.pem file in the current folder
   hpcloud keypairs:add mykey -z az-2.region-a.geo-1                    # optionally specify an availability zone
-
-Aliases: none
       DESC
       method_option :fingerprint,
                     :type => :string, :aliases => '-f',

@@ -10,8 +10,6 @@ Examples:
   hpcloud keypairs:import mykey ~/.ssh/id_rsa.pub    # import a key from file
   hpcloud keypairs:import mykey 'public_key_data'    # import a key from public key data
   hpcloud keypairs:import mykey 'public_key_data' -z az-2.region-a.geo-1   # optionally specify an availability zone
-
-Aliases: none
       DESC
       CLI.add_common_options
       define_method "keypairs:import" do |key_name, public_key_data|

@@ -14,8 +14,6 @@ Examples:
   hpcloud acl :my_container/my_file.txt         # Get ACL for object 'my_file.txt'
   hpcloud acl :my_container                     # Get ACL for container 'my_container'
   hpcloud acl :my_container -z region-a.geo-1  # Get ACL for container 'my_container' by specifying an availability zone
-
-Aliases: none
       DESC
       CLI.add_common_options
       def acl(name, *names)

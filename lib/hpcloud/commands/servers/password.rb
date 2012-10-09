@@ -6,8 +6,7 @@ module HP
 
       desc "servers:password <server_name> <password>", "change password for a server"
       long_desc <<-DESC
-  Change the password for an existing server. The password should adhere to the existing
-  security complexity naming rules set in place. Optionally, an availability zone can be passed.
+  Change the password for an existing server. The password should adhere to the existing security complexity naming rules set in place. Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud servers:password my-server my-password         # change password for server 'my-server'

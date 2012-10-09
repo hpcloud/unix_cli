@@ -10,8 +10,6 @@ Examples:
   hpcloud containers:add :my_container                    # Creates a new container called 'my_container'
   hpcloud containers:add :con :tainer                     # Create two new containers called 'con' and 'tainer'
   hpcloud containers:add :my_container -z region-a.geo-1  # Optionally specify an availability zone
-
-Aliases: none
       DESC
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',

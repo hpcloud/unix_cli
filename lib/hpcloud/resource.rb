@@ -224,6 +224,12 @@ module HP
         @error_code = :incorrect_usage
         return false
       end
+
+      def tempurl(period = 172800)
+        @error_string = "Temporary URLs of local objects is not supported: #{@fname}"
+        @error_code = :incorrect_usage
+        return nil
+      end
     end
 
     class LocalResource < Resource
@@ -567,6 +573,41 @@ module HP
           return false
         end
         return true
+      end
+
+      def tempurl(period = 172800)
+        begin
+          directory = @storage.directories.head(@container)
+          if directory.nil?
+             @error_string = "Cannot find container ':#{@container}'."
+             @error_code = :not_found
+             return nil
+          end
+
+          # container should be a class
+          if is_container?
+             @error_string = "Temporary URLs not supported on containers ':#{@container}'."
+             @error_code = :incorrect_usage
+             return nil
+          end
+
+          file = directory.files.get(@path)
+          if file.nil?
+             @error_string = "Cannot find object named '#{@fname}'."
+             @error_code = :not_found
+             return nil
+          end
+          return file.temp_signed_url(period, "GET")
+        rescue Excon::Errors::Forbidden => error
+          @error_string = "Permission denied for '#{@fname}."
+          @error_code = :permission_denied
+          return nil
+        rescue Exception => e
+          @error_string = "Exception getting temporary URL for '#{@fname}': " + e.to_s
+          @error_code = :general_error
+          return nil
+        end
+        return nil
       end
     end
 

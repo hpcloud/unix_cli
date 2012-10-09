@@ -6,10 +6,7 @@ module HP
     
       desc "containers:remove <name>", "remove a container"
       long_desc <<-DESC
-  Remove a container. By default this command will only remove a container if it
-  empty. The --force flag will allow you to delete non-empty containers.
-  Be careful with this flag or you could have a really bad day.
-  Optionally, an availability zone can be passed.
+  Remove a container. By default this command will only remove a container if it empty. The --force flag will allow you to delete non-empty containers.  Be careful with this flag or you could have a really bad day.  Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud containers:remove :my_container                     # delete 'my_container' if empty

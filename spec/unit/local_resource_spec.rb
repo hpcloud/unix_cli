@@ -320,6 +320,19 @@ describe "Remove" do
   end
 end
 
+describe "Temp URL" do
+  context "temp URL of local" do
+    it "fails" do
+      res = Resource.create(@co, "spec/fixtures/files/foo.txt")
+
+      res.tempurl.should be_nil
+
+      res.error_string.should eq("Temporary URLs of local objects is not supported: spec/fixtures/files/foo.txt")
+      res.error_code.should eq(:incorrect_usage)
+    end
+  end
+end
+
 describe "is container" do
   before(:each) do
     @co = double("connection")

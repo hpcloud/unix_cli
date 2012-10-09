@@ -8,14 +8,9 @@ module HP
     
       desc 'account:setup [account_name]', "set up or modify your credentials"
       long_desc <<-DESC
-  Setup or modify your account credentials. This is generally the first step
-  in the process of using the HP Cloud Services command-line interface.  If you
-  do not specify an account name on the command line, the default account will
-  be updated.
+  Setup or modify your account credentials. This is generally the first step in the process of using the HP Cloud Services command-line interface.  If you do not specify an account name on the command line, the default account will be updated.
   
-  You will need your Access Key Id, Secret Key and Tenant Id from the HP Cloud web site to
-  set up your account. Optionally, you can specify your own endpoint to access,
-  but in most cases you will want to use the default.  
+  You will need your Access Key Id, Secret Key and Tenant Id from the HP Cloud web site to set up your account. Optionally, you can specify your own endpoint to access, but in most cases you will want to use the default.  
   
   You can re-run this command to modify your settings at anytime.
 

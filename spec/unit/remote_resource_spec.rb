@@ -440,7 +440,7 @@ describe "Remote resource get size" do
   end
 
   context "remove succeeds" do
-    it "still gets zero" do
+    it "returns true" do
       @file = double("file")
       @file.should_receive(:destroy).and_return(true)
       @files = double("files")
@@ -457,7 +457,7 @@ describe "Remote resource get size" do
   end
 
   context "remove container not found" do
-    it "still gets zero" do
+    it "returns false and sets error" do
       @directories = double("directories")
       @directories.stub(:head).and_return(nil)
       @storage.stub(:directories).and_return(@directories)
@@ -471,7 +471,7 @@ describe "Remote resource get size" do
   end
 
   context "remove file not found" do
-    it "still gets zero" do
+    it "returns false and sets error" do
       @files = double("files")
       @files.stub(:head).and_return(nil)
       @directory = double("directory")
@@ -484,6 +484,55 @@ describe "Remote resource get size" do
       res.remove(false).should be_false
 
       res.error_string.should eq("You don't have an object named ':container/files/river.txt'.")
+      res.error_code.should eq(:not_found)
+    end
+  end
+
+  context "tempurl succeeds" do
+    it "return true" do
+      @file = double("file")
+      @file.should_receive(:temp_signed_url).and_return("http://woot.com/")
+      @files = double("files")
+      @files.stub(:get).and_return(@file)
+      @directory = double("directory")
+      @directory.stub(:files).and_return(@files)
+      @directories = double("directories")
+      @directories.stub(:head).and_return(@directory)
+      @storage.stub(:directories).and_return(@directories)
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.tempurl.should eq("http://woot.com/")
+    end
+  end
+
+  context "tempurl container not found" do
+    it "returns false and sets error" do
+      @directories = double("directories")
+      @directories.stub(:head).and_return(nil)
+      @storage.stub(:directories).and_return(@directories)
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.tempurl.should be_nil
+
+      res.error_string.should eq("Cannot find container ':container'.")
+      res.error_code.should eq(:not_found)
+    end
+  end
+
+  context "temp url file not found" do
+    it "returns false and sets error" do
+      @files = double("files")
+      @files.stub(:get).and_return(nil)
+      @directory = double("directory")
+      @directory.stub(:files).and_return(@files)
+      @directories = double("directories")
+      @directories.stub(:head).and_return(@directory)
+      @storage.stub(:directories).and_return(@directories)
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.tempurl.should be_nil
+
+      res.error_string.should eq("Cannot find object named ':container/files/river.txt'.")
       res.error_code.should eq(:not_found)
     end
   end

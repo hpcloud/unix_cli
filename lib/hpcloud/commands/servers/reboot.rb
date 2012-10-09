@@ -4,17 +4,12 @@ module HP
 
       desc "servers:reboot name_or_id [name_or_id ...]", "reboot servers specified by server name or id"
       long_desc <<-DESC
-  Reboot an existing server specified name or id. Rebooting a server may take some time
-  so it might be necessary to check the status of the server by issuing command,
-  'hpcloud servers'. By default, a soft reboot is done, but you can specify the -h option to
-  do a hard reboot. Optionally, an availability zone can be passed.
+  Reboot an existing server specified name or id. Rebooting a server may take some time so it might be necessary to check the status of the server by issuing command, 'hpcloud servers'. By default, a soft reboot is done, but you can specify the -h option to do a hard reboot. Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud servers:reboot Hal9000    # reboot 'Hal9000'
   hpcloud servers:reboot 1003 222   # reboot server with id 1003 and 222
   hpcloud servers:reboot DeepThought -z az-2.region-a.geo-1    # Optionally specify an availability zone
-
-Aliases: none
       DESC
       method_option :hard, :default => false,
                     :type => :boolean, :aliases => '-h',
