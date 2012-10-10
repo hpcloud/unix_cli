@@ -9,6 +9,8 @@ module HP
   Setup your account credentials. This is generally the first step in the process of using the HP Cloud Services command-line interface.  If you do not specify an account name on the command line, the default account will be updated.
   
   You will need your Access Key Id, Secret Key and Tenant Id from the HP Cloud web site to set up your account. Optionally, you can specify your own endpoint to access, but in most cases you will want to use the default.  
+
+  Availability zones typically have the format az-1.region-a.geo-1 or region-a.geo-1 depending on the service.  See your account API keys page to see your list of activated availability zones: https://console.hpcloud.com/account/api_keys
       DESC
       method_option 'no-validate', :type => :boolean, :default => false,
                     :desc => "Don't verify account settings during setup"

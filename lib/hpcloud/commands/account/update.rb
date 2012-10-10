@@ -10,6 +10,8 @@ module HP
       long_desc <<-DESC
   Add or update account credentials, zones, or options.  You may specify one or more name value pairs to update on a single command line.  Valid settings include:
 #{Accounts.get_known}
+
+Availability zones typically have the format az-1.region-a.geo-1 or region-a.geo-1 depending on the service.  See your account API keys page to see your list of activated availability zones: https://console.hpcloud.com/account/api_keys
   
 Examples:
   hpcloud account:update pro auth_uri='https://127.0.0.1/' block_availability_zone='region-a'

@@ -10,6 +10,8 @@ module HP
   
   You will need your Access Key Id, Secret Key and Tenant Id from the HP Cloud web site to set up your account. Optionally, you can specify your own endpoint to access, but in most cases you will want to use the default.  
   
+  Availability zones typically have the format az-1.region-a.geo-1 or region-a.geo-1 depending on the service.  See your account API keys page to see your list of activated availability zones: https://console.hpcloud.com/account/api_keys
+
   You can re-run this command to modify your settings at anytime.
       DESC
       method_option 'no-validate', :type => :boolean, :default => false,
