@@ -4,14 +4,14 @@ module HP
     
       desc 'acl:set <resource> <acl>', "set a given resource to a canned ACL"
       long_desc <<-DESC
-  Set the Access Control List (ACL) for the specified resource, either a container or object. Optionally, an availability zone can be passed.  The supported ACL options include: private, public-read. Optionally, an availability zone can be passed.
+  Set the Access Control List (ACL) for the specified containers. The supported ACL settings are private or public-read. Optionally, an availability zone can be passed.
 
 Note: Custom ACLs will be supported in a future release.
 
 Examples:
-  hpcloud acl:set :my_container/file public-read                    # Set 'file' ACL to public-read
-  hpcloud acl:set :my_container private                             # Set 'my_container' ACL to private
-  hpcloud acl:set :my_container/file public-read -z region-a.geo-1  # Set 'file' ACL to public-read for an availability zone
+  hpcloud acl:set :my_container public-read    # Set 'my_container' ACL to public-read
+  hpcloud acl:set :my_container private        # Set 'my_container' ACL to private
+  hpcloud acl:set :my_container public-read -z region-a.geo-1  # Set 'my_container' ACL to public-read for an availability zone
 
       DESC
       CLI.add_common_options
