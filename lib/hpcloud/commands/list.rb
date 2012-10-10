@@ -28,7 +28,15 @@ Note: Listing details on files will be available in a future release.
               if from.valid_source()
                 found = false
                 from.foreach { |file|
-                  display file.fname
+                  if from.is_container?
+                    display file.path
+                  else
+                    if file.is_container?
+                      display file.container
+                    else
+                      display file.fname
+                    end
+                  end
                   found = true
                 }
                 unless found
