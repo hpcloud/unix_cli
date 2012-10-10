@@ -4,15 +4,17 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc 'account:setup [account_name]', "set up or modify your credentials"
+      desc 'account:edit [account_name]', "edit your account credentials"
       long_desc <<-DESC
-  Setup your account credentials. This is generally the first step in the process of using the HP Cloud Services command-line interface.  If you do not specify an account name on the command line, the default account will be updated.
+  Setup or modify your account credentials. If you do not specify an account name on the command line, the default account will be updated.
   
   You will need your Access Key Id, Secret Key and Tenant Id from the HP Cloud web site to set up your account. Optionally, you can specify your own endpoint to access, but in most cases you will want to use the default.  
+  
+  You can re-run this command to modify your settings at anytime.
       DESC
       method_option 'no-validate', :type => :boolean, :default => false,
-                    :desc => "Don't verify account settings during setup"
-      define_method "account:setup" do |*names|
+                    :desc => "Don't verify account settings during edit"
+      define_method "account:edit" do |*names|
         cli_command(options) {
           if names.empty?
             name = 'default'
@@ -58,7 +60,7 @@ module HP
           accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:cdn_availability_zone], zones[:block_availability_zone])
           accounts.write(name)
 
-          display "Account credentials for HP Cloud Services have been set up."
+          display "Account credentials for HP Cloud Services have been edited."
         }
       end
     end
