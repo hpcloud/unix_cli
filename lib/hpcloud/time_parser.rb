@@ -3,8 +3,11 @@ module HP
 
     class TimeParser
       def self.parse(str)
-        begin
+          return nil if str.nil?
           ray = str.scan(/(\d+)(\w)/)
+          if ray.nil? || ray[0].nil?
+            raise Exception.new("The expected time format contains value and unit like 2d for two days.  Supported units are s, m, h, or d")
+          end
           case ray[0][1]
           when "s"
             return ray[0][0].to_i
@@ -15,11 +18,8 @@ module HP
           when "d"
             return ray[0][0].to_i * 60 * 60 * 24
           else
-            raise Exception.new("Unrecognized")
+            raise Exception.new("Unrecognized time unit #{ray[0][1]} in #{str} expected s, m, h, or d")
           end
-        rescue Exception => e
-          raise Exception.new("Error parsing time period: #{str}")
-        end
       end
     end
   end
