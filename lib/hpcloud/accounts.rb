@@ -37,9 +37,9 @@ module HP
 
       def self.get_known
         ret = ""
-        CREDENTIALS.each{|key| ret += "\n" + key.to_s }
-        ZONES.each{|key| ret += "\n" + key.to_s }
-        OPTIONS.each{|key| ret += "\n" + key.to_s }
+        CREDENTIALS.each{|key| ret += "\n * " + key.to_s }
+        ZONES.each{|key| ret += "\n * " + key.to_s }
+        OPTIONS.each{|key| ret += "\n * " + key.to_s }
         return ret
       end
 
