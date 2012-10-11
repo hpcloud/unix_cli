@@ -39,12 +39,18 @@ describe "TimeParser class" do
     end
   end
 
+  context "when we have days" do
+    it "should return seconds" do
+      HP::Cloud::TimeParser.parse(nil).should eq(nil)
+    end
+  end
+
   context "when we have garbage" do
     it "should throw exception" do
       lambda {
         HP::Cloud::TimeParser.parse("garbage")
       }.should raise_error(Exception) {|e|
-        e.to_s.should include("Error parsing time period: garbage")
+        e.to_s.should include("The expected time format contains value and unit like 2d for two days.  Supported units are s, m, h, or d")
       }
     end
   end
@@ -54,7 +60,7 @@ describe "TimeParser class" do
       lambda {
         HP::Cloud::TimeParser.parse("1k")
       }.should raise_error(Exception) {|e|
-        e.to_s.should include("Error parsing time period: 1k")
+        e.to_s.should include("Unrecognized time unit k in 1k expected s, m, h, or d")
       }
     end
   end

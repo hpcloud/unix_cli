@@ -501,7 +501,7 @@ describe "Remote resource get size" do
       @storage.stub(:directories).and_return(@directories)
       res = Resource.create(@storage, ":container/files/river.txt")
 
-      res.tempurl.should eq("http://woot.com/")
+      res.tempurl(1212).should eq("http://woot.com/")
     end
   end
 
@@ -512,7 +512,7 @@ describe "Remote resource get size" do
       @storage.stub(:directories).and_return(@directories)
       res = Resource.create(@storage, ":container/files/river.txt")
 
-      res.tempurl.should be_nil
+      res.tempurl(1212).should be_nil
 
       res.error_string.should eq("Cannot find container ':container'.")
       res.error_code.should eq(:not_found)
@@ -530,7 +530,7 @@ describe "Remote resource get size" do
       @storage.stub(:directories).and_return(@directories)
       res = Resource.create(@storage, ":container/files/river.txt")
 
-      res.tempurl.should be_nil
+      res.tempurl(1212).should be_nil
 
       res.error_string.should eq("Cannot find object named ':container/files/river.txt'.")
       res.error_code.should eq(:not_found)

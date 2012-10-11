@@ -575,8 +575,9 @@ module HP
         return true
       end
 
-      def tempurl(period = 172800)
+      def tempurl(period)
         begin
+          period = 172800 if period.nil?
           directory = @storage.directories.head(@container)
           if directory.nil?
              @error_string = "Cannot find container ':#{@container}'."
