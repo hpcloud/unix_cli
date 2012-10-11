@@ -2,20 +2,23 @@ module HP
   module Cloud
     class CLI < Thor
 
-      map %w(config:set config:update) => 'config:add'
+      map %w(config:add config:update) => 'config:set'
 
-      desc 'config:add key=value [key=value ...]', "set the value for a configuration value"
+      desc 'config:set key=value [key=value ...]', "set the value for a configuration value"
       long_desc <<-DESC
   Set values in the configuration file.  You may specify multiple name value pairs separated by spaces on a single command line.  Valid settings include:
-#{Config.get_known}
+
+* connect_timeout (in seconds)
+* read_timeout (in seconds)
+* write_timeout (in seconds)
 
 Examples:
-  hpcloud config:set compute_availability_zone=az-2.region-a.geo-1     # Sets the default availability zone for the compute service.
-  hpcloud config:set block_availability_zone=az-2.region-a.geo-1 ssl_verify_peer=false read_time=60    # Sets multiple values
+  hpcloud config:set read_timeout=120     # Sets the read timeout to 120 seconds
+  hpcloud config:set write_timeout=60 read_time=60    # Sets multiple values
 
 Alias: config:add, config:update
       DESC
-      define_method "config:add" do |pair, *pairs|
+      define_method "config:set" do |pair, *pairs|
         cli_command(options) {
           config = Config.new(true)
           updated = ""

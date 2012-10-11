@@ -9,14 +9,16 @@ module HP
       long_desc <<-DESC
   List the contents of a specified container. Optionally, an availability zone can be passed.
 
+Listing details on files will be available in a future release.
+
+
 Examples:
-  hpcloud list :my_container                    # List files in container 'my_container'
+  hpcloud list :tainer/1.txt :tainer/2.txt      # List the two objects
+  hpcloud list :tainer                          # List the all the objects in the container
   hpcloud list                                  # List all containers
   hpcloud list :my_container -z region-a.geo-1  # Optionally specify an availability zone
 
 Aliases: ls
-
-Note: Listing details on files will be available in a future release.
       DESC
       CLI.add_common_options
       def list(*sources)

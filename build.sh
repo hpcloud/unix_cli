@@ -21,8 +21,9 @@ GIT_SCRIPT=${TOP}/ucssh.sh
 echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
 chmod 755 ${GIT_SCRIPT}
 export GIT_SSH=${GIT_SCRIPT}
-git push origin remotes/origin/${BRANCH}
-git checkout -b ${BRANCH} || git checkout ${BRANCH}
+git branch -d ${BRANCH} || git branch -D ${BRANCH} || true
+git push origin :${BRANCH} || true
+git checkout -b ${BRANCH}
 
 #
 # Prepare for release gem
@@ -52,8 +53,9 @@ gem install hpcloud-${VERSION}.gem
 # Build the reference page
 #
 set +x
-echo 'Below you can find a full reference of supported UNIX command-line interface (CLI) commands. The commands are alphabetized.  You can also use the <font face="Courier">hpcloud help [<em>command</em>]</font> tool (where <em>command</em> is the name of the command on which you want help, for example <font face="Courier">account:setup</font>) to display usage, description, and option information from the command line.' >reference
-echo >>reference
+REFERENCE=reference.txt
+echo 'Below you can find a full reference of supported UNIX command-line interface (CLI) commands. The commands are alphabetized.  You can also use the <font face="Courier">hpcloud help [<em>command</em>]</font> tool (where <em>command</em> is the name of the command on which you want help, for example <font face="Courier">account:setup</font>) to display usage, description, and option information from the command line.' >${REFERENCE}
+echo >>${REFERENCE}
 hpcloud help | grep hpcloud | while read HPCLOUD COMMAND ROL
 do
   SAVE=''
@@ -121,7 +123,7 @@ do
     esac
   done
   echo
-done >>reference
+done >>${REFERENCE}
 set -x
 
 #
@@ -132,10 +134,10 @@ then
   hpcloud containers:add :${CONTAINER}
 fi
 hpcloud copy -a deploy hpcloud-${VERSION}.gem $DEST
-hpcloud copy -a deploy CHANGELOG $DEST
-hpcloud copy -a deploy reference CHANGELOG $DEST
-hpcloud acl:set -a deploy ${DEST}CHANGELOG public-read
-hpcloud acl:set -a deploy ${DEST}reference public-read
+hpcloud copy -a deploy CHANGELOG ${DEST}CHANGELOG.txt
+hpcloud copy -a deploy ${REFERENCE} $DEST
+hpcloud acl:set -a deploy ${DEST}CHANGELOG.txt public-read
+hpcloud acl:set -a deploy ${DEST}${REFERENCE} public-read
 hpcloud acl:set -a deploy ${DEST}hpcloud-${VERSION}.gem public-read
 
-rm -f reference hpcloud-${VERSION}.gem ucssh.sh
+rm -f ${REFERENCE} hpcloud-${VERSION}.gem ucssh.sh
