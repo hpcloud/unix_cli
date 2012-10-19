@@ -12,17 +12,6 @@ module HP
         return container, path
       end
     
-      # provide an absolute path for use as a storage key
-      def self.storage_destination_path(destination_path, current_location)
-        if destination_path.to_s.empty?
-          File.basename(current_location)
-        elsif destination_path[-1,1] == '/'
-          destination_path + File.basename(current_location)
-        else
-          destination_path
-        end
-      end
-    
       def self.container_name_for_service(container_string)
         unless container_string.index('/').nil?
           raise Exception.new("Valid container names do not contain the '/' character: #{container_string}")
@@ -35,9 +24,6 @@ module HP
         else
           container_string
         end
-      end
-    
-      def self.container_name_for_display(container_string)
       end
     
       # is container_name a valid virtualhost name?
