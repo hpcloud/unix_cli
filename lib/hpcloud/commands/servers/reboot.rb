@@ -8,7 +8,7 @@ module HP
 
 Examples:
   hpcloud servers:reboot Hal9000    # reboot 'Hal9000'
-  hpcloud servers:reboot 1003 222   # reboot server with id 1003 and 222
+  hpcloud servers:reboot 1003 222   # reboot servers with ids 1003 and 222
   hpcloud servers:reboot DeepThought -z az-2.region-a.geo-1    # Optionally specify an availability zone
       DESC
       method_option :hard, :default => false,
@@ -33,7 +33,7 @@ Examples:
                 error_message server.error_string, server.error_code
               end
             rescue Exception => e
-              error_message("Error removing image: " + e.to_s, :general_error)
+              error_message("Error rebooting server: " + e.to_s, :general_error)
             end
           }
         }

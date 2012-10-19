@@ -1,6 +1,7 @@
 require 'hpcloud/commands/servers/add'
 require 'hpcloud/commands/servers/remove'
 require 'hpcloud/commands/servers/reboot'
+require 'hpcloud/commands/servers/rebuild'
 require 'hpcloud/commands/servers/password'
 require 'hpcloud/commands/servers/metadata'
 require 'hpcloud/commands/servers/metadata/add'
