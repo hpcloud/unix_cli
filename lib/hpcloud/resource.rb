@@ -29,6 +29,7 @@ module HP
         @fname = fname
         @ftype = Resource.detect_type(@fname)
         @disable_pbar = false
+        @mime_type = nil
         parse()
       end
 
@@ -110,7 +111,12 @@ module HP
         end
       end
 
+      def set_mime_type(value)
+        @mime_type = value.tr("'", "") unless value.nil?
+      end
+
       def get_mime_type()
+        return @mime_type unless @mime_type.nil?
         filename = ::File.basename(@fname)
         unless (mime_types = ::MIME::Types.of(filename)).empty?
           return mime_types.first.content_type
