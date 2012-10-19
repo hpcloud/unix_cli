@@ -30,7 +30,7 @@ Aliases: servers:rm, servers:delete, servers:del
                 error_message(server.error_string, server.error_code)
               end
             rescue Exception => e
-              error_message("Error removing image: " + e.to_s, :general_error)
+              error_message("Error removing server: " + e.to_s, :general_error)
             end
           }
         }

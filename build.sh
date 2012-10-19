@@ -136,8 +136,6 @@ fi
 hpcloud copy -a deploy hpcloud-${VERSION}.gem $DEST
 hpcloud copy -a deploy CHANGELOG ${DEST}CHANGELOG.txt
 hpcloud copy -a deploy ${REFERENCE} $DEST
-hpcloud acl:set -a deploy ${DEST}CHANGELOG.txt public-read
-hpcloud acl:set -a deploy ${DEST}${REFERENCE} public-read
-hpcloud acl:set -a deploy ${DEST}hpcloud-${VERSION}.gem public-read
+hpcloud acl:set -a deploy ${CONTAINER} public-read
 
 rm -f ${REFERENCE} hpcloud-${VERSION}.gem ucssh.sh
