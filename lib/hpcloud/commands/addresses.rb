@@ -9,7 +9,7 @@ module HP
 
       map 'addresses:list' => 'addresses'
 
-      desc "addresses [ip_or_id ...]", "list of available addresses"
+      desc "addresses [ip_or_id ...]", "Display list of available addresses."
       long_desc <<-DESC
   List the available addresses for your account. You may filter the addresses listed by specifying one or more ips or ids on the command line.  Optionally, an availability zone can be passed.
 
