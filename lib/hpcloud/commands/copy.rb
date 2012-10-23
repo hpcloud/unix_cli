@@ -4,7 +4,7 @@ module HP
     
       map 'cp' => 'copy'
 
-      desc 'copy <source> [source ...] <destination>', "copy files from one resource to another"
+      desc 'copy <source> [source ...] <destination>', "Copy files from one resource to another."
       long_desc <<-DESC
   Copy a file between your file system and a container, inside a container, or between containers. You may copy multiple files to a directory or container on one command line.  Optionally, an availability zone can be passed.
 
