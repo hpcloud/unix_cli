@@ -5,7 +5,7 @@ module HP
       map %w(ls containers containers:list) => 'list'
       map 'ls' => 'list'
     
-      desc 'list <container>', "list container contents"
+      desc 'list <container>', "List container contents."
       long_desc <<-DESC
   List the contents of a specified container. Optionally, an availability zone can be passed.
 
