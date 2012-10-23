@@ -4,7 +4,7 @@ module HP
 
       map 'flavors:list' => 'flavors'
 
-      desc "flavors [name_or_id ...]", "list available flavors"
+      desc "flavors [name_or_id ...]", "List available flavors."
       long_desc <<-DESC
   List the flavors in your compute account. You may filter the output by specifying the names or ids of the flavors you wish to see.  Optionally, an availability zone can be passed.
 
