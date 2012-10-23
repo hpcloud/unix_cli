@@ -4,9 +4,9 @@ module HP
   module Cloud
     class CLI < Thor
     
-      desc 'account:copy <from_account> <to_account>', "Copy account data to specified account"
+      desc 'account:copy <from_account> <to_account>', "Copy account data to the specified account."
       long_desc <<-DESC
-  The copy command will overwrite the destination account with the source.
+  The copy command overwrites the destination account with the source.
   
 Examples:
   hpcloud account:copy useast backup
