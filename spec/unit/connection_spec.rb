@@ -20,27 +20,66 @@ describe "Connection options" do
 
       options = Connection.instance.create_options(:storage_availability_zone)
 
-      options[:provider].should eql('HP')
-      options[:connection_options].should eql(expected_options)
-      options[:hp_account_id].should eql('foo')
-      options[:hp_secret_key].should eql('bar')
-      options[:hp_auth_uri].should eql('http://192.168.1.1:8888/v2.0')
-      options[:hp_tenant_id].should eql('111111')
-      options[:hp_avl_zone].should eql('somethingelse')
-      options[:user_agent].should eql("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
+      options[:provider].should eq('HP')
+      options[:connection_options].should eq(expected_options)
+      options[:hp_account_id].should eq('foo')
+      options[:hp_secret_key].should eq('bar')
+      options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eq('111111')
+      options[:hp_avl_zone].should eq('somethingelse')
+      options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
+    end
+
+    it "should have expected values" do
+      options = Connection.instance.create_options(:compute_availability_zone)
+
+      options[:provider].should eq('HP')
+      options[:connection_options].should eq(expected_options())
+      options[:hp_account_id].should eq('foo')
+      options[:hp_secret_key].should eq('bar')
+      options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eq('111111')
+      options[:hp_avl_zone].should eq('az-1.region-a.geo-1')
+      options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
     end
 
     it "should have expected values" do
       options = Connection.instance.create_options(:storage_availability_zone)
 
-      options[:provider].should eql('HP')
-      options[:connection_options].should eql(expected_options())
-      options[:hp_account_id].should eql('foo')
-      options[:hp_secret_key].should eql('bar')
-      options[:hp_auth_uri].should eql('http://192.168.1.1:8888/v2.0')
-      options[:hp_tenant_id].should eql('111111')
-      options[:hp_avl_zone].should eql('region-a.geo-1')
-      options[:user_agent].should eql("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
+      options[:provider].should eq('HP')
+      options[:connection_options].should eq(expected_options())
+      options[:hp_account_id].should eq('foo')
+      options[:hp_secret_key].should eq('bar')
+      options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eq('111111')
+      options[:hp_avl_zone].should eq('region-a.geo-1')
+      options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
+    end
+
+    it "should have expected values" do
+      options = Connection.instance.create_options(:cdn_availability_zone)
+
+      options[:provider].should eq('HP')
+      options[:connection_options].should eq(expected_options())
+      options[:hp_account_id].should eq('foo')
+      options[:hp_secret_key].should eq('bar')
+      options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eq('111111')
+      options[:hp_avl_zone].should eq('region-a.geo-1')
+      options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
+    end
+
+    it "should have expected values" do
+      options = Connection.instance.create_options(:block_availability_zone)
+
+      options[:provider].should eq('HP')
+      options[:connection_options].should eq(expected_options())
+      options[:hp_account_id].should eq('foo')
+      options[:hp_secret_key].should eq('bar')
+      options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eq('111111')
+      options[:hp_avl_zone].should eq('az-1.region-a.geo-1')
+      options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
     end
 
     it "should throw exception" do
