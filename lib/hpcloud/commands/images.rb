@@ -12,7 +12,7 @@ module HP
 
       map 'images:list' => 'images'
 
-      desc "images [name_or_id ...]", "list of available images"
+      desc "images [name_or_id ...]", "List the available images in your compute account."
       long_desc <<-DESC
   List the images in your compute account. You may filter the images displayed by specifying one ore more image names or ids on the command line.  Optionally, an availability zone can be passed.
 
