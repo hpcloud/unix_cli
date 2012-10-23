@@ -4,7 +4,7 @@ module HP
     
       map 'tmpurl' => 'tempurl'
     
-      desc 'tempurl <object> ...', 'create temporary URLs for given objects'
+      desc 'tempurl <object> ...', 'Create temporary URLs for the given objects.'
       long_desc <<-DESC
   Create temporary URLS for the given objects. Creating a temporary URL is a great way to share an object for a specified period of time without opening up permissions to everyone.  Only people with access to the URL will be able to access the file.  The time period may be specified in seconds (s), hours (h), or days (d).  If you do not specify a time period, the default is two days.  Optionally, an availability zone can be passed in to the command.
 
