@@ -4,7 +4,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc 'account:edit [account_name]', "edit your account credentials"
+      desc 'account:edit [account_name]', "Edit your account credentials."
       long_desc <<-DESC
   Setup or modify your account credentials. If you do not specify an account name on the command line, the default account will be updated.
   
