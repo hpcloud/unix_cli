@@ -75,6 +75,19 @@ describe "Copy command" do
       end
     end
 
+    context "when file and container exist and we change mime type" do
+      it "should copy" do
+        rsp = cptr("copy -m 'image/jpeg' spec/fixtures/files/foo.txt :my_container/mime/")
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eq("Copied spec/fixtures/files/foo.txt => :my_container/mime/\n")
+        rsp.exit_status.should be_exit(:success)
+        @head = @hp_svc.head_object('my_container', 'mime/foo.txt')
+        @head.status.should eql(200)
+        @head.headers["Content-Type"].should eq('image/jpeg')
+      end
+    end
+
     context "when local file has spaces in name" do
       it "should copy" do
         rsp = cptr(['copy', 'spec/fixtures/files/with space.txt', ':my_container'])

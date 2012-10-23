@@ -21,6 +21,9 @@ Examples:
 Aliases: cp
 
       DESC
+      method_option :mime,
+                    :type => :string, :aliases => '-m',
+                    :desc => 'Set the mime-type of the remote object.'
       CLI.add_common_options
       def copy(source, *destination)
         cli_command(options) {
@@ -33,6 +36,7 @@ Aliases: cp
           end
           source.each { |name|
             from = Resource.create(Connection.instance.storage, name)
+            from.set_mime_type(options[:mime])
             if to.copy(from)
               display "Copied #{from.fname} => #{to.fname}"
             else
