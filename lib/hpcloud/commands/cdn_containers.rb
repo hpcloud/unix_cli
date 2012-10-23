@@ -10,7 +10,7 @@ module HP
 
       map 'cdn:containers:list' => 'cdn:containers'
 
-      desc "cdn:containers", "list of available containers on the CDN"
+      desc "cdn:containers", "List available containers on the CDN."
       long_desc <<-DESC
   List the available containers on the Content Delivery Network (CDN). Optionally, an availability zone can be passed.
 
