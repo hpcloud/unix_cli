@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 #
 # Build the reference page
 #
@@ -11,8 +11,21 @@ do
   STATE='start'
   hpcloud help $COMMAND |
   sed -e 's/Alias:/###Aliases\n /' -e 's/Aliases:/###Aliases\n /' |
-  while read LINE
+  while true
   do
+    read LINE
+    if [ $? -ne 0 ]
+    then
+      if [ "${SAVE}" ]
+      then
+        echo
+        echo -ne "${SAVE}"
+        SAVE=''
+      else
+        echo
+      fi
+      break
+    fi
     case ${STATE} in
     start)
       if [ "${LINE}" == "Usage:" ]
@@ -29,7 +42,7 @@ do
     options)
       if [ "${LINE}" == "Description:" ]
       then
-        echo "## ${COMMAND}"
+        echo "<h2 id="${COMMAND}">${COMMAND}</h2>"
         STATE='description'
       else
         if [ "${LINE}" == "Options:" ]
@@ -61,7 +74,6 @@ do
       then
         echo "${LINE}"
         STATE='examples'
-        STATE='aliases'
       else
         echo "    ${LINE}"
       fi
@@ -71,5 +83,4 @@ do
       ;;
     esac
   done
-  echo
 done >>${REFERENCE}
