@@ -4,7 +4,7 @@ module HP
     
       map '--version' => 'info'
     
-      desc "info", "info about the HP Cloud CLI"
+      desc "info", "Display info about the HP Cloud UNIX CLI."
       def info
         display "******************************************************************"
         display " HP Cloud CLI"
