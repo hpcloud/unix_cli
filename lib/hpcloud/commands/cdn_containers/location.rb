@@ -4,7 +4,7 @@ module HP
 
       map 'cdn:containers:loc' => 'cdn:containers:location'
 
-      desc "cdn:containers:location <name>", "get the location of a container on the CDN."
+      desc "cdn:containers:location <name>", "Get the location of a container on the CDN."
       long_desc <<-DESC
   Get the location of an existing container on the CDN. Optionally, an availability zone can be passed.
 
