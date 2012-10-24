@@ -6,7 +6,7 @@ module HP
 
       map 'volumes:metadata:list' => 'volumes:metadata'
 
-      desc "volumes:metadata <volume_name_or_id>", "list metadata for a volume"
+      desc "volumes:metadata <volume_name_or_id>", "List the metadata for a volume."
       long_desc <<-DESC
   List the metadata for a volume in your compute account. You may specify either the name or the id of the volume.  Optionally, an availability zone can be passed.
 
