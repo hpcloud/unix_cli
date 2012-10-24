@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "cdn:containers:add <name>", "add a container to the CDN"
+      desc "cdn:containers:add <name>", "Add a container to the CDN."
       long_desc <<-DESC
   Add an existing container from your storage account to the CDN. Container name can be specified with or without the preceding colon: 'my_container' or ':my_container'. Optionally, an availability zone can be passed.
 
