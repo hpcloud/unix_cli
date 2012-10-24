@@ -9,7 +9,7 @@ function dtizer {
 REFERENCE=reference.txt
 echo 'Below you can find a full reference of supported UNIX command-line interface (CLI) commands. The commands are alphabetized.  You can also use the <font face="Courier">hpcloud help [<em>command</em>]</font> tool (where <em>command</em> is the name of the command on which you want help, for example <font face="Courier">account:setup</font>) to display usage, description, and option information from the command line.' >${REFERENCE}
 echo >>${REFERENCE}
-hpcloud help | grep hpcloud | grep cdn | while read HPCLOUD COMMAND ROL
+hpcloud help | grep hpcloud | while read HPCLOUD COMMAND ROL
 do
   if [ "${SAVE}" ]
   then
@@ -96,7 +96,18 @@ do
         echo "${LINE}"
         STATE='aliases'
       else
-        echo "    ${LINE}"
+        if [ "${LINE}" != "" ]
+        then
+          COMMENT=$(echo "${LINE}" | sed -e 's/.*# \(.*\)$/\1/')
+          EXAMPLE=$(echo "${LINE}" | sed -e 's/\(.*\) *# .*$/\1/' -e 's/ *$//g')
+          if [ "${COMMENT}" == "${EXAMPLE}" ]
+          then
+            echo -ne "    ${EXAMPLE}\n"
+          else
+            courierizer "${COMMENT}"
+            echo -ne "\n    ${EXAMPLE}\n\n"
+          fi
+        fi
       fi
       ;;
     aliases)
