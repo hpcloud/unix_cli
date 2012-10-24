@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "snapshots:add <name> <volume>", "create a snapshot"
+      desc "snapshots:add <name> <volume>", "Create a snapshot."
       long_desc <<-DESC
   Create a snapshot with the given name from a volume.  Optionally, a description may be specified.
 
