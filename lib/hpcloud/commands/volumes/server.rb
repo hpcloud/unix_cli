@@ -4,7 +4,7 @@ module HP
 
       map 'volumes:servers' => 'volumes:server'
 
-      desc "volumes:server [server]", "list the volumes on server"
+      desc "volumes:server [server]", "List the volumes on server."
       long_desc <<-DESC
   List the volumes attached to servers with the device they are using.  Optionally, you may filter by specifying server names or ids on the command line.
 
