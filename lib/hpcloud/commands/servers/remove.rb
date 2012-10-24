@@ -4,7 +4,7 @@ module HP
 
       map %w(servers:rm servers:delete servers:del) => 'servers:remove'
 
-      desc "servers:remove name_or_id [name_or_id ...]", "remove servers by name or id"
+      desc "servers:remove name_or_id [name_or_id ...]", "Remove a server or servers (specified by name or ID)."
       long_desc <<-DESC
   Remove existing servers by specifying their name or ids. Optionally, an availability zone can be passed.
 
