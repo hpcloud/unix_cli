@@ -21,11 +21,11 @@ Examples:
           names.each { |name|
             begin
               name = Container.container_name_for_service(name)
-              if connection(:storage, options).directories.get(name)
+              if Connection.instance.storage.directories.get(name)
                 error "Container '#{name}' already exists.", :conflicted
               else
                 if acceptable_name?(name, options)
-                  connection(:storage, options).directories.create(:key => name)
+                  Connection.instance.storage.directories.create(:key => name)
                   display "Created container '#{name}'."
                 end
               end
