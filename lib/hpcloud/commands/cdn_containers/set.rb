@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "cdn:containers:set <name> <attribute> <value>", "set attributes on a CDN container."
+      desc "cdn:containers:set <name> <attribute> <value>", "Set attributes on a CDN container."
       long_desc <<-DESC
   Set attribute for an existing CDN container by specifying its value. The allowed attributes that can be set are 'X-Ttl', 'X-Cdn-Uri', 'X-Cdn-Enabled', 'X-Log-Retention'. Optionally, an availability zone can be passed.
 
