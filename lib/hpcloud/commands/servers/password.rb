@@ -4,7 +4,7 @@ module HP
 
       map %w(servers:passwd) => 'servers:password'
 
-      desc "servers:password <server_name> <password>", "change password for a server"
+      desc "servers:password <server_name> <password>", "Change the password for a server."
       long_desc <<-DESC
   Change the password for an existing server. The password should adhere to the existing security complexity naming rules set in place. Optionally, an availability zone can be passed.
 
