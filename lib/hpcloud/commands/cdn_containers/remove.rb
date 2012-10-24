@@ -4,7 +4,7 @@ module HP
 
       map %w(cdn:containers:rm cdn:containers:delete cdn:containers:del) => 'cdn:containers:remove'
 
-      desc "cdn:containers:remove <name>", "remove a container from the CDN"
+      desc "cdn:containers:remove <name>", "Remove a container from the CDN."
       long_desc <<-DESC
   Remove a container from the CDN. Optionally, an availability zone can be passed.
 
