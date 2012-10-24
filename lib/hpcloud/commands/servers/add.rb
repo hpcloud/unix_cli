@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "servers:add <name> <image> <flavor>", "add a server"
+      desc "servers:add <name> <image> <flavor>", "Add a server."
       long_desc <<-DESC
   Add a new server to your compute account. You must specify an name for the server, an image to use to create the server, a flavor, and a keypair.  If you are creating a windows image, the flavor must be at least a large image and you must specify a security group that has the RDP port open.  Optionally, you can pass in security group, key name, metadata and availability zone.
 
