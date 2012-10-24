@@ -14,7 +14,7 @@ module HP
 
   You can re-run this command to modify your settings at anytime.
       DESC
-      method_option 'no-validate', :type => :boolean, :default => false,
+      method_option 'no-validate', :type => :boolean, :aliases => '-n', :default => false,
                     :desc => "Don't verify account settings during edit"
       define_method "account:edit" do |*names|
         cli_command(options) {

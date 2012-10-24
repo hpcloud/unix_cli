@@ -12,7 +12,7 @@ module HP
 
   Availability zones typically have the format az-1.region-a.geo-1 or region-a.geo-1 depending on the service.  See your account API keys page to see your list of activated availability zones: https://console.hpcloud.com/account/api_keys
       DESC
-      method_option 'no-validate', :type => :boolean, :default => false,
+      method_option 'no-validate', :type => :boolean, :aliases => '-n', :default => false,
                     :desc => "Don't verify account settings during setup"
       define_method "account:setup" do |*names|
         cli_command(options) {

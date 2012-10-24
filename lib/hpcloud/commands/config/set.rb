@@ -16,7 +16,7 @@ Examples:
   hpcloud config:set read_timeout=120     # Sets the read timeout to 120 seconds
   hpcloud config:set write_timeout=60 read_time=60    # Sets multiple values
 
-Alias: config:add, config:update
+Aliases: config:add, config:update
       DESC
       define_method "config:set" do |pair, *pairs|
         cli_command(options) {

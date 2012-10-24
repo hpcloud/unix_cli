@@ -2,12 +2,19 @@
 #
 # Build the reference page
 #
-function courierizer { echo $1 | sed -e "s,<\([^>]*\)>,<i>\1</i>,g" -e "s,'\([^']*\)',<font face='courier'>\1</font>,g"; }
+function courierizer { echo "$1" | sed -e "s,<\([^>]*\)>,<i>\1</i>,g" -e "s,'\([^']*\)',<font face='courier'>\1</font>,g"; }
+function dtizer {
+  echo $1 | sed -e "s,\(-[^#]*\) # \(.*\)$,<dt><b>\1</b></dt><dd>\2</dd>,"
+}
 REFERENCE=reference.txt
 echo 'Below you can find a full reference of supported UNIX command-line interface (CLI) commands. The commands are alphabetized.  You can also use the <font face="Courier">hpcloud help [<em>command</em>]</font> tool (where <em>command</em> is the name of the command on which you want help, for example <font face="Courier">account:setup</font>) to display usage, description, and option information from the command line.' >${REFERENCE}
 echo >>${REFERENCE}
-hpcloud help | grep hpcloud | grep cdn:containers | while read HPCLOUD COMMAND ROL
+hpcloud help | grep hpcloud | grep cdn | while read HPCLOUD COMMAND ROL
 do
+  if [ "${SAVE}" ]
+  then
+    echo "WARNING: Text in save buffer before ${COMMAND}" >&2
+  fi
   SAVE=''
   STATE='start'
   SHORT=$(echo $ROL | sed -e 's/.*# //')
@@ -41,13 +48,20 @@ do
     usage)
       if [ "${LINE}" == "Options:" ]
       then
-        SAVE="\n\n###Options\n"
+        SAVE="\n\n###Options\n<dl>\n"
         STATE='options'
       else
-        if [ "${LINE}" ]
+        if [ "${LINE}" == "Description:" ]
         then
-          LINE=$(echo ${LINE} | sed -e 's/\[/\[ITALICS_START/g' -e 's/]/ITALICS_END]/g' -e 's/</\&lt;ITALICS_START/g' -e 's,>,ITALICS_END\&gt;,g' -e 's/ITALICS_START/<i>/g' -e 's,ITALICS_END,</i>,g' )
-          echo -ne "<font face=\"Courier\">${LINE}</font>"
+          echo -ne "\n\n###Description\n"
+          SAVE=''
+          STATE='description'
+        else
+          if [ "${LINE}" ]
+          then
+            LINE=$(echo ${LINE} | sed -e 's/\[/\[ITALICS_START/g' -e 's/]/ITALICS_END]/g' -e 's/</\&lt;ITALICS_START/g' -e 's,>,ITALICS_END\&gt;,g' -e 's/ITALICS_START/<i>/g' -e 's,ITALICS_END,</i>,g' )
+            echo -ne "<font face=\"Courier\">${LINE}</font>"
+          fi
         fi
       fi
       ;;
@@ -60,8 +74,9 @@ do
       else
         if [ "${LINE}" == "" ]
         then
-          SAVE="${SAVE}${LINE}\n"
+          SAVE="${SAVE}</dl>\n${LINE}\n"
         else
+          LINE=$(dtizer "${LINE}")
           SAVE="${SAVE}${LINE}  \n"
         fi
       fi
@@ -79,13 +94,13 @@ do
       if [ "${LINE}" == "###Aliases" ]
       then
         echo "${LINE}"
-        STATE='examples'
+        STATE='aliases'
       else
         echo "    ${LINE}"
       fi
       ;;
     aliases)
-      echo "${LINE}"
+      echo "<font face='courier'>${LINE}</font>"
       ;;
     esac
   done
