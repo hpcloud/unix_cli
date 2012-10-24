@@ -4,7 +4,7 @@ module HP
 
       map 'servers:metadata:rm' => 'servers:metadata:remove'
 
-      desc "servers:metadata:remove <name> <metadata_key> ...", "remove metadata from a server"
+      desc "servers:metadata:remove <name> <metadata_key> ...", "Remove metadata from a server."
       long_desc <<-DESC
   Remove metadata from a server in your compute account.  Server name or id can be specified.  One or more metadata keys may be specified on the command line.  Optionally, an availability zone can be passed.
 
