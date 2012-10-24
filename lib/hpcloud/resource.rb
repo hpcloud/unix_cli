@@ -5,12 +5,18 @@ require 'ruby-progressbar'
 module HP
   module Cloud
     class Resource
-      attr_reader :fname, :ftype, :container, :path, :public_url, :acl
+      attr_reader :fname, :ftype, :container, :path
+      attr_reader :public_url, :cdn_public_url, :cdn_public_ssl_url, :acl
       attr_reader :destination, :error_string, :error_code
     
       REMOTE_TYPES = [:container, :container_directory, :object, :object_store]
       LOCAL_TYPES = [:directory, :file]
     
+      def self.create_remote(storage, fname)
+        fname = ':' + fname unless fname[0] == ':'
+        return Resource.create(storage, fname)
+      end
+
       def self.create(storage, fname)
         ftype = detect_type(fname)
         if LOCAL_TYPES.include?(ftype)
@@ -419,6 +425,8 @@ module HP
 
           if is_container?
             @public_url = directory.public_url
+            @cdn_public_url = directory.cdn_public_url
+            @cdn_public_ssl_url = directory.cdn_public_ssl_url
             @acl = directory.public? ? "public-read" : "private"
           else
             file = directory.files.head(@path)
@@ -428,6 +436,8 @@ module HP
                return false
             end
             @public_url = file.public_url
+            @cdn_public_url = file.cdn_public_url
+            @cdn_public_ssl_url = file.cdn_public_ssl_url
             @acl = file.directory.public? ? "public-read" : "private"
           end
         rescue Exception => error

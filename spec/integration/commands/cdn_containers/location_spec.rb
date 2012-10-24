@@ -30,6 +30,17 @@ describe "cdn:containers:location command" do
       end
     end
 
+    context "getting the location" do
+      it "should get the correct value" do
+        rsp = cptr('cdn:containers:location my-added-container -s')
+
+        rsp.stderr.should eq("")
+        cdn_uri = @hp_cdn.head_container("my-added-container").headers["X-Cdn-Ssl-Uri"]
+        rsp.stdout.should eq(cdn_uri+"\n")
+        rsp.exit_status.should be_exit(:success)
+      end
+    end
+
     after(:all) do
       @hp_svc.delete_container('my-added-container')
       @hp_cdn.delete_container('my-added-container')
@@ -40,7 +51,7 @@ describe "cdn:containers:location command" do
     it "should show error message" do
       rsp = cptr('cdn:containers:location not-a-container')
 
-      rsp.stderr.should eq("You don't have a container named 'not-a-container' on the CDN.\n")
+      rsp.stderr.should eq("Cannot find container ':not-a-container'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
@@ -58,7 +69,7 @@ describe "cdn:containers:location command" do
     it "should report error" do
       rsp = cptr('cdn:containers:location my-added-container2 -z blah')
 
-      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n")
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
