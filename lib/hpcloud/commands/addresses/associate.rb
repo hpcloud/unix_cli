@@ -4,7 +4,7 @@ module HP
 
       map 'addresses:attach' => 'addresses:associate'
 
-      desc "addresses:associate <ip_or_id> <server_name_or_id>", "associate a public IP address to a server instance"
+      desc "addresses:associate <ip_or_id> <server_name_or_id>", "Associate a public IP address to a server instance."
       long_desc <<-DESC
   Associate an existing and unassigned public IP address, to the specified server instance.  Optionally, an availability zone can be passed.
 
