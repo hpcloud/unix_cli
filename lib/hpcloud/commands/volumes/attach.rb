@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "volumes:attach <volume> <server> <device>", "attach a volume to a server with the given device name"
+      desc "volumes:attach <volume> <server> <device>", "Attach a volume to a server (specified by device name)."
       long_desc <<-DESC
   Attach a volume to a server on the specified device name.
 
