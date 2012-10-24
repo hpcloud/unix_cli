@@ -4,7 +4,7 @@ module HP
 
       map %w(securitygroups:rm securitygroups:delete securitygroups:del) => 'securitygroups:remove'
 
-      desc "securitygroups:remove name_or_id [name_or_id ...]", "remove security groups"
+      desc "securitygroups:remove name_or_id [name_or_id ...]", "Remove a security group or groups."
       long_desc <<-DESC
   Remove existing security groups by name or id. Optionally, an availability zone can be passed.
 
