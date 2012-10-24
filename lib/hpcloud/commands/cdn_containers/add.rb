@@ -8,7 +8,7 @@ module HP
 
 Examples:
   hpcloud cdn:containers:add :my_cdn_container                    # Creates a new container called 'my_cdn_container'
-  hpcloud cdn:containers:add :my_cdn_container -z region-a.geo-1  # Optionally specify an availability zone
+  hpcloud cdn:containers:add :my_cdn_container -z region-a.geo-1  # Create a container in the specified availability zone
       DESC
       CLI.add_common_options
       define_method "cdn:containers:add" do |name|
