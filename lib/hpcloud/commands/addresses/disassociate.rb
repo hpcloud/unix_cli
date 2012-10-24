@@ -4,7 +4,7 @@ module HP
 
       map 'addresses:detach' => 'addresses:disassociate'
 
-      desc "addresses:disassociate ip_or_id [ip_or_id ...]", "disassociate any server instance associated to the public IP address"
+      desc "addresses:disassociate ip_or_id [ip_or_id ...]", "Disassociate any server instance associated to the public IP address."
       long_desc <<-DESC
   Disassociate any server instance associated to the public IP address. The public IP address is not removed or released to the pool. Optionally, an availability zone can be passed.
 
