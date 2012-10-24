@@ -4,7 +4,7 @@ module HP
 
       map %w(securitygroups:rules:authorize) => 'securitygroups:rules:add'
 
-      desc "securitygroups:rules:add <sec_group_name> <ip_protocol>", "add a rule to the security group"
+      desc "securitygroups:rules:add <sec_group_name> <ip_protocol>", "Add a rule to the security group."
       long_desc <<-DESC
   Add a rule to the security group. If <ip_protocol> is specified as 'icmp', then <port_range> is set to -1..-1.  If <ip_address> is not specified, then it defaults to '0.0.0.0/0'. To allow communications within a given security group, specify a source group while creating a rule. Optionally, an availability zone can be passed.
 
