@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "securitygroups:add <name> <description>", "add a security group"
+      desc "securitygroups:add <name> <description>", "Add a security group."
       long_desc <<-DESC
   Add a new security group by specifying a name and a description. Optionally, an availability zone can be passed.
 
