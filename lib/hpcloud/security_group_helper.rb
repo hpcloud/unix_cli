@@ -31,7 +31,7 @@ module HP
           hsh = {:name => @name, :description => @description}
           security_group = @connection.compute.security_groups.new(hsh)
           if security_group.nil?
-            @error_string = "Error creating ip security group"
+            @error_string = "Error creating security group"
             @error_code = :general_error
             return false
           end
