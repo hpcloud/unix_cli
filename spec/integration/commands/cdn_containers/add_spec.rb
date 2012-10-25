@@ -34,6 +34,28 @@ describe "cdn:containers:add command" do
     end
   end
 
+  context "putting an multiple storage container on the CDN" do
+    it "should show success message" do
+      @hp_svc.put_container('tainer1')
+      @hp_svc.put_container('tainer2')
+
+      rsp = cptr('cdn:containers:add tainer1 tainer2')
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Added container 'tainer1' to the CDN.\nAdded container 'tainer2' to the CDN.\n")
+      rsp.exit_status.should be_exit(:success)
+      @hp_cdn.head_container('tainer1').status.should eql(204)
+      @hp_cdn.head_container('tainer2').status.should eql(204)
+    end
+
+    after(:all) do
+      @hp_cdn.delete_container('tainer1')
+      @hp_svc.delete_container('tainer1')
+      @hp_cdn.delete_container('tainer2')
+      @hp_svc.delete_container('tainer2')
+    end
+  end
+
   context "putting a non-existent storage container on the CDN" do
     it "should show error message" do
       rsp = cptr('cdn:containers:add not-a-container')
