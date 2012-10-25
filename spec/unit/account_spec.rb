@@ -112,7 +112,7 @@ describe "Account write" do
     it "should change the settings" do
       accounts = Accounts.new()
       accounts.set_credentials('nub', 'FionaApple', 'IdlerWheel', 'http://Daredevil/', '328')
-      accounts.set_zones('nub', 'az-1.region-a.geo-1', 'region-b.geo-1', 'region-c.geo-1', 'az-1.region-d.geo-1')
+      accounts.set_zones('nub', 'az-1.region-a.geo-1', 'region-b.geo-1', 'az-1.region-d.geo-1')
 
       accounts.write('nub')
 
@@ -124,7 +124,6 @@ describe "Account write" do
       acct[:credentials][:tenant_id].should eq('328')
       acct[:zones][:compute_availability_zone].should eq('az-1.region-a.geo-1')
       acct[:zones][:storage_availability_zone].should eq('region-b.geo-1')
-      acct[:zones][:cdn_availability_zone].should eq('region-c.geo-1')
       acct[:zones][:block_availability_zone].should eq('az-1.region-d.geo-1')
     end
   end
@@ -170,7 +169,6 @@ describe "Account get" do
       acct[:credentials][:tenant_id].should eq('111111')
       acct[:zones][:compute_availability_zone].should eq('az-1.region-a.geo-1')
       acct[:zones][:storage_availability_zone].should eq('region-a.geo-1')
-      acct[:zones][:cdn_availability_zone].should eq('region-a.geo-1')
       acct[:zones][:block_availability_zone].should eq('az-1.region-a.geo-1')
       acct[:options][:connect_timeout].should eq(30)
       acct[:options][:read_timeout].should eq(30)
@@ -195,7 +193,7 @@ describe "Accounts" do
       uri = HP::Cloud::Config.new.get(:default_auth_uri)
 
       acct[:credentials].should eq({:auth_uri=>uri})
-      zones = {:compute_availability_zone=>"az-1.region-a.geo-1", :storage_availability_zone=>"region-a.geo-1", :cdn_availability_zone=>"region-a.geo-1", :block_availability_zone=>"az-1.region-a.geo-1"}
+      zones = {:compute_availability_zone=>"az-1.region-a.geo-1", :storage_availability_zone=>"region-a.geo-1", :block_availability_zone=>"az-1.region-a.geo-1"}
       acct[:zones].should eq(zones)
       acct[:options].should eq({})
     end
@@ -218,7 +216,6 @@ describe "Accounts" do
 
       acct[:zones][:compute_availability_zone].should eq("az-2.region-b.geo-1")
       acct[:zones][:storage_availability_zone].should eq("region-b.geo-1")
-      acct[:zones][:cdn_availability_zone].should eq("region-b.geo-1")
       acct[:zones][:block_availability_zone].should eq("az-2.region-b.geo-1")
     end
   end
@@ -240,7 +237,6 @@ describe "Accounts" do
       accounts.set('Hives', :tenant_id, "C4").should be_true
       accounts.set('Hives', :compute_availability_zone, "Z1").should be_true
       accounts.set('Hives', :storage_availability_zone, "Z2").should be_true
-      accounts.set('Hives', :cdn_availability_zone, "Z3").should be_true
       accounts.set('Hives', :block_availability_zone, "Z4").should be_true
       accounts.set('Hives', :connect_timeout, "1").should be_true
       accounts.set('Hives', :read_timeout, "2").should be_true
@@ -260,7 +256,6 @@ describe "Accounts" do
       acct[:credentials][:tenant_id].should eq("C4")
       acct[:zones][:compute_availability_zone].should eq("Z1")
       acct[:zones][:storage_availability_zone].should eq("Z2")
-      acct[:zones][:cdn_availability_zone].should eq("Z3")
       acct[:zones][:block_availability_zone].should eq("Z4")
       acct[:options][:connect_timeout].should eq(1)
       acct[:options][:read_timeout].should eq(2)
@@ -278,7 +273,6 @@ describe "Accounts" do
       creds[:tenant_id].should eq("C4")
       zones[:compute_availability_zone].should eq("Z1")
       zones[:storage_availability_zone].should eq("Z2")
-      zones[:cdn_availability_zone].should eq("Z3")
       zones[:block_availability_zone].should eq("Z4")
       options[:connect_timeout].should eq(1)
       options[:read_timeout].should eq(2)

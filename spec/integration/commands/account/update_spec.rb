@@ -48,14 +48,13 @@ describe "Account add and update" do
 
   context "account:add with zones" do
     it "should report success" do
-      rsp = cptr("account:add foo compute_availability_zone=1 storage_availability_zone=2 cdn_availability_zone=3 block_availability_zone=4")
+      rsp = cptr("account:add foo compute_availability_zone=1 storage_availability_zone=2 block_availability_zone=4")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Account 'foo' set compute_availability_zone=1 storage_availability_zone=2 cdn_availability_zone=3 block_availability_zone=4\n")
+      rsp.stdout.should eq("Account 'foo' set compute_availability_zone=1 storage_availability_zone=2 block_availability_zone=4\n")
       rsp.exit_status.should be_exit(:success)
       AccountsHelper.value('foo', :zones, :compute_availability_zone).should eq("1")
       AccountsHelper.value('foo', :zones, :storage_availability_zone).should eq("2")
-      AccountsHelper.value('foo', :zones, :cdn_availability_zone).should eq("3")
       AccountsHelper.value('foo', :zones, :block_availability_zone).should eq("4")
     end
   end

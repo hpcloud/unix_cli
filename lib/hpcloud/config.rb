@@ -9,7 +9,6 @@ module HP
                 :block_availability_zone,
                 :storage_availability_zone,
                 :compute_availability_zone,
-                :cdn_availability_zone,
                 :connect_timeout,
                 :read_timeout,
                 :write_timeout,
@@ -45,8 +44,7 @@ module HP
         return { :default_auth_uri => 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/',
                  :block_availability_zone => 'az-1.region-a.geo-1',
                  :storage_availability_zone => 'region-a.geo-1',
-                 :compute_availability_zone => 'az-1.region-a.geo-1',
-                 :cdn_availability_zone     => 'region-a.geo-1'
+                 :compute_availability_zone => 'az-1.region-a.geo-1'
                }
       end
 
@@ -91,7 +89,6 @@ module HP
             @file_settings = YAML::load(File.open(@file))
             @settings = @file_settings.clone
             @settings[:block_availability_zone] ||= cfg[:block_availability_zone]
-            @settings[:cdn_availability_zone] ||= cfg[:cdn_availability_zone]
             @settings[:compute_availability_zone] ||= cfg[:compute_availability_zone]
             @settings[:storage_availability_zone] ||= cfg[:storage_availability_zone]
           rescue Exception => e

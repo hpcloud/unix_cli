@@ -59,7 +59,6 @@ Examples:
           zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
           accounts.rejigger_zones(zones)
           zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
-          zones[:cdn_availability_zone] = ask_with_default 'CDN zone:', "#{zones[:cdn_availability_zone]}"
           zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
 
           unless options['no-validate']
@@ -73,7 +72,7 @@ Examples:
 
           # update credentials and stash in config directory
           accounts.set_credentials(name, cred[:account_id], cred[:secret_key], cred[:auth_uri], cred[:tenant_id])
-          accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:cdn_availability_zone], zones[:block_availability_zone])
+          accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:block_availability_zone])
           accounts.write(name)
 
           display "Account credentials for HP Cloud Services have been edited."

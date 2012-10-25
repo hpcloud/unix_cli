@@ -8,7 +8,7 @@ describe "account:setup command" do
 
   context "without existing account" do
     it "without validation" do
-      input = ['foo','bar','https://127.0.0.1/','111111','A','B','C','D']
+      input = ['foo','bar','https://127.0.0.1/','111111','A','B','C']
       rsp = cptr('account:setup --no-validate', input)
       rsp.stdout.should eq(
         "****** Setup your HP Cloud Services default account ******\n" +
@@ -18,7 +18,6 @@ describe "account:setup command" do
         "Tenant Id: [] " +
         "Compute zone: [az-1.region-a.geo-1] " +
         "Storage zone: [region-a.geo-1] " +
-        "CDN zone: [region-a.geo-1] " +
         "Block zone: [az-1.region-a.geo-1] " +
         "Account credentials for HP Cloud Services have been set up.\n")
       rsp.stderr.should eq("")
@@ -26,7 +25,7 @@ describe "account:setup command" do
     end
 
     it "with validation" do
-      input = ['oof','rab','https://127.0.0.2/','222222','az-1.region-b.geo-1','region-b.geo-1','region-b.geo-1','az-1.region-b.geo-1']
+      input = ['oof','rab','https://127.0.0.2/','222222','az-1.region-b.geo-1','region-b.geo-1','az-1.region-b.geo-1']
       rsp = cptr('account:setup', input)
       rsp.stdout.should eq(
         "****** Setup your HP Cloud Services default account ******\n" +
@@ -36,7 +35,6 @@ describe "account:setup command" do
         "Tenant Id: [111111] " +
         "Compute zone: [A] " +
         "Storage zone: [region-b.geo-1] " +
-        "CDN zone: [region-b.geo-1] " +
         "Block zone: [az-1.region-b.geo-1] " +
         "Verifying your HP Cloud Services account...\n" +
         "Account credentials for HP Cloud Services have been set up.\n")
@@ -45,7 +43,7 @@ describe "account:setup command" do
     end
 
     it "with account name" do
-      input = ['mumford','sons','https://timshel/','322','A','B','C','D']
+      input = ['mumford','sons','https://timshel/','322','A','B','C']
       rsp = cptr('account:setup --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
@@ -59,13 +57,12 @@ describe "account:setup command" do
       contents.should include(":zones:")
       contents.should include("  :compute_availability_zone: A")
       contents.should include("  :storage_availability_zone: B")
-      contents.should include("  :cdn_availability_zone: C")
-      contents.should include("  :block_availability_zone: D")
+      contents.should include("  :block_availability_zone: C")
       contents.should include(":options: {}")
     end
 
     it "over existing" do
-      input = ['LaSera','SeesTheLight','https://please/','227','E','F','G','H']
+      input = ['LaSera','SeesTheLight','https://please/','227','E','F','G']
       rsp = cptr('account:setup --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
@@ -79,13 +76,12 @@ describe "account:setup command" do
       contents.should include(":zones:")
       contents.should include("  :compute_availability_zone: E")
       contents.should include("  :storage_availability_zone: F")
-      contents.should include("  :cdn_availability_zone: G")
-      contents.should include("  :block_availability_zone: H")
+      contents.should include("  :block_availability_zone: G")
       contents.should include(":options: {}")
     end
 
     it "over existing" do
-      input = ['LaSera','SeesTheLight','https://please/','227','1','2','3','4']
+      input = ['LaSera','SeesTheLight','https://please/','227','1','2','3']
       rsp = cptr('account:edit --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
@@ -99,8 +95,7 @@ describe "account:setup command" do
       contents.should include(":zones:")
       contents.should include("  :compute_availability_zone: '1'")
       contents.should include("  :storage_availability_zone: '2'")
-      contents.should include("  :cdn_availability_zone: '3'")
-      contents.should include("  :block_availability_zone: '4'")
+      contents.should include("  :block_availability_zone: '3'")
       contents.should include(":options: {}")
     end
   end

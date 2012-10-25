@@ -12,7 +12,6 @@ module HP
                      :tenant_id]
       ZONES = [:compute_availability_zone,
                :storage_availability_zone,
-               :cdn_availability_zone,
                :block_availability_zone]
       OPTIONS = [:connect_timeout,
                  :read_timeout,
@@ -129,15 +128,13 @@ module HP
         end
       end
 
-      def set_zones(account, compute, storage, cdn, block)
+      def set_zones(account, compute, storage, block)
         hsh = @accts[account]
         hsh[:zones][:compute_availability_zone] = compute
         hsh[:zones][:storage_availability_zone] = storage
-        hsh[:zones][:cdn_availability_zone] = cdn
         hsh[:zones][:block_availability_zone] = block
         hsh[:zones].delete(:compute_availability_zone) if compute.empty?
         hsh[:zones].delete(:storage_availability_zone) if storage.empty?
-        hsh[:zones].delete(:cdn_availability_zone) if cdn.empty?
         hsh[:zones].delete(:block_availability_zone) if block.empty?
       end
 
@@ -161,7 +158,6 @@ module HP
         settings = Config.new.settings
         hsh[:zones][:compute_availability_zone] ||= settings[:compute_availability_zone]
         hsh[:zones][:storage_availability_zone] ||= settings[:storage_availability_zone]
-        hsh[:zones][:cdn_availability_zone] ||= settings[:cdn_availability_zone]
         hsh[:zones][:block_availability_zone] ||= settings[:block_availability_zone]
       end
 
@@ -173,7 +169,6 @@ module HP
           return
         end
         zones[:storage_availability_zone] = alternate
-        zones[:cdn_availability_zone] = alternate
         zones[:block_availability_zone] = compute
       end
 
