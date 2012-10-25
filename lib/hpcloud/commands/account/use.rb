@@ -9,7 +9,7 @@ module HP
   Use the specified account as your default account.  This command overwrites the default account.
   
 Examples:
-  hpcloud account:use useast # Sets the default account to `useast`
+  hpcloud account:use useast # Set the default account to `useast`:
       DESC
       define_method "account:use" do |name|
         cli_command(options) {
