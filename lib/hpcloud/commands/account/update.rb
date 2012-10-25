@@ -14,7 +14,7 @@ module HP
 Availability zones typically have the format `az-1.region-a.geo-1` or `region-a.geo-1` depending on the service.  See your account API keys page to see your list of activated availability zones: https://console.hpcloud.com/account/api_keys
   
 Examples:
-  hpcloud account:update pro auth_uri='https://127.0.0.1/' block_availability_zone='region-a' # Sets the account credential authorization URI to `https://127.0.0.1\` and the block availability zone to `region-a`.
+  hpcloud account:update pro auth_uri='https://127.0.0.1/' block_availability_zone='region-a' # Set the account credential authorization URI to `https://127.0.0.1\` and the block availability zone to `region-a`:
 
 Alias: account:add
       DESC
