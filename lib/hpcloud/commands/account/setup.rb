@@ -24,7 +24,7 @@ module HP
   * Block zone
 
 Examples:
-  account:setup  # Sets up the default account.
+  account:setup  # Set up the default account:
       DESC
       method_option 'no-validate', :type => :boolean, :default => false,
                     :desc => "Don't verify account settings during setup"
