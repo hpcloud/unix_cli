@@ -24,7 +24,7 @@ Examples:
           type = Resource.detect_type(resource)
           container, key = Container.parse_resource(resource)
 
-          dir = connection(:storage, options).directories.get(container)
+          dir = Connection.instance.storage.directories.get(container)
           if type == :object
             if dir
               file = dir.files.get(key)

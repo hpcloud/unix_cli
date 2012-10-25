@@ -17,7 +17,7 @@ Examples:
           name = Container.container_name_for_service(name)
           # check to see cdn container exists
           begin
-            response = connection(:cdn, options).head_container(name)
+            response = Connection.instance.cdn.head_container(name)
             allowed_attributes = ['X-Ttl', 'X-Cdn-Uri', 'X-Cdn-Enabled', 'X-Log-Retention']
             if attribute && allowed_attributes.include?(attribute)
               display response.headers["#{attribute}"]

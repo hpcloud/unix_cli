@@ -15,11 +15,11 @@ Examples:
       define_method "cdn:containers:set" do |name, attribute, value|
         cli_command(options) {
           begin
-            connection(:cdn, options).head_container(name)
+            Connection.instance.cdn.head_container(name)
             allowed_attributes = ['X-Ttl', 'X-Cdn-Uri', 'X-Cdn-Enabled', 'X-Log-Retention']
             if attribute && value && allowed_attributes.include?(attribute)
               options = {"#{attribute}" => "#{value}"}
-              connection(:cdn, options).post_container(name, options)
+              Connection.instance.cdn.post_container(name, options)
               display "The attribute '#{attribute}' with value '#{value}' was set on CDN container '#{name}'."
             else
               error "The attribute '#{attribute}' cannot be set. The allowed attributes are '#{allowed_attributes.join(', ')}'.", :incorrect_usage

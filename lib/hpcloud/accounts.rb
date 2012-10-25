@@ -21,6 +21,7 @@ module HP
                  :ssl_ca_path,
                  :ssl_ca_file,
                  :preferred_flavor,
+                 :preferred_win_image,
                  :preferred_image]
 
       def initialize
@@ -195,6 +196,7 @@ module HP
           hsh[:options][:ssl_verify_peer] = true
         end
         hsh[:options][:ssl_ca_path] ||= settings[:ssl_ca_path]
+        hsh[:options][:ssl_ca_path] ||= settings[:ssl_ca_path]
         hsh[:options][:ssl_ca_file] ||= settings[:ssl_ca_file]
         hsh[:options].delete_if{ |k,v| v.nil? }
         return hsh
@@ -216,6 +218,16 @@ module HP
         end
       end
 
+      def creds_zones_options(name)
+        hsh = get(name)
+        creds = hsh[:credentials]
+        zones = hsh[:zones]
+        opts = hsh[:options]
+        opts.delete(:preferred_flavor)
+        opts.delete(:preferred_image)
+        opts.delete(:preferred_win_image)
+        return creds, zones, opts
+      end
     end
   end
 end

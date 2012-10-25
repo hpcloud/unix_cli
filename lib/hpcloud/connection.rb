@@ -101,14 +101,14 @@ module HP
       end
 
       def create_options(zone)
-        acct = Accounts.new.get(get_account())
-        avl_zone = @options[:availability_zone] || acct[:zones][zone]
+        creds, zones, options = Accounts.new.creds_zones_options(get_account())
+        avl_zone = @options[:availability_zone] || zones[zone]
         return { :provider => 'HP',
-                 :connection_options => acct[:options],
-                 :hp_account_id   => acct[:credentials][:account_id],
-                 :hp_secret_key   => acct[:credentials][:secret_key],
-                 :hp_auth_uri     => acct[:credentials][:auth_uri],
-                 :hp_tenant_id    => acct[:credentials][:tenant_id],
+                 :connection_options => options,
+                 :hp_account_id   => creds[:account_id],
+                 :hp_secret_key   => creds[:secret_key],
+                 :hp_auth_uri     => creds[:auth_uri],
+                 :hp_tenant_id    => creds[:tenant_id],
                  :hp_avl_zone     => avl_zone,
                  :user_agent => "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
                }

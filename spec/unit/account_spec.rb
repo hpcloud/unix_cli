@@ -248,8 +248,10 @@ describe "Accounts" do
       accounts.set('Hives', :ssl_verify_peer, "O4").should be_true
       accounts.set('Hives', :ssl_ca_path, "O5").should be_true
       accounts.set('Hives', :ssl_ca_file, "O6").should be_true
+      accounts.set('Hives', :preferred_flavor, "O8").should be_true
+      accounts.set('Hives', :preferred_image, "O9").should be_true
       accounts.set('Hives', :bogus, "What").should be_false
-      accounts.set('bogus', :ssl_ca_file, "O7").should be_false
+      accounts.set('bogus', :ssl_ca_file, "10").should be_false
 
       acct = accounts.get('Hives')
       acct[:credentials][:account_id].should eq("C1")
@@ -266,6 +268,26 @@ describe "Accounts" do
       acct[:options][:ssl_verify_peer].should eq(true)
       acct[:options][:ssl_ca_path].should eq("O5")
       acct[:options][:ssl_ca_file].should eq("O6")
+      acct[:options][:preferred_flavor].should eq("O8")
+      acct[:options][:preferred_image].should eq("O9")
+
+      creds, zones, options = accounts.creds_zones_options('Hives')
+      creds[:account_id].should eq("C1")
+      creds[:secret_key].should eq("C2")
+      creds[:auth_uri].should eq("C3")
+      creds[:tenant_id].should eq("C4")
+      zones[:compute_availability_zone].should eq("Z1")
+      zones[:storage_availability_zone].should eq("Z2")
+      zones[:cdn_availability_zone].should eq("Z3")
+      zones[:block_availability_zone].should eq("Z4")
+      options[:connect_timeout].should eq(1)
+      options[:read_timeout].should eq(2)
+      options[:write_timeout].should eq(3)
+      options[:ssl_verify_peer].should eq(true)
+      options[:ssl_ca_path].should eq("O5")
+      options[:ssl_ca_file].should eq("O6")
+      options[:preferred_flavor].should be_nil
+      options[:preferred_image].should be_nil
     end
   end
   after(:all) {reset_all()}

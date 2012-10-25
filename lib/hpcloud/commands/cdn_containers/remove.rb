@@ -20,7 +20,7 @@ Aliases: cdn:containers:rm, cdn:containers:delete, cdn:containers:del
           names = [name] + names
           names.each { |name|
             begin
-              connection(:cdn, options).delete_container(name)
+              Connection.instance.cdn.delete_container(name)
               display "Removed container '#{name}' from the CDN."
             rescue Excon::Errors::NotFound, Fog::CDN::HP::NotFound
               error_message "You don't have a container named '#{name}' on the CDN.", :not_found

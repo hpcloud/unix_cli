@@ -23,7 +23,7 @@ Aliases: containers:rm, containers:delete, containers:del
         cli_command(options) {
           name = Container.container_name_for_service(name)
           begin
-            container = connection(:storage, options).directories.head(name)
+            container = Connection.instance.storage.directories.head(name)
             if container
               if options.force?
                 container.files.each { |file| file.destroy }

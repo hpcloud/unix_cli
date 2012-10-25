@@ -22,17 +22,6 @@ module HP
                                  :desc => 'Select account.'}}
 
       private
-      def connection(service = :storage, options = {})
-        Connection.instance.set_options(options)
-        if service == :storage
-          return Connection.instance.storage()
-        elsif service == :compute
-          return Connection.instance.compute()
-        elsif service == :cdn
-          return Connection.instance.cdn()
-        end
-      end
-
       def self.add_common_options
         GOPTS.each { |k,v| method_option(k, v) }
       end
