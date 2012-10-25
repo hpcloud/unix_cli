@@ -6,10 +6,10 @@ module HP
 
       desc "images:metadata:remove <image_name_or_id> [metadata_key ...]", "Remove metadata from an image."
       long_desc <<-DESC
-  Remove metadata from an image in your compute account.  Image name or id may be specified.  Optionally, an availability zone can be passed.
+  Remove metadata from an image in your compute account.  You may specify an image name or ID.  Optionally, you may specify an availability zone.
 
 Examples:
-  hpcloud images:metadata:remove my_image r2 c3  # Remove the specified metadata from the image.
+  hpcloud images:metadata:remove my_image r2 c3  # Remove the specified metadata from the image:
 
 Aliases: rm
       DESC
