@@ -4,12 +4,12 @@ module HP
 
       desc "images:add <name> <server_name>", "Add an image from an existing server."
       long_desc <<-DESC
-  Add a new image from an existing server to your compute account. Optionally, you may pass in metadata or an availability zone.
+  Add a new image from an existing server to your compute account. Optionally, you may specify metadata or an availability zone.
 
 Examples:
-  hpcloud images:add my_image my_server                           # Creates a new image named 'my_image' from an existing server named 'my_server'
-  hpcloud images:add my_image my_server -m this=that              # Creates a new image named 'my_image' from an existing server named 'my_server' with metadata
-  hpcloud images:add my_image my_server -z az-2.region-a.geo-1    # Optionally specify an availability zone
+  hpcloud images:add my_image my_server                           # Create the new image 'my_image' from the existing server named 'my_server':
+  hpcloud images:add my_image my_server -m this=that              # Create the new image 'my_image' from the existing server 'my_server' with metadata:
+  hpcloud images:add my_image my_server -z az-2.region-a.geo-1    # Create the new image `my_image` from the existing server `my_server` in  availability zone `az-2.region-a.geo-1`:
       DESC
       CLI.add_common_options
       method_option :metadata,
