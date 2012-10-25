@@ -26,7 +26,7 @@ module HP
   You can re-run this command at any time to modify your settings.
   
 Examples:
-  hpcloud account:edit  # Edits the 'default' account settings.
+  hpcloud account:edit  # Edit the 'default' account settings:
       DESC
       method_option 'no-validate', :type => :boolean, :default => false,
                     :desc => "Don't verify account settings during edit"
