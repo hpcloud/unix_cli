@@ -8,11 +8,10 @@ module HP
 
 Examples:
   hpcloud servers:add my_server 7 small -k key1          # Creates a new server named 'my_server' using an image, flavor and a key
-  hpcloud servers:add my_server 8 large -k key1 -s sg1 -p ~/.ssh/id_rsa  # Creates a windows server with the specified key, security group, and private key to decrypt the password
+  hpcloud servers:add winserv 100006567 large -k winpair -s allowsRDP -p ./winpair.pem # Creates a windows server with the specified key, security group, and private key to decrypt the password
   hpcloud servers:add my_server 7 large -k key1 -s sg1   # Creates a new server named 'my_server' using an image, flavor, key and security group
   hpcloud servers:add my_server 7 small -k key1 -m this=that     # Creates a new server named 'my_server' using an image, flavor, key and metadata this=that
   hpcloud servers:add my_server 7 xlarge -k key1 -z az-2.region-a.geo-1  # Optionally specify an availability zone
-  hpcloud servers:add winserv 55 xsmall -k key1 -z az-2.region-a.geo-1  # Optionally specify an availability zone
       DESC
       method_option :key_name, :required => true,
                     :type => :string, :aliases => '-k',
