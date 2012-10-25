@@ -6,11 +6,11 @@ module HP
 
       desc "cdn:containers:location <name>", "Get the location of a container on the CDN."
       long_desc <<-DESC
-  Get the location of an existing container on the CDN. Optionally, an availability zone can be passed.
+  Get the location of an existing container on the CDN. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud cdn:containers:location :my_cdn_container                     # gets the location of the container 'my_cdn_container'
-  hpcloud cdn:containers:location :my_cdn_container -z region-a.geo-1   # Optionally specify an availability zone
+  hpcloud cdn:containers:location :my_cdn_container                     # Get the location of the container 'my_cdn_container':
+  hpcloud cdn:containers:location :my_cdn_container -z region-a.geo-1   # Get the location of the container `my_cdn_container` for availability zone `region-a.geo-1`:
 
 Aliases: cdn:containers:loc
       DESC
