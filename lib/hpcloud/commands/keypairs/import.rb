@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "keypairs:import <key_name> <public_key_data>", "import a key pair"
+      desc "keypairs:import <key_name> <public_key_data>", "Import a key pair."
       long_desc <<-DESC
   Import a key pair by specifying the public key data. Alternately, you may specify the name of the file to import on the command line.  Optionally, an availability zone can be passed.
 

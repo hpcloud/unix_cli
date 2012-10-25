@@ -9,7 +9,7 @@ module HP
 
       map 'keypairs:list' => 'keypairs'
 
-      desc "keypairs [name ...]", "list of available keypairs"
+      desc "keypairs [name ...]", "List the available keypairs."
       long_desc <<-DESC
   List the keypairs in your compute account. You may filter the output of keys displayed by specifying the keypairs you want displayed on the command line.  Optionally, an availability zone can be passed.
 

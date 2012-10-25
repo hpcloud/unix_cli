@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
     
-      desc 'acl:set <resource> <acl>', "set a given resource to a canned ACL"
+      desc 'acl:set <resource> <acl>', "Set a given resource to a canned ACL."
       long_desc <<-DESC
   Set the Access Control List (ACL) for the specified containers. The supported ACL settings are private or public-read. Optionally, an availability zone can be passed.
 

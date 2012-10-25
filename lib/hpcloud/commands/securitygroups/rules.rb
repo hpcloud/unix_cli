@@ -7,7 +7,7 @@ module HP
 
       map 'securitygroups:rules:list' => 'securitygroups:rules'
 
-      desc "securitygroups:rules <sec_group_name>", "list of rules for a security group"
+      desc "securitygroups:rules <sec_group_name>", "Display the list of rules for a security group."
       long_desc <<-DESC
   List the rules for a security group for your compute account. Optionally, an availability zone can be passed.
 

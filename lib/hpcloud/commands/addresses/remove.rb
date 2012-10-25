@@ -4,7 +4,7 @@ module HP
 
       map %w(addresses:rm addresses:delete addresses:release addresses:del) => 'addresses:remove'
 
-      desc "addresses:remove ip_or_id [ip_or_id ...]", "remove or release a public IP address"
+      desc "addresses:remove ip_or_id [ip_or_id ...]", "Remove or release a public IP address."
       long_desc <<-DESC
   Remove or release a previously allocated public IP address. Any server instances that were associated to this address, will be disassociated. You may specify one ore more address IPs or ids on the command line.  Optionally, an availability zone can be passed.
 

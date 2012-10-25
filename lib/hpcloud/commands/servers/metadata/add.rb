@@ -4,7 +4,7 @@ module HP
 
       map 'servers:metadata:update' => 'servers:metadata:add'
 
-      desc "servers:metadata:add <name_or_id> <metadata>", "add metadata to a server"
+      desc "servers:metadata:add <name_or_id> <metadata>", "Add metadata to a server."
       long_desc <<-DESC
   Add metadata to a server in your compute account.  Server name or id may be specified.  Optionally, an availability zone can be passed in. The metadata should be a comma separated list of name value pairs.
 

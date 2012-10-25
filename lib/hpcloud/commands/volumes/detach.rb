@@ -4,7 +4,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "volumes:detach name_or_id [name_or_id ...]", "detach volumes"
+      desc "volumes:detach name_or_id [name_or_id ...]", "Detach a volume or volumes."
       long_desc <<-DESC
   Detach volumes from all servers.  The name or id of the volume to detach may bbe specified.  One more more volumes can be detached in a command line.
 

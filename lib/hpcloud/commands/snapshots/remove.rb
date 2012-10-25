@@ -4,7 +4,7 @@ module HP
 
       map %w(snapshots:rm snapshots:delete snapshots:del) => 'snapshots:remove'
 
-      desc "snapshots:remove <name_or_id> [name_or_id ...]", "remove a snapshots by id or name"
+      desc "snapshots:remove <name_or_id> [name_or_id ...]", "Remove a snapshot or snapshots (specified by name or ID)."
       long_desc <<-DESC
   Remove snapshots by specifying their names or ids. Optionally, an availability zone may be passed.
 

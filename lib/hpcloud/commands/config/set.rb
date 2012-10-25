@@ -4,7 +4,7 @@ module HP
 
       map %w(config:add config:update) => 'config:set'
 
-      desc 'config:set key=value [key=value ...]', "set the value for a configuration value"
+      desc 'config:set key=value [key=value ...]', "Set values in the configuration file."
       long_desc <<-DESC
   Set values in the configuration file.  You may specify multiple name value pairs separated by spaces on a single command line.  Valid settings include:
 

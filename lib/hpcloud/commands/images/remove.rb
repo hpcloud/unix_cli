@@ -4,7 +4,7 @@ module HP
 
       map %w(images:rm images:delete images:del) => 'images:remove'
 
-      desc "images:remove name_or_id [name_or_id ...]", "remove images by name or id"
+      desc "images:remove name_or_id [name_or_id ...]", "Remove images (by name or ID)."
       long_desc <<-DESC
   Remove an existing images by specifying thier names or ids. Optionally, an availability zone can be passed.
 

@@ -12,7 +12,7 @@ module HP
     
       map 'account:list' => 'account'
 
-      desc 'account [account_name]', "list your accounts and account settings"
+      desc 'account [account_name]', "List your accounts and account settings."
       long_desc <<-DESC
   List your accounts and your account settings.
   

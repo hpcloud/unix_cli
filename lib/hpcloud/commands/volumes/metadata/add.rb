@@ -4,7 +4,7 @@ module HP
 
       map 'volumes:metadata:update' => 'volumes:metadata:add'
 
-      desc "volumes:metadata:add <name_or_id> <metadata>", "add metadata to a volume"
+      desc "volumes:metadata:add <name_or_id> <metadata>", "Add metadata to a volume."
       long_desc <<-DESC
   Add metadata to a volume in your compute account.  Volume name or id may be specified.  Optionally, an availability zone can be passed in. The metadata should be a comma separated list of name value pairs.
 

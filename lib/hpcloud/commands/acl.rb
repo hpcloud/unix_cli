@@ -6,7 +6,7 @@ module HP
 
       CANNED_ACLS = %w(private public-read)
 
-      desc 'acl <object/container>', "view the ACL for an object or container"
+      desc 'acl <object/container>', "View the ACL for an object or container."
       long_desc <<-DESC
   View the Access Control List (ACL) for a container or object. Optionally, an availability zone can be passed.
 

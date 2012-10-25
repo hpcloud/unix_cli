@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "volumes:add <name> [size]", "add a volume"
+      desc "volumes:add <name> [size]", "Add a volume."
       long_desc <<-DESC
   Add a new volume to your compute account with the specified name and size.  Optionally, a description, metadata or availability zone may be specified.  If size is not specified, it will be taken from the snapshot (if specified) or default to 1 gigabyte.
 

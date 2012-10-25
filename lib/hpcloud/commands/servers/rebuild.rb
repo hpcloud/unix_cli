@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "servers:rebuild name_or_id [image_name_or_id]", "rebuild server specified by server name or id with optional new image"
+      desc "servers:rebuild name_or_id [image_name_or_id]", "Rebuild a server (specified by server name or ID)."
       long_desc <<-DESC
   Rebuild an existing server specified name or id. Optionally, the server may be rebuilt with a new image.  Rebuilding a server may take some time so it might be necessary to check the status of the server by issuing command, 'hpcloud servers'. Optionally, an availability zone can be passed.
 

@@ -4,7 +4,7 @@ module HP
 
       map 'images:metadata:list' => 'images:metadata'
 
-      desc "images:metadata <image_name_or_id>", "list metadata for image"
+      desc "images:metadata <image_name_or_id>", "List the metadata for an image."
       long_desc <<-DESC
   List the metadata for an image in your compute account. You may specify either the name or the id of the image.  Optionally, an availability zone can be passed.
 

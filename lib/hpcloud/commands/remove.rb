@@ -4,7 +4,7 @@ module HP
 
       map %w(rm delete destroy del) => 'remove'
 
-      desc 'remove object_or_container [object_or_container ...]', 'remove objects or containers'
+      desc 'remove object_or_container [object_or_container ...]', 'Remove objects or containers.'
       long_desc <<-DESC
   Remove objects or containers. Optionally, an availability zone can be passed.
         
