@@ -11,7 +11,7 @@ module HP
   Remove accounts.  You may specify one or more account to remove on the command line.
   
 Examples:
-  hpcloud account:remove useast uswest # remove the useast and uswest accounts
+  hpcloud account:remove useast uswest # Removes the `useast` and `uswest` accounts.
 
 Alias: account:rm, account:delete, account:del
       DESC
