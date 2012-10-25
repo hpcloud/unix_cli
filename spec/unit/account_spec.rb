@@ -98,6 +98,16 @@ describe "Account write" do
     AccountsHelper.use_tmp()
   end
 
+  context "when there ain't nothin" do
+    it "should report error" do
+      AccountsHelper.use_tmp()
+      accounts = Accounts.new()
+      tmp_dir = AccountsHelper.tmp_dir + "/.hpcloud/accounts/"
+      AccountsHelper.reset()
+      accounts.list.should eq("No such file or directory - #{tmp_dir}\nRun account:setup to create accounts.")
+    end
+  end
+
   context "when new account file" do
     it "should change the settings" do
       accounts = Accounts.new()

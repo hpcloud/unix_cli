@@ -16,7 +16,7 @@ Availability zones typically have the format az-1.region-a.geo-1 or region-a.geo
 Examples:
   hpcloud account:update pro auth_uri='https://127.0.0.1/' block_availability_zone='region-a'
 
-Alias: account:add
+Aliases: account:add
       DESC
       define_method "account:update" do |name, pair, *pairs|
         cli_command(options) {

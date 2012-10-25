@@ -48,6 +48,10 @@ module HP
       end
 
       def list
+        unless File.directory?("#{@directory}")
+          return "No such file or directory - #{@directory}\n" +
+                 "Run account:setup to create accounts."
+        end
         ray = Dir.entries("#{@directory}")
         ray.delete_if{|item| File.file?("#{@directory}/#{item}") == false }
         ray.sort!

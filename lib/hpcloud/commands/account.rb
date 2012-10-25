@@ -21,7 +21,7 @@ Examples:
   hpcloud account:list
   hpcloud account:list useast
 
-Alias: account:list
+Aliases: account:list
       DESC
       def account(name=nil)
         cli_command(options) {
