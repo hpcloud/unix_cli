@@ -13,9 +13,11 @@ Examples:
       DESC
       define_method "account:use" do |name|
         cli_command(options) {
-          accounts = HP::Cloud::Accounts.new()
-          accounts.copy(name, 'default')
-          display("Account '#{name}' copied to 'default'")
+          HP::Cloud::Accounts.new().read(name)
+          config = Config.new(true)
+          config.set(:default_account, name)
+          config.write()
+          display("Account '#{name}' is now the default")
         }
       end
     end

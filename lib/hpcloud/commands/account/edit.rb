@@ -33,7 +33,8 @@ Examples:
       define_method "account:edit" do |*names|
         cli_command(options) {
           if names.empty?
-            name = 'default'
+            config = Config.new(true)
+            name = config.get(:default_account)
           else
             if names.length == 1
               name = names[0]

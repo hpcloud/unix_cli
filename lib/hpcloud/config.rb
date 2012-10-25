@@ -14,7 +14,8 @@ module HP
                 :write_timeout,
                 :ssl_verify_peer,
                 :ssl_ca_path,
-                :ssl_ca_file
+                :ssl_ca_file,
+                :default_account
               ]
 
       def initialize(ignore=false)
@@ -54,7 +55,8 @@ module HP
                  :write_timeout => 30,
                  :ssl_verify_peer => true,
                  :ssl_ca_path => nil,
-                 :ssl_ca_file => nil
+                 :ssl_ca_file => nil,
+                 :default_account => 'default',
                }
       end
 
@@ -115,6 +117,7 @@ module HP
         end
         @settings[:ssl_ca_path] ||= options[:ssl_ca_path]
         @settings[:ssl_ca_file] ||= options[:ssl_ca_file]
+        @settings[:default_account] ||= options[:default_account]
         @settings.delete_if { |k,v| v.nil? }
       end
 

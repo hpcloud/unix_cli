@@ -27,7 +27,10 @@ Aliases: account:list
         cli_command(options) {
           accounts = HP::Cloud::Accounts.new()
           if name.nil?
-            display accounts.list
+            config = Config.new(true)
+            name = config.get(:default_account)
+            listo = accounts.list
+            display listo.gsub(/^(#{name})$/, '\1 <= default')
           else
             begin
               acct = accounts.read(name)

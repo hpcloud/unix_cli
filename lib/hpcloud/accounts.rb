@@ -6,6 +6,7 @@ module HP
       attr_reader :directory
       @@home = nil
 
+      DEFAULT_ACCOUNT = "default_account"
       CREDENTIALS = [:account_id,
                      :secret_key,
                      :auth_uri,
