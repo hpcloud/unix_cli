@@ -9,7 +9,7 @@ module HP
   The copy command overwrites the destination account with the source account information.
   
 Examples:
-  hpcloud account:copy useast backup  # Copies account `useast` to account `backup`.
+  hpcloud account:copy useast backup  # Copy account `useast` to account `backup`:
       DESC
       define_method "account:copy" do |src, dest|
         cli_command(options) {
