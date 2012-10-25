@@ -29,6 +29,26 @@ describe "cdn:containers:remove command" do
     end
   end
 
+  context "removing an existing CDN containers" do
+    it "should show success message" do
+      @hp_svc.put_container('tainer1')
+      @hp_svc.put_container('tainer2')
+      @hp_cdn.put_container('tainer1')
+      @hp_cdn.put_container('tainer2')
+
+      rsp = cptr('cdn:containers:remove tainer1 tainer2')
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Removed container 'tainer1' from the CDN.\nRemoved container 'tainer2' from the CDN.\n")
+      rsp.exit_status.should be_exit(:success)
+    end
+
+    after(:all) do
+      @hp_svc.delete_container('tainer1')
+      @hp_svc.delete_container('tainer2')
+    end
+  end
+
   context "removing a non-existent CDN container" do
     it "should show error message" do
       rsp = cptr('cdn:containers:remove not-a-container')
