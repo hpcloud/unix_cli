@@ -12,7 +12,7 @@ module HP
     
       map 'account:list' => 'account'
 
-      desc 'account [account_name]', "list your accounts and account settings"
+      desc 'account [account_name]', "List your accounts and account settings."
       long_desc <<-DESC
   List your accounts and your account settings.
   
@@ -27,7 +27,10 @@ Aliases: account:list
         cli_command(options) {
           accounts = HP::Cloud::Accounts.new()
           if name.nil?
-            display accounts.list
+            config = Config.new(true)
+            name = config.get(:default_account)
+            listo = accounts.list
+            display listo.gsub(/^(#{name})$/, '\1 <= default')
           else
             begin
               acct = accounts.read(name)

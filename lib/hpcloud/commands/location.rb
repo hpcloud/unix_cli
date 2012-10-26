@@ -4,7 +4,7 @@ module HP
     
       map 'loc' => 'location'
     
-      desc 'location <object/container> ...', 'display the URIs for given resources'
+      desc 'location <object/container> ...', 'Display the URIs for the specified resources.'
       long_desc <<-DESC
   Print the URI of the specified object or container. Optionally, an availability zone can be passed.
 

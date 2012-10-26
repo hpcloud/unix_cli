@@ -4,7 +4,7 @@ module HP
 
       map %w(fetch) => 'get'
 
-      desc 'get object [object ...]', 'fetch objects to your local directory'
+      desc 'get object [object ...]', 'Fetch objects to your local directory.'
       long_desc <<-DESC
   Copy remote objects from a container to your current directory. Optionally, an availability zone can be passed.
 

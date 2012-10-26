@@ -4,22 +4,37 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc 'account:edit [account_name]', "edit your account credentials"
+      desc 'account:edit [account_name]', "Edit your account credentials."
       long_desc <<-DESC
-  Setup or modify your account credentials. If you do not specify an account name on the command line, the default account will be updated.
+  Set up or modify your account credentials. If you do not specify an account name on the command line, the default account is updated.
   
-  You will need your Access Key Id, Secret Key and Tenant Id from the HP Cloud web site to set up your account. Optionally, you can specify your own endpoint to access, but in most cases you will want to use the default.  
+  You  need your Access Key Id, Secret Key and Tenant Id from the HP Cloud web site to set up your account. Optionally, you can specify your own endpoint to access, but in most cases we recommend you use the default.  
   
-  Availability zones typically have the format az-1.region-a.geo-1 or region-a.geo-1 depending on the service.  See your account API keys page to see your list of activated availability zones: https://console.hpcloud.com/account/api_keys
+  Availability zones typically have the format 'az-1.region-a.geo-1' or 'region-a.geo-1', depending on the service.  See your account API keys page to see your list of activated availability zones: https://console.hpcloud.com/account/api_keys
+  
+  'account:edit' prompts you for the following values:
+  
+  * Access Key Id
+  * Secret Key 
+  * Auth Uri
+  * Tenant Id
+  * Compute zone
+  * Storage zone
+  * CDN zone
+  * Block zone
 
-  You can re-run this command to modify your settings at anytime.
+  You can re-run this command at any time to modify your settings.
+  
+Examples:
+  hpcloud account:edit  # Edits the 'default' account settings.
       DESC
       method_option 'no-validate', :type => :boolean, :aliases => '-n', :default => false,
                     :desc => "Don't verify account settings during edit"
       define_method "account:edit" do |*names|
         cli_command(options) {
           if names.empty?
-            name = 'default'
+            config = Config.new(true)
+            name = config.get(:default_account)
           else
             if names.length == 1
               name = names[0]
@@ -45,7 +60,6 @@ module HP
           zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
           accounts.rejigger_zones(zones)
           zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
-          zones[:cdn_availability_zone] = ask_with_default 'CDN zone:', "#{zones[:cdn_availability_zone]}"
           zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
 
           unless options['no-validate']
@@ -59,7 +73,7 @@ module HP
 
           # update credentials and stash in config directory
           accounts.set_credentials(name, cred[:account_id], cred[:secret_key], cred[:auth_uri], cred[:tenant_id])
-          accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:cdn_availability_zone], zones[:block_availability_zone])
+          accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:block_availability_zone])
           accounts.write(name)
 
           display "Account credentials for HP Cloud Services have been edited."

@@ -10,7 +10,7 @@ module HP
 
       map 'cdn:containers:list' => 'cdn:containers'
 
-      desc "cdn:containers", "list of available containers on the CDN"
+      desc "cdn:containers", "List available containers on the CDN."
       long_desc <<-DESC
   List the available containers on the Content Delivery Network (CDN). Optionally, an availability zone can be passed.
 
@@ -27,11 +27,10 @@ Aliases: cdn:containers:list
       CLI.add_common_options
       define_method "cdn:containers" do
         cli_command(options) {
-          cdn_connection = connection(:cdn, options)
           response = if options[:all]
-            cdn_connection.get_containers()
+            Connection.instance.cdn.get_containers()
           else
-            cdn_connection.get_containers({'enabled_only' => true})
+            Connection.instance.cdn.get_containers({'enabled_only' => true})
           end
           cdn_containers = response.body
           if cdn_containers.nil? or cdn_containers.empty?

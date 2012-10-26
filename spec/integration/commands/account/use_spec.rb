@@ -9,6 +9,8 @@ describe "Account use" do
   end
 
   before(:all) do
+    rsp = cptr("config:set default_account=default")
+    rsp.stderr.should eq("")
     rsp = cptr("account:add default auth_uri=one block_availability_zone=2 read_timeout=3")
     rsp.stderr.should eq("")
   end
@@ -18,11 +20,9 @@ describe "Account use" do
       rsp = cptr("account:use foo")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Account 'foo' copied to 'default'\n")
+      rsp.stdout.should eq("Account 'foo' is now the default\n")
       rsp.exit_status.should be_exit(:success)
-      AccountsHelper.value('default', :credentials, :auth_uri).should eq("two")
-      AccountsHelper.value('default', :zones, :block_availability_zone).should eq("3")
-      AccountsHelper.value('default', :options, :read_timeout).should eq("4")
+      ConfigHelper.value(:default_account).should eq("foo")
     end
   end
 
@@ -34,12 +34,10 @@ describe "Account use" do
       rsp = cptr("account:use bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
-      rsp.stderr.should eq("Error copying #{tmpdir}/.hpcloud/accounts/bogus to #{tmpdir}/.hpcloud/accounts/default\n")
+      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
-      AccountsHelper.value('default', :credentials, :auth_uri).should eq("one")
-      AccountsHelper.value('default', :zones, :block_availability_zone).should eq("2")
-      AccountsHelper.value('default', :options, :read_timeout).should eq("3")
+      ConfigHelper.value('default_account').should be_nil
     end
   end
 

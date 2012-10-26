@@ -14,7 +14,7 @@ module HP
 
       map 'servers:list' => 'servers'
 
-      desc "servers [name_or_id ...]", "list of available servers"
+      desc "servers [name_or_id ...]", "List the available servers."
       long_desc <<-DESC
   List the servers in your compute account. You may filter the list by naming the servers by name or id which you wish to display.  Optionally, an availability zone can be passed.
 

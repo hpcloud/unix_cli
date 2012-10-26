@@ -8,7 +8,7 @@ module HP
 
       map 'snapshots:list' => 'snapshots'
     
-      desc 'snapshots [name_or_id ...]', "list block devices available optionally filtered by identifer or display name"
+      desc 'snapshots [name_or_id ...]', "List block devices available."
       long_desc <<-DESC
   The snapshots list command will list all the block snapshots that are associated with the account on the server. The list starts with identifier and contains name, size, type, create date, status, description and servers on which it is attached.  Optionally, the list may be filtered by specifying identifiers or names on the command line.
 

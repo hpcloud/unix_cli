@@ -6,13 +6,13 @@ module HP
       attr_reader :directory
       @@home = nil
 
+      DEFAULT_ACCOUNT = "default_account"
       CREDENTIALS = [:account_id,
                      :secret_key,
                      :auth_uri,
                      :tenant_id]
       ZONES = [:compute_availability_zone,
                :storage_availability_zone,
-               :cdn_availability_zone,
                :block_availability_zone]
       OPTIONS = [:connect_timeout,
                  :read_timeout,
@@ -21,6 +21,7 @@ module HP
                  :ssl_ca_path,
                  :ssl_ca_file,
                  :preferred_flavor,
+                 :preferred_win_image,
                  :preferred_image]
 
       def initialize
@@ -128,15 +129,13 @@ module HP
         end
       end
 
-      def set_zones(account, compute, storage, cdn, block)
+      def set_zones(account, compute, storage, block)
         hsh = @accts[account]
         hsh[:zones][:compute_availability_zone] = compute
         hsh[:zones][:storage_availability_zone] = storage
-        hsh[:zones][:cdn_availability_zone] = cdn
         hsh[:zones][:block_availability_zone] = block
         hsh[:zones].delete(:compute_availability_zone) if compute.empty?
         hsh[:zones].delete(:storage_availability_zone) if storage.empty?
-        hsh[:zones].delete(:cdn_availability_zone) if cdn.empty?
         hsh[:zones].delete(:block_availability_zone) if block.empty?
       end
 
@@ -160,7 +159,6 @@ module HP
         settings = Config.new.settings
         hsh[:zones][:compute_availability_zone] ||= settings[:compute_availability_zone]
         hsh[:zones][:storage_availability_zone] ||= settings[:storage_availability_zone]
-        hsh[:zones][:cdn_availability_zone] ||= settings[:cdn_availability_zone]
         hsh[:zones][:block_availability_zone] ||= settings[:block_availability_zone]
       end
 
@@ -172,7 +170,6 @@ module HP
           return
         end
         zones[:storage_availability_zone] = alternate
-        zones[:cdn_availability_zone] = alternate
         zones[:block_availability_zone] = compute
       end
 
@@ -195,6 +192,7 @@ module HP
           hsh[:options][:ssl_verify_peer] = true
         end
         hsh[:options][:ssl_ca_path] ||= settings[:ssl_ca_path]
+        hsh[:options][:ssl_ca_path] ||= settings[:ssl_ca_path]
         hsh[:options][:ssl_ca_file] ||= settings[:ssl_ca_file]
         hsh[:options].delete_if{ |k,v| v.nil? }
         return hsh
@@ -216,6 +214,16 @@ module HP
         end
       end
 
+      def creds_zones_options(name)
+        hsh = get(name)
+        creds = hsh[:credentials]
+        zones = hsh[:zones]
+        opts = hsh[:options]
+        opts.delete(:preferred_flavor)
+        opts.delete(:preferred_image)
+        opts.delete(:preferred_win_image)
+        return creds, zones, opts
+      end
     end
   end
 end

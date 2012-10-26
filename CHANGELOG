@@ -2,6 +2,11 @@ v1.3.0 10/23/12
 ================
 - Added the servers:rebuild command
 - Allow the user to override the mime type during copy command
+- The cdn_availability_zone has been replaced by the storage_availability_zone
+- Added option to print the SSL and non-SSL URLs for CDN objects
+- CDN add and remove now take multiple arguments
+- Massive updates to the help text
+- Allow the default account to be set to any account that is configured
 
 v1.2.0 10/08/12
 ================

@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "servers:reboot name_or_id [name_or_id ...]", "reboot servers specified by server name or id"
+      desc "servers:reboot name_or_id [name_or_id ...]", "Reboot a server or servers (specified by server name or ID)."
       long_desc <<-DESC
   Reboot an existing server specified name or id. Rebooting a server may take some time so it might be necessary to check the status of the server by issuing command, 'hpcloud servers'. By default, a soft reboot is done, but you can specify the -h option to do a hard reboot. Optionally, an availability zone can be passed.
 

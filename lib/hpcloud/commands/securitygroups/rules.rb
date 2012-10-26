@@ -1,4 +1,3 @@
-require 'hpcloud/rules'
 require 'hpcloud/commands/securitygroups/rules/add'
 require 'hpcloud/commands/securitygroups/rules/remove'
 
@@ -8,7 +7,7 @@ module HP
 
       map 'securitygroups:rules:list' => 'securitygroups:rules'
 
-      desc "securitygroups:rules <sec_group_name>", "list of rules for a security group"
+      desc "securitygroups:rules <sec_group_name>", "Display the list of rules for a security group."
       long_desc <<-DESC
   List the rules for a security group for your compute account. Optionally, an availability zone can be passed.
 
@@ -21,16 +20,12 @@ Aliases: securitygroups:rules:list
       CLI.add_common_options
       define_method "securitygroups:rules" do |sec_group_name|
         cli_command(options) {
-          security_group = SecurityGroups.new.get(sec_group_name)
-          if security_group.is_valid? == false
-            error "You don't have a security group '#{sec_group_name}'.", :not_found
-          end
-
-          rules = security_group.fog.rules
+          rules = Rules.new(sec_group_name)
           if rules.empty?
             display "You currently have no rules for the security group '#{sec_group_name}'."
           else
-            Rules.table(rules)
+            hsh = rules.get_hash
+            Tableizer.new(options, RuleHelper.get_keys(), hsh).print
           end
         }
       end

@@ -93,7 +93,7 @@ describe "SecurityGroup methods" do
 
       secg.save.should be_false
 
-      secg.error_string.should eq("Error creating ip security group")
+      secg.error_string.should eq("Error creating security group")
       secg.error_code.should eq(:general_error)
     end
   end

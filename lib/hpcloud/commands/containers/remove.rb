@@ -4,7 +4,7 @@ module HP
     
       map %w(containers:rm containers:delete containers:del) => 'containers:remove'
     
-      desc "containers:remove <name>", "remove a container"
+      desc "containers:remove <name>", "Remove a container."
       long_desc <<-DESC
   Remove a container. By default this command will only remove a container if it empty. The --force flag will allow you to delete non-empty containers.  Be careful with this flag or you could have a really bad day.  Optionally, an availability zone can be passed.
 
@@ -23,7 +23,7 @@ Aliases: containers:rm, containers:delete, containers:del
         cli_command(options) {
           name = Container.container_name_for_service(name)
           begin
-            container = connection(:storage, options).directories.head(name)
+            container = Connection.instance.storage.directories.head(name)
             if container
               if options.force?
                 container.files.each { |file| file.destroy }

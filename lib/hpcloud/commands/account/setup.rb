@@ -4,9 +4,9 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc 'account:setup [account_name]', "set up or modify your credentials"
+      desc 'account:setup [account_name]', "Set up or modify your credentials."
       long_desc <<-DESC
-  Setup your account credentials. This is generally the first step in the process of using the HP Cloud Services command-line interface.  If you do not specify an account name on the command line, the default account will be updated.
+  Set up your account credentials. This is generally the first step in the process of using the HP Cloud Services command-line interface.  If you do not specify an account name on the command line, the default account will be updated.
   
   You will need your Access Key Id, Secret Key and Tenant Id from the HP Cloud web site to set up your account. Optionally, you can specify your own endpoint to access, but in most cases you will want to use the default.  
 
@@ -17,7 +17,8 @@ module HP
       define_method "account:setup" do |*names|
         cli_command(options) {
           if names.empty?
-            name = 'default'
+            config = Config.new(true)
+            name = config.get(:default_account)
           else
             if names.length == 1
               name = names[0]
@@ -43,7 +44,6 @@ module HP
           zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
           accounts.rejigger_zones(zones)
           zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
-          zones[:cdn_availability_zone] = ask_with_default 'CDN zone:', "#{zones[:cdn_availability_zone]}"
           zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
 
           unless options['no-validate']
@@ -57,7 +57,7 @@ module HP
 
           # update credentials and stash in config directory
           accounts.set_credentials(name, cred[:account_id], cred[:secret_key], cred[:auth_uri], cred[:tenant_id])
-          accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:cdn_availability_zone], zones[:block_availability_zone])
+          accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:block_availability_zone])
           accounts.write(name)
 
           display "Account credentials for HP Cloud Services have been set up."

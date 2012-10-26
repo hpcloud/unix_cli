@@ -4,7 +4,7 @@ module HP
 
       map %w(securitygroups:rules:rm securitygroups:rules:revoke securitygroups:rules:delete securitygroups:rules:del) => 'securitygroups:rules:remove'
 
-      desc "securitygroups:rules:remove <sec_group_name> <rule_id>", "remove a rule from the security group"
+      desc "securitygroups:rules:remove <sec_group_name> <rule_id>", "Remove a rule from the security group."
       long_desc <<-DESC
   Remove a rule by specifying its id, from the security group. Optionally, an availability zone can be passed.
 

@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
     
-      desc "containers:add name [name ...]", "add a container"
+      desc "containers:add name [name ...]", "Add a container."
       long_desc <<-DESC
   Add a new container to your storage account. You may creeate multiple containers by specifying more than one container name on the command line.  Container name can be specified with or without the preceding colon: 'my_container' or ':my_container'. Optionally, an availability zone can be passed.
 
@@ -21,11 +21,11 @@ Examples:
           names.each { |name|
             begin
               name = Container.container_name_for_service(name)
-              if connection(:storage, options).directories.get(name)
+              if Connection.instance.storage.directories.get(name)
                 error "Container '#{name}' already exists.", :conflicted
               else
                 if acceptable_name?(name, options)
-                  connection(:storage, options).directories.create(:key => name)
+                  Connection.instance.storage.directories.create(:key => name)
                   display "Created container '#{name}'."
                 end
               end

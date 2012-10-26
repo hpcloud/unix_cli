@@ -4,7 +4,7 @@ module HP
 
       map %w(volumes:rm volumes:delete volumes:del) => 'volumes:remove'
 
-      desc "volumes:remove name_or_id [name_or_id ...]", "remove a volume by id or name"
+      desc "volumes:remove name_or_id [name_or_id ...]", "Remove a volume or volumes (specified by name or ID)."
       long_desc <<-DESC
   Remove volumes by specifying their names or ids. More than one volume name or id may be specified on a command line.  Optionally, an availability zone may be passed.
 

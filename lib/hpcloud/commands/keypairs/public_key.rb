@@ -6,9 +6,9 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "keypairs:public_key <name>", "dump the public keys of a keypair"
+      desc "keypairs:public_key <name>", "Display the public keys of a key pair."
       long_desc <<-DESC
-  Dump the public key of the specified keypair.  Optionally, an availability zone can be passed.
+  Display the public key of the specified keypair.  Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud keypairs:public_key keyno                # Dump the keyno public key

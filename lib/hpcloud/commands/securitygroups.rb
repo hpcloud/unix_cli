@@ -8,7 +8,7 @@ module HP
 
       map 'securitygroups:list' => 'securitygroups'
 
-      desc "securitygroups [name_or_id ...]", "list of available security groups"
+      desc "securitygroups [name_or_id ...]", "List the available security groups."
       long_desc <<-DESC
   List the security groups in your compute account. You may filter the display by specifying names or ids of security groups on the command line.  Optionally, an availability zone can be passed.
 

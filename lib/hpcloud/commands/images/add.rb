@@ -2,7 +2,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "images:add <name> <server_name>", "add an image from an existing server"
+      desc "images:add <name> <server_name>", "Add an image from an existing server."
       long_desc <<-DESC
   Add a new image from an existing server to your compute account. Optionally, you may pass in metadata or an availability zone.
 

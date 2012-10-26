@@ -6,7 +6,7 @@ module HP
 
       map 'config:list' => 'config'
 
-      desc 'config', "list the current configuration settings"
+      desc 'config', "List the current configuration settings."
       long_desc <<-DESC
   List the current configuration settings.
 

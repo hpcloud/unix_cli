@@ -4,7 +4,7 @@ module HP
 
       map 'images:metadata:rm' => 'images:metadata:remove'
 
-      desc "images:metadata:remove <image_name_or_id> [metadata_key ...]", "remove metadata from a image"
+      desc "images:metadata:remove <image_name_or_id> [metadata_key ...]", "Remove metadata from an image."
       long_desc <<-DESC
   Remove metadata from an image in your compute account.  Image name or id may be specified.  Optionally, an availability zone can be passed.
 

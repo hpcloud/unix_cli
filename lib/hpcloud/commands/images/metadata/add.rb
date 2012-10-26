@@ -4,7 +4,7 @@ module HP
 
       map 'images:metadata:update' => 'images:metadata:add'
 
-      desc "images:metadata:add <name> <metadata>", "add metadata to an image"
+      desc "images:metadata:add <name> <metadata>", "Add metadata to an image."
       long_desc <<-DESC
   Add metadata to a image in your compute account.  Image name or id may be specified.  If metadata already exists, it will be updated.  Metadata should be specified as a comma separated list of name value pairs.  Optionally, an availability zone can be passed.
 
