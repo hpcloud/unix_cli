@@ -6,12 +6,12 @@ module HP
 
       desc "securitygroups:remove name_or_id [name_or_id ...]", "Remove a security group or groups."
       long_desc <<-DESC
-  Remove existing security groups by name or id. Optionally, an availability zone can be passed.
+  Remove existing security groups by name or ID. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud securitygroups:remove group1 group2 # Remove two groups group1 and group2
-  hpcloud securitygroups:remove 30725         # Remove group by identifier
-  hpcloud securitygroups:remove mysecgroup -z az-2.region-a.geo-1   # Optionally specify an availability zone
+  hpcloud securitygroups:remove group1 group2 # Remove the security groups `group1` and `group2`:
+  hpcloud securitygroups:remove 30725         # Remove the security group with the ID `30725`:
+  hpcloud securitygroups:remove mysecgroup -z az-2.region-a.geo-1   # Remove the security group `mysecgroup` for availability zone `az-2.region-a.geo-1`:
 
 Aliases: securitygroups:rm, securitygroups:delete, securitygroups:del
       DESC
