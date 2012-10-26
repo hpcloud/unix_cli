@@ -10,11 +10,11 @@ module HP
 
       desc "securitygroups:rules <sec_group_name>", "Display the list of rules for a security group."
       long_desc <<-DESC
-  List the rules for a security group for your compute account. Optionally, an availability zone can be passed.
+  List the rules for a security group for your compute account. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud securitygroups:rules mysecgroup
-  hpcloud securitygroups:rules mysecgroup -z az-2.region-a.geo-1   # Optionally specify an availability zone
+  hpcloud securitygroups:rules mysecgroup  # List the rules for security group `mysecgroup`:
+  hpcloud securitygroups:rules mysecgroup -z az-2.region-a.geo-1   # List the rules for security group `mysecgroup` for availability zone `az-2.region-a.geo-1`:
 
 Aliases: securitygroups:rules:list
       DESC
