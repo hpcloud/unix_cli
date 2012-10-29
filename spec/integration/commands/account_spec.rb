@@ -30,6 +30,7 @@ describe "Account list" do
       rsp.stdout.should include("zones:")
       rsp.stdout.should include("  compute_availability_zone: az-1.region-a.geo-1\n")
       rsp.stdout.should include("  storage_availability_zone: region-a.geo-1\n")
+      rsp.stdout.should include("  cdn_availability_zone: region-a.geo-1\n")
       rsp.stdout.should include("  block_availability_zone: az-1.region-a.geo-1\n")
       rsp.stdout.should include("options: {}")
       rsp.exit_status.should be_exit(:success)
