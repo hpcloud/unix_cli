@@ -11,12 +11,12 @@ module HP
 
       desc "addresses [ip_or_id ...]", "Display list of available addresses."
       long_desc <<-DESC
-  List the available addresses for your account. You may filter the addresses listed by specifying one or more ips or ids on the command line.  Optionally, an availability zone can be passed.
+  List the available addresses for your account. You may filter the addresses listed by specifying one or more IPs or IDs on the command line.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud addresses                            # List addresses
-  hpcloud addresses 127.0.0.2                  # List address 127.0.0.2
-  hpcloud addresses -z az-2.region-a.geo-1     # Optionally specify an availability zone
+  hpcloud addresses                            # List addresses:
+  hpcloud addresses 127.0.0.2                  # List address information for IP address 127.0.0.2:
+  hpcloud addresses -z az-2.region-a.geo-1     # List addresses for availability zone `az-2.region-a.geo-1`:
 
 Aliases: addresses:list
       DESC
