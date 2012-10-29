@@ -6,12 +6,12 @@ module HP
 
       desc "images:remove name_or_id [name_or_id ...]", "Remove images (by name or ID)."
       long_desc <<-DESC
-  Remove an existing images by specifying thier names or ids. Optionally, an availability zone can be passed.
+  Remove existing images by specifying thier names or IDs. Optionally, you may specify an availability zone.
 
 Examples:
-  hpcloud images:remove my-image                           # delete 'my-image'
-  hpcloud images:remove 1172 1078                          # delete images '1172' and '1078'
-  hpcloud images:remove my-image -z az-2.region-a.geo-1    # Optionally specify an availability zone
+  hpcloud images:remove my-image                           # Delete image 'my-image':
+  hpcloud images:remove 1172 1078                          # Delete images '1172' and '1078':
+  hpcloud images:remove my-image -z az-2.region-a.geo-1    # Delete image `my-image` for availability zone `az-2.region-a.geo-1:
 
 Aliases: images:rm, images:delete, images:del
       DESC

@@ -6,12 +6,12 @@ module HP
 
       desc "volumes:remove name_or_id [name_or_id ...]", "Remove a volume or volumes (specified by name or ID)."
       long_desc <<-DESC
-  Remove volumes by specifying their names or ids. More than one volume name or id may be specified on a command line.  Optionally, an availability zone may be passed.
+  Remove volumes by specifying their names or ID. You may specify more than one volume name or ID on a command line.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud volumes:remove tome treatise   # delete volumes 'tome' and 'treatise'
-  hpcloud volumes:remove 998             # delete volume with id 998
-  hpcloud volumes:remove my-volume -z az-2.region-a.geo-1  # Optionally specify an availability zone
+  hpcloud volumes:remove tome treatise   # Delete the volumes 'tome' and 'treatise':
+  hpcloud volumes:remove 998             # Delete the volume with ID 998:
+  hpcloud volumes:remove my-volume -z az-2.region-a.geo-1  # Delete the volume `my-volume` for availability zone `az-2.region-a.geo-1`:
 
 Aliases: volumes:rm, volumes:delete, volumes:del
       DESC

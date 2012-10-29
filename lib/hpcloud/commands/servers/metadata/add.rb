@@ -6,10 +6,10 @@ module HP
 
       desc "servers:metadata:add <name_or_id> <metadata>", "Add metadata to a server."
       long_desc <<-DESC
-  Add metadata to a server in your compute account.  Server name or id may be specified.  Optionally, an availability zone can be passed in. The metadata should be a comma separated list of name value pairs.
+  Add metadata to a server in your compute account.  You can specify the erver name or ID.  Optionally, you can an availability zone. The metadata should be a comma separated list of name value pairs.
 
 Examples:
-  hpcloud servers:metadata:add my_server 'r2=d2,c3=po'  # Adds the specified metadata to the server.  If the metadata exists, it will be updated.
+  hpcloud servers:metadata:add my_server 'r2=d2,c3=po'  # Add the specified metadata to the server (if the metadata exists, it is updated):
 
 Aliases: servers:metadata:update
       DESC

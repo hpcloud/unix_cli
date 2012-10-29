@@ -6,10 +6,10 @@ module HP
 
       desc "servers:metadata:remove <name> <metadata_key> ...", "Remove metadata from a server."
       long_desc <<-DESC
-  Remove metadata from a server in your compute account.  Server name or id can be specified.  One or more metadata keys may be specified on the command line.  Optionally, an availability zone can be passed.
+  Remove metadata from a server in your compute account.  You can speciry the erver name or ID.  You can specify one or more metadata keys on the command line.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud servers:metadata:remove :my_server r2 c3  # Remove the the r2 and c3 metadata from the server.
+  hpcloud servers:metadata:remove :my_server r2 c3  # Remove the the r2 and c3 metadata from the server:
 
 Aliases: servers:metadata:rm
       DESC

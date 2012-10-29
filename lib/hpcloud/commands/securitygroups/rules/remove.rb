@@ -6,11 +6,11 @@ module HP
 
       desc "securitygroups:rules:remove <sec_group_name> <rule_id>", "Remove a rule from the security group."
       long_desc <<-DESC
-  Remove a rule by specifying its id, from the security group. Optionally, an availability zone can be passed.
+  Remove a rule from the security group, specifyied its ID. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud securitygroups:rules:remove mysecgroup 111
-  hpcloud securitygroups:rules:remove mysecgroup 111 -z az-2.region-a.geo-1    # Optionally specify an availability zone
+  hpcloud securitygroups:rules:remove mysecgroup 111  # Remove the rule `mysecgroup` from security group `111`:
+  hpcloud securitygroups:rules:remove mysecgroup 111 -z az-2.region-a.geo-1    # Remove the rule `mysecgroup` from security group `111` for availability zone `az-2.region-a.geo-1`:
 
 Aliases: securitygroups:rules:rm, securitygroups:rules:revoke, securitygroups:rules:delete, securitygroups:rules:del
       DESC

@@ -6,11 +6,11 @@ module HP
 
       desc "addresses:associate <ip_or_id> <server_name_or_id>", "Associate a public IP address to a server instance."
       long_desc <<-DESC
-  Associate an existing and unassigned public IP address, to the specified server instance.  Optionally, an availability zone can be passed.
+  Associate an existing and unassigned public IP address, to the specified server instance.  Optionally, you can specify an availability.
 
 Examples:
-  hpcloud addresses:associate 111.111.111.111 myserver
-  hpcloud addresses:associate 111.111.111.111 myserver -z az-2.region-a.geo-1
+  hpcloud addresses:associate 111.111.111.111 myserver  # Associate the address `111.111.111.111` to server `myserver`:
+  hpcloud addresses:associate 111.111.111.111 myserver -z az-2.region-a.geo-1  # Associate the address `111.111.111.111` to server `myserver` in availability zone `az-2.region-a.geo-1`:
       DESC
       CLI.add_common_options
       define_method "addresses:associate" do |ip_or_id, server_name_or_id|

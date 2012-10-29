@@ -6,14 +6,14 @@ module HP
 
       desc "securitygroups:rules:add <sec_group_name> <ip_protocol>", "Add a rule to the security group."
       long_desc <<-DESC
-  Add a rule to the security group. If <ip_protocol> is specified as 'icmp', then <port_range> is set to -1..-1.  If <ip_address> is not specified, then it defaults to '0.0.0.0/0'. To allow communications within a given security group, specify a source group while creating a rule. Optionally, an availability zone can be passed.
+  Add a rule to the security group. If <ip_protocol> is specified as 'icmp', then <port_range> is set to -1..-1.  If <ip_address> is not specified, then the address defaults to '0.0.0.0/0'. To allow communications within a given security group, you must specify a source group while creating a rule. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud securitygroups:rules:add mysggroup icmp                                   # defaults port range to -1..-1
-  hpcloud securitygroups:rules:add mysggroup tcp -p 22..22                          # defaults cidr to 0.0.0.0/0
-  hpcloud securitygroups:rules:add mysggroup tcp -p 80..80 -c "111.111.111.111/1"   # specify a cidr
-  hpcloud securitygroups:rules:add mysggroup tcp -p 80..80 -g "mysourcegroup"       # specify a source group
-  hpcloud securitygroups:rules:add mysggroup icmp -z az-2.region-a.geo-1            # Optionally specify an availability zone
+  hpcloud securitygroups:rules:add mysggroup icmp                                   # Set the default port range to -1..-1
+  hpcloud securitygroups:rules:add mysggroup tcp -p 22..22                          # Set the default cidr to `0.0.0.0/0`:
+  hpcloud securitygroups:rules:add mysggroup tcp -p 80..80 -c "111.111.111.111/1"   # Set the cidr to `111.111.111.111/1`:
+  hpcloud securitygroups:rules:add mysggroup tcp -p 80..80 -g "mysourcegroup"       # Set the source group to `mysourcegroup`:
+  hpcloud securitygroups:rules:add mysggroup icmp -z az-2.region-a.geo-1            # Set the availability zone to `az-2.region-a.geo-1`:
 
 Aliases: securitygroups:rules:authorize
       DESC

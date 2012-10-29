@@ -6,12 +6,12 @@ module HP
 
       desc "volumes:server [server]", "List the volumes on server."
       long_desc <<-DESC
-  List the volumes attached to servers with the device they are using.  Optionally, you may filter by specifying server names or ids on the command line.
+  List the volumes attached to servers with the device they are using.  Optionally, you may filter by specifying the server name or ID on the command line.
 
 Examples:
-  hpcloud volumes:server                                 # List all the attached volumes
-  hpcloud volumes:server myServer                        # List the volumes on myServer
-  hpcloud volumes:server myServer -z az-2.region-a.geo-1 # Optionally specify an availability zone
+  hpcloud volumes:server                                 # List all the attached volumes:
+  hpcloud volumes:server myServer                        # List the volumes on server `myServer`:
+  hpcloud volumes:server myServer -z az-2.region-a.geo-1 # List the volumes on server `myServer` for availability zone `az-2.region-a.geo-1`:
       DESC
       CLI.add_common_options
       define_method "volumes:server" do |*arguments|
