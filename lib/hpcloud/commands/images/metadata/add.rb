@@ -6,10 +6,10 @@ module HP
 
       desc "images:metadata:add <name> <metadata>", "Add metadata to an image."
       long_desc <<-DESC
-  Add metadata to a image in your compute account.  Image name or id may be specified.  If metadata already exists, it will be updated.  Metadata should be specified as a comma separated list of name value pairs.  Optionally, an availability zone can be passed.
+  Add metadata to a image in your compute account.  You may specify the mage name or ID.  If metadata already exists, it is updated.  You must specify the M\metadata as a comma separated list of name value pairs.  Optionally, you may specify an availability zone.
 
 Examples:
-  hpcloud images:metadata:add my_image 'r2=d2,c3=po'  # Adds the specified metadata to the image.  If the metadata exists, it will be updated.
+  hpcloud images:metadata:add my_image 'r2=d2,c3=po'  # Add the specified metadata to the image (if the metadata exists, it is updated):
 
 Aliases: images:metadata:update
       DESC

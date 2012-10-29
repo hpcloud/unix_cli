@@ -4,11 +4,11 @@ module HP
 
       desc "securitygroups:add <name> <description>", "Add a security group."
       long_desc <<-DESC
-  Add a new security group by specifying a name and a description. Optionally, an availability zone can be passed.
+  Add a new security group by specifying a name and a description. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud securitygroups:add mysecgroup "seg group desc"
-  hpcloud securitygroups:add mysecgroup "seg group desc" -z az-2.region-a.geo-1  # Optionally specify an availability zone
+  hpcloud securitygroups:add mysecgroup "seg group desc"  # Add new security group `mysecgroup` with description `seg group desc`:
+  hpcloud securitygroups:add mysecgroup "seg group desc" -z az-2.region-a.geo-1  # Add new security group `mysecgroup` with description `seg group desc` for availability zone `az-2.region-a.geo-1`:
       DESC
       CLI.add_common_options
       define_method "securitygroups:add" do |sec_group_name, sg_desc|

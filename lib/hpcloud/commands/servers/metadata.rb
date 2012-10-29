@@ -9,11 +9,11 @@ module HP
 
       desc "servers:metadata <name_or_id>", "List the metadata for a server."
       long_desc <<-DESC
-  List the metadata for a server in your compute account. You may specify either the name or the id of the server.  Optionally, an availability zone can be passed.
+  List the metadata for a server in your compute account. You can specify either the name or the ID of the server.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud servers:metadata Skynet                        # List server metadata
-  hpcloud servers:metadata -z az-2.region-a.geo-1 565394 # List server metadata for an availability zone
+  hpcloud servers:metadata Skynet                        # List server metadata:
+  hpcloud servers:metadata -z az-2.region-a.geo-1 565394 # List server metadata for availability zone `az-2region-a.geo-1`:
 
 Aliases: servers:metadata:list
       DESC

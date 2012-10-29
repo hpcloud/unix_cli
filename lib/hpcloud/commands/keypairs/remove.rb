@@ -6,12 +6,12 @@ module HP
 
       desc "keypairs:remove name [name ...]", "Remove a key pair (by name)."
       long_desc <<-DESC
-  Remove an existing key pair by name. You may specify more than one keypair to remove on one command line.  Optionally, an availability zone can be passed.
+  Remove an existing key pair by name. You may specify more than one key pair to remove on a single command line.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud keypairs:remove mykey             # Remove 'mykey'
-  hpcloud keypairs:remove mykey myotherkey  # Remove 'mykey' and 'myotherkey'
-  hpcloud keypairs:remove mykey -z az-2.region-a.geo-1  # Optionally specify an availability zone
+  hpcloud keypairs:remove mykey             # Remove the key pair 'mykey':
+  hpcloud keypairs:remove mykey myotherkey  # Remove the key pairs 'mykey' and 'myotherkey':
+  hpcloud keypairs:remove mykey -z az-2.region-a.geo-1  # Remove the key pair `mykey` for availability zone `az-2.region-a.geo-1:
 
 Aliases: keypairs:rm, keypairs:delete, keypairs:del
       DESC

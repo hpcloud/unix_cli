@@ -6,10 +6,10 @@ module HP
     
       desc 'account:use <account_to_use>', "Overwrite the default account with specified account."
       long_desc <<-DESC
-  Use the specified account as default.  This command overwrites the default account.
+  Use the specified account as your default account.  This command overwrites the default account.
   
 Examples:
-  hpcloud account:use useast
+  hpcloud account:use useast # Set the default account to `useast`:
       DESC
       define_method "account:use" do |name|
         cli_command(options) {

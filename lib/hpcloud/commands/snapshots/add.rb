@@ -4,11 +4,11 @@ module HP
 
       desc "snapshots:add <name> <volume>", "Create a snapshot."
       long_desc <<-DESC
-  Create a snapshot with the given name from a volume.  Optionally, a description may be specified.
+  Create a snapshot with the given name from a volume.  Optionally, you can specify a description.
 
 Examples:
-  hpcloud snapshots:add my_snapshot vol10               # Creates a new snapshot named 'my_snapshot' from the specified volume
-  hpcloud snapshots:add my_snapshot vol10 -d 'test vol' # Creates a new snapshot named 'my_snapshot' from the specified volume
+  hpcloud snapshots:add my_snapshot vol10               # Create the new snapshot 'my_snapshot' from the specified volume:
+  hpcloud snapshots:add my_snapshot vol10 -d 'test vol' # Creates the new snapshot 'my_snapshot' from the specified volume with the description `test vol`:
       DESC
       method_option :description,
                     :type => :string, :aliases => '-d',
