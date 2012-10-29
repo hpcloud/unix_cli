@@ -29,7 +29,7 @@ Aliases: addresses:list
           else
             hsh = addresses.get_hash(arguments)
             if hsh.empty?
-              display "There are no ip addresses that match the provided arguments"
+              display "There are no IP addresses that match the provided arguments"
             else
               Tableizer.new(options, AddressHelper.get_keys(), hsh).print
             end
