@@ -4,13 +4,13 @@ module HP
 
       desc "volumes:add <name> [size]", "Add a volume."
       long_desc <<-DESC
-  Add a new volume to your compute account with the specified name and size.  Optionally, a description, metadata or availability zone may be specified.  If size is not specified, it will be taken from the snapshot (if specified) or default to 1 gigabyte.
+  Add a new volume to your compute account with the specified name and size.  Optionally, you can specify a description, metadata or availability zone.  If you do not specify a size, it is taken from the snapshot (if specified) or default to 1 gigabyte.
 
 Examples:
-  hpcloud volumes:add my_volume 10               # Creates a new volume named 'my_volume' of size 10
-  hpcloud volumes:add my_volume 10 -d 'test vol' # Creates a new volume named 'my_volume' of size 10 with a description
-  hpcloud volumes:add my_volume -s 'snappy'      # Creates a new volume named 'my_volume' based on the snapshot 'snappy'
-  hpcloud volumes:add my_volume 1 -z az-2.region-a.geo-1 # Creates volume in specified zone
+  hpcloud volumes:add my_volume 10               # Create a new volume named 'my_volume' of size 10:
+  hpcloud volumes:add my_volume 10 -d 'test vol' # Create a new volume named 'my_volume' of size 10 with a description:
+  hpcloud volumes:add my_volume -s 'snappy'      # Create a new volume named 'my_volume' based on the snapshot 'snappy':
+  hpcloud volumes:add my_volume 1 -z az-2.region-a.geo-1 # Creates volume `my_volume` in availability zone `az-2.region-a.geo-1`:
       DESC
       method_option :description,
                     :type => :string, :aliases => '-d',
