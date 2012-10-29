@@ -7,8 +7,8 @@ module HP
   Attach a volume to a server on the specified device name.
 
 Examples:
-  hpcloud volumes:attach myVolume myServer /dev/sdf                         # attach myVolume to myServer on /dev/sdf
-  hpcloud volumes:attach my-volume myServer /dev/sdg -z az-2.region-a.geo-1 # Optionally specify an availability zone
+  hpcloud volumes:attach myVolume myServer /dev/sdf                         # Attach volume `myVolume` to server `myServer` on device `/dev/sdf`:
+  hpcloud volumes:attach my-volume myServer /dev/sdg -z az-2.region-a.geo-1 # Attach volume `my-volume` to server `myServer` on device `/dev/sdf` for availability zone `az-2.region-a.geo-1`:
 
       DESC
       CLI.add_common_options
