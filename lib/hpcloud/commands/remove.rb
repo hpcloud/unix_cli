@@ -6,12 +6,12 @@ module HP
 
       desc 'remove object_or_container [object_or_container ...]', 'Remove objects or containers.'
       long_desc <<-DESC
-  Remove objects or containers. Optionally, an availability zone can be passed.
+  Remove objects or containers. Optionally, you can specify an availability zone.
         
 Examples:
-  hpcloud remove :tainer/my.txt :tainer/other.txt # Delete object 'my.txt' and 'other.txt'
-  hpcloud remove :my_container                    # Delete container 'my_container'
-  hpcloud remove :my_container -z region-a.geo-1  # Optionally specify an availability zone
+  hpcloud remove :tainer/my.txt :tainer/other.txt # Delete objects 'my.txt' and 'other.txt' from container `tainer`:
+  hpcloud remove :my_container                    # Delete container 'my_container':
+  hpcloud remove :my_container -z region-a.geo-1  # Delete container 'my_container` in availability zone `region-a.geo-1`:
 
 Aliases: rm, delete, destroy, del
       DESC
