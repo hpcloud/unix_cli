@@ -6,13 +6,13 @@ module HP
     
       desc 'location <object/container> ...', 'Display the URIs for the specified resources.'
       long_desc <<-DESC
-  Print the URI of the specified object or container. Optionally, an availability zone can be passed.
+  Display the URI of the specified object or container. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud location :my_container/file.txt
-  hpcloud location :my_container
-  hpcloud location :my_container/file.txt :my_container/other.txt # multiple files or containers
-  hpcloud location :my_container/file.txt -z region-a.geo-1  # Optionally specify an availability zone
+  hpcloud location :my_container/file.txt  # Display the URI for the file `file.txt` that resides in container `my_container`:
+  hpcloud location :my_container  #  Display the URI for all objects in container `my_container`:
+  hpcloud location :my_container/file.txt :my_container/other.txt # Display the URIs for the objects `file.txt` and `other.txt` that reside in container `my_container`:
+  hpcloud location :my_container/file.txt -z region-a.geo-1  # Display the URI for the file `file.txt` that resides in container `my_container` in availability zone `region-a.geo-1`:
 
 Aliases: loc
       DESC
