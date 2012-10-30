@@ -20,7 +20,6 @@ module HP
   * Tenant Id
   * Compute zone
   * Storage zone
-  * CDN zone
   * Block zone
 
   You can re-run this command at any time to modify your settings.
