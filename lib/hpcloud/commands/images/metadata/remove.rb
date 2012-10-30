@@ -11,7 +11,7 @@ module HP
 Examples:
   hpcloud images:metadata:remove my_image r2 c3  # Remove the specified metadata from the image:
 
-Aliases: rm
+Aliases: images:metadata:rm
       DESC
       CLI.add_common_options
       define_method "images:metadata:remove" do |name_or_id, *metadata|

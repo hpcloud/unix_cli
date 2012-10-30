@@ -5,10 +5,9 @@ module HP
       map %w(ls containers containers:list) => 'list'
       map 'ls' => 'list'
     
-      desc 'list <container>', "List container contents."
+      desc 'list [container ...]', "List containers or container contents."
       long_desc <<-DESC
-  List the contents of a specified container. Optionally, you can specify an availability zone.
-
+  List containers or the contents of the specified containers. Optionally, an availability zone can be passed.
 
 Examples:
   hpcloud list :tainer/1.txt :tainer/2.txt      # List the two objects `1.txt` and 2.txt` in the container `tainer`:

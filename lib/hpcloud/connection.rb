@@ -88,7 +88,7 @@ module HP
       def cdn
         account = get_account()
         return @cdn_connection[account] unless @cdn_connection[account].nil?
-        opts = create_options(:storage_availability_zone)
+        opts = create_options(:cdn_availability_zone)
         begin
           @cdn_connection[account] = Fog::CDN.new(opts)
         rescue Exception => e

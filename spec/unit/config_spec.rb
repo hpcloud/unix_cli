@@ -22,6 +22,7 @@ describe "Config reading" do
       config = HP::Cloud::Config.new
       config.settings[:default_auth_uri].should eq('https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
       config.settings[:block_availability_zone].should eq('az-1.region-a.geo-1')
+      config.settings[:cdn_availability_zone].should eq('region-a.geo-1')
       config.settings[:compute_availability_zone].should eq('az-1.region-a.geo-1')
       config.settings[:storage_availability_zone].should eq('region-a.geo-1')
       config.settings[:connect_timeout].should eq(30)
@@ -46,6 +47,7 @@ describe "Config reading" do
       config = HP::Cloud::Config.new
       config.settings[:default_auth_uri].should eq('https://127.0.0.1:35357/v2.0/')
       config.settings[:block_availability_zone].should eq('az-1.region-z.geo-1')
+      config.settings[:cdn_availability_zone].should eq('region-z.geo-1')
       config.settings[:compute_availability_zone].should eq('az-1.region-z.geo-1')
       config.settings[:storage_availability_zone].should eq('region-z.geo-1')
       config.settings[:connect_timeout].should eq(35)
@@ -117,6 +119,11 @@ describe "Config set and get" do
       }.should raise_error(Exception) {|e|
         e.to_s.should eq("The value of 'compute_availability_zone' may not be empty")
       }
+      lambda {
+        config.set("cdn_availability_zone", "")
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("The value of 'cdn_availability_zone' may not be empty")
+      }
     end
   end
 
@@ -163,6 +170,7 @@ describe "Config write" do
       @config.set('block_availability_zone', '2val')
       @config.set('storage_availability_zone', '3val')
       @config.set('compute_availability_zone', '4val')
+      @config.set('cdn_availability_zone', '5val')
       @config.set('connect_timeout', '6val')
       @config.set('read_timeout', '7val')
       @config.set('write_timeout', '8val')
@@ -175,6 +183,7 @@ describe "Config write" do
       contents.should include(":block_availability_zone: 2val\n")
       contents.should include(":storage_availability_zone: 3val\n")
       contents.should include(":compute_availability_zone: 4val\n")
+      contents.should include(":cdn_availability_zone: 5val\n")
       contents.should include(":connect_timeout: 6val\n")
       contents.should include(":read_timeout: 7val\n")
       contents.should include(":write_timeout: 8val\n")

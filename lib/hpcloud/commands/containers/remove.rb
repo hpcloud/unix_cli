@@ -4,7 +4,7 @@ module HP
     
       map %w(containers:rm containers:delete containers:del) => 'containers:remove'
     
-      desc "containers:remove <name>", "Remove a container."
+      desc "containers:remove name [name ...]", "Remove a containers."
       long_desc <<-DESC
   Remove a container. By default this command removes a container if it empty. The `--force` flag deletes non-empty containers.  Be careful with this flag or you could have a really bad day.  Optionally, you can specify an availability zone.
 
@@ -19,23 +19,21 @@ Aliases: containers:rm, containers:delete, containers:del
                     :type => :boolean, :aliases => '-f',
                     :desc => 'Force removal of non-empty containers.'
       CLI.add_common_options
-      define_method "containers:remove" do |name|
+      define_method "containers:remove" do |name, *names|
         cli_command(options) {
-          name = Container.container_name_for_service(name)
-          begin
-            container = Connection.instance.storage.directories.head(name)
-            if container
-              if options.force?
-                container.files.each { |file| file.destroy }
+          names = [name] + names
+          names.each { |name|
+            resource = Resource.create_remote(Connection.instance.storage, name)
+            if resource.is_container?
+              if resource.remove(options.force)
+                display "Removed container '#{name}'."
+              else
+                error_message resource.error_string, resource.error_code
               end
-              container.destroy
-              display "Removed container '#{name}'."
             else
-              error "You don't have a container named '#{name}'.", :not_found
+              error_message "The specified object is not a container: #{name}", :incorrect_usage
             end
-          rescue Excon::Errors::Conflict
-            error "The container '#{name}' is not empty. Please use -f option to force deleting a container with objects in it.", :general_error
-          end
+          }
         }
       end
     end
