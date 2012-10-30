@@ -9,6 +9,7 @@ function dtizer {
 REFERENCE=reference.txt
 echo 'Below you can find a full reference of supported UNIX command-line interface (CLI) commands. The commands are alphabetized.  You can also use the <font face="Courier">hpcloud help [<em>command</em>]</font> tool (where <em>command</em> is the name of the command on which you want help, for example <font face="Courier">account:setup</font>) to display usage, description, and option information from the command line.' >${REFERENCE}
 echo >>${REFERENCE}
+stty cols 254
 hpcloud help | grep hpcloud | while read HPCLOUD COMMAND ROL
 do
   if [ "${SAVE}" ]
