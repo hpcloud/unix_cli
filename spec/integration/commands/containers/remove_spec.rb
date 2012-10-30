@@ -10,7 +10,7 @@ describe "containers:remove command" do
     it "should show error message" do
       rsp = cptr('containers:remove :my_nonexistant_container')
 
-      rsp.stderr.should eq("You don't have a container named 'my_nonexistant_container'.\n")
+      rsp.stderr.should eq("You don't have a container named ':my_nonexistant_container'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
@@ -21,7 +21,7 @@ describe "containers:remove command" do
     it "should show error message" do
       cptr('containers:add -z secondary other_users_container')
       rsp = cptr("containers:remove :other_users_container")
-      rsp.stderr.should eq("You don't have a container named 'other_users_container'.\n")
+      rsp.stderr.should eq("You don't have a container named ':other_users_container'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
@@ -31,7 +31,7 @@ describe "containers:remove command" do
     it "should report error" do
       rsp = cptr("containers:remove :bogustotally")
 
-      rsp.stderr.should eq("You don't have a container named 'bogustotally'.\n")
+      rsp.stderr.should eq("You don't have a container named ':bogustotally'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
@@ -44,7 +44,7 @@ describe "containers:remove command" do
       rsp = cptr('containers:remove :container_to_remove')
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Removed container 'container_to_remove'.\n")
+      rsp.stdout.should eq("Removed container ':container_to_remove'.\n")
       rsp.exit_status.should be_exit(:success)
       lambda{ @hp_svc.get_container('container_to_remove') }.should raise_error(Fog::Storage::HP::NotFound)
     end
@@ -61,9 +61,9 @@ describe "containers:remove command" do
       it "should show error message" do
         rsp = cptr('containers:remove :non_empty_container')
 
-        rsp.stderr.should eq("The container 'non_empty_container' is not empty. Please use -f option to force deleting a container with objects in it.\n")
+        rsp.stderr.should eq("The container ':non_empty_container' is not empty. Please use -f option to force deleting a container with objects in it.\n")
         rsp.stdout.should eq("")
-        rsp.exit_status.should be_exit(:general_error)
+        rsp.exit_status.should be_exit(:conflicted)
         @hp_svc.get_container('non_empty_container').status.should eql(200)
       end
 
@@ -74,7 +74,7 @@ describe "containers:remove command" do
         rsp = cptr('containers:remove -f :non_empty_container')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should eq("Removed container 'non_empty_container'.\n")
+        rsp.stdout.should eq("Removed container ':non_empty_container'.\n")
         rsp.exit_status.should be_exit(:success)
         lambda{ @hp_svc.get_container('non_empty_container') }.should raise_error(Fog::Storage::HP::NotFound)
       end
