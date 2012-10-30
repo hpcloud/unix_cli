@@ -10,12 +10,12 @@ module HP
 
       desc "securitygroups [name_or_id ...]", "List the available security groups."
       long_desc <<-DESC
-  List the security groups in your compute account. You may filter the display by specifying names or ids of security groups on the command line.  Optionally, an availability zone can be passed.
+  List the security groups in your compute account. You may filter the display by specifying names or IDs of security groups on the command line.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud securitygroups                         # List security groups
-  hpcloud securitygroups mysecgrp                # List mysecgrp security group
-  hpcloud securitygroups -z az-2.region-a.geo-1  # List security groups for an availability zone
+  hpcloud securitygroups                         # List the security groups:
+  hpcloud securitygroups mysecgrp                # List security group `mysecgrp`:
+  hpcloud securitygroups -z az-2.region-a.geo-1  # List the security groups for availability zone `az-2.region-a.geo-1`:
 
 Aliases: securitygroups:list
       DESC
