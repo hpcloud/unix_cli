@@ -6,17 +6,17 @@ module HP
 
       desc 'copy <source> [source ...] <destination>', "Copy files from one resource to another."
       long_desc <<-DESC
-  Copy a file between your file system and a container, inside a container, or between containers. You may copy multiple files to a directory or container on one command line.  Optionally, an availability zone can be passed.
+  Copy a file between your file system and a container, inside a container, or between containers. You may copy multiple files to a directory or container on one command line.  Optionally, you can specify an availability zone.  Note that a leading colon `:` is required when you specify a container; for example `:my_container`.
 
 Examples:
-  hpcloud copy my_file.txt :my_container        # Copy file to container 'my_container'
-  hpcloud copy :my_container/file.txt file.txt  # Copy file.txt to local file
-  hpcloud copy :logs/today :logs/old/weds       # Copy inside a container
-  hpcloud copy :one/file.txt :two/file.txt      # Copy file.txt between containers
-  hpcloud copy :one /usr/local                  # Copy container to /usr/local
-  hpcloud copy /usr/local :two                  # Copy /usr/local to container
-  hpcloud copy one.txt two.txt :numbers         # Copy two text files to a container
-  hpcloud copy my_file.txt :my_container -z region-a.geo-1   # Optionally specify an availability zone
+  hpcloud copy my_file.txt :my_container        # Copy the file `my_file.txt` to container 'my_container':
+  hpcloud copy :my_container/file.txt file.txt  # Copy the file `file.txt` from container `my_container` to your local system:
+  hpcloud copy :logs/today :logs/old/weds       # Copy the file `today` to new location `old/weds` inside container `logs`:
+  hpcloud copy :one/file.txt :two/file.txt      # Copy file.txt from container `one` to container `two`:
+  hpcloud copy :one /usr/local                  # Copy container `one` to the `/usr/local` directory on your local system:
+  hpcloud copy /usr/local :two                  # Copy directory `/usr/local` to container `two`:
+  hpcloud copy one.txt two.txt :numbers         # Copy text files `one.txt` and `two.txt` to  container `numbers`:
+  hpcloud copy my_file.txt :my_container -z region-a.geo-1   # Copy the file `my_file.txt` to container 'my_container' for availability zone `region-a.geo-1`:
 
 Aliases: cp
 
