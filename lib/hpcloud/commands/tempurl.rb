@@ -6,12 +6,12 @@ module HP
     
       desc 'tempurl <object> ...', 'Create temporary URLs for the given objects.'
       long_desc <<-DESC
-  Create temporary URLS for the given objects. Creating a temporary URL is a great way to share an object for a specified period of time without opening up permissions to everyone.  Only people with access to the URL will be able to access the file.  The time period may be specified in seconds (s), hours (h), or days (d).  If you do not specify a time period, the default is two days.  Optionally, an availability zone can be passed in to the command.
+  Create temporary URLS for the given objects. Creating a temporary URL allows you to share an object for a specified period of time making it available to everyone.  Only users with access to the URL can access the file.  You can specify the time period in seconds (s), hours (h), or days (d).  If you do not specify a time period, the default is two days.  Optionally, you can specify an availability zone.
 
 Examples: 
-  hpcloud tempurl -p7d :my_container/file.txt   # make a temporary URL for 7 days
-  hpcloud tempurl -p24h :my_container/file.txt :my_container/other.txt # multiple files or containers for 24 hours
-  hpcloud tempurl :my_container/file.txt -z region-a.geo-1  # Optionally specify an availability zone
+  hpcloud tempurl -p7d :my_container/file.txt   # Create a temporary URL for the file `file.txt` with a period of 7 days:
+  hpcloud tempurl -p24h :my_container/file.txt :my_container/other.txt #  Create temporary URLs for the files `file.txt` and `other.txt` in container `my_container` with a period of 24 hours:
+  hpcloud tempurl :my_container/file.txt -z region-a.geo-1  # Create a temporary URL for the file `file.txt` with a period of 7 days for availability zone `region-a.geo-1`:
 
 Aliases: tmpurl
       DESC
