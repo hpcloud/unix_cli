@@ -81,12 +81,12 @@ describe "Acl construction" do
   end
   context "bogus and user" do
     it "error set" do
-      acl = Acl.new("bogus", "elliott@newmoon.com")
+      acl = Acl.new("bogus", "elliott@newmoon.com,edward@sharpe.com")
 
       acl.is_valid?.should be_false
       acl.is_public?.should be_false
       acl.permissions.should eq("bogus")
-      acl.users.should eq(["elliott@newmoon.com"])
+      acl.users.should eq(["elliott@newmoon.com","edward@sharpe.com"])
       acl.to_s.should eq("bogus")
       acl.error_string.should eq("Your permissions 'bogus' are not valid.\nValid settings are: r, rw, w")
       acl.error_code.should eq(:incorrect_usage)
@@ -99,8 +99,8 @@ describe "Acl construction" do
       acl.is_valid?.should be_true
       acl.is_public?.should be_true
       acl.permissions.should eq("pr")
-      acl.users.should be_empty
-      acl.to_s.should eq("pr")
+      acl.users.should be_nil
+      acl.to_s.should eq("public-read")
       acl.error_string.should be_nil
       acl.error_code.should be_nil
     end
@@ -112,8 +112,8 @@ describe "Acl construction" do
       acl.is_valid?.should be_true
       acl.is_public?.should be_true
       acl.permissions.should eq("pr")
-      acl.users.should be_empty
-      acl.to_s.should eq("pr")
+      acl.users.should be_nil
+      acl.to_s.should eq("public-read")
       acl.error_string.should be_nil
       acl.error_code.should be_nil
     end
@@ -125,7 +125,7 @@ describe "Acl construction" do
       acl.is_valid?.should be_false
       acl.is_public?.should be_true
       acl.permissions.should eq("rw")
-      acl.users.should be_empty
+      acl.users.should be_nil
       acl.to_s.should eq("rw")
       acl.error_string.should eq("You may not make an object writable by everyone")
       acl.error_code.should eq(:incorrect_usage)
@@ -138,7 +138,7 @@ describe "Acl construction" do
       acl.is_valid?.should be_false
       acl.is_public?.should be_true
       acl.permissions.should eq("w")
-      acl.users.should be_empty
+      acl.users.should be_nil
       acl.to_s.should eq("w")
       acl.error_string.should eq("You may not make an object writable by everyone")
       acl.error_code.should eq(:incorrect_usage)

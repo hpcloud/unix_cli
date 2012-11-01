@@ -14,8 +14,11 @@ module HP
           @error_string = "Use the acl:revoke command to revoke public read permissions"
           @error_code = :incorrect_usage
         end
-        users = "" if users.nil?
-        @users = users.split(",")
+        if users.nil? || users.empty?
+          @users = nil
+        else
+          @users = users.split(",")
+        end
         unless VALID_ACLS.include?(@permissions)
           unless OLD_ACLS.include?(@permissions)
             @error_string = "Your permissions '#{@permissions}' are not valid.\nValid settings are: #{VALID_ACLS.join(', ')}" 
@@ -30,7 +33,7 @@ module HP
       end
 
       def is_public?
-        return @users.empty?
+        return @users.nil?
       end
 
       def is_valid?
@@ -38,6 +41,7 @@ module HP
       end
 
       def to_s
+        return "public-read" if @permissions == "pr"
         @permissions
       end
     end

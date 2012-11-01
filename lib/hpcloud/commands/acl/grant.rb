@@ -13,6 +13,7 @@ Examples:
   hpcloud acl:grant :my_container private        # Set the 'my_container' ACL value to private.
   hpcloud acl:grant :my_container public-read -z region-a.geo-1  # Set 'my_container' ACL to public-read for an availability zone.
 
+Aliases: acl:set
       DESC
       CLI.add_common_options
       define_method 'acl:grant' do |name, permissions, users=nil|
