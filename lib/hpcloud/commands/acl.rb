@@ -4,8 +4,6 @@ module HP
   module Cloud
     class CLI < Thor
 
-      CANNED_ACLS = %w(private public-read)
-
       desc 'acl <object/container>', "View the ACL for an object or container."
       long_desc <<-DESC
   View the access control list (ACL) for a container or object. Optionally, you can specify an availability zone.

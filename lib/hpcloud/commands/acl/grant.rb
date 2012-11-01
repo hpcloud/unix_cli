@@ -4,7 +4,7 @@ module HP
 
       map 'alias:set' => 'alias:grant'
 
-      desc 'acl:grant <resource> <acl> [user,...]', "Grant the specified permissions."
+      desc 'acl:grant <resource> <permissions> [user,...]', "Grant the specified permissions."
       long_desc <<-DESC
   Set the Access Control List (ACL) values for the specified containers. The supported ACL settings are private or public-read. Optionally, you can select a specific availability zone.
 
@@ -15,39 +15,18 @@ Examples:
 
       DESC
       CLI.add_common_options
-      define_method 'acl:grant' do |name, acl, users=nil|
+      define_method 'acl:grant' do |name, permissions, users=nil|
         cli_command(options) {
-          acl = acl.downcase
-          unless CANNED_ACLS.include?(acl)
-            error "Your ACL '#{acl}' is invalid.\nValid options are: #{CANNED_ACLS.join(', ')}."
+          acl = Acl.new(permissions, users)
+          if acl.is_valid?
+            error "No object exists at '#{container}/#{key}'.", :not_found
           end
 
           resource = Resource.create_remote(Connection.instance.storage, name)
-          dir = Connection.instance.storage.directories.get(container)
-          if type == :object
-            if dir
-              file = dir.files.get(key)
-              if file
-                # since setting acl at object level is not supported, so just making parent directory public
-                dir.acl = acl
-                dir.save
-                display "ACL for #{name} updated to #{acl}."
-              else
-                error "No object exists at '#{container}/#{key}'.", :not_found
-              end
-            else
-              error "No object exists at '#{container}/#{key}'.", :not_found
-            end
-          elsif type == :container
-            if dir
-              dir.acl = acl
-              dir.save
-              display "ACL for #{name} updated to #{acl}."
-            else
-              error "No container named '#{container}' exists.", :not_found
-            end
+          if resource.grant(acl)
+            display "ACL for #{name} updated to #{acl}."
           else
-            error 'Setting ACLs is only supported for containers and objects.', :not_supported
+            error "No object exists at '#{container}/#{key}'.", :not_found
           end
         }
       end

@@ -566,10 +566,34 @@ describe "Remote resource get size" do
       @directories.stub(:get).and_return(nil)
       res = Resource.create(@storage, ":container/files/river.txt")
 
-      res.grant(nil).should be_false
+      res.grant(@acl).should be_false
 
       res.error_string.should eq("Cannot find container ':container'.")
       res.error_code.should eq(:not_found)
+    end
+  end
+
+  context "grant failure" do
+    it "returns false and sets error" do
+      @directory.stub(:grant).and_raise(Exception.new("Grant failure"))
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.grant(@acl).should be_false
+
+      res.error_string.should eq("Exception granting permissions for ':container/files/river.txt': Grant failure")
+      res.error_code.should eq(:general_error)
+    end
+  end
+
+  context "save failure" do
+    it "returns false and sets error" do
+      @directory.stub(:save).and_raise(Exception.new("Save failure"))
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.grant(@acl).should be_false
+
+      res.error_string.should eq("Exception granting permissions for ':container/files/river.txt': Save failure")
+      res.error_code.should eq(:general_error)
     end
   end
 

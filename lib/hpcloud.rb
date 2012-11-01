@@ -3,6 +3,7 @@ require 'fog'
 
 require 'hpcloud/version'
 require 'hpcloud/accounts'
+require 'hpcloud/acl'
 require 'hpcloud/addresses'
 require 'hpcloud/address_helper'
 require 'hpcloud/config'
