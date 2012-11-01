@@ -13,7 +13,7 @@ module HP
       LOCAL_TYPES = [:directory, :file]
     
       def self.create_remote(storage, fname)
-        fname = ':' + fname unless fname[0] == ':'
+        fname = ':' + fname unless fname[0] == ':' || fname[0] == '/'
         return Resource.create(storage, fname)
       end
 

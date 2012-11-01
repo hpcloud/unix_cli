@@ -35,11 +35,6 @@ module HP
           @error_code = :permission_denied
           return false
         rescue Exception => error
-puts '=================================================================='
-puts error.to_s
-puts '=================================================================='
-puts error.backtrace
-puts '=================================================================='
           @error_string = "Error reading '#{@fname}': " + error.to_s
           @error_code = :general_error
           return false
@@ -69,11 +64,6 @@ puts '=================================================================='
           @error_code = :permission_denied
           return false
         rescue Exception => error
-puts '=================================================================='
-puts error.to_s
-puts '=================================================================='
-puts error.backtrace
-puts '=================================================================='
           @error_string = "Error reading '#{@fname}': " + error.to_s
           @error_code = :general_error
           return false
