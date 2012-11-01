@@ -1,4 +1,4 @@
-require 'hpcloud/commands/acl/set'
+require 'hpcloud/commands/acl/grant'
 
 module HP
   module Cloud

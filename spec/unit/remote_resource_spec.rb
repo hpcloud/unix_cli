@@ -3,7 +3,11 @@ include HP::Cloud
 
 describe "Valid source" do
   before(:each) do
+    @file = double("file")
+    @files = double("files")
+    @files.stub(:get).and_return(@file)
     @container = double("container")
+    @container.stub(:files).and_return(@files)
     @directories = double("directories")
     @storage = double("storage")
     @storage.stub(:directories).and_return(@directories)
@@ -28,7 +32,7 @@ describe "Valid source" do
 
       to.valid_source().should be_false
 
-      to.error_string.should eq("You don't have a container 'bogus_container'.")
+      to.error_string.should eq("Cannot find container ':bogus_container'.")
       to.error_code.should eq(:not_found)
     end
   end
@@ -36,15 +40,19 @@ end
 
 describe "Valid destination" do
   before(:each) do
+    @file = double("file")
+    @files = double("files")
+    @files.stub(:get).and_return(@file)
     @container = double("container")
+    @container.stub(:files).and_return(@files)
     @directories = double("directories")
+    @directories.stub(:get).and_return(@container)
     @storage = double("storage")
     @storage.stub(:directories).and_return(@directories)
   end
 
   context "when remote file" do
     it "and source is file" do
-      @directories.stub(:get).and_return(@container)
       to = Resource.create(@storage, ":container/whatever.txt")
       src = double("source")
       src.stub(:isMulti).and_return(false)
@@ -58,7 +66,6 @@ describe "Valid destination" do
 
   context "when remote directory" do
     it "and source is file" do
-      @directories.stub(:get).and_return(@container)
       to = Resource.create(@storage, ":container/whatever/")
       src = double("source")
       src.stub(:isMulti).and_return(true)
@@ -72,7 +79,6 @@ describe "Valid destination" do
 
   context "when remote container" do
     it "and source is file" do
-      @directories.stub(:get).and_return(@container)
       to = Resource.create(@storage, ":container")
       src = double("source")
       src.stub(:isMulti).and_return(true)
@@ -86,7 +92,6 @@ describe "Valid destination" do
 
   context "when remote file" do
     it "and source is directory" do
-      @directories.stub(:get).and_return(@container)
       to = Resource.create(@storage, ":container/whatever.txt")
       src = double("source")
       src.stub(:isMulti).and_return(true)
@@ -105,7 +110,7 @@ describe "Valid destination" do
 
       to.valid_source().should be_false
 
-      to.error_string.should eq("You don't have a container 'bogus_container'.")
+      to.error_string.should eq("Cannot find container ':bogus_container'.")
       to.error_code.should eq(:not_found)
     end
   end
@@ -114,7 +119,11 @@ end
 describe "Set destination" do
 
   before(:each) do
+    @file = double("file")
+    @files = double("files")
+    @files.stub(:get).and_return(@file)
     @container = double("container")
+    @container.stub(:files).and_return(@files)
     @directories = double("directories")
     @directories.stub(:get).and_return(@container)
     @storage = double("storage")
@@ -168,7 +177,7 @@ describe "Set destination" do
       rc = to.set_destination("file.txt")
 
       rc.should be_false
-      to.error_string.should eq("You don't have a container 'missing_container'.")
+      to.error_string.should eq("Cannot find container ':missing_container'.")
       to.error_code.should eq(:not_found)
       to.destination.should be_nil
     end
@@ -193,9 +202,8 @@ describe "File copy" do
   before(:each) do
     @sourcetxt = double("sourcetxt")
     @sourcetxt.stub(:key).and_return("source.txt")
-    @files = [@sourcetxt]
     @container = double("container")
-    @container.stub(:files).and_return(@files)
+    @container.stub(:files).and_return([@sourcetxt])
     @directories = double("directories")
     @directories.stub(:get).and_return(@container)
     @get_object = double("get_object")
@@ -391,7 +399,6 @@ describe "Read directory" do
       ray.length.should eq(1)
     end
   end
-
 end
 
 describe "Remote resource get size" do
@@ -438,18 +445,25 @@ describe "Remote resource get size" do
       res.get_size().should eq(0)
     end
   end
+end
+
+describe "Remote resource remove" do
+  before(:each) do
+    @file = double("file")
+    @files = double("files")
+    @files.stub(:head).and_return(@file)
+    @directory = double("directory")
+    @directory.stub(:files).and_return(@files)
+    @directories = double("directories")
+    @directories.stub(:head).and_return(@directory)
+    @storage = double("storage")
+    @storage.stub(:directories).and_return(@directories)
+  end
 
   context "remove succeeds" do
     it "returns true" do
-      @file = double("file")
       @file.should_receive(:destroy).and_return(true)
-      @files = double("files")
-      @files.stub(:head).and_return(@file)
-      @directory = double("directory")
-      @directory.stub(:files).and_return(@files)
-      @directories = double("directories")
-      @directories.stub(:head).and_return(@directory)
-      @storage.stub(:directories).and_return(@directories)
+
       res = Resource.create(@storage, ":container/files/river.txt")
 
       res.remove(false).should be_true
@@ -458,27 +472,20 @@ describe "Remote resource get size" do
 
   context "remove container not found" do
     it "returns false and sets error" do
-      @directories = double("directories")
       @directories.stub(:head).and_return(nil)
       @storage.stub(:directories).and_return(@directories)
       res = Resource.create(@storage, ":container/files/river.txt")
 
       res.remove(false).should be_false
 
-      res.error_string.should eq("You don't have a container named ':container'.")
+      res.error_string.should eq("Cannot find container ':container'.")
       res.error_code.should eq(:not_found)
     end
   end
 
   context "remove file not found" do
     it "returns false and sets error" do
-      @files = double("files")
       @files.stub(:head).and_return(nil)
-      @directory = double("directory")
-      @directory.stub(:files).and_return(@files)
-      @directories = double("directories")
-      @directories.stub(:head).and_return(@directory)
-      @storage.stub(:directories).and_return(@directories)
       res = Resource.create(@storage, ":container/files/river.txt")
 
       res.remove(false).should be_false
@@ -487,18 +494,25 @@ describe "Remote resource get size" do
       res.error_code.should eq(:not_found)
     end
   end
+end
+
+describe "temp url" do
+  before(:each) do
+    @file = double("file")
+    @files = double("files")
+    @files.stub(:get).and_return(@file)
+    @directory = double("directory")
+    @directory.stub(:files).and_return(@files)
+    @directories = double("directories")
+    @directories.stub(:head).and_return(@directory)
+    @storage = double("storage")
+    @storage.stub(:directories).and_return(@directories)
+  end
 
   context "tempurl succeeds" do
     it "return true" do
-      @file = double("file")
       @file.should_receive(:temp_signed_url).and_return("http://woot.com/")
-      @files = double("files")
-      @files.stub(:get).and_return(@file)
-      @directory = double("directory")
-      @directory.stub(:files).and_return(@files)
-      @directories = double("directories")
-      @directories.stub(:head).and_return(@directory)
-      @storage.stub(:directories).and_return(@directories)
+
       res = Resource.create(@storage, ":container/files/river.txt")
 
       res.tempurl(1212).should eq("http://woot.com/")
@@ -507,9 +521,7 @@ describe "Remote resource get size" do
 
   context "tempurl container not found" do
     it "returns false and sets error" do
-      @directories = double("directories")
       @directories.stub(:head).and_return(nil)
-      @storage.stub(:directories).and_return(@directories)
       res = Resource.create(@storage, ":container/files/river.txt")
 
       res.tempurl(1212).should be_nil
@@ -521,19 +533,54 @@ describe "Remote resource get size" do
 
   context "temp url file not found" do
     it "returns false and sets error" do
-      @files = double("files")
       @files.stub(:get).and_return(nil)
-      @directory = double("directory")
-      @directory.stub(:files).and_return(@files)
-      @directories = double("directories")
-      @directories.stub(:head).and_return(@directory)
-      @storage.stub(:directories).and_return(@directories)
       res = Resource.create(@storage, ":container/files/river.txt")
 
       res.tempurl(1212).should be_nil
 
       res.error_string.should eq("Cannot find object named ':container/files/river.txt'.")
       res.error_code.should eq(:not_found)
+    end
+  end
+end
+
+describe "Remote resource get size" do
+  before(:each) do
+    @acl = double("acl")
+    @acl.stub(:permissions).and_return("rw")
+    @acl.stub(:users).and_return("bob@example.com")
+    @files = double("files")
+    @files.stub(:get).and_return(double("file"))
+    @directory = double("directory")
+    @directory.stub(:files).and_return(@files)
+    @directory.stub(:grant).and_return(true)
+    @directory.stub(:save).and_return(true)
+    @directories = double("directories")
+    @directories.stub(:get).and_return(@directory)
+    @storage = double("storage")
+    @storage.stub(:directories).and_return(@directories)
+  end
+
+  context "grant for file not found" do
+    it "returns false and sets error" do
+      @directories.stub(:get).and_return(nil)
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.grant(nil).should be_false
+
+      res.error_string.should eq("Cannot find container ':container'.")
+      res.error_code.should eq(:not_found)
+    end
+  end
+
+  context "grant for file not found" do
+    it "returns false and sets error" do
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.grant(@acl).should be_true
+
+      res.error_string.should be_nil
+      res.error_code.should be_nil
     end
   end
 end
