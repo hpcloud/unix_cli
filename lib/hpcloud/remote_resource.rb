@@ -291,6 +291,7 @@ puts '=================================================================='
 
       def grant(acl)
         begin
+          return false if is_valid? == false
           return false if get_container == false
           return false if get_files == false
 

@@ -19,14 +19,14 @@ Examples:
         cli_command(options) {
           acl = Acl.new(permissions, users)
           if acl.is_valid?
-            error "No object exists at '#{container}/#{key}'.", :not_found
-          end
-
-          resource = Resource.create_remote(Connection.instance.storage, name)
-          if resource.grant(acl)
-            display "ACL for #{name} updated to #{acl}."
+            resource = Resource.create_remote(Connection.instance.storage, name)
+            if resource.grant(acl)
+              display "ACL for #{name} updated to #{acl}."
+            else
+              error resource.error_string, resource.error_code
+            end
           else
-            error "No object exists at '#{container}/#{key}'.", :not_found
+            error acl.error_string, acl.error_code
           end
         }
       end

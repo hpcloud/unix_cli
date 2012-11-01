@@ -9,18 +9,28 @@ module HP
 
       def initialize(permissions, users)
         @permissions = permissions.downcase
-        @users = users
-        @users = nil if @users.nil? || @users.empty?
+        @permissions = "r" if @permissions == "public-read"
+        if @permissions == "private"
+          @error_string = "Use the acl:revoke command to revoke public read permissions"
+          @error_code = :incorrect_usage
+        end
+        users = "" if users.nil?
+        @users = users.split(",")
         unless VALID_ACLS.include?(@permissions)
           unless OLD_ACLS.include?(@permissions)
             @error_string = "Your permissions '#{@permissions}' are not valid.\nValid settings are: #{VALID_ACLS.join(', ')}" 
             @error_code = :incorrect_usage
           end
         end
+        @permissions = "pr" if is_public? && @permissions == "r"
+        if is_public? && @permissions != "pr"
+          @error_string = "You may not make an object writable by everyone"
+          @error_code = :incorrect_usage
+        end
       end
 
       def is_public?
-        return @users.nil?
+        return @users.empty?
       end
 
       def is_valid?
