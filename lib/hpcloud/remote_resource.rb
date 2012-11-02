@@ -296,9 +296,19 @@ module HP
       end
 
       def revoke(acl)
-        @error_string = "ACLs of local objects are not supported: #{@fname}"
-        @error_code = :incorrect_usage
-        return false
+        begin
+          return false if is_valid? == false
+          return false if get_container == false
+          return false if get_files == false
+
+          @directory.revoke(acl.permissions, acl.users)
+          @directory.save
+          return true
+        rescue Exception => e
+          @error_string = "Exception revoking permissions for '#{@fname}': " + e.to_s
+          @error_code = :general_error
+          return false
+        end
       end
     end
   end

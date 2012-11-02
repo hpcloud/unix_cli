@@ -544,7 +544,7 @@ describe "temp url" do
   end
 end
 
-describe "Remote resource get size" do
+describe "Remote resource grant" do
   before(:each) do
     @acl = double("acl")
     @acl.stub(:permissions).and_return("rw")
@@ -561,7 +561,18 @@ describe "Remote resource get size" do
     @storage.stub(:directories).and_return(@directories)
   end
 
-  context "grant for file not found" do
+  context "grant for local resource" do
+    it "returns false and sets error" do
+      res = Resource.create(@storage, "/files/river.txt")
+
+      res.grant(@acl).should be_false
+
+      res.error_string.should eq("ACLs of local objects are not supported: /files/river.txt")
+      res.error_code.should eq(:incorrect_usage)
+    end
+  end
+
+  context "grant for container not found" do
     it "returns false and sets error" do
       @directories.stub(:get).and_return(nil)
       res = Resource.create(@storage, ":container/files/river.txt")
@@ -569,6 +580,18 @@ describe "Remote resource get size" do
       res.grant(@acl).should be_false
 
       res.error_string.should eq("Cannot find container ':container'.")
+      res.error_code.should eq(:not_found)
+    end
+  end
+
+  context "grant for file not found" do
+    it "returns false and sets error" do
+      @files.stub(:get).and_return(nil)
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.grant(@acl).should be_false
+
+      res.error_string.should eq("Cannot find object ':container/files/river.txt'.")
       res.error_code.should eq(:not_found)
     end
   end
@@ -597,11 +620,99 @@ describe "Remote resource get size" do
     end
   end
 
-  context "grant for file not found" do
-    it "returns false and sets error" do
+  context "grant good" do
+    it "returns true and no error" do
       res = Resource.create(@storage, ":container/files/river.txt")
 
       res.grant(@acl).should be_true
+
+      res.error_string.should be_nil
+      res.error_code.should be_nil
+    end
+  end
+end
+
+describe "Remote resource revoke" do
+  before(:each) do
+    @acl = double("acl")
+    @acl.stub(:permissions).and_return("rw")
+    @acl.stub(:users).and_return("bob@example.com")
+    @files = double("files")
+    @files.stub(:get).and_return(double("file"))
+    @directory = double("directory")
+    @directory.stub(:files).and_return(@files)
+    @directory.stub(:revoke).and_return(true)
+    @directory.stub(:save).and_return(true)
+    @directories = double("directories")
+    @directories.stub(:get).and_return(@directory)
+    @storage = double("storage")
+    @storage.stub(:directories).and_return(@directories)
+  end
+
+  context "revoke for local resource" do
+    it "returns false and sets error" do
+      res = Resource.create(@storage, "/files/river.txt")
+
+      res.revoke(@acl).should be_false
+
+      res.error_string.should eq("ACLs of local objects are not supported: /files/river.txt")
+      res.error_code.should eq(:incorrect_usage)
+    end
+  end
+
+  context "revoke for container not found" do
+    it "returns false and sets error" do
+      @directories.stub(:get).and_return(nil)
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.revoke(@acl).should be_false
+
+      res.error_string.should eq("Cannot find container ':container'.")
+      res.error_code.should eq(:not_found)
+    end
+  end
+
+  context "revoke for file not found" do
+    it "returns false and sets error" do
+      @files.stub(:get).and_return(nil)
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.revoke(@acl).should be_false
+
+      res.error_string.should eq("Cannot find object ':container/files/river.txt'.")
+      res.error_code.should eq(:not_found)
+    end
+  end
+
+  context "revoke failure" do
+    it "returns false and sets error" do
+      @directory.stub(:revoke).and_raise(Exception.new("Grant failure"))
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.revoke(@acl).should be_false
+
+      res.error_string.should eq("Exception revoking permissions for ':container/files/river.txt': Grant failure")
+      res.error_code.should eq(:general_error)
+    end
+  end
+
+  context "save failure" do
+    it "returns false and sets error" do
+      @directory.stub(:save).and_raise(Exception.new("Save failure"))
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.revoke(@acl).should be_false
+
+      res.error_string.should eq("Exception revoking permissions for ':container/files/river.txt': Save failure")
+      res.error_code.should eq(:general_error)
+    end
+  end
+
+  context "revoke good" do
+    it "returns true and no error" do
+      res = Resource.create(@storage, ":container/files/river.txt")
+
+      res.revoke(@acl).should be_true
 
       res.error_string.should be_nil
       res.error_code.should be_nil

@@ -1,4 +1,5 @@
 require 'hpcloud/commands/acl/grant'
+require 'hpcloud/commands/acl/revoke'
 
 module HP
   module Cloud
