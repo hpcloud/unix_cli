@@ -18,14 +18,22 @@ Examples:
       def acl(name, *names)
         cli_command(options) {
           names = [name] + names
+
+          ray = []
           names.each { |name|
             resource = Resource.create(Connection.instance.storage, name)
             if resource.read_header
-              display resource.acl
+              ray << resource.to_hash()
             else
               error_message resource.error_string, resource.error_code
             end
           }
+          keys =  [ "public", "readers", "writers", "public_url"]
+          if ray.empty?
+            display "There are no resources that match the provided arguments"
+          else
+            Tableizer.new(options, keys, ray).print
+          end
         }
       end
     end

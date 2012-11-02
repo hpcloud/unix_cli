@@ -6,8 +6,9 @@ module HP
   module Cloud
     class Resource
       attr_reader :fname, :ftype, :container, :path
-      attr_reader :public_url, :cdn_public_url, :cdn_public_ssl_url, :acl
+      attr_reader :public_url, :cdn_public_url, :cdn_public_ssl_url, :public
       attr_reader :destination, :error_string, :error_code
+      attr_reader :readers, :writers
     
       REMOTE_TYPES = [:container, :container_directory, :object, :object_store]
       LOCAL_TYPES = [:directory, :file]
@@ -115,6 +116,12 @@ module HP
           rest = @fname.split('/')
           @path = rest.empty? ? '' : rest.join('/')
         end
+      end
+
+      def to_hash
+        hash = {}
+        instance_variables.each {|var| hash[var.to_s.delete("@")] = instance_variable_get(var) }
+        hash
       end
 
       def set_mime_type(value)

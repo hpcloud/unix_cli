@@ -107,7 +107,9 @@ module HP
             @public_url = @directory.public_url
             @cdn_public_url = @directory.cdn_public_url
             @cdn_public_ssl_url = @directory.cdn_public_ssl_url
-            @acl = @directory.public? ? "public-read" : "private"
+            @public = @directory.public? ? "yes" : "no"
+            @readers = @directory.list_users_with_read.join(",")
+            @writers = @directory.list_users_with_write.join(",")
           else
             file = @directory.files.head(@path)
             if file.nil?
@@ -118,7 +120,9 @@ module HP
             @public_url = file.public_url
             @cdn_public_url = file.cdn_public_url
             @cdn_public_ssl_url = file.cdn_public_ssl_url
-            @acl = file.directory.public? ? "public-read" : "private"
+            @public = @directory.public? ? "yes" : "no"
+            @readers = @directory.list_users_with_read.join(",")
+            @writers = @directory.list_users_with_write.join(",")
           end
         rescue Exception => error
           @error_string = "Error reading '#{@fname}': " + error.to_s
