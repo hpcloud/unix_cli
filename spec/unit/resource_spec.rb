@@ -37,8 +37,8 @@ describe "Resource construction" do
     it "should return :file" do
       file = Resource.create(@storage, '/tmp/myfile.txt')
 
-      file.fname.should eql('/tmp/myfile.txt')
-      file.ftype.should eql(:file)
+      file.fname.should eq('/tmp/myfile.txt')
+      file.ftype.should eq(:file)
       file.container.should be_nil
       file.path.should eq('/tmp/myfile.txt')
       file.isLocal().should be_true
@@ -54,8 +54,8 @@ describe "Resource construction" do
     it "should return :file" do
       file = Resource.create(@storage, '~/documents/myfile.tar')
 
-      file.fname.should eql('~/documents/myfile.tar')
-      file.ftype.should eql(:file)
+      file.fname.should eq('~/documents/myfile.tar')
+      file.ftype.should eq(:file)
       file.container.should be_nil
       file.path.should eq('~/documents/myfile.tar')
       file.isLocal().should be_true
@@ -71,8 +71,8 @@ describe "Resource construction" do
     it "should return :directory" do
       file = Resource.create(@storage, '/tmp/')
 
-      file.fname.should eql('/tmp/')
-      file.ftype.should eql(:directory)
+      file.fname.should eq('/tmp/')
+      file.ftype.should eq(:directory)
       file.container.should be_nil
       file.path.should eq('/tmp')
       file.isLocal().should be_true
@@ -88,8 +88,8 @@ describe "Resource construction" do
     it "should return :directory" do
       file = Resource.create(@storage, 'spec/tmp/nonexistant/')
 
-      file.fname.should eql('spec/tmp/nonexistant/')
-      file.ftype.should eql(:directory)
+      file.fname.should eq('spec/tmp/nonexistant/')
+      file.ftype.should eq(:directory)
       file.container.should be_nil
       file.path.should eq('spec/tmp/nonexistant')
       file.isLocal().should be_true
@@ -105,8 +105,8 @@ describe "Resource construction" do
     it "should return :directory" do
       file = Resource.create(@storage, '/tmp')
 
-      file.fname.should eql('/tmp')
-      file.ftype.should eql(:directory)
+      file.fname.should eq('/tmp')
+      file.ftype.should eq(:directory)
       file.container.should be_nil
       file.path.should eq('/tmp')
       file.isLocal().should be_true
@@ -122,10 +122,10 @@ describe "Resource construction" do
     it "should return :container" do
       file = Resource.create(@storage, ':my_container')
 
-      file.fname.should eql(':my_container')
-      file.ftype.should eql(:container)
-      file.container.should eql('my_container')
-      file.path.should eql('')
+      file.fname.should eq(':my_container')
+      file.ftype.should eq(:container)
+      file.container.should eq('my_container')
+      file.path.should eq('')
       file.isLocal().should be_false
       file.isRemote().should be_true
       file.isDirectory().should be_true
@@ -139,9 +139,9 @@ describe "Resource construction" do
     it "should return :object" do
       file = Resource.create(@storage, ':my_container/blah/archive.zip')
 
-      file.fname.should eql(':my_container/blah/archive.zip')
-      file.ftype.should eql(:object)
-      file.container.should eql('my_container')
+      file.fname.should eq(':my_container/blah/archive.zip')
+      file.ftype.should eq(:object)
+      file.container.should eq('my_container')
       file.path.should eq('blah/archive.zip')
       file.isLocal().should be_false
       file.isRemote().should be_true
@@ -156,9 +156,9 @@ describe "Resource construction" do
     it "should return :container_directory" do
       file = Resource.create(@storage, ':my_container/blah/')
 
-      file.fname.should eql(':my_container/blah/')
-      file.ftype.should eql(:container_directory)
-      file.container.should eql('my_container')
+      file.fname.should eq(':my_container/blah/')
+      file.ftype.should eq(:container_directory)
+      file.container.should eq('my_container')
       file.path.should eq('blah')
       file.isLocal().should be_false
       file.isRemote().should be_true
@@ -173,8 +173,8 @@ describe "Resource construction" do
     it "should return :object_store" do
       file = Resource.create(@storage, '')
 
-      file.fname.should eql('')
-      file.ftype.should eql(:object_store)
+      file.fname.should eq('')
+      file.ftype.should eq(:object_store)
       file.container.should be_nil
       file.path.should be_nil
       file.isLocal().should be_false
@@ -183,6 +183,42 @@ describe "Resource construction" do
       file.isFile().should be_false
       file.isObject().should be_false
       file.is_valid?.should be_true
+    end
+  end
+  
+  context "when url" do
+    it "should return :shared_resource" do
+      file = Resource.create(@storage, 'http://www.example.com/objay.txt')
+
+      file.fname.should eq('http://www.example.com/objay.txt')
+      file.ftype.should eq(:shared_object)
+      file.container.should be_nil
+      file.path.should eq('http://www.example.com/objay.txt')
+      file.isLocal().should be_false
+      file.isRemote().should be_true
+      file.isDirectory().should be_false
+      file.isFile().should be_false
+      file.isObject().should be_false
+      file.is_valid?.should be_true
+      file.is_shared?.should be_true
+    end
+  end
+  
+  context "when url" do
+    it "should return :shared_resource" do
+      file = Resource.create(@storage, 'https://www.example.com/objay.txt')
+
+      file.fname.should eq('https://www.example.com/objay.txt')
+      file.ftype.should eq(:shared_object)
+      file.container.should be_nil
+      file.path.should eq('https://www.example.com/objay.txt')
+      file.isLocal().should be_false
+      file.isRemote().should be_true
+      file.isDirectory().should be_false
+      file.isFile().should be_false
+      file.isObject().should be_false
+      file.is_valid?.should be_true
+      file.is_shared?.should be_true
     end
   end
 end

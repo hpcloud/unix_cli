@@ -10,7 +10,7 @@ module HP
       attr_reader :destination, :error_string, :error_code
       attr_reader :readers, :writers
     
-      REMOTE_TYPES = [:container, :container_directory, :object, :object_store]
+      REMOTE_TYPES = [:container, :container_directory, :object, :object_store, :shared_object]
       LOCAL_TYPES = [:directory, :file]
     
       def self.create_remote(storage, fname)
@@ -25,6 +25,9 @@ module HP
         end
         if ftype == :object_store
           return ObjectStore.new(storage, fname)
+        end
+        if ftype == :shared_object
+          return SharedObject.new(storage, fname)
         end
         return RemoteResource.new(storage, fname)
       end
@@ -64,6 +67,10 @@ module HP
         return @ftype == :container
       end
 
+      def is_shared?
+        return @ftype == :shared_object
+      end
+
       def isDirectory()
         return @ftype == :directory ||
                @ftype == :container_directory ||
@@ -94,7 +101,10 @@ module HP
         elsif resource[-1,1] == '/'
           :directory
         else
-          if File.directory?(resource)
+          if (resource.start_with?('http://') ||
+              resource.start_with?('https://'))
+            :shared_object
+          elsif File.directory?(resource)
             :directory
           else
             :file
