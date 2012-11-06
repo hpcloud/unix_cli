@@ -16,7 +16,7 @@ describe "Valid source" do
   context "when remote file" do
     it "is real file true" do
       @directories.stub(:get).and_return(@container)
-      to = Resource.create(@storage, ":container/whatever.txt")
+      to = ResourceFactory.create_any(@storage, ":container/whatever.txt")
 
       to.valid_source().should be_true
 
@@ -28,7 +28,7 @@ describe "Valid source" do
   context "when remote file" do
     it "is bogus file false" do
       @directories.stub(:get).and_return(nil)
-      to = Resource.create(@storage, ":bogus_container/whatever.txt")
+      to = ResourceFactory.create_any(@storage, ":bogus_container/whatever.txt")
 
       to.valid_source().should be_false
 
@@ -53,7 +53,7 @@ describe "Valid destination" do
 
   context "when remote file" do
     it "and source is file" do
-      to = Resource.create(@storage, ":container/whatever.txt")
+      to = ResourceFactory.create_any(@storage, ":container/whatever.txt")
       src = double("source")
       src.stub(:isMulti).and_return(false)
 
@@ -66,7 +66,7 @@ describe "Valid destination" do
 
   context "when remote directory" do
     it "and source is file" do
-      to = Resource.create(@storage, ":container/whatever/")
+      to = ResourceFactory.create_any(@storage, ":container/whatever/")
       src = double("source")
       src.stub(:isMulti).and_return(true)
 
@@ -79,7 +79,7 @@ describe "Valid destination" do
 
   context "when remote container" do
     it "and source is file" do
-      to = Resource.create(@storage, ":container")
+      to = ResourceFactory.create_any(@storage, ":container")
       src = double("source")
       src.stub(:isMulti).and_return(true)
 
@@ -92,7 +92,7 @@ describe "Valid destination" do
 
   context "when remote file" do
     it "and source is directory" do
-      to = Resource.create(@storage, ":container/whatever.txt")
+      to = ResourceFactory.create_any(@storage, ":container/whatever.txt")
       src = double("source")
       src.stub(:isMulti).and_return(true)
 
@@ -106,7 +106,7 @@ describe "Valid destination" do
   context "when remote file" do
     it "is bogus file false" do
       @directories.stub(:get).and_return(nil)
-      to = Resource.create(@storage, ":bogus_container/whatever.txt")
+      to = ResourceFactory.create_any(@storage, ":bogus_container/whatever.txt")
 
       to.valid_source().should be_false
 
@@ -132,7 +132,7 @@ describe "Set destination" do
   
   context "when remote directory empty" do
     it "valid destination true" do
-      to = Resource.create(@storage, ":container")
+      to = ResourceFactory.create_any(@storage, ":container")
 
       rc = to.set_destination("file.txt")
 
@@ -145,7 +145,7 @@ describe "Set destination" do
 
   context "when remote file ends in slash" do
     it "valid destination true" do
-      to = Resource.create(@storage, ":container/directory/")
+      to = ResourceFactory.create_any(@storage, ":container/directory/")
 
       rc = to.set_destination("file.txt")
 
@@ -158,7 +158,7 @@ describe "Set destination" do
 
   context "when remote file rename" do
     it "valid destination true" do
-      to = Resource.create(@storage, ":container/directory/new.txt")
+      to = ResourceFactory.create_any(@storage, ":container/directory/new.txt")
 
       rc = to.set_destination("file.txt")
 
@@ -172,7 +172,7 @@ describe "Set destination" do
   context "when remote container missing" do
     it "valid destination true" do
       @directories.stub(:get).and_return(nil)
-      to = Resource.create(@storage, ":missing_container/directory/new.txt")
+      to = ResourceFactory.create_any(@storage, ":missing_container/directory/new.txt")
 
       rc = to.set_destination("file.txt")
 
@@ -188,10 +188,13 @@ end
 describe "Remote file open read write close" do
   context "when remote file" do
     it "everything does nothing" do
-      res = Resource.create(@storage, ":container/whatever.txt")
+      @storage = double("storage")
+      @storage.stub(:get_object).and_return("chunk", 0, 0)
+
+      res = ResourceFactory.create_any(@storage, ":container/whatever.txt")
 
       res.open().should be_false
-      res.read().should be_nil
+      res.read().should eq("chunk")
       res.write("dkdkdkdkd").should be_false
       res.close().should be_false
     end
@@ -220,8 +223,8 @@ describe "File copy" do
 
   context "when bogus local file source" do
     it "copy should return false" do
-      src = Resource.create(@storage, "spec/bogus/directory/")
-      dest = Resource.create(@storage, ":container/destination.txt")
+      src = ResourceFactory.create_any(@storage, "spec/bogus/directory/")
+      dest = ResourceFactory.create_any(@storage, ":container/destination.txt")
 
       dest.copy(src).should be_false
     end
@@ -230,8 +233,8 @@ describe "File copy" do
   context "when local file source but bogus destination" do
     it "copy should return false" do
       @directories.stub(:get).and_return(nil)
-      src = Resource.create(@storage, "spec/fixtures/files/foo.txt")
-      dest = Resource.create(@storage, ":container/destination.txt")
+      src = ResourceFactory.create_any(@storage, "spec/fixtures/files/foo.txt")
+      dest = ResourceFactory.create_any(@storage, ":container/destination.txt")
 
       dest.copy(src).should be_false
     end
@@ -241,8 +244,8 @@ describe "File copy" do
     it "copy should return false" do
       Dir.mkdir('spec/tmp/unreadable') unless File.directory?('spec/tmp/unreadable')
       File.chmod(0000, 'spec/tmp/unreadable')
-      src = Resource.create(@storage, "spec/tmp/unreadable")
-      dest = Resource.create(@storage, ":container/destination.txt")
+      src = ResourceFactory.create_any(@storage, "spec/tmp/unreadable")
+      dest = ResourceFactory.create_any(@storage, ":container/destination.txt")
 
       dest.copy(src).should be_false
     end
@@ -250,8 +253,8 @@ describe "File copy" do
 
   context "when local file source to remote destination" do
     it "copies the data" do
-      src = Resource.create(@storage, "spec/fixtures/files/foo.txt")
-      dest = Resource.create(@storage, ":container/destination.txt")
+      src = ResourceFactory.create_any(@storage, "spec/fixtures/files/foo.txt")
+      dest = ResourceFactory.create_any(@storage, ":container/destination.txt")
 
       dest.copy(src).should be_true
     end
@@ -260,8 +263,8 @@ describe "File copy" do
   context "when local file source and destination" do
     it "copies the data" do
       File.unlink("spec/tmp/output.txt") if File.exists?("spec/tmp/output.txt")
-      src = Resource.create(@storage, "spec/fixtures/files/foo.txt")
-      dest = Resource.create(@storage, "spec/tmp/output.txt")
+      src = ResourceFactory.create_any(@storage, "spec/fixtures/files/foo.txt")
+      dest = ResourceFactory.create_any(@storage, "spec/tmp/output.txt")
 
       dest.copy(src).should be_true
 
@@ -273,8 +276,8 @@ describe "File copy" do
 
   context "when remote file source to local destination" do
     it "copies the data" do
-      src = Resource.create(@storage, ":container/source.txt")
-      dest = Resource.create(@storage, "spec/tmp/result.txt")
+      src = ResourceFactory.create_any(@storage, ":container/source.txt")
+      dest = ResourceFactory.create_any(@storage, "spec/tmp/result.txt")
 
       dest.copy(src).should be_true
     end
@@ -282,8 +285,8 @@ describe "File copy" do
 
   context "when remote file source and destination" do
     it "copies the data" do
-      src = Resource.create(@storage, ":container/source.txt")
-      dest = Resource.create(@storage, ":container/copy.txt")
+      src = ResourceFactory.create_any(@storage, ":container/source.txt")
+      dest = ResourceFactory.create_any(@storage, ":container/copy.txt")
 
       dest.copy(src).should be_true
     end
@@ -292,8 +295,8 @@ describe "File copy" do
   context "when remote files, but source does not exist" do
     it "fails" do
       @storage.stub(:put_object).and_raise(Fog::Storage::HP::NotFound)
-      src = Resource.create(@storage, ":container/source.txt")
-      dest = Resource.create(@storage, ":container/copy.txt")
+      src = ResourceFactory.create_any(@storage, ":container/source.txt")
+      dest = ResourceFactory.create_any(@storage, ":container/copy.txt")
 
       dest.copy(src).should be_false
 
@@ -324,7 +327,7 @@ describe "Read directory" do
 
   context "when just a container" do
     it "gets all the files" do
-      res = Resource.create(@storage, ":container")
+      res = ResourceFactory.create_any(@storage, ":container")
       ray = Array.new
 
       res.foreach{ |x| ray.push(x.fname) }
@@ -339,7 +342,7 @@ describe "Read directory" do
 
   context "when file" do
     it "gets just the file" do
-      res = Resource.create(@storage, ":container/files/foo.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/foo.txt")
       ray = Array.new
 
       res.foreach { |x| ray.push(x.fname) }
@@ -352,7 +355,7 @@ describe "Read directory" do
 
   context "when file" do
     it "gets just the file" do
-      res = Resource.create(@storage, ":container/.*/foo.*")
+      res = ResourceFactory.create_any(@storage, ":container/.*/foo.*")
       ray = Array.new
 
       res.foreach { |x| ray.push(x.fname) }
@@ -365,7 +368,7 @@ describe "Read directory" do
 
   context "when no match" do
     it "gets nothing" do
-      res = Resource.create(@storage, ":container/foo")
+      res = ResourceFactory.create_any(@storage, ":container/foo")
       ray = Array.new
 
       res.foreach { |x| ray.push(x.fname) }
@@ -377,7 +380,7 @@ describe "Read directory" do
 
   context "when partial file name" do
     it "gets just the file" do
-      res = Resource.create(@storage, ":container/files/cantread")
+      res = ResourceFactory.create_any(@storage, ":container/files/cantread")
       ray = Array.new
 
       res.foreach { |x| ray.push(x.fname) }
@@ -389,7 +392,7 @@ describe "Read directory" do
 
   context "when subdir" do
     it "gets just subdir" do
-      res = Resource.create(@storage, ":container/files/subdir/")
+      res = ResourceFactory.create_any(@storage, ":container/files/subdir/")
       ray = Array.new
 
       res.foreach { |x| ray.push(x.fname) }
@@ -413,7 +416,7 @@ describe "Remote resource get size" do
 
   context "get valid size" do
     it "correctly" do
-      res = Resource.create(@storage, ":container/files/subdir/")
+      res = ResourceFactory.create_any(@storage, ":container/files/subdir/")
 
       res.get_size().should eq(233)
     end
@@ -422,7 +425,7 @@ describe "Remote resource get size" do
   context "get valid size" do
     it "new size" do
       @head.stub(:headers).and_return({"Content-Length" => 502 })
-      res = Resource.create(@storage, ":container/files/subdir/")
+      res = ResourceFactory.create_any(@storage, ":container/files/subdir/")
 
       res.get_size().should eq(502)
     end
@@ -431,7 +434,7 @@ describe "Remote resource get size" do
   context "no content-length" do
     it "gets zero" do
       @head.stub(:headers).and_return({})
-      res = Resource.create(@storage, ":container/files/subdir/")
+      res = ResourceFactory.create_any(@storage, ":container/files/subdir/")
 
       res.get_size().should eq(0)
     end
@@ -440,7 +443,7 @@ describe "Remote resource get size" do
   context "head object fails" do
     it "still gets zero" do
       @storage.stub(:head_object).and_return(nil)
-      res = Resource.create(@storage, ":container/files/subdir/")
+      res = ResourceFactory.create_any(@storage, ":container/files/subdir/")
 
       res.get_size().should eq(0)
     end
@@ -464,7 +467,7 @@ describe "Remote resource remove" do
     it "returns true" do
       @file.should_receive(:destroy).and_return(true)
 
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.remove(false).should be_true
     end
@@ -474,7 +477,7 @@ describe "Remote resource remove" do
     it "returns false and sets error" do
       @directories.stub(:head).and_return(nil)
       @storage.stub(:directories).and_return(@directories)
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.remove(false).should be_false
 
@@ -486,7 +489,7 @@ describe "Remote resource remove" do
   context "remove file not found" do
     it "returns false and sets error" do
       @files.stub(:head).and_return(nil)
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.remove(false).should be_false
 
@@ -513,7 +516,7 @@ describe "temp url" do
     it "return true" do
       @file.should_receive(:temp_signed_url).and_return("http://woot.com/")
 
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.tempurl(1212).should eq("http://woot.com/")
     end
@@ -522,7 +525,7 @@ describe "temp url" do
   context "tempurl container not found" do
     it "returns false and sets error" do
       @directories.stub(:head).and_return(nil)
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.tempurl(1212).should be_nil
 
@@ -534,7 +537,7 @@ describe "temp url" do
   context "temp url file not found" do
     it "returns false and sets error" do
       @files.stub(:get).and_return(nil)
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.tempurl(1212).should be_nil
 
@@ -563,7 +566,7 @@ describe "Remote resource grant" do
 
   context "grant for local resource" do
     it "returns false and sets error" do
-      res = Resource.create(@storage, "/files/river.txt")
+      res = ResourceFactory.create_any(@storage, "/files/river.txt")
 
       res.grant(@acl).should be_false
 
@@ -575,7 +578,7 @@ describe "Remote resource grant" do
   context "grant for container not found" do
     it "returns false and sets error" do
       @directories.stub(:get).and_return(nil)
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.grant(@acl).should be_false
 
@@ -587,7 +590,7 @@ describe "Remote resource grant" do
   context "grant for file not found" do
     it "returns false and sets error" do
       @files.stub(:get).and_return(nil)
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.grant(@acl).should be_false
 
@@ -599,7 +602,7 @@ describe "Remote resource grant" do
   context "grant failure" do
     it "returns false and sets error" do
       @directory.stub(:grant).and_raise(Exception.new("Grant failure"))
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.grant(@acl).should be_false
 
@@ -611,7 +614,7 @@ describe "Remote resource grant" do
   context "save failure" do
     it "returns false and sets error" do
       @directory.stub(:save).and_raise(Exception.new("Save failure"))
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.grant(@acl).should be_false
 
@@ -622,7 +625,7 @@ describe "Remote resource grant" do
 
   context "grant good" do
     it "returns true and no error" do
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.grant(@acl).should be_true
 
@@ -651,7 +654,7 @@ describe "Remote resource revoke" do
 
   context "revoke for local resource" do
     it "returns false and sets error" do
-      res = Resource.create(@storage, "/files/river.txt")
+      res = ResourceFactory.create_any(@storage, "/files/river.txt")
 
       res.revoke(@acl).should be_false
 
@@ -663,7 +666,7 @@ describe "Remote resource revoke" do
   context "revoke for container not found" do
     it "returns false and sets error" do
       @directories.stub(:get).and_return(nil)
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.revoke(@acl).should be_false
 
@@ -675,7 +678,7 @@ describe "Remote resource revoke" do
   context "revoke for file not found" do
     it "returns false and sets error" do
       @files.stub(:get).and_return(nil)
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.revoke(@acl).should be_false
 
@@ -687,7 +690,7 @@ describe "Remote resource revoke" do
   context "revoke failure" do
     it "returns false and sets error" do
       @directory.stub(:revoke).and_raise(Exception.new("Grant failure"))
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.revoke(@acl).should be_false
 
@@ -699,7 +702,7 @@ describe "Remote resource revoke" do
   context "save failure" do
     it "returns false and sets error" do
       @directory.stub(:save).and_raise(Exception.new("Save failure"))
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.revoke(@acl).should be_false
 
@@ -710,7 +713,7 @@ describe "Remote resource revoke" do
 
   context "revoke good" do
     it "returns true and no error" do
-      res = Resource.create(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.revoke(@acl).should be_true
 

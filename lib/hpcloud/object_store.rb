@@ -1,5 +1,3 @@
-require 'hpcloud/resource.rb'
-
 module HP
   module Cloud
     class ObjectStore < Resource
@@ -10,7 +8,7 @@ module HP
       def foreach(&block)
         containers = @storage.directories
         containers.each { |x|
-          yield Resource.create(@storage, ':' + x.key)
+          yield ResourceFactory.create(@storage, ':' + x.key)
         }
       end
     end

@@ -43,7 +43,7 @@ describe "Copy command" do
       it "should exit with container not found" do
         rsp = cptr("copy spec/fixtures/files/foo.txt :missing_container")
 
-        rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
+        rsp.stderr.should eq("Cannot find container ':missing_container'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end
@@ -110,7 +110,7 @@ describe "Copy command" do
     context "when container does not exist" do
       it "should exit with container not found" do
         rsp = cptr("copy :copy_blah/foo.txt /tmp/foo.txt")
-        rsp.stderr.should eq("You don't have a container 'copy_blah'.\n")
+        rsp.stderr.should eq("Cannot find container ':copy_blah'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end
@@ -225,7 +225,7 @@ describe "Copy command" do
     context "when container does not exist" do
       it "should exit with container not found" do
         rsp = cptr("copy :missing_container/foo.txt :missing_container/tmp/foo.txt")
-        rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
+        rsp.stderr.should eq("Cannot find container ':missing_container'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end
@@ -300,7 +300,7 @@ describe "Copy command" do
       it "should exit with container not found" do
         rsp = cptr("copy :missing_container/foo.txt :copy_between_two/tmp/foo.txt")
 
-        rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
+        rsp.stderr.should eq("Cannot find container ':missing_container'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end
@@ -318,7 +318,7 @@ describe "Copy command" do
     context "when new container does not exist" do
       it "should exit with object not found" do
         rsp = cptr("copy :copy_between_one/foo.txt :missing_container/tmp/missing.txt")
-        rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
+        rsp.stderr.should eq("Cannot find container ':missing_container'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end

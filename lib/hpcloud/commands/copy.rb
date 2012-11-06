@@ -30,12 +30,12 @@ Aliases: cp
           last = destination.pop
           source = [source] + destination
           destination = last
-          to = Resource.create(Connection.instance.storage, destination)
+          to = ResourceFactory.create_any(Connection.instance.storage, destination)
           if source.length > 1 && to.isDirectory() == false
             error("The destination '#{destination}' for multiple files must be a directory or container", :general_error)
           end
           source.each { |name|
-            from = Resource.create(Connection.instance.storage, name)
+            from = ResourceFactory.create_any(Connection.instance.storage, name)
             from.set_mime_type(options[:mime])
             if to.copy(from)
               display "Copied #{from.fname} => #{to.fname}"

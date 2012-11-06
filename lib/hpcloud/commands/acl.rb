@@ -21,7 +21,7 @@ Examples:
 
           ray = []
           names.each { |name|
-            resource = Resource.create(Connection.instance.storage, name)
+            resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.read_header
               ray << resource.to_hash()
             else

@@ -10,41 +10,15 @@ module HP
       attr_reader :destination, :error_string, :error_code
       attr_reader :readers, :writers
     
-      REMOTE_TYPES = [:container, :container_directory, :object, :object_store, :shared_object]
-      LOCAL_TYPES = [:directory, :file]
-    
-      def self.create_remote(storage, fname)
-        fname = ':' + fname unless fname[0] == ':' || fname[0] == '/'
-        return Resource.create(storage, fname)
-      end
-
-      def self.create(storage, fname)
-        ftype = detect_type(fname)
-        if LOCAL_TYPES.include?(ftype)
-          return LocalResource.new(storage, fname)
-        end
-        if ftype == :object_store
-          return ObjectStore.new(storage, fname)
-        end
-        if ftype == :shared_object
-          return SharedObject.new(storage, fname)
-        end
-        return RemoteResource.new(storage, fname)
-      end
-
       def initialize(storage, fname)
         @error_string = nil
         @error_code = nil
         @storage = storage
         @fname = fname
-        @ftype = Resource.detect_type(@fname)
+        @ftype = ResourceFactory.detect_type(@fname)
         @disable_pbar = false
         @mime_type = nil
         parse()
-      end
-
-      class << self
-        protected :new
       end
 
       def is_valid?
@@ -52,11 +26,11 @@ module HP
       end
 
       def isLocal()
-        return Resource::LOCAL_TYPES.include?(@ftype)
+        return ResourceFactory::is_local?(@ftype)
       end
 
       def isRemote()
-        return Resource::REMOTE_TYPES.include?(@ftype)
+        return ResourceFactory::is_remote?(@ftype)
       end
 
       def is_object_store?
@@ -68,7 +42,7 @@ module HP
       end
 
       def is_shared?
-        return @ftype == :shared_object
+        return @ftype == :shared_resource
       end
 
       def isDirectory()
@@ -86,32 +60,6 @@ module HP
         return @ftype == :object
       end
 
-      def self.detect_type(resource)
-        if resource.empty?
-          return :object_store
-        end
-        if resource[0,1] == ':'
-          if resource[-1,1] == '/'
-            :container_directory
-          elsif resource.index('/')
-            :object
-          else
-            :container
-          end
-        elsif resource[-1,1] == '/'
-          :directory
-        else
-          if (resource.start_with?('http://') ||
-              resource.start_with?('https://'))
-            :shared_object
-          elsif File.directory?(resource)
-            :directory
-          else
-            :file
-          end
-        end
-      end
-    
       def parse()
         @container = nil
         @path = nil

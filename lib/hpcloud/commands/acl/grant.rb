@@ -20,7 +20,7 @@ Aliases: acl:set
         cli_command(options) {
           acl = Acl.new(permissions, users)
           if acl.is_valid?
-            resource = Resource.create_remote(Connection.instance.storage, name)
+            resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.grant(acl)
               display "ACL for #{name} updated to #{acl}."
             else

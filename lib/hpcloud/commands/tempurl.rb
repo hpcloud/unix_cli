@@ -23,7 +23,7 @@ Aliases: tmpurl
         cli_command(options) {
           names = [name] + names
           names.each { |name|
-            resource = Resource.create(Connection.instance.storage, name)
+            resource = ResourceFactory.create(Connection.instance.storage, name)
             url = resource.tempurl(TimeParser.parse(options[:time_period]))
             unless url.nil?
               display url

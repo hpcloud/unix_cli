@@ -1,5 +1,3 @@
-require 'hpcloud/resource.rb'
-
 module HP
   module Cloud
     class LocalResource < Resource
@@ -129,13 +127,12 @@ module HP
             result = false
           end
         else
-          begin
-            @storage.get_object(from.container, from.path) { |chunk, remaining, total|
-              if ! write(chunk) then result = false end
-            }
-          rescue Fog::Storage::HP::NotFound => e
-            @error_string = "The specified object does not exist."
-            @error_code = :not_found
+          from.read() { |chunk|
+            if ! write(chunk) then result = false end
+          }
+          if from.is_valid? == false
+            @error_string = from.error_string
+            @error_code = from.error_code
             result = false
           end
         end
@@ -151,7 +148,7 @@ module HP
         begin
           Dir.foreach(path) { |x|
             if ((x != '.') && (x != '..')) then
-              Resource.create(@storage, path + '/' + x).foreach(&block)
+              ResourceFactory.create_any(@storage, path + '/' + x).foreach(&block)
             end
           }
         rescue Errno::EACCES

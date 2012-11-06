@@ -1,5 +1,3 @@
-require 'hpcloud/resource.rb'
-
 module HP
   module Cloud
     class RemoteResource < Resource
@@ -96,6 +94,18 @@ module HP
           return nil
         end
         return @head
+      end
+
+      def read
+        begin
+          @storage.get_object(@container, @path) { |chunk, remain, tot|
+            yield chunk
+          }
+        rescue Fog::Storage::HP::NotFound => e
+          @error_string = "The specified object does not exist."
+          @error_code = :not_found
+          result = false
+        end
       end
 
       def read_header()
@@ -203,7 +213,7 @@ module HP
         @directory.files.each { |x|
           name = x.key.to_s
           if ! name.match(regex).nil?
-            yield Resource.create(@storage, ':' + container + '/' + name)
+            yield ResourceFactory.create(@storage, ':' + container + '/' + name)
           end
         }
       end

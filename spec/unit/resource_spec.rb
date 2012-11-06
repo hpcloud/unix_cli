@@ -8,21 +8,21 @@ describe "Detecting mime type" do
   
   context "when this file" do
     it "should return application/x-ruby" do
-      file = Resource.create(@storage, __FILE__)
+      file = ResourceFactory.create_any(@storage, __FILE__)
       file.get_mime_type().should eq('application/x-ruby')
     end
   end
 
   context "when text file" do
     it "should return text/plain" do
-      file = Resource.create(@storage, 'file.txt')
+      file = ResourceFactory.create_any(@storage, 'file.txt')
       file.get_mime_type().should eq('text/plain')
     end
   end
 
   context "when unknown file" do
     it "should return application/octet-stream" do
-      file = Resource.create(@storage, 'file')
+      file = ResourceFactory.create_any(@storage, 'file')
       file.get_mime_type().should eq('application/octet-stream')
     end
   end
@@ -35,7 +35,7 @@ describe "Resource construction" do
   
   context "when local file" do
     it "should return :file" do
-      file = Resource.create(@storage, '/tmp/myfile.txt')
+      file = ResourceFactory.create_any(@storage, '/tmp/myfile.txt')
 
       file.fname.should eq('/tmp/myfile.txt')
       file.ftype.should eq(:file)
@@ -52,7 +52,7 @@ describe "Resource construction" do
   
   context "when local file variant" do
     it "should return :file" do
-      file = Resource.create(@storage, '~/documents/myfile.tar')
+      file = ResourceFactory.create_any(@storage, '~/documents/myfile.tar')
 
       file.fname.should eq('~/documents/myfile.tar')
       file.ftype.should eq(:file)
@@ -69,7 +69,7 @@ describe "Resource construction" do
   
   context "when local directory" do
     it "should return :directory" do
-      file = Resource.create(@storage, '/tmp/')
+      file = ResourceFactory.create_any(@storage, '/tmp/')
 
       file.fname.should eq('/tmp/')
       file.ftype.should eq(:directory)
@@ -86,7 +86,7 @@ describe "Resource construction" do
   
   context "when local directory" do
     it "should return :directory" do
-      file = Resource.create(@storage, 'spec/tmp/nonexistant/')
+      file = ResourceFactory.create_any(@storage, 'spec/tmp/nonexistant/')
 
       file.fname.should eq('spec/tmp/nonexistant/')
       file.ftype.should eq(:directory)
@@ -103,7 +103,7 @@ describe "Resource construction" do
   
   context "when local directory without slash" do
     it "should return :directory" do
-      file = Resource.create(@storage, '/tmp')
+      file = ResourceFactory.create_any(@storage, '/tmp')
 
       file.fname.should eq('/tmp')
       file.ftype.should eq(:directory)
@@ -120,7 +120,7 @@ describe "Resource construction" do
   
   context "when container" do
     it "should return :container" do
-      file = Resource.create(@storage, ':my_container')
+      file = ResourceFactory.create(@storage, ':my_container')
 
       file.fname.should eq(':my_container')
       file.ftype.should eq(:container)
@@ -137,7 +137,7 @@ describe "Resource construction" do
   
   context "when full object path" do
     it "should return :object" do
-      file = Resource.create(@storage, ':my_container/blah/archive.zip')
+      file = ResourceFactory.create(@storage, ':my_container/blah/archive.zip')
 
       file.fname.should eq(':my_container/blah/archive.zip')
       file.ftype.should eq(:object)
@@ -154,7 +154,7 @@ describe "Resource construction" do
   
   context "when object directory path" do
     it "should return :container_directory" do
-      file = Resource.create(@storage, ':my_container/blah/')
+      file = ResourceFactory.create(@storage, ':my_container/blah/')
 
       file.fname.should eq(':my_container/blah/')
       file.ftype.should eq(:container_directory)
@@ -171,7 +171,7 @@ describe "Resource construction" do
   
   context "when nothing" do
     it "should return :object_store" do
-      file = Resource.create(@storage, '')
+      file = ResourceFactory.create(@storage, '')
 
       file.fname.should eq('')
       file.ftype.should eq(:object_store)
@@ -188,10 +188,10 @@ describe "Resource construction" do
   
   context "when url" do
     it "should return :shared_resource" do
-      file = Resource.create(@storage, 'http://www.example.com/objay.txt')
+      file = ResourceFactory.create(@storage, 'http://www.example.com/objay.txt')
 
       file.fname.should eq('http://www.example.com/objay.txt')
-      file.ftype.should eq(:shared_object)
+      file.ftype.should eq(:shared_resource)
       file.container.should be_nil
       file.path.should eq('http://www.example.com/objay.txt')
       file.isLocal().should be_false
@@ -206,10 +206,10 @@ describe "Resource construction" do
   
   context "when url" do
     it "should return :shared_resource" do
-      file = Resource.create(@storage, 'https://www.example.com/objay.txt')
+      file = ResourceFactory.create(@storage, 'https://www.example.com/objay.txt')
 
       file.fname.should eq('https://www.example.com/objay.txt')
-      file.ftype.should eq(:shared_object)
+      file.ftype.should eq(:shared_resource)
       file.container.should be_nil
       file.path.should eq('https://www.example.com/objay.txt')
       file.isLocal().should be_false
