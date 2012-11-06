@@ -12,6 +12,7 @@ module HP
                       :container_directory,
                       :object,
                       :object_store,
+                      :shared_directory,
                       :shared_resource]
       LOCAL_TYPES = [:directory, :file]
 
@@ -34,7 +35,7 @@ module HP
         if ftype == :object_store
           return ObjectStore.new(storage, fname)
         end
-        if ftype == :shared_resource
+        if ftype == :shared_resource || ftype == :shared_directory
           return SharedResource.new(storage, fname)
         end
         return RemoteResource.new(storage, fname)
@@ -52,12 +53,16 @@ module HP
           else
             :container
           end
-        elsif resource[-1,1] == '/'
-          :directory
         else
           if (resource.start_with?('http://') ||
               resource.start_with?('https://'))
-            :shared_resource
+            if resource[-1,1] == '/'
+              :shared_directory
+            else
+              :shared_resource
+            end
+          elsif resource[-1,1] == '/'
+            :directory
           elsif File.directory?(resource)
             :directory
           else

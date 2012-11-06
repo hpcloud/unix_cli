@@ -188,12 +188,15 @@ describe "Resource construction" do
   
   context "when url" do
     it "should return :shared_resource" do
-      file = ResourceFactory.create(@storage, 'http://www.example.com/objay.txt')
+      container = 'http://www.example.com/v1/123111111/tainer'
+      path = '/subdir/a/objay.txt'
+      file_name = container + path
+      file = ResourceFactory.create(@storage, file_name)
 
-      file.fname.should eq('http://www.example.com/objay.txt')
+      file.fname.should eq(file_name)
       file.ftype.should eq(:shared_resource)
-      file.container.should be_nil
-      file.path.should eq('http://www.example.com/objay.txt')
+      file.container.should eq(container)
+      file.path.should eq(path)
       file.isLocal().should be_false
       file.isRemote().should be_true
       file.isDirectory().should be_false
@@ -206,12 +209,15 @@ describe "Resource construction" do
   
   context "when url" do
     it "should return :shared_resource" do
-      file = ResourceFactory.create(@storage, 'https://www.example.com/objay.txt')
+      container = 'https://www.example.com/v1/123111111/tainer'
+      path = '/objay.txt'
+      file_name = container + path
+      file = ResourceFactory.create(@storage, file_name)
 
-      file.fname.should eq('https://www.example.com/objay.txt')
+      file.fname.should eq(file_name)
       file.ftype.should eq(:shared_resource)
-      file.container.should be_nil
-      file.path.should eq('https://www.example.com/objay.txt')
+      file.container.should eq(container)
+      file.path.should eq(path)
       file.isLocal().should be_false
       file.isRemote().should be_true
       file.isDirectory().should be_false

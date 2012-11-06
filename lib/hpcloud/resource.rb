@@ -42,12 +42,13 @@ module HP
       end
 
       def is_shared?
-        return @ftype == :shared_resource
+        return @ftype == :shared_resource || @ftype == :shared_directory
       end
 
       def isDirectory()
         return @ftype == :directory ||
                @ftype == :container_directory ||
+               @ftype == :shared_directory ||
                @ftype == :container ||
                @ftype == :object_store
       end
