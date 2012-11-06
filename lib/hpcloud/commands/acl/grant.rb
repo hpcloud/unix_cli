@@ -1,3 +1,5 @@
+require 'hpcloud/acl'
+
 module HP
   module Cloud
     class CLI < Thor
