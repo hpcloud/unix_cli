@@ -458,7 +458,7 @@ describe "Remote resource remove" do
     @directory = double("directory")
     @directory.stub(:files).and_return(@files)
     @directories = double("directories")
-    @directories.stub(:head).and_return(@directory)
+    @directories.stub(:get).and_return(@directory)
     @storage = double("storage")
     @storage.stub(:directories).and_return(@directories)
   end
@@ -475,7 +475,7 @@ describe "Remote resource remove" do
 
   context "remove container not found" do
     it "returns false and sets error" do
-      @directories.stub(:head).and_return(nil)
+      @directories.stub(:get).and_return(nil)
       @storage.stub(:directories).and_return(@directories)
       res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 

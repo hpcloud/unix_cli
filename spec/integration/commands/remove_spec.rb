@@ -172,17 +172,17 @@ describe "Remove command" do
       rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Vladimir.txt :tainer")
       rsp.stderr.should eq("")
       username = AccountsHelper.get_username('secondary')
-      rsp = cptr("acl:grant :tainer/Vladimir.txt rw #{username}")
+      rsp = cptr("acl:grant :tainer rw #{username}")
       rsp.stderr.should eq("")
-      rsp = cptr("location :tainer/Vladimir.txt")
+      rsp = cptr("location :tainer")
       rsp.stderr.should eq("")
       location=rsp.stdout.gsub("\n",'')
 
       rsp = cptr("remove #{location} -a secondary")
 
-      rsp.stderr.should eq("")
-      rsp.stdout.should eq("Removed '#{location}'.\n")
-      rsp.exit_status.should be_exit(:success)
+      rsp.stdout.should eq("")
+      rsp.stderr.should eq("Removal of shared containers is not supported.\n")
+      rsp.exit_status.should be_exit(:not_supported)
     end
   end
 

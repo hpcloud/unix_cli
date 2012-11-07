@@ -8,8 +8,8 @@ module HP
           return
         end
         @container = @fname.match(/http[s]*:\/\/[^\/]*\/[^\/]*\/[^\/]*\/[^\/]*/).to_s
-        @path = @fname.gsub(@container + '/', '')
-        @path = "/" if @path.empty?
+        @path = @fname.gsub(@container, '')
+        @path = @path.gsub(/^\/*/, '')
       end
 
       def get_container
@@ -78,6 +78,15 @@ module HP
           @error_code = :not_found
           result = false
         end
+      end
+
+      def remove(force)
+        if @path.empty?
+          @error_string = "Removal of shared containers is not supported."
+          @error_code = :not_supported
+          return false
+        end
+        super(force)
       end
     end
   end
