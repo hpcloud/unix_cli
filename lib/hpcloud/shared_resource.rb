@@ -8,7 +8,7 @@ module HP
           return
         end
         @container = @fname.match(/http[s]*:\/\/[^\/]*\/[^\/]*\/[^\/]*\/[^\/]*/).to_s
-        @path = @fname.gsub(@container, '')
+        @path = @fname.gsub(@container + '/', '')
         @path = "/" if @path.empty?
       end
 
@@ -63,7 +63,7 @@ module HP
         @directory.files.each { |x|
           name = x.key.to_s
           if ! name.match(regex).nil?
-            yield ResourceFactory.create(@storage, container + name)
+            yield ResourceFactory.create(@storage, container + '/' + name)
           end
         }
       end

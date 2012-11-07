@@ -24,7 +24,7 @@ describe "Get command" do
     it "should exit with container not found" do
       rsp = cptr("get :nonexistant_container/foo.txt")
 
-      rsp.stderr.should eql("You don't have a container 'nonexistant_container'.\n")
+      rsp.stderr.should eql("Cannot find container ':nonexistant_container'.\n")
       rsp.exit_status.should be_exit(:not_found)
     end
   end
@@ -60,6 +60,24 @@ describe "Get command" do
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Copied :get_container/folder/highly_unusual_file_name.txt => .\n")
+      rsp.exit_status.should be_exit(:success)
+      File.exist?('highly_unusual_file_name.txt').should be_true
+    end
+
+    after(:all) do
+      File.unlink('highly_unusual_file_name.txt')
+    end
+  end
+
+  context "when object and container exist and object is at container level" do
+    it "should report success" do
+      location = cptr("location :get_container/highly_unusual_file_name.txt").stdout
+      location="#{location}".gsub("\n",'')
+
+      rsp = cptr("get #{location}")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Copied " + location + " => .\n")
       rsp.exit_status.should be_exit(:success)
       File.exist?('highly_unusual_file_name.txt').should be_true
     end

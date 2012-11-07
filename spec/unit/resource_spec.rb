@@ -189,8 +189,8 @@ describe "Resource construction" do
   context "when url" do
     it "should return :shared_resource" do
       container = 'http://www.example.com/v1/123111111/tainer'
-      path = '/subdir/a/objay.txt'
-      file_name = container + path
+      path = 'subdir/a/objay.txt'
+      file_name = container + '/' + path
       file = ResourceFactory.create(@storage, file_name)
 
       file.fname.should eq(file_name)
@@ -210,8 +210,8 @@ describe "Resource construction" do
   context "when url" do
     it "should return :shared_resource" do
       container = 'https://www.example.com/v1/123111111/tainer'
-      path = '/objay.txt'
-      file_name = container + path
+      path = 'objay.txt'
+      file_name = container + '/' + path
       file = ResourceFactory.create(@storage, file_name)
 
       file.fname.should eq(file_name)
