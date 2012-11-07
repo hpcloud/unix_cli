@@ -91,6 +91,24 @@ describe "Get command" do
     end
   end
 
+  context "when object and container exist and object is at container level" do
+    it "should report success" do
+      username = AccountsHelper.get_username('secondary')
+      rsp = cptr("acl:revoke :get_container/highly_unusual_file_name.txt rw #{username}")
+      rsp.stderr.should eq("")
+      rsp = cptr("location :get_container/highly_unusual_file_name.txt")
+      rsp.stderr.should eq("")
+      location=rsp.stdout.gsub("\n",'')
+
+      rsp = cptr("get #{location} -a secondary")
+
+      container=location.gsub("/highly_unusual_file_name.txt",'')
+      rsp.stderr.should eq("Cannot find container '#{container}'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_found)
+    end
+  end
+
   context "get with valid avl" do
     it "should report success" do
       rsp = cptr('get :get_container/highly_unusual_file_name.txt -z region-a.geo-1')
