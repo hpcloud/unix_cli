@@ -224,23 +224,22 @@ module HP
 
       def remove(force)
         begin
-          @head = container_head()
-          return false if @head.nil?
+          return false if get_container == false
 
           # container should be a class
           if is_container?
             if force == true
-              @head.files.each { |file| file.destroy }
+              @directory.files.each { |file| file.destroy }
             end
             begin
-              @head.destroy
+              @directory.destroy
             rescue Excon::Errors::Conflict
               @error_string = "The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it."
               @error_code = :conflicted
               return false
             end
           else
-            file = @head.files.head(@path)
+            file = @directory.files.head(@path)
             if file.nil?
                @error_string = "You don't have an object named '#{@fname}'."
                @error_code = :not_found
