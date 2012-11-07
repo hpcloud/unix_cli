@@ -80,10 +80,11 @@ describe "acl:grant command" do
 
   context "when setting the ACL for an object" do
     it "should report success" do
-      rsp = cptr("acl:grant :acl_container/foo.txt rw thowe@hp.com")
+      username = AccountsHelper.get_username('secondary')
+      rsp = cptr("acl:grant :acl_container/foo.txt rw #{username}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("ACL for :acl_container/foo.txt updated to rw for thowe@hp.com.\n")
+      rsp.stdout.should eq("ACL for :acl_container/foo.txt updated to rw for #{username}.\n")
       rsp.exit_status.should be_exit(:success)
     end
   end

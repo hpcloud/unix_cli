@@ -7,6 +7,7 @@ module HP
       @@home = nil
 
       DEFAULT_ACCOUNT = "default_account"
+      TOP_LEVEL = [:username]
       CREDENTIALS = [:account_id,
                      :secret_key,
                      :auth_uri,
@@ -151,6 +152,8 @@ module HP
           hsh[:zones][key] = value
         elsif OPTIONS.include?(key)
           hsh[:options][key] = value
+        elsif TOP_LEVEL.include?(key)
+          hsh[key] = value
         else
           return false
         end

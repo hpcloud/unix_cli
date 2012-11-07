@@ -167,12 +167,14 @@ describe "Acl command (viewing acls)" do
 
   describe "when viewing the ACL for a public" do
     before(:all) do
+      @default_username = AccountsHelper.get_username('default')
+      @username = AccountsHelper.get_username('secondary')
       @dir = @hp_svc.directories.get('acl_container')
       @dir.public = false
       @dir.revoke("r", @dir.read_acl)
       @dir.revoke("w", @dir.write_acl)
-      @dir.grant("r", ["rupak.ganguly@hp.com"])
-      @dir.grant("w", ["thowe@hp.com"])
+      @dir.grant("r", [@default_username])
+      @dir.grant("w", [@username])
       @dir.save
     end
 
@@ -182,7 +184,7 @@ describe "Acl command (viewing acls)" do
 
         rsp.stderr.should eq("")
         rsp.stdout.should match("public.*readers.*writers.*public_url")
-        rsp.stdout.should match("no.*rupak.ganguly@hp.com.*thowe@hp.com.*https.*acl_container")
+        rsp.stdout.should match("no.*#{@default_username}.*#{@username}.*https.*acl_container")
         rsp.exit_status.should be_exit(:success)
       end
     end

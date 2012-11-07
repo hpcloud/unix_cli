@@ -86,13 +86,14 @@ describe "acl:revoke command" do
 
   context "when revoke the ACL for an object" do
     it "should report success" do
-      rsp = cptr("acl:grant :revoker/foo.txt rw thowe@hp.com")
+      @username = AccountsHelper.get_username('secondary')
+      rsp = cptr("acl:grant :revoker/foo.txt rw #{@username}")
       rsp.stderr.should eq("")
 
-      rsp = cptr("acl:revoke :revoker/foo.txt rw thowe@hp.com")
+      rsp = cptr("acl:revoke :revoker/foo.txt rw #{@username}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Revoked rw for thowe@hp.com from :revoker/foo.txt\n")
+      rsp.stdout.should eq("Revoked rw for #{@username} from :revoker/foo.txt\n")
       rsp.exit_status.should be_exit(:success)
     end
   end

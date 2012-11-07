@@ -19,7 +19,7 @@ module HP
 
           @directory = @storage.shared_directories.get(@container)
           if @directory.nil?
-            @error_string = "Cannot find container ':#{@container}'."
+            @error_string = "Cannot find container '#{@container}'."
             @error_code = :not_found
             return false
           end
