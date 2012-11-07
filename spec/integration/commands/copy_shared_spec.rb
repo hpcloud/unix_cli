@@ -62,15 +62,15 @@ describe "Copy shared resources" do
     end
   end
   
-#  context "copy to shared" do
-#    it "should copy" do
-#      rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Yeltsin #{@container} #{@local} -a secondary")
-#
-#      rsp.stderr.should eq("")
-#      rsp.stdout.should eq("Copied spec/fixtures/files/Matryoshka/Putin/Yeltsin => #{@container}\n")
-#      rsp.exit_status.should be_exit(:success)
-#    end
-#  end
+  context "copy to shared" do
+    it "should copy" do
+      rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Yeltsin #{@container} #{@local} -a secondary")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Copied spec/fixtures/files/Matryoshka/Putin/Yeltsin => #{@container}\n")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
   
   after(:all) do
     #rsp = cptr("remove -f :copytainer")

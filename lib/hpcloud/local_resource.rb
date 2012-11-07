@@ -128,8 +128,12 @@ module HP
           end
         else
           from.read() { |chunk|
-            if ! write(chunk) then result = false end
+            if ! write(chunk) 
+              result = false
+              break
+            end
           }
+          result = false if ! from.close()
           if from.is_valid? == false
             @error_string = from.error_string
             @error_code = from.error_code

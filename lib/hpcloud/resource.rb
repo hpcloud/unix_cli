@@ -174,10 +174,8 @@ module HP
           else
             filename = file.path
           end
-          if ! set_destination(filename) then return false end
-          if (copy_file(file) == false)
-            return false
-          end
+          return false unless set_destination(filename)
+          return false unless copy_file(file)
           copiedfile = true
         }
 
