@@ -7,6 +7,13 @@ module HP
         if @fname.empty?
           return
         end
+        #
+        # Extract container given the expected input in the form:
+        # https://domain_and_port/version/tenant_id/container/object/name/with/slashes.txt
+        # where the container for that shared object is:
+        # https://domain_and_port/version/tenant_id/container
+        # and the path for the object is:
+        # object/name/with/slashes.txt
         @container = @fname.match(/http[s]*:\/\/[^\/]*\/[^\/]*\/[^\/]*\/[^\/]*/).to_s
         @path = @fname.gsub(@container, '')
         @path = @path.gsub(/^\/*/, '')
