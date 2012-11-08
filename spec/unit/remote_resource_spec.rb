@@ -196,7 +196,7 @@ describe "Remote file open read write close" do
       res.open().should be_false
       res.read().should eq("chunk")
       res.write("dkdkdkdkd").should be_false
-      res.close().should be_false
+      res.close().should be_true
     end
   end
 end

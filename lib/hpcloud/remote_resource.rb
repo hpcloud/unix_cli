@@ -108,6 +108,10 @@ module HP
         end
       end
 
+      def close
+        return true
+      end
+
       def read_header()
         begin
           return false if get_container == false

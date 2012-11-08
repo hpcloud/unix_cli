@@ -80,10 +80,6 @@ module HP
         end
       end
 
-      def close
-        return true
-      end
-
       def copy_file(from)
         result = true
         if from.isLocal()
