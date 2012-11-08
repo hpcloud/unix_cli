@@ -1,3 +1,5 @@
+require 'hpcloud/resource_factory'
+
 module HP
   module Cloud
     class CLI < Thor
@@ -7,16 +9,13 @@ module HP
     
       desc 'list [container ...]', "List containers or container contents."
       long_desc <<-DESC
-  List containers or the contents of a specified container. Optionally, an availability zone can be passed.
-
-Listing details on files will be available in a future release.
-
+  List containers or the contents of the specified containers. Optionally, an availability zone can be passed.
 
 Examples:
-  hpcloud list :tainer/1.txt :tainer/2.txt      # List the two objects
-  hpcloud list :tainer                          # List the all the objects in the container
-  hpcloud list                                  # List all containers
-  hpcloud list :my_container -z region-a.geo-1  # Optionally specify an availability zone
+  hpcloud list :tainer/1.txt :tainer/2.txt      # List the two objects `1.txt` and 2.txt` in the container `tainer`:
+  hpcloud list :tainer                          # List all the objects in container `tainer`:
+  hpcloud list                                  # List all containers:
+  hpcloud list :my_container -z region-a.geo-1  # List all the objects in container `my_container` for availability zone `region-a.geo-1`:
 
 Aliases: ls
       DESC
@@ -26,7 +25,7 @@ Aliases: ls
           sources = [""] if sources.empty?
           sources.each { |name|
             begin
-              from = Resource.create(Connection.instance.storage, name)
+              from = ResourceFactory.create(Connection.instance.storage, name)
               if from.valid_source()
                 found = false
                 from.foreach { |file|

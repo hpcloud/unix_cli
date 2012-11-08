@@ -8,7 +8,7 @@ describe "Valid source" do
 
   context "when local file" do
     it "is real file true" do
-      to = Resource.create(@co, __FILE__)
+      to = ResourceFactory.create_any(@co, __FILE__)
 
       to.valid_source().should be_true
 
@@ -19,7 +19,7 @@ describe "Valid source" do
 
   context "when local file" do
     it "is bogus file false" do
-      to = Resource.create(@co, "bogus.txt")
+      to = ResourceFactory.create_any(@co, "bogus.txt")
 
       to.valid_source().should be_false
 
@@ -36,7 +36,7 @@ describe "Valid destination" do
 
   context "when local file" do
     it "source is object and dest is real file true" do
-      to = Resource.create(@co, __FILE__)
+      to = ResourceFactory.create_any(@co, __FILE__)
       src = double("source")
       src.stub(:isMulti).and_return(false)
 
@@ -49,7 +49,7 @@ describe "Valid destination" do
 
   context "when local file" do
     it "source is object and dest is nonexistent file" do
-      to = Resource.create(@co, "nonexistent.txt")
+      to = ResourceFactory.create_any(@co, "nonexistent.txt")
       src = double("source")
       src.stub(:isMulti).and_return(false)
 
@@ -62,7 +62,7 @@ describe "Valid destination" do
 
   context "when local file" do
     it "source is object and dest is real directory" do
-      to = Resource.create(@co, File.dirname(File.expand_path(__FILE__)))
+      to = ResourceFactory.create_any(@co, File.dirname(File.expand_path(__FILE__)))
       src = double("source")
       src.stub(:isMulti).and_return(false)
 
@@ -76,7 +76,7 @@ describe "Valid destination" do
   context "when local file" do
     it "source is object and dest is bogus directory" do
       dir = File.dirname(File.expand_path(__FILE__)) + '/bogus/'
-      to = Resource.create(@co, dir)
+      to = ResourceFactory.create_any(@co, dir)
       src = double("source")
       src.stub(:isMulti).and_return(false)
 
@@ -90,7 +90,7 @@ describe "Valid destination" do
 
   context "when local file" do
     it "source is directory and dest is real file true" do
-      to = Resource.create(@co, __FILE__)
+      to = ResourceFactory.create_any(@co, __FILE__)
       src = double("source")
       src.stub(:isMulti).and_return(true)
 
@@ -103,7 +103,7 @@ describe "Valid destination" do
 
   context "when local file" do
     it "source is directory and dest is real directory" do
-      to = Resource.create(@co, File.dirname(File.expand_path(__FILE__)))
+      to = ResourceFactory.create_any(@co, File.dirname(File.expand_path(__FILE__)))
       src = double("source")
       src.stub(:isMulti).and_return(true)
 
@@ -117,7 +117,7 @@ describe "Valid destination" do
   context "when local file" do
     it "source is directory and dest is bogus directory" do
       dir = File.dirname(File.expand_path(__FILE__)) + '/bogus/'
-      to = Resource.create(@co, dir)
+      to = ResourceFactory.create_any(@co, dir)
       src = double("source")
       src.stub(:isMulti).and_return(true)
 
@@ -137,8 +137,8 @@ describe "Set destination" do
   
   context "when local directory" do
     it "valid destination true" do
-      to = Resource.create(@co, "spec/tmp")
-      from = Resource.create(@co, "file.txt")
+      to = ResourceFactory.create_any(@co, "spec/tmp")
+      from = ResourceFactory.create_any(@co, "file.txt")
 
       rc = to.set_destination("file.txt")
 
@@ -151,7 +151,7 @@ describe "Set destination" do
 
   context "when local renaming original file" do
     it "valid destination true" do
-      to = Resource.create(@co, "spec/tmp/new.txt")
+      to = ResourceFactory.create_any(@co, "spec/tmp/new.txt")
 
       rc = to.set_destination("file.txt")
 
@@ -164,7 +164,7 @@ describe "Set destination" do
 
   context "when bogus local directory" do
     it "valid destination false" do
-      to = Resource.create(@co, "spec/fixtures/files/")
+      to = ResourceFactory.create_any(@co, "spec/fixtures/files/")
 
       rc = to.set_destination("foo.txt/impossible/subdir/file.txt")
 
@@ -184,7 +184,7 @@ describe "Open read close" do
 
   context "when local file" do
     it "gets the data" do
-      res = Resource.create(@co, "spec/fixtures/files/foo.txt")
+      res = ResourceFactory.create_any(@co, "spec/fixtures/files/foo.txt")
 
       res.open().should be_true
       res.read().should eq("This is a foo file.")
@@ -207,8 +207,8 @@ describe "Open write close" do
 
   context "when local file" do
     it "writes data" do
-      res = Resource.create(@co, "spec/tmp/")
-      dest = Resource.create(@co, "writer.txt")
+      res = ResourceFactory.create_any(@co, "spec/tmp/")
+      dest = ResourceFactory.create_any(@co, "writer.txt")
       res.set_destination(dest.path)
 
       res.open(true, "my data".length).should be_true
@@ -233,7 +233,7 @@ describe "Read directory" do
 
   context "when directory contains files" do
     it "gets all the files" do
-      res = Resource.create(@co, "spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/")
+      res = ResourceFactory.create_any(@co, "spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/")
       ray = Array.new
 
       res.foreach{ |x| ray.push(x.fname) }
@@ -248,7 +248,7 @@ describe "Read directory" do
 
   context "when directory contains directories" do
     it "gets all the subdirectories" do
-      res = Resource.create(@co, "spec/fixtures/")
+      res = ResourceFactory.create_any(@co, "spec/fixtures/")
       ray = Array.new
 
       res.foreach { |x| ray.push(x.fname) }
@@ -273,7 +273,7 @@ describe "Read directory" do
 
   context "when file" do
     it "gets just the file" do
-      res = Resource.create(@co, "spec/fixtures/files/foo.txt")
+      res = ResourceFactory.create_any(@co, "spec/fixtures/files/foo.txt")
       ray = Array.new
 
       res.foreach { |x| ray.push(x.fname) }
@@ -292,7 +292,7 @@ describe "Get size" do
 
   context "valid file" do
     it "returns size" do
-      res = Resource.create(@co, "spec/fixtures/files/foo.txt")
+      res = ResourceFactory.create_any(@co, "spec/fixtures/files/foo.txt")
 
       res.get_size().should eq(19)
     end
@@ -300,7 +300,7 @@ describe "Get size" do
 
   context "invalid file" do
     it "returns size" do
-      res = Resource.create(@co, "spec/nonexistent/file.txt")
+      res = ResourceFactory.create_any(@co, "spec/nonexistent/file.txt")
 
       res.get_size().should eq(0)
     end
@@ -310,7 +310,7 @@ end
 describe "Remove" do
   context "remove of local" do
     it "fails" do
-      res = Resource.create(@co, "spec/fixtures/files/foo.txt")
+      res = ResourceFactory.create_any(@co, "spec/fixtures/files/foo.txt")
 
       res.remove(false).should be_false
 
@@ -323,7 +323,7 @@ end
 describe "Temp URL" do
   context "temp URL of local" do
     it "fails" do
-      res = Resource.create(@co, "spec/fixtures/files/foo.txt")
+      res = ResourceFactory.create_any(@co, "spec/fixtures/files/foo.txt")
 
       res.tempurl.should be_nil
 
@@ -340,7 +340,7 @@ describe "is container" do
 
   context "local file" do
     it "returns size" do
-      res = Resource.create(@co, "spec/fixtures/files/foo.txt")
+      res = ResourceFactory.create_any(@co, "spec/fixtures/files/foo.txt")
 
       res.is_container?.should be_false
     end
@@ -348,7 +348,7 @@ describe "is container" do
 
   context "remote object" do
     it "returns size" do
-      res = Resource.create(@co, ":tainer/foo.txt")
+      res = ResourceFactory.create_any(@co, ":tainer/foo.txt")
 
       res.is_container?.should be_false
     end
@@ -356,7 +356,7 @@ describe "is container" do
 
   context "remote directory" do
     it "returns size" do
-      res = Resource.create(@co, ":tainer/subdir/")
+      res = ResourceFactory.create_any(@co, ":tainer/subdir/")
 
       res.is_container?.should be_false
     end
@@ -364,7 +364,7 @@ describe "is container" do
 
   context "remote container" do
     it "returns size" do
-      res = Resource.create(@co, ":tainer")
+      res = ResourceFactory.create_any(@co, ":tainer")
 
       res.is_container?.should be_true
     end

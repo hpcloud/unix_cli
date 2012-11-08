@@ -12,12 +12,12 @@ module HP
 
       desc "cdn:containers", "List available containers on the CDN."
       long_desc <<-DESC
-  List the available containers on the Content Delivery Network (CDN). Optionally, an availability zone can be passed.
+  List the available containers on the content delivery network (CDN). Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud cdn:containers                    # list only the CDN-enabled containers
-  hpcloud cdn:containers -l                 # list all the container on the CDN
-  hpcloud cdn:containers -z region-a.geo-1  # Optionally specify an availability zone
+  hpcloud cdn:containers                    # List only the CDN-enabled containers:
+  hpcloud cdn:containers -l                 # List all the container on the CDN:
+  hpcloud cdn:containers -z region-a.geo-1  # List only the CDN-enabled containers for availability zone `region-a.geo-1`:
 
 Aliases: cdn:containers:list
       DESC

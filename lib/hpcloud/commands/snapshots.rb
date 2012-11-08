@@ -10,12 +10,12 @@ module HP
     
       desc 'snapshots [name_or_id ...]', "List block devices available."
       long_desc <<-DESC
-  The snapshots list command will list all the block snapshots that are associated with the account on the server. The list starts with identifier and contains name, size, type, create date, status, description and servers on which it is attached.  Optionally, the list may be filtered by specifying identifiers or names on the command line.
+  Lists all block snapshots associated with the account on the server. The list starts with identifier and contains name, size, type, create date, status, description and servers to which it is attached.  Optionally, you can filter the list by name or ID.
 
 Examples:
-  hpcloud snapshots           # List out all the snapshots
-  hpcloud snapshots 1         # List details about snapshot 1
-  hpcloud snapshots testsnap  # List details about snapshots named testsnap
+  hpcloud snapshots           # List all snapshots:
+  hpcloud snapshots 1         # List the detail information for snapshot `1`:
+  hpcloud snapshots testsnap  # List the detail information about snapshot `testsnap`:
 
 Aliases: snapshots:list
       DESC

@@ -6,12 +6,12 @@ module HP
 
       desc "flavors [name_or_id ...]", "List available flavors."
       long_desc <<-DESC
-  List the flavors in your compute account. You may filter the output by specifying the names or ids of the flavors you wish to see.  Optionally, an availability zone can be passed.
+  List the flavors in your compute account. You may filter the output by specifying the names or IDs of the flavors you wish to see.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud flavors                         # List flavors
-  hpcloud flavors xsmall small            # List flavors xsmall and small
-  hpcloud flavors -z az-2.region-a.geo-1  # List flavors for an availability zone
+  hpcloud flavors                         # List the flavors:
+  hpcloud flavors xsmall small            # List the flavors `xsmall` and `small`:
+  hpcloud flavors -z az-2.region-a.geo-1  # List the flavors for  availability zone `az-2.region-a.geo-1`:
 
 Aliases: flavors:list
       DESC

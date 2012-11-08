@@ -6,53 +6,43 @@ module HP
   module Cloud
     class Resource
       attr_reader :fname, :ftype, :container, :path
-      attr_reader :public_url, :cdn_public_url, :cdn_public_ssl_url, :acl
+      attr_reader :public_url, :cdn_public_url, :cdn_public_ssl_url, :public
       attr_reader :destination, :error_string, :error_code
+      attr_reader :readers, :writers
     
-      REMOTE_TYPES = [:container, :container_directory, :object, :object_store]
-      LOCAL_TYPES = [:directory, :file]
-    
-      def self.create_remote(storage, fname)
-        fname = ':' + fname unless fname[0] == ':'
-        return Resource.create(storage, fname)
-      end
-
-      def self.create(storage, fname)
-        ftype = detect_type(fname)
-        if LOCAL_TYPES.include?(ftype)
-          return LocalResource.new(storage, fname)
-        end
-        if ftype == :object_store
-          return ObjectStore.new(storage, fname)
-        end
-        return RemoteResource.new(storage, fname)
-      end
-
       def initialize(storage, fname)
         @error_string = nil
         @error_code = nil
         @storage = storage
         @fname = fname
-        @ftype = Resource.detect_type(@fname)
+        @ftype = ResourceFactory.detect_type(@fname)
         @disable_pbar = false
         @mime_type = nil
         parse()
-      end
-
-      class << self
-        protected :new
       end
 
       def is_valid?
         return @error_string.nil?
       end
 
+      def set_error(from)
+        return unless is_valid?
+        @error_string = from.error_string
+        @error_code = from.error_code
+      end
+
+      def not_implemented(value)
+        @error_string = "Not implemented: #{value}"
+        @error_code = :general_error
+        return false
+      end
+
       def isLocal()
-        return Resource::LOCAL_TYPES.include?(@ftype)
+        return ResourceFactory::is_local?(@ftype)
       end
 
       def isRemote()
-        return Resource::REMOTE_TYPES.include?(@ftype)
+        return ResourceFactory::is_remote?(@ftype)
       end
 
       def is_object_store?
@@ -63,9 +53,14 @@ module HP
         return @ftype == :container
       end
 
+      def is_shared?
+        return @ftype == :shared_resource || @ftype == :shared_directory
+      end
+
       def isDirectory()
         return @ftype == :directory ||
                @ftype == :container_directory ||
+               @ftype == :shared_directory ||
                @ftype == :container ||
                @ftype == :object_store
       end
@@ -78,29 +73,6 @@ module HP
         return @ftype == :object
       end
 
-      def self.detect_type(resource)
-        if resource.empty?
-          return :object_store
-        end
-        if resource[0,1] == ':'
-          if resource[-1,1] == '/'
-            :container_directory
-          elsif resource.index('/')
-            :object
-          else
-            :container
-          end
-        elsif resource[-1,1] == '/'
-          :directory
-        else
-          if File.directory?(resource)
-            :directory
-          else
-            :file
-          end
-        end
-      end
-    
       def parse()
         @container = nil
         @path = nil
@@ -115,6 +87,12 @@ module HP
           rest = @fname.split('/')
           @path = rest.empty? ? '' : rest.join('/')
         end
+      end
+
+      def to_hash
+        hash = {}
+        instance_variables.each {|var| hash[var.to_s.delete("@")] = instance_variable_get(var) }
+        hash
       end
 
       def set_mime_type(value)
@@ -161,37 +139,34 @@ module HP
       end
 
       def open(output=false, siz=0)
-        return false
+        return not_implemented("open")
       end
 
       def read()
+        not_implemented("read")
         return nil
       end
 
       def write(data)
-        return false
+        return not_implemented("write")
       end
 
       def close()
-        return false
+        return not_implemented("close")
       end
 
       def copy_file(from)
-        return false
+        return not_implemented("copy_file")
       end
 
       def copy(from)
           if copy_all(from)
             return true
           end
-          if @error_string.nil?
-            if from.error_string.nil?
-              @error_string = 'Unknown error copying'
-              @error_code = :unknown
-            else
-              @error_string = from.error_string
-              @error_code = from.error_code
-            end
+          set_error(from)
+          if is_valid?
+            @error_string = 'Unknown error copying'
+            @error_code = :unknown
           end
           return false
       end
@@ -208,10 +183,8 @@ module HP
           else
             filename = file.path
           end
-          if ! set_destination(filename) then return false end
-          if (copy_file(file) == false)
-            return false
-          end
+          return false unless set_destination(filename)
+          return false unless copy_file(file)
           copiedfile = true
         }
 
@@ -242,402 +215,17 @@ module HP
         @error_code = :incorrect_usage
         return nil
       end
-    end
 
-    class LocalResource < Resource
-
-      def get_size()
-        begin
-          return File.size(@fname)
-        rescue
-          return 0
-        end
-      end
-
-      def valid_source()
-        if !File.exists?(@fname)
-          @error_string = "File not found at '#{@fname}'."
-          @error_code = :not_found
-          return false
-        end
-        return true
-      end
-
-      def valid_destination(source)
-        if isDirectory()
-          dir_path = File.expand_path(@path)
-        else
-          if source.isMulti() == true
-            @error_string = "Invalid target for directory/multi-file copy '#{@fname}'."
-            @error_code = :incorrect_usage
-            return false
-          end
-          dir_path = File.expand_path(File.dirname(@path))
-        end
-        if !File.directory?(dir_path)
-          @error_string = "No directory exists at '#{dir_path}'."
-          @error_code = :not_found
-          return false
-        end
-        return true
-      end
-
-      def set_destination(name)
-        if (@path.nil?)
-          @destination = name
-        else
-          @destination = File.expand_path(@path)
-          if isDirectory()
-            @destination = "#{@destination}/#{name}"
-            dir_path = File.dirname(File.expand_path(@destination))
-          else
-            dir_path = File.dirname(@destination)
-          end
-          if !File.directory?(dir_path)
-            begin
-              FileUtils.mkpath(dir_path)
-            rescue Exception => e
-              @error_string = "Error creating target directory '#{dir_path}'."
-              @error_code = :general_error
-              return false
-            end
-          end
-        end
-        return true
-      end
-
-      def open(output=false, siz=0)
-        close()
-        @lastread = 0
-        begin
-          if (output == true)
-            @pbar = Progress.new(@destination, siz)
-            @file = File.open(@destination, 'w')
-          else
-            if (@disable_pbar == false)
-              @pbar = Progress.new(@fname, get_size())
-            end
-            @file = File.open(@fname, 'r')
-          end
-        rescue Exception => e
-          @error_string = e.to_s
-          @error_code = :permission_denied
-          return false
-        end
-        return true
-      end
-
-      def read()
-        @pbar.increment(@lastread) unless @pbar.nil?
-        val = @file.read(Excon::CHUNK_SIZE).to_s
-        @lastread = val.length
-        return val
-      end
-
-      def write(data)
-        @pbar.increment(data.length) unless @pbar.nil?
-        @file.write(data)
-        return true
-      end
-
-      def close()
-        @pbar.increment(@lastread) unless @pbar.nil?
-        @pbar.finish unless @pbar.nil?
-        @lastread = 0
-        @pbar = nil
-        @file.close unless @file.nil?
-        @file = nil
-        return true
-      end
-
-      def copy_file(from)
-        if from.isLocal()
-          @disable_pbar = true
-        end
-
-        if ! open(true, from.get_size()) then return false end
-
-        result = true
-        if from.isLocal()
-          if (from.open() == true)
-            while ((chunk = from.read()) != nil) do
-              if chunk.empty?
-                break
-              end
-              if ! write(chunk.to_s) then result = false end
-            end
-            result = false if ! from.close()
-          else
-            result = false
-          end
-        else
-          begin
-            @storage.get_object(from.container, from.path) { |chunk, remaining, total|
-              if ! write(chunk) then result = false end
-            }
-          rescue Fog::Storage::HP::NotFound => e
-            @error_string = "The specified object does not exist."
-            @error_code = :not_found
-            result = false
-          end
-        end
-        if ! close() then return false end
-        return result
-      end
-
-      def foreach(&block)
-        if (isDirectory() == false)
-           yield self
-          return
-        end
-        begin
-          Dir.foreach(path) { |x|
-            if ((x != '.') && (x != '..')) then
-              Resource.create(@storage, path + '/' + x).foreach(&block)
-            end
-          }
-        rescue Errno::EACCES
-          @error_string  = "You don't have permission to access '#{path}'."
-          @error_code = :permission_denied
-        end
-      end
-    end
-
-    class RemoteResource < Resource
-
-      def get_size()
-        begin
-          head = @storage.head_object(@container, @path)
-          return 0 if head.nil?
-          return 0 if head.headers["Content-Length"].nil?
-          return head.headers["Content-Length"].to_i
-        rescue
-          return 0
-        end
-      end
-
-      def read_header()
-        begin
-          if is_valid? == false
-            return false
-          end
-
-          directory = @storage.directories.get(@container)
-          if directory.nil?
-            @error_string = "Cannot find container ':#{@container}'."
-            @error_code = :not_found
-            return false
-          end
-
-          if is_container?
-            @public_url = directory.public_url
-            @cdn_public_url = directory.cdn_public_url
-            @cdn_public_ssl_url = directory.cdn_public_ssl_url
-            @acl = directory.public? ? "public-read" : "private"
-          else
-            file = directory.files.head(@path)
-            if file.nil?
-               @error_string = "Cannot find object named '#{@fname}'."
-               @error_code = :not_found
-               return false
-            end
-            @public_url = file.public_url
-            @cdn_public_url = file.cdn_public_url
-            @cdn_public_ssl_url = file.cdn_public_ssl_url
-            @acl = file.directory.public? ? "public-read" : "private"
-          end
-        rescue Exception => error
-          @error_string = "Error reading '#{@fname}': " + error.to_s
-          @error_code = :general_error
-          return false
-        end
-        return true
-      end
-
-      def valid_source()
-        return valid_container()
-      end
-
-      def valid_destination(source)
-        if ! valid_container()
-          return false
-        end
-        if ((source.isMulti() == true) && (isDirectory() == false))
-          @error_string = "Invalid target for directory/multi-file copy '#{@fname}'."
-          @error_code = :incorrect_usage
-          return false
-        end
-        return true
-      end
-
-      def valid_container()
-        begin
-          directory = @storage.directories.get(@container)
-          if directory.nil?
-            @error_string = "You don't have a container '#{@container}'."
-            @error_code = :not_found
-            return false
-          end
-        rescue Excon::Errors::Forbidden => e
-          resp = ErrorResponse.new(e)
-          # @error_string  = "You don't have permission to access the container '#{@container}'."
-          @error_string  = resp.error_string
-          @error_code = :permission_denied
-          return false
-        end
-        return true
-      end
-
-      def set_destination(name)
-        if ! valid_container()
-          return false
-        end
-        if (@path.empty?)
-          @destination = name
-        else
-          if isObject()
-            @destination = @path
-          else
-            @destination = @path + '/' + name
-          end
-        end
-        return true
-      end
-
-      def copy_file(from)
-        result = true
-        if from.isLocal()
-          if (from.open() == false) then return false end
-          options = { 'Content-Type' => from.get_mime_type() }
-          @storage.put_object(@container, @destination, {}, options) {
-            from.read().to_s
-          }
-          result = false if ! from.close()
-        else
-          begin
-            @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
-          rescue Fog::Storage::HP::NotFound => e
-            @error_string = "The specified object does not exist."
-            @error_code = :not_found
-            result = false
-          end
-        end
-        return result
-      end
-
-      def foreach(&block)
-        directory = @storage.directories.get(@container)
-        return if directory.nil?
-        case @ftype
-        when :container_directory
-          regex = "^" + path + ".*"
-        when :container
-          regex = ".*"
-        else
-          regex = "^" + path + '$'
-        end
-        directory.files.each { |x|
-          name = x.key.to_s
-          if ! name.match(regex).nil?
-            yield Resource.create(@storage, ':' + container + '/' + name)
-          end
-        }
-      end
-
-      def get_destination()
-        return ':' + @container.to_s + '/' + @destination.to_s
-      end
-
-      def remove(force)
-        begin
-          directory = @storage.directories.head(@container)
-          if directory.nil?
-             @error_string = "You don't have a container named ':#{@container}'."
-             @error_code = :not_found
-             return false
-          end
-
-          # container should be a class
-          if is_container?
-            if force == true
-              directory.files.each { |file| file.destroy }
-            end
-            begin
-              directory.destroy
-            rescue Excon::Errors::Conflict
-              @error_string = "The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it."
-              @error_code = :conflicted
-              return false
-            end
-          else
-            file = directory.files.head(@path)
-            if file.nil?
-               @error_string = "You don't have an object named '#{@fname}'."
-               @error_code = :not_found
-               return false
-            end
-            file.destroy
-          end
-
-        rescue Excon::Errors::Forbidden => error
-          @error_string = "Permission denied for '#{@fname}."
-          @error_code = :permission_denied
-          return false
-        rescue Exception => e
-          @error_string = "Exception removing '#{@fname}': " + e.to_s
-          @error_code = :general_error
-          return false
-        end
-        return true
-      end
-
-      def tempurl(period)
-        begin
-          period = 172800 if period.nil?
-          directory = @storage.directories.head(@container)
-          if directory.nil?
-             @error_string = "Cannot find container ':#{@container}'."
-             @error_code = :not_found
-             return nil
-          end
-
-          # container should be a class
-          if is_container?
-             @error_string = "Temporary URLs not supported on containers ':#{@container}'."
-             @error_code = :incorrect_usage
-             return nil
-          end
-
-          file = directory.files.get(@path)
-          if file.nil?
-             @error_string = "Cannot find object named '#{@fname}'."
-             @error_code = :not_found
-             return nil
-          end
-          return file.temp_signed_url(period, "GET")
-        rescue Excon::Errors::Forbidden => error
-          @error_string = "Permission denied for '#{@fname}."
-          @error_code = :permission_denied
-          return nil
-        rescue Exception => e
-          @error_string = "Exception getting temporary URL for '#{@fname}': " + e.to_s
-          @error_code = :general_error
-          return nil
-        end
-        return nil
-      end
-    end
-
-    class ObjectStore < Resource
-      def valid_destination(source)
+      def grant(acl)
+        @error_string = "ACLs of local objects are not supported: #{@fname}"
+        @error_code = :incorrect_usage
         return false
       end
 
-      def foreach(&block)
-        containers = @storage.directories
-        containers.each { |x|
-          yield Resource.create(@storage, ':' + x.key)
-        }
+      def revoke(acl)
+        @error_string = "ACLs of local objects are not supported: #{@fname}"
+        @error_code = :incorrect_usage
+        return false
       end
     end
   end

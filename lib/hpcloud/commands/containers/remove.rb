@@ -23,7 +23,7 @@ Aliases: containers:rm, containers:delete, containers:del
         cli_command(options) {
           names = [name] + names
           names.each { |name|
-            resource = Resource.create_remote(Connection.instance.storage, name)
+            resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.is_container?
               if resource.remove(options.force)
                 display "Removed container '#{name}'."
