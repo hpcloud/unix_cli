@@ -139,6 +139,7 @@ module HP
         rescue Exception => error
           display_error_message(error, :general_error)
         end
+        @exit_status = ERROR_TYPES[:success] if @exit_status.nil?
         exit @exit_status
       end
     end

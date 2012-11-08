@@ -25,6 +25,18 @@ module HP
         return @error_string.nil?
       end
 
+      def set_error(from)
+        return unless is_valid?
+        @error_string = from.error_string
+        @error_code = from.error_code
+      end
+
+      def not_implemented(value)
+        @error_string = "Not implemented: #{value}"
+        @error_code = :general_error
+        return false
+      end
+
       def isLocal()
         return ResourceFactory::is_local?(@ftype)
       end
@@ -127,37 +139,34 @@ module HP
       end
 
       def open(output=false, siz=0)
-        return false
+        return not_implemented("open")
       end
 
       def read()
+        not_implemented("read")
         return nil
       end
 
       def write(data)
-        return false
+        return not_implemented("write")
       end
 
       def close()
-        return false
+        return not_implemented("close")
       end
 
       def copy_file(from)
-        return false
+        return not_implemented("copy_file")
       end
 
       def copy(from)
           if copy_all(from)
             return true
           end
-          if @error_string.nil?
-            if from.error_string.nil?
-              @error_string = 'Unknown error copying'
-              @error_code = :unknown
-            else
-              @error_string = from.error_string
-              @error_code = from.error_code
-            end
+          set_error(from)
+          if is_valid?
+            @error_string = 'Unknown error copying'
+            @error_code = :unknown
           end
           return false
       end

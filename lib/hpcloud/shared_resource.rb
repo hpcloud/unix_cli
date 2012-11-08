@@ -80,15 +80,19 @@ module HP
         end
       end
 
+      def close
+        return true
+      end
+
       def copy_file(from)
         result = true
         if from.isLocal()
-          if (from.open() == false) then return false end
+          return false unless from.open
           options = { 'Content-Type' => from.get_mime_type() }
           @storage.put_shared_object(@container, @destination, {}, options) {
             from.read().to_s
           }
-          result = false if ! from.close()
+          result = false unless from.close()
         else
           begin
             @storage.put_shared_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })

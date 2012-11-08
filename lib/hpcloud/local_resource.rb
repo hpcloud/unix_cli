@@ -111,7 +111,7 @@ module HP
           @disable_pbar = true
         end
 
-        if ! open(true, from.get_size()) then return false end
+        return false unless open(true, from.get_size())
 
         result = true
         if from.isLocal()
@@ -133,14 +133,13 @@ module HP
               break
             end
           }
-          result = false if ! from.close()
-          if from.is_valid? == false
-            @error_string = from.error_string
-            @error_code = from.error_code
+          result = false unless from.close()
+          unless from.is_valid?
+            set_error(from)
             result = false
           end
         end
-        if ! close() then return false end
+        return false unless close()
         return result
       end
 

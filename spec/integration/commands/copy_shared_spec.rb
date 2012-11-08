@@ -8,8 +8,6 @@ describe "Copy shared resources" do
     rsp = cptr("remove -f :copytainer")
     rsp = cptr("containers:add :copytainer")
     rsp.stderr.should eq("")
-    rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Yeltsin/ :copytainer")
-    rsp.stderr.should eq("")
     username = AccountsHelper.get_username('secondary')
     rsp = cptr("acl:grant :copytainer rw #{username}")
     rsp.stderr.should eq("")
@@ -19,6 +17,14 @@ describe "Copy shared resources" do
     @local = "spec/tmp/shared/"
     FileUtils.rm_rf(@local)
     FileUtils.mkdir_p(@local)
+
+    #
+    # Use this test to populate for the other tests
+    #
+    rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Yeltsin/ #{@container}/ -a secondary")
+    rsp.stderr.should eq("")
+    rsp.stdout.should eq("Copied spec/fixtures/files/Matryoshka/Putin/Yeltsin/ => #{@container}/\n")
+    rsp.exit_status.should be_exit(:success)
   end
   
   context "when container does not exist" do
@@ -35,6 +41,8 @@ describe "Copy shared resources" do
   context "when file and container exist" do
     it "should copy" do
       rsp = cptr("copy #{@container}/Yeltsin/Boris.txt #{@local} -a secondary")
+puts "copy #{@container}/Yeltsin/Boris.txt #{@local} -a secondary"
+puts rsp.stdout
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Copied #{@container}/Yeltsin/Boris.txt => #{@local}\n")
@@ -58,16 +66,6 @@ describe "Copy shared resources" do
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Copied #{@container}/Yeltsin/Gorbachev/.* => #{@local}\n")
-      rsp.exit_status.should be_exit(:success)
-    end
-  end
-  
-  context "copy to shared" do
-    it "should copy" do
-      rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Yeltsin/ #{@container}/ -a secondary")
-
-      rsp.stderr.should eq("")
-      rsp.stdout.should eq("Copied spec/fixtures/files/Matryoshka/Putin/Yeltsin/ => #{@container}/\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
