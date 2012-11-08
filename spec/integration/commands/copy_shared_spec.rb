@@ -2,9 +2,6 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe "Copy shared resources" do
   before(:all) do
-    rsp = cptr("remove -f :destainer")
-    rsp = cptr("containers:add :destainer")
-    rsp.stderr.should eq("")
     rsp = cptr("remove -f :copytainer")
     rsp = cptr("containers:add :copytainer")
     rsp.stderr.should eq("")
@@ -87,6 +84,16 @@ puts rsp.stdout
       rsp.stderr.should eq("403 Forbidden\n\nAccess was denied to this resource.\n\n   \n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
+    end
+  end
+  
+  context "move to local" do
+    it "should work" do
+      rsp = cptr("move #{@container}/Yeltsin/Gorbachev/Andropov.txt #{@local} -a secondary")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Moved #{@container}/Yeltsin/Gorbachev/Andropov.txt => #{@local}\n")
+      rsp.exit_status.should be_exit(:success)
     end
   end
   
