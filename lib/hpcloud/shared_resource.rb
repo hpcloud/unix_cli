@@ -80,6 +80,27 @@ module HP
         end
       end
 
+      def copy_file(from)
+        result = true
+        if from.isLocal()
+          if (from.open() == false) then return false end
+          options = { 'Content-Type' => from.get_mime_type() }
+          @storage.put_shared_object(@container, @destination, {}, options) {
+            from.read().to_s
+          }
+          result = false if ! from.close()
+        else
+          begin
+            @storage.put_shared_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
+          rescue Fog::Storage::HP::NotFound => e
+            @error_string = "The specified object does not exist."
+            @error_code = :not_found
+            result = false
+          end
+        end
+        return result
+      end
+
       def remove(force)
         if @path.empty?
           @error_string = "Removal of shared containers is not supported."

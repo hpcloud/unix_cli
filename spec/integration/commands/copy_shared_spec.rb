@@ -64,10 +64,10 @@ describe "Copy shared resources" do
   
   context "copy to shared" do
     it "should copy" do
-      rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Yeltsin #{@container} #{@local} -a secondary")
+      rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Yeltsin/ #{@container}/ -a secondary")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Copied spec/fixtures/files/Matryoshka/Putin/Yeltsin => #{@container}\n")
+      rsp.stdout.should eq("Copied spec/fixtures/files/Matryoshka/Putin/Yeltsin/ => #{@container}/\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
