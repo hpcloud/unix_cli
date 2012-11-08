@@ -70,8 +70,27 @@ puts rsp.stdout
     end
   end
   
+  context "when local file" do
+    it "should copy" do
+      rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Andropov.txt #{@container}/ -a secondary")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Copied spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Andropov.txt => #{@container}/\n")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+  
+  context "when container to container" do
+    it "not allowed for now" do
+      rsp = cptr("copy #{@container}/Yeltsin/Gorbachev/Andropov.txt #{@container}/spare/ -a secondary")
+
+      rsp.stderr.should eq("403 Forbidden\n\nAccess was denied to this resource.\n\n   \n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+  end
+  
   after(:all) do
-    #rsp = cptr("remove -f :copytainer")
-    #rsp.stderr.should eq("")
+    cptr("remove -f :copytainer")
   end
 end
