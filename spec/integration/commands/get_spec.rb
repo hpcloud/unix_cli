@@ -105,7 +105,7 @@ describe "Get command" do
       container=location.gsub("/highly_unusual_file_name.txt",'')
       rsp.stderr.should eq("Permission denied trying to access '#{container}/highly_unusual_file_name.txt'.\n")
       rsp.stdout.should eq("")
-      rsp.exit_status.should be_exit(:not_found)
+      rsp.exit_status.should be_exit(:permission_denied)
     end
   end
 

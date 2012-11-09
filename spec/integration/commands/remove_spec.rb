@@ -165,16 +165,15 @@ describe "Remove command" do
 
   context "when object and container exist and object is at container level" do
     it "should report success" do
-      rsp = cptr("remove -f :tainer")
+      rsp = cptr("remove -f :removetainer")
+      rsp = cptr("containers:add :removetainer")
       rsp.stderr.should eq("")
-      rsp = cptr("containers:add :tainer")
-      rsp.stderr.should eq("")
-      rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Vladimir.txt :tainer")
+      rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Vladimir.txt :removetainer")
       rsp.stderr.should eq("")
       username = AccountsHelper.get_username('secondary')
-      rsp = cptr("acl:grant :tainer rw #{username}")
+      rsp = cptr("acl:grant :removetainer rw #{username}")
       rsp.stderr.should eq("")
-      rsp = cptr("location :tainer")
+      rsp = cptr("location :removetainer")
       rsp.stderr.should eq("")
       location=rsp.stdout.gsub("\n",'')
 
