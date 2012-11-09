@@ -58,6 +58,11 @@ module HP
         return 0
       end
 
+      #
+      # Add the capability to iterate through all the matching files
+      # for copy.  Use different regular expressions for a directory
+      # where we want to recursively copy things vs a regular file
+      #
       def foreach(&block)
         return false if get_container == false
         return if @directory.nil?
