@@ -10,7 +10,7 @@ describe "containers:remove command" do
     it "should show error message" do
       rsp = cptr('containers:remove :my_nonexistant_container')
 
-      rsp.stderr.should eq("You don't have a container named ':my_nonexistant_container'.\n")
+      rsp.stderr.should eq("Cannot find container ':my_nonexistant_container'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
@@ -21,7 +21,7 @@ describe "containers:remove command" do
     it "should show error message" do
       cptr('containers:add -z secondary other_users_container')
       rsp = cptr("containers:remove :other_users_container")
-      rsp.stderr.should eq("You don't have a container named ':other_users_container'.\n")
+      rsp.stderr.should eq("Cannot find container ':other_users_container'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
@@ -31,7 +31,7 @@ describe "containers:remove command" do
     it "should report error" do
       rsp = cptr("containers:remove :bogustotally")
 
-      rsp.stderr.should eq("You don't have a container named ':bogustotally'.\n")
+      rsp.stderr.should eq("Cannot find container ':bogustotally'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
