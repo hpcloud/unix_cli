@@ -103,7 +103,7 @@ describe "Get command" do
       rsp = cptr("get #{location} -a secondary")
 
       container=location.gsub("/highly_unusual_file_name.txt",'')
-      rsp.stderr.should eq("Cannot find container '#{container}'.\n")
+      rsp.stderr.should eq("Permission denied trying to access '#{container}/highly_unusual_file_name.txt'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
