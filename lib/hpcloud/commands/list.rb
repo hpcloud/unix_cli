@@ -1,3 +1,5 @@
+require 'hpcloud/resource_factory'
+
 module HP
   module Cloud
     class CLI < Thor
@@ -23,7 +25,7 @@ Aliases: ls
           sources = [""] if sources.empty?
           sources.each { |name|
             begin
-              from = Resource.create(Connection.instance.storage, name)
+              from = ResourceFactory.create(Connection.instance.storage, name)
               if from.valid_source()
                 found = false
                 from.foreach { |file|

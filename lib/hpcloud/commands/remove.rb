@@ -23,7 +23,7 @@ Aliases: rm, delete, destroy, del
         cli_command(options) {
           names = [name] + names
           names.each { |name|
-            resource = Resource.create(Connection.instance.storage, name)
+            resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.is_container?
               unless options.force?
                 unless yes?("Are you sure you want to remove the container '#{name}'?")

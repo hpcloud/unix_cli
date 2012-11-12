@@ -24,7 +24,7 @@ describe "Get command" do
     it "should exit with container not found" do
       rsp = cptr("get :nonexistant_container/foo.txt")
 
-      rsp.stderr.should eql("You don't have a container 'nonexistant_container'.\n")
+      rsp.stderr.should eql("Cannot find container ':nonexistant_container'.\n")
       rsp.exit_status.should be_exit(:not_found)
     end
   end
@@ -66,6 +66,46 @@ describe "Get command" do
 
     after(:all) do
       File.unlink('highly_unusual_file_name.txt')
+    end
+  end
+
+  context "when object and container exist and object is at container level" do
+    it "should report success" do
+      username = AccountsHelper.get_username('secondary')
+      rsp = cptr("acl:grant :get_container/highly_unusual_file_name.txt rw #{username}")
+      rsp.stderr.should eq("")
+      rsp = cptr("location :get_container/highly_unusual_file_name.txt")
+      rsp.stderr.should eq("")
+      location=rsp.stdout.gsub("\n",'')
+
+      rsp = cptr("get #{location} -a secondary")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Copied " + location + " => .\n")
+      rsp.exit_status.should be_exit(:success)
+      File.exist?('highly_unusual_file_name.txt').should be_true
+    end
+
+    after(:all) do
+      File.unlink('highly_unusual_file_name.txt')
+    end
+  end
+
+  context "when object and container exist but no grants" do
+    it "should report failure" do
+      username = AccountsHelper.get_username('secondary')
+      rsp = cptr("acl:revoke :get_container/highly_unusual_file_name.txt rw #{username}")
+      rsp.stderr.should eq("")
+      rsp = cptr("location :get_container/highly_unusual_file_name.txt")
+      rsp.stderr.should eq("")
+      location=rsp.stdout.gsub("\n",'')
+
+      rsp = cptr("get #{location} -a secondary")
+
+      container=location.gsub("/highly_unusual_file_name.txt",'')
+      rsp.stderr.should eq("Cannot find container '#{container}'.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_found)
     end
   end
 

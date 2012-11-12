@@ -18,9 +18,9 @@ Aliases: fetch
       def get(source, *sources)
         cli_command(options) {
           sources = [source] + sources
-          to = Resource.create(Connection.instance.storage, ".")
+          to = ResourceFactory.create(Connection.instance.storage, ".")
           sources.each { |name|
-            from = Resource.create(Connection.instance.storage, name)
+            from = ResourceFactory.create(Connection.instance.storage, name)
             if from.isRemote() == false
               error_message "Source object does not appear to be remote '#{from.fname}'.", :incorrect_usage
             elsif to.copy(from)

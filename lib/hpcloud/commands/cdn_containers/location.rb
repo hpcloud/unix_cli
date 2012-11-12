@@ -22,7 +22,7 @@ Aliases: cdn:containers:loc
         cli_command(options) {
           names = [name] + names
           names.each { |name|
-            resource = Resource.create_remote(Connection.instance.storage, name)
+            resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.read_header
               if options.ssl
                 display resource.cdn_public_ssl_url

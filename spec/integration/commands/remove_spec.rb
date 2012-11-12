@@ -29,7 +29,7 @@ describe "Remove command" do
     context "when container does not exist" do
       it "should exit with container not found" do
         rsp = cptr("remove :nonexistant_container", ['yes'])
-        rsp.stderr.should eql("You don't have a container named ':nonexistant_container'.\n")
+        rsp.stderr.should eql("Cannot find container ':nonexistant_container'.\n")
         rsp.stdout.should eq("Are you sure you want to remove the container ':nonexistant_container'? ")
         rsp.exit_status.should be_exit(:not_found)
       end
@@ -44,7 +44,7 @@ describe "Remove command" do
 
         rsp = cptr("rm :notmycontainer/#{@file_name}")
 
-        rsp.stderr.should eq("You don't have a container named ':notmycontainer'.\n")
+        rsp.stderr.should eq("Cannot find container ':notmycontainer'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end
@@ -102,10 +102,6 @@ describe "Remove command" do
   end
 
   context "removing a container" do
-    def cli
-      @cli ||= HP::Cloud::CLI.new
-    end
-
     context "when user owns container and it exists" do
       before(:all) do
         @hp_svc.put_container('container_to_remove')
@@ -164,6 +160,29 @@ describe "Remove command" do
       end
 
       after(:all) { purge_container('non_empty_container') }
+    end
+  end
+
+  context "when object and container exist and object is at container level" do
+    it "should report success" do
+      rsp = cptr("remove -f :tainer")
+      rsp.stderr.should eq("")
+      rsp = cptr("containers:add :tainer")
+      rsp.stderr.should eq("")
+      rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Vladimir.txt :tainer")
+      rsp.stderr.should eq("")
+      username = AccountsHelper.get_username('secondary')
+      rsp = cptr("acl:grant :tainer rw #{username}")
+      rsp.stderr.should eq("")
+      rsp = cptr("location :tainer")
+      rsp.stderr.should eq("")
+      location=rsp.stdout.gsub("\n",'')
+
+      rsp = cptr("remove #{location} -a secondary")
+
+      rsp.stdout.should eq("")
+      rsp.stderr.should eq("Removal of shared containers is not supported.\n")
+      rsp.exit_status.should be_exit(:not_supported)
     end
   end
 

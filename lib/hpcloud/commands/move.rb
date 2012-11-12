@@ -25,12 +25,12 @@ Aliases: mv
           end
           source = [source] + destination
           destination = last
-          to = Resource.create(Connection.instance.storage, destination)
+          to = ResourceFactory.create_any(Connection.instance.storage, destination)
           if source.length > 1 && to.isDirectory() == false
             error("The destination '#{destination}' for multiple files must be a directory or container", :general_error)
           end
           source.each { |name|
-            from = Resource.create(Connection.instance.storage, name)
+            from = ResourceFactory.create_any(Connection.instance.storage, name)
             if from.isLocal()
               error_message "Move is limited to remote objects. Please use '#{selfname} copy' instead.", :incorrect_usage
               next

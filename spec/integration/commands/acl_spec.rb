@@ -13,12 +13,12 @@ describe "Acl command (viewing acls)" do
       rsp = cptr('acl /foo/foo')
 
       rsp.stderr.should eq("Not supported on local object '/foo/foo'.\n")
-      rsp.stdout.should eq("")
+      rsp.stdout.should eq("There are no resources that match the provided arguments\n")
       rsp.exit_status.should be_exit(:not_supported)
     end
   end
 
-  context "when viewing the ACL for a private" do
+  describe "when viewing the ACL for a private" do
     before(:all) do
       @dir = @hp_svc.directories.get('acl_container')
       @dir.public = false
@@ -30,7 +30,8 @@ describe "Acl command (viewing acls)" do
         rsp = cptr('acl :acl_container')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should eql("private\n")
+        rsp.stdout.should match("public.*readers.*writers.*public_url")
+        rsp.stdout.should match("no.*https.*acl_container")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -40,7 +41,8 @@ describe "Acl command (viewing acls)" do
         rsp = cptr('acl :acl_container/foo.txt')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should eql("private\n")
+        rsp.stdout.should match("public.*readers.*writers.*public_url")
+        rsp.stdout.should match("no.*https.*acl_container/foo.txt")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -50,7 +52,8 @@ describe "Acl command (viewing acls)" do
         rsp = cptr('acl :acl_container -z region-a.geo-1')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should eql("private\n")
+        rsp.stdout.should match("public.*readers.*writers.*public_url")
+        rsp.stdout.should match("no.*https.*acl_container")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -60,7 +63,8 @@ describe "Acl command (viewing acls)" do
         rsp = cptr('acl :acl_container/foo.txt -z region-a.geo-1')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should eql("private\n")
+        rsp.stdout.should match("public.*readers.*writers.*public_url")
+        rsp.stdout.should match("no.*https.*acl_container/foo.txt")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -87,7 +91,7 @@ describe "Acl command (viewing acls)" do
     end
   end
 
-  context "when viewing the ACL for a public" do
+  describe "when viewing the ACL for a public" do
     before(:all) do
       @dir = @hp_svc.directories.get('acl_container')
       @dir.public = true
@@ -99,7 +103,8 @@ describe "Acl command (viewing acls)" do
         rsp = cptr('acl :acl_container')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should eql("public-read\n")
+        rsp.stdout.should match("public.*readers.*writers.*public_url")
+        rsp.stdout.should match("yes.*https.*acl_container")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -109,7 +114,8 @@ describe "Acl command (viewing acls)" do
         rsp = cptr('acl :acl_container/foo.txt')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should eql("public-read\n")
+        rsp.stdout.should match("public.*readers.*writers.*public_url")
+        rsp.stdout.should match("yes.*https.*acl_container/foo.txt")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -119,7 +125,8 @@ describe "Acl command (viewing acls)" do
         rsp = cptr('acl :acl_container -z region-a.geo-1')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should eql("public-read\n")
+        rsp.stdout.should match("public.*readers.*writers.*public_url")
+        rsp.stdout.should match("yes.*https.*acl_container")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -129,7 +136,8 @@ describe "Acl command (viewing acls)" do
         rsp = cptr('acl :acl_container/foo.txt -z region-a.geo-1')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should eql("public-read\n")
+        rsp.stdout.should match("public.*readers.*writers.*public_url")
+        rsp.stdout.should match("yes.*https.*acl_container")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -154,6 +162,31 @@ describe "Acl command (viewing acls)" do
         rsp.exit_status.should be_exit(:general_error)
       end
       after(:all) { Connection.instance.clear_options() }
+    end
+  end
+
+  describe "when viewing the ACL for a public" do
+    before(:all) do
+      @default_username = AccountsHelper.get_username('default')
+      @username = AccountsHelper.get_username('secondary')
+      @dir = @hp_svc.directories.get('acl_container')
+      @dir.public = false
+      @dir.revoke("r", @dir.read_acl)
+      @dir.revoke("w", @dir.write_acl)
+      @dir.grant("r", [@default_username])
+      @dir.grant("w", [@username])
+      @dir.save
+    end
+
+    context "container" do
+      it "should have 'public' permissions" do
+        rsp = cptr('acl :acl_container')
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should match("public.*readers.*writers.*public_url")
+        rsp.stdout.should match("no.*#{@default_username}.*#{@username}.*https.*acl_container")
+        rsp.exit_status.should be_exit(:success)
+      end
     end
   end
 

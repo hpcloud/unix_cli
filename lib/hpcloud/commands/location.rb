@@ -21,7 +21,7 @@ Aliases: loc
         cli_command(options) {
           names = [name] + names
           names.each { |name|
-            resource = Resource.create(Connection.instance.storage, name)
+            resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.read_header
               display resource.public_url
             else

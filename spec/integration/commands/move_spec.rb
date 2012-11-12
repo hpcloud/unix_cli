@@ -13,7 +13,7 @@ describe "Move command" do
     context "when source container can't be found" do
       it "should display error message" do
         rsp = cptr("move :missing_container/missing_file :missing_container/new/my_file")
-        rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
+        rsp.stderr.should eq("Cannot find container ':missing_container'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end
@@ -81,7 +81,7 @@ describe "Move command" do
       it "should display error message" do
         rsp = cptr("move :missing_container/missing_file :move_target_container/new/my_file")
 
-        rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
+        rsp.stderr.should eq("Cannot find container ':missing_container'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end
@@ -101,7 +101,7 @@ describe "Move command" do
        it "should display error message" do
          rsp = cptr("move :missing_container/missing_file :missing_container/new/my_file")
 
-         rsp.stderr.should eq("You don't have a container 'missing_container'.\n")
+         rsp.stderr.should eq("Cannot find container ':missing_container'.\n")
          rsp.stdout.should eq("")
          rsp.exit_status.should be_exit(:not_found)
        end
@@ -167,7 +167,7 @@ describe "Move command" do
       it "should display error message" do
         rsp = cptr("move :missing_container/missing_file /tmp/my_file")
 
-        rsp.stderr.should eql("You don't have a container 'missing_container'.\n")
+        rsp.stderr.should eql("Cannot find container ':missing_container'.\n")
         rsp.stdout.should eql("")
         rsp.exit_status.should be_exit(:not_found)
       end

@@ -8,21 +8,21 @@ describe "Detecting mime type" do
   
   context "when this file" do
     it "should return application/x-ruby" do
-      file = Resource.create(@storage, __FILE__)
+      file = ResourceFactory.create_any(@storage, __FILE__)
       file.get_mime_type().should eq('application/x-ruby')
     end
   end
 
   context "when text file" do
     it "should return text/plain" do
-      file = Resource.create(@storage, 'file.txt')
+      file = ResourceFactory.create_any(@storage, 'file.txt')
       file.get_mime_type().should eq('text/plain')
     end
   end
 
   context "when unknown file" do
     it "should return application/octet-stream" do
-      file = Resource.create(@storage, 'file')
+      file = ResourceFactory.create_any(@storage, 'file')
       file.get_mime_type().should eq('application/octet-stream')
     end
   end
@@ -35,10 +35,10 @@ describe "Resource construction" do
   
   context "when local file" do
     it "should return :file" do
-      file = Resource.create(@storage, '/tmp/myfile.txt')
+      file = ResourceFactory.create_any(@storage, '/tmp/myfile.txt')
 
-      file.fname.should eql('/tmp/myfile.txt')
-      file.ftype.should eql(:file)
+      file.fname.should eq('/tmp/myfile.txt')
+      file.ftype.should eq(:file)
       file.container.should be_nil
       file.path.should eq('/tmp/myfile.txt')
       file.isLocal().should be_true
@@ -52,10 +52,10 @@ describe "Resource construction" do
   
   context "when local file variant" do
     it "should return :file" do
-      file = Resource.create(@storage, '~/documents/myfile.tar')
+      file = ResourceFactory.create_any(@storage, '~/documents/myfile.tar')
 
-      file.fname.should eql('~/documents/myfile.tar')
-      file.ftype.should eql(:file)
+      file.fname.should eq('~/documents/myfile.tar')
+      file.ftype.should eq(:file)
       file.container.should be_nil
       file.path.should eq('~/documents/myfile.tar')
       file.isLocal().should be_true
@@ -69,10 +69,10 @@ describe "Resource construction" do
   
   context "when local directory" do
     it "should return :directory" do
-      file = Resource.create(@storage, '/tmp/')
+      file = ResourceFactory.create_any(@storage, '/tmp/')
 
-      file.fname.should eql('/tmp/')
-      file.ftype.should eql(:directory)
+      file.fname.should eq('/tmp/')
+      file.ftype.should eq(:directory)
       file.container.should be_nil
       file.path.should eq('/tmp')
       file.isLocal().should be_true
@@ -86,10 +86,10 @@ describe "Resource construction" do
   
   context "when local directory" do
     it "should return :directory" do
-      file = Resource.create(@storage, 'spec/tmp/nonexistant/')
+      file = ResourceFactory.create_any(@storage, 'spec/tmp/nonexistant/')
 
-      file.fname.should eql('spec/tmp/nonexistant/')
-      file.ftype.should eql(:directory)
+      file.fname.should eq('spec/tmp/nonexistant/')
+      file.ftype.should eq(:directory)
       file.container.should be_nil
       file.path.should eq('spec/tmp/nonexistant')
       file.isLocal().should be_true
@@ -103,10 +103,10 @@ describe "Resource construction" do
   
   context "when local directory without slash" do
     it "should return :directory" do
-      file = Resource.create(@storage, '/tmp')
+      file = ResourceFactory.create_any(@storage, '/tmp')
 
-      file.fname.should eql('/tmp')
-      file.ftype.should eql(:directory)
+      file.fname.should eq('/tmp')
+      file.ftype.should eq(:directory)
       file.container.should be_nil
       file.path.should eq('/tmp')
       file.isLocal().should be_true
@@ -120,12 +120,12 @@ describe "Resource construction" do
   
   context "when container" do
     it "should return :container" do
-      file = Resource.create(@storage, ':my_container')
+      file = ResourceFactory.create(@storage, ':my_container')
 
-      file.fname.should eql(':my_container')
-      file.ftype.should eql(:container)
-      file.container.should eql('my_container')
-      file.path.should eql('')
+      file.fname.should eq(':my_container')
+      file.ftype.should eq(:container)
+      file.container.should eq('my_container')
+      file.path.should eq('')
       file.isLocal().should be_false
       file.isRemote().should be_true
       file.isDirectory().should be_true
@@ -137,11 +137,11 @@ describe "Resource construction" do
   
   context "when full object path" do
     it "should return :object" do
-      file = Resource.create(@storage, ':my_container/blah/archive.zip')
+      file = ResourceFactory.create(@storage, ':my_container/blah/archive.zip')
 
-      file.fname.should eql(':my_container/blah/archive.zip')
-      file.ftype.should eql(:object)
-      file.container.should eql('my_container')
+      file.fname.should eq(':my_container/blah/archive.zip')
+      file.ftype.should eq(:object)
+      file.container.should eq('my_container')
       file.path.should eq('blah/archive.zip')
       file.isLocal().should be_false
       file.isRemote().should be_true
@@ -154,11 +154,11 @@ describe "Resource construction" do
   
   context "when object directory path" do
     it "should return :container_directory" do
-      file = Resource.create(@storage, ':my_container/blah/')
+      file = ResourceFactory.create(@storage, ':my_container/blah/')
 
-      file.fname.should eql(':my_container/blah/')
-      file.ftype.should eql(:container_directory)
-      file.container.should eql('my_container')
+      file.fname.should eq(':my_container/blah/')
+      file.ftype.should eq(:container_directory)
+      file.container.should eq('my_container')
       file.path.should eq('blah')
       file.isLocal().should be_false
       file.isRemote().should be_true
@@ -171,10 +171,10 @@ describe "Resource construction" do
   
   context "when nothing" do
     it "should return :object_store" do
-      file = Resource.create(@storage, '')
+      file = ResourceFactory.create(@storage, '')
 
-      file.fname.should eql('')
-      file.ftype.should eql(:object_store)
+      file.fname.should eq('')
+      file.ftype.should eq(:object_store)
       file.container.should be_nil
       file.path.should be_nil
       file.isLocal().should be_false
@@ -183,6 +183,48 @@ describe "Resource construction" do
       file.isFile().should be_false
       file.isObject().should be_false
       file.is_valid?.should be_true
+    end
+  end
+  
+  context "when url" do
+    it "should return :shared_resource" do
+      container = 'http://www.example.com/v1/123111111/tainer'
+      path = 'subdir/a/objay.txt'
+      file_name = container + '/' + path
+      file = ResourceFactory.create(@storage, file_name)
+
+      file.fname.should eq(file_name)
+      file.ftype.should eq(:shared_resource)
+      file.container.should eq(container)
+      file.path.should eq(path)
+      file.isLocal().should be_false
+      file.isRemote().should be_true
+      file.isDirectory().should be_false
+      file.isFile().should be_false
+      file.isObject().should be_false
+      file.is_valid?.should be_true
+      file.is_shared?.should be_true
+    end
+  end
+  
+  context "when url" do
+    it "should return :shared_resource" do
+      container = 'https://www.example.com/v1/123111111/tainer'
+      path = 'objay.txt'
+      file_name = container + '/' + path
+      file = ResourceFactory.create(@storage, file_name)
+
+      file.fname.should eq(file_name)
+      file.ftype.should eq(:shared_resource)
+      file.container.should eq(container)
+      file.path.should eq(path)
+      file.isLocal().should be_false
+      file.isRemote().should be_true
+      file.isDirectory().should be_false
+      file.isFile().should be_false
+      file.isObject().should be_false
+      file.is_valid?.should be_true
+      file.is_shared?.should be_true
     end
   end
 end
