@@ -73,6 +73,28 @@ describe "volumes:add command" do
     end
   end
 
+  context "when creating volume from an image" do
+    it "should show success message" do
+      image_id = AccountsHelper.get_image_id()
+      @volume_name = resource_name("add4")
+
+      rsp = cptr("volumes:add #{@volume_name} -i #{image_id}")
+
+      rsp.stderr.should eq("")
+      @new_volume_id = rsp.stdout.scan(/'([^']+)/)[2][0]
+      rsp.stdout.should eq("Created volume '#{@volume_name}' with id '#{@new_volume_id}'.\n")
+      rsp.exit_status.should be_exit(:success)
+      volumes = @hp_svc.volumes.map {|s| s.id}
+      volumes.should include(@new_volume_id.to_i)
+      volumes = @hp_svc.volumes.map {|s| s.name}
+      volumes.should include(@volume_name)
+    end
+
+    after(:each) do
+      cptr("volumes:remove #{@volume_name}")
+    end
+  end
+
   context "when creating volume with a name that already exists" do
     it "should fail" do
       @vol1 = VolumeTestHelper.create("cli_test_vol1")
