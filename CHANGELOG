@@ -1,4 +1,12 @@
-##Release 1.3.0 Information##
+These are the release notes for the HP Cloud services UNIX CLI.  The current release number for the [UNIX CLI software](/cli/unix) is version 1.2.0, released on 10/22/2012.  These release notes contain the following information:
+
+* [Release 1.3.0 Information](#v130)
+* [Release 1.2.0 Information](#v120)
+* [Release 1.1.0 Information](#v110)
+* [Release 1.0.1 Information](#v101)
+* [Release 0.0.15 Information](#v0015)
+
+##Release 1.3.0 Information## {#v130}
 
 Released on 11/20/2012.
 
@@ -18,7 +26,7 @@ Released on 11/20/2012.
 * The syntax of the servers:add command has changed.  The image or volume now must be passed in with a -i or -v option
 * The output of the acl command is now a table
 
-##Release 1.2.0 Information##
+##Release 1.2.0 Information## {#v120}
 
 Released on 10/22/2012.
 
@@ -36,7 +44,7 @@ Released on 10/22/2012.
   - servers
   - object store commands
 
-##Release 1.1.0 Information##
+##Release 1.1.0 Information## {#v110}
 
 ###New Features###
 
@@ -56,7 +64,7 @@ Released on 10/22/2012.
 * Mime type detection error, which could cause a non-text file (for example a `.js` file) to be incorrectly identified as text file, has been fixed
 * Copy/move operation now functional in Ruby v1.8.7
 
-##Release 1.0.1 Information##
+##Release 1.0.1 Information## {#v101}
 
 ###New Features###
 
@@ -75,7 +83,7 @@ Released on 10/22/2012.
 * Some performance improvements with storage container access
 * Removed deprecation message for ruby-progressbar by using version 0.0.10. If running hpcloud v1.0.0, need to manually uninstall ruby-progressbar gem before installing hpcloud v1.0.1 - *gem uninstall ruby-progressbar*
 
-##Release 0.0.15 Information##
+##Release 0.0.15 Information##  {#v0015}
 
 ###New Features###
 
