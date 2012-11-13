@@ -166,6 +166,57 @@ describe "Server class" do
     end
   end
 
+  context "when we call set_volume with bogus volume" do
+    it "it returns false and sets error" do
+      @block = double("compute")
+      @block.stub(:volumes).and_return([])
+      @compute = double("compute")
+      @compute.stub(:servers).and_return([])
+      Connection.instance.stub(:compute).and_return(@compute)
+      Connection.instance.stub(:block).and_return(@block)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_volume('bogus').should be_false
+
+      srv.error_string.should eq("Cannot find a volume matching 'bogus'.")
+      srv.error_code.should eq(:not_found)
+      srv.is_windows?.should be_false
+      srv.volume.should be_nil
+    end
+  end
+
+  context "when we call set_volume with good volume" do
+    it "it sets the volume and returns true" do
+      meta = double("metadata")
+      meta.stub(:key).and_return('hp_volume_license')
+      meta.stub(:value).and_return('999')
+      volume = double("volume")
+      volume.stub(:id).and_return(2222)
+      volume.stub(:name).and_return('good')
+      volume.stub(:size).and_return(10)
+      volume.stub(:type).and_return('')
+      volume.stub(:created_at).and_return('now')
+      volume.stub(:status).and_return('g2g')
+      volume.stub(:description).and_return('volley')
+      volume.stub(:metadata).and_return([meta])
+      volume.stub(:attachments).and_return([])
+      @block = double("block")
+      @block.stub(:volumes).and_return([volume])
+      @compute = double("compute")
+      @compute.stub(:servers).and_return([])
+      Connection.instance.stub(:block).and_return(@block)
+      Connection.instance.stub(:compute).and_return(@compute)
+      srv = HP::Cloud::ServerHelper.new(@compute)
+
+      srv.set_volume('good').should be_true
+
+      srv.error_string.should be_nil
+      srv.error_code.should be_nil
+      srv.is_windows?.should be_false
+      srv.volume.should eq(2222)
+    end
+  end
+
   context "when we call set_keypair with nothing" do
     it "it returns true and does nothing" do
       @compute = double("compute")
@@ -278,7 +329,7 @@ describe "Server class" do
       srv.set_private_key(nil).should be_false
 
       srv.private_key.should be_nil
-      srv.error_string.should eq("You must specify the private key file if you want to create a windows instance")
+      srv.error_string.should eq("You must specify the private key file if you want to create a windows instance.")
       srv.error_code.should eq(:incorrect_usage)
     end
   end
@@ -427,6 +478,23 @@ describe "Server class" do
 
       srv.id.should be_nil
       srv.error_string.should eq("Invalid metadata 'whiskeytangofoxtrot' should be in the form 'k1=v1,k2=v2,...'")
+      srv.error_code.should eq(:incorrect_usage)
+    end
+  end
+
+  context "when we save and there was a previous error" do
+    it "should call create" do
+      srv = HP::Cloud::ServerHelper.new(double("compute"))
+      srv.name = "bob"
+      srv.flavor = "101"
+      srv.keyname = "default"
+      srv.set_security_groups('x-wing,y-wing')
+      srv.meta.set_metadata('whiskey=tango,fox=trot')
+
+      srv.save.should be_false
+
+      srv.id.should be_nil
+      srv.error_string.should eq("You must specify either an image or a volume to create a server.")
       srv.error_code.should eq(:incorrect_usage)
     end
   end

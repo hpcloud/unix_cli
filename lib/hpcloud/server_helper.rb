@@ -5,7 +5,7 @@ module HP
     class ServerHelper
       attr_reader :meta, :private_key, :windows, :fog
       attr_accessor :error_string, :error_code, :meta
-      attr_accessor :id, :name, :flavor, :image, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state
+      attr_accessor :id, :name, :flavor, :image, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state, :volume
     
       def self.get_keys()
         return [ "id", "name", "flavor", "image", "public_ip", "private_ip", "keyname", "security_groups", "created", "state" ]
@@ -48,6 +48,7 @@ module HP
       end
 
       def set_image(value)
+        return true if value.nil?
         @windows = false
         image = Images.new().get(value, false)
         unless image.is_valid?
@@ -57,6 +58,19 @@ module HP
         end
         @windows = image.is_windows?
         @image = image.id
+        return true
+      end
+
+      def set_volume(value)
+        return true if value.nil?
+        @windows = false # windows not supported right now
+        volume = Volumes.new().get(value, false)
+        unless volume.is_valid?
+          @error_string = volume.error_string
+          @error_code = volume.error_code
+          return false
+        end
+        @volume = volume.id
         return true
       end
 
@@ -101,7 +115,7 @@ module HP
       def set_private_key(value)
         if value.nil?
           if @windows
-            @error_string = "You must specify the private key file if you want to create a windows instance"
+            @error_string = "You must specify the private key file if you want to create a windows instance."
             @error_code = :incorrect_usage
             return false
           end
@@ -160,13 +174,28 @@ module HP
           @error_code = @meta.error_code
         end
         return false if is_valid? == false
+        if @image.nil? && @volume.nil?
+          @error_string = "You must specify either an image or a volume to create a server."
+          @error_code = :incorrect_usage
+          return false
+        end
         if @fog.nil?
           hsh = {:flavor_id => @flavor,
-             :image_id => @image,            
-             :name => @name,                
-             :key_name => @keyname,        
-             :security_groups => @security,  
+             :name => @name,
+             :key_name => @keyname,
+             :security_groups => @security,
              :metadata => @meta.hsh}
+          unless @image.nil?
+            hsh[:image_id] = @image
+          end
+          unless @volume.nil?
+            hsh[:block_device_mapping] = {
+                     'volume_size' => '',
+                     'volume_id' => @volume,
+                     'delete_on_termination' => '0',
+                     'device_name' => 'vda'
+                   }
+          end
           server = @compute.servers.create(hsh)
           if server.nil?
             @error_string = "Error creating server '#{@name}'"

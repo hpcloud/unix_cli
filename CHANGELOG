@@ -1,19 +1,34 @@
-v1.3.0 10/23/12
-================
-- Added the servers:rebuild command
-- Allow the user to override the mime type during copy command
-- The cdn_availability_zone has been replaced by the storage_availability_zone
-- Added option to print the SSL and non-SSL URLs for CDN objects
-- CDN add and remove now take multiple arguments
-- Massive updates to the help text
-- Allow the default account to be set to any account that is configured
+##Release 1.3.0 Information##
 
-v1.2.0 10/08/12
-================
-- Support for windows images
-- Support for temporary URLs
-- Snapshot support
-- Standarize reports and command line arguments
+Released on 11/20/2012.
+
+###New Features###
+
+* Added the servers:rebuild command
+* Allow the user to override the mime type with the -m option during copy command
+* Added option to print the SSL and non-SSL URLs for CDN objects with the cdn:containers:location command and the -s option
+* CDN add and remove now take multiple arguments
+* Massive updates to the help text
+* Allow the default account to be set to any account that is configured
+* Support for cross tenant ACLs is now supported with the acl:grant and acl:revoke commands
+* Support for bootable volumes has been added with the volumes:add to create the bootable volumes and servers:add to crerate a server from the volume.
+
+###Known Issues###
+
+* The syntax of the servers:add command has changed.  The image or volume now must be passed in with a -i or -v option
+* The output of the acl command is now a table
+
+##Release 1.2.0 Information##
+
+Released on 10/22/2012.
+
+###New Features###
+
+* Requires [Fog v0.0.17](/bindings/fog/install)
+* Support for adding Windows servers from existing windows images 
+* Support for creating and removing server image snapshots
+* Support for creating a [Temporary URL](/cli/unix/object-storage#TmpurlCommand) for a file or object for sharing purposes
+* Generated reports and CLI arguments have been standardized for the following:
   - addresses
   - flavors
   - keypairs
@@ -21,179 +36,54 @@ v1.2.0 10/08/12
   - servers
   - object store commands
 
-v1.1.0 09/06/12
-================
-- Support for multiple account files
-  - account:list lists accounts and shows account settings
-  - account:update modify accounts settings
-  - account:remove remove accounts
-  - account:use command makes the specified account default
-  - account:copy command copies an account file
-  - The -a option was added to commands to select an account
-- Clean up of configuration
-  - Changed the config:set command to take name value pairs
-  - Added config:list command to print current configuration
-- Changed the cdn:containers -a option to -l for long listing
-- Used better mime type detection system
-- Fixed 1.8.7 compatibility issues
+##Release 1.1.0 Information##
 
-v1.0.1 08/28/12
-================
-- Fix the ruby-progressbar gem dependency to version 0.0.10 to remove deprecation message.
+###New Features###
 
-v1.0.0 08/20/12
-================
-- Support for listing, adding, attaching, detaching and removing block volumes
-- Progress bar added for file copy local to remote and remote to local
-- Support for metadata add, update and delete for images and servers
-- Recursive copy of directories local to remote, remote to local and remote to remote
-- Support for multiple files specified on a copy command line with some wild carding
+* The following additions and modifications to the `config:list` command to support multiple account files:
+  - `account:list` command that lists accounts and shows account settings
+  - `account:update` command to modify accounts settings
+  - `account:remove` command to remove accounts
+  - `account:use` command to makes the specified account default
+  - `account:copy` command to copy an account file
+* `-a` option to select an account on which to perform tasks
+* `config:set` command now accepts name value pairs
+* `config:list` command added to allow you to display the current configuration
+* `cdn:containers` command modified so that the `-l` option generates the long listing of containers
 
-v0.0.15 06/08/12
-================
-- Add an optional switch to all commands to specify availability zone
-- Add a new command config to list the existing configuration settings
-- Add support for AZ3 and future availability zones for all services
-- Fixed account:setup issue when certain services are deactivated.
-- Add an option to add a security group rule by using a source group
-- Minor fixes to aliases, documentation and help.
+###Resolved Issues in Version 1.1.0###
 
-v0.0.14 02/23/12
-================
-- Add examples documentation
-- Update test suite and inline help documentation
-- Fix account:setup labels to match management console screens
-- Add cdn:containers command set: add, remove, set, get and location
-- Update keypairs:add command to use options for specifying optional parameters
-- Update servers:add command to accept keyname and security groups using options
-- Fix account:setup for upgrade issues
-- Update to use 'hpfog' library v0.0.14
+* Mime type detection error, which could cause a non-text file (for example a `.js` file) to be incorrectly identified as text file, has been fixed
+* Copy/move operation now functional in Ruby v1.8.7
 
-v0.0.13 02/09/12
-================
-- Add config:set command to set various config settings
-- Provide access to availability zones via settings
-- Update to use 'hpfog' library v0.0.13
+##Release 1.0.1 Information##
 
-v0.0.12 02/02/12
-================
-- Integration with CS authentication
-- Update to use 'hpfog' library v0.0.12
-- Update account:setup to take CS credentials and tenant id.
-- Remove separate account:storage and account:compute commands.
-- Add keypairs command set: list, add, remove, import and export
-- Add addresses command set: list, add, remove, associate and disassociate
-- Add securitygroups command set: list, add, and remove
-- Add securitygroups:rules command set: list, add, and remove
-- Update test suite to go against CS authentication
+###New Features###
 
-v0.0.11 11/21/11
-================
-- CLI uses OS API and drops EC2 API
-- Still uses 'hpfog' library v0.0.9
-- Update to use HP provider instead of AWS provider
-- Remove all EC2 API based commands
-- Add servers command set: list, add, password, reboot, and remove
-- Add images command set: list, add, and remove
-- Add flavors command set: list
-- Update test suite to go against OS API
+* Support for listing, adding, attaching, detaching and removing block volumes
+* Progress bar added for file copy local to remote and remote to local
+* Support for adding, updating, and deleting metadata for images and servers
+* Support for recursive copy of directories from local to remote, from remote to local, and from remote to remote
+* Support for specifying multiple files on a copy command line using wildcards
 
-v0.0.10 10/31/11
-================
-- Last version of CLI to use EC2 API
-- Still uses 'hpfog' library v0.0.9
-- Update account:setup to call separate setup for storage and compute services
-- Add separate account:storage and account:compute sub-commands.
-- Updates accounts specs
-- Add servers command set: list, add, reboot, and remove
-- Add images command set: list, add, and remove
-- Add flavors command set: list
-- Add keypairs command set: list, add, remove, import and export
-- Add addresses command set: list, add, remove, and assign
-- Add securitygroups command set: list, add, remove and ippermissions
-- Add securitygroups:ippermissions command set: list, add, remove
+###Known Issues###
 
-v0.0.9 9/22/11
-==============
-- Add container name validation to container:add command
-- Update to use 'hpfog' library v0.0.9
-- Cleanup Rake tasks and basic housekeeping
+* Copy/move operation not functional in Ruby v1.8.7
 
-v0.0.8 8/29/11
-==============
-- Update README with documentation and examples
-- Update documentation for acl commands
-- Add acl:set command to set acls
-- Add acl command to get acls
-- Fix for location command
-- Update to use 'hpfog' library v0.0.8
-- Fix minor issues
+###Resolved Issues in Version 1.0.1###
 
-v0.0.7 8/12/11
-==============
-- Fix minor issues
-- Update README with documentation and examples
-- Update to use 'hpfog' library v0.0.7
+* Some performance improvements with storage container access
+* Removed deprecation message for ruby-progressbar by using version 0.0.10. If running hpcloud v1.0.0, need to manually uninstall ruby-progressbar gem before installing hpcloud v1.0.1 - *gem uninstall ruby-progressbar*
 
-v0.0.6 7/25/11
-==============
-- Rebranded to 'hpcloud' gem and bumped version
-- Removed ACL, Versioning and Location commands
-- Updated the account setup to use new settings
+##Release 0.0.15 Information##
 
-v0.0.5 7/5/11
-==============
-- Upgraded to work with OpenStack Swift API version 1.1 (Cactus Release)
-- Uses an upgraded version of fog which wraps up OpenStack Swift API version 1.1
-- Fix config.yml and default account files to work with Swift connection requirements
-- ACL based tests have been marked as pending as there is no support for ACLs in Swift yet
+###New Features###
 
-v0.0.4 5/23/11
-==============
-- copy command can now copy between buckets
-- location command can now be called on buckets as well as objects
-- buckets:add command now checks for valid virtualhost naming, warns if not
-- improve error handling when listing buckets with invalid credentials
-- improve error handling when copying a file to unwriteable local location
-- improve error handling when copying a file to a local directory that doesn't exist
-- improve error handling when calling location on buckets/objects without permissions
-- improve error handling when trying to create a bucket with an invalid name
-- fix breaker in location command
-- fix substitution of underscores for spaces in file names during copy
-- fix some incorrect exit statuses
-- testing improvements
+* Optional switch added to all commands to specify availability zone
+* New command config added to list the existing configuration settings
+* Support for availability zone 3 (AZ3) and future availability zones for all services added
+* Option to add a security group rule by using a source group added
 
-v0.0.3 5/13/11
-==============
-- rebranded to 'scalene' gem
-- ruby 1.8.7 compatibility
-- extended help with examples now available for all commands
-- added standard exit status codes for easier scripting
-- bugfixes for certain nested filenames that would previously fail
-- acl and acl:set commands now work with buckets as well as files
-- remove command now behaves properly when run on a bucket with --force
-- improved handling of operations where permissions are denied
-- many more error cases covered
-- host and port combined to a single endpoint option for account setup
-- account:generate command removed
-- key script is smarter about detecting its own name
-- fix for KVS Content-Type header changes
-- increased test coverage
+###Resolved Issues in Version 0.0.15###
 
-v0.0.2 4/11/11
-==============
-- add 'remove' command
-- add 'move' command
-- add 'get' command
-- command renamed: 'acl' => 'acl:set'
-- new 'acl' command for viewing ACLs
-- README fixes
-- auto-validate new account setups
-- improve STDOUT output management
-- clarify that bucket to bucket support is pending (KVS bug #9805)
-- 'copy' command no longer needs absolute target when copying to a bucket
-- make ruby 1.9.2 an enforced requirement
-
-v0.0.1 4/6/11
-=============
-- initial release
+* When either storage or compute is deactivated, you can not connect to the account using the `hpcloud account:setup` command.
