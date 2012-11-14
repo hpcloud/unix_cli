@@ -54,7 +54,7 @@ Aliases: securitygroups:rules:authorize
 
           # if a source group is specified, get its id
           if src_group
-            source_group = compute_connection.security_groups.select {|srg| srg.name == src_group}.first
+            source_group = Connection.instance.compute.security_groups.select {|srg| srg.name == src_group}.first
             if (source_group && source_group.name == src_group)
               src_group_id = source_group.id
             else
