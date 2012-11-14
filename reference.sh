@@ -45,7 +45,7 @@ do
     start)
       if [ "${LINE}" == "Usage:" ]
       then
-        echo -ne "<h2 id=\"${COMMAND}\">${COMMAND}</h2>\n${SHORT}\n\n"
+        echo -ne "##${COMMAND}## {#${COMMAND}}\n${SHORT}\n\n"
         echo "###Syntax"
         STATE='usage'
       fi
