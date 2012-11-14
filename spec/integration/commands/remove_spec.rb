@@ -105,6 +105,8 @@ describe "Remove command" do
     context "when user owns container and it exists" do
       before(:all) do
         @hp_svc.put_container('container_to_remove')
+        rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Medvedev.txt :container_to_remove")
+        rsp.stderr.should eq("")
       end
 
       it "should ask for confirmation to delete" do
@@ -124,7 +126,7 @@ describe "Remove command" do
     end
 
     context "when container is not empty" do
-      before(:all) do
+      before(:each) do
         create_container_with_files('non_empty_container', 'foo.txt')
       end
 
@@ -142,9 +144,9 @@ describe "Remove command" do
         it "should not remove container" do
           rsp = cptr('remove :non_empty_container', ['y'])
 
-          rsp.stderr.should eq("The container ':non_empty_container' is not empty. Please use -f option to force deleting a container with objects in it.\n")
-          rsp.stdout.should eq("Are you sure you want to remove the container ':non_empty_container'? ")
-          rsp.exit_status.should be_exit(:conflicted)
+          rsp.stderr.should eq("")
+          rsp.stdout.should eq("Are you sure you want to remove the container ':non_empty_container'? Removed ':non_empty_container'.\n")
+          rsp.exit_status.should be_exit(:success)
         end
       end
 
@@ -159,7 +161,7 @@ describe "Remove command" do
         end
       end
 
-      after(:all) { purge_container('non_empty_container') }
+      after(:each) { purge_container('non_empty_container') }
     end
   end
 
