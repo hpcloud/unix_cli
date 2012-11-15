@@ -31,6 +31,8 @@ describe "Checker class" do
       CheckerHelper.set_latest(0, 0, 0)
 
       checker.process.should be_false
+
+      checker.latest.should eq(HP::Cloud::VERSION)
     end
   end
 
@@ -68,11 +70,12 @@ describe "Checker class" do
     it "is true" do
       checker = Checker.new
       checker.reset
-      CheckerHelper.set_latest(0, 0, 1)
+      latest = CheckerHelper.set_latest(0, 0, 1)
 
       checker.process.should be_true
 
       checker.process.should be_false
+      checker.latest.should eq(latest)
     end
   end
 

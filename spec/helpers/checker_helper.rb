@@ -33,7 +33,9 @@ class CheckerHelper
     build = (build.to_i + bui).to_s
     FileUtils.rm_rf(CheckerHelper.latest)
     f = File.new(CheckerHelper.latest, "w")
-    f.write(major + "." + minor + "." + build)
+    latest = major + "." + minor + "." + build
+    f.write(latest)
     f.close
+    return latest
   end
 end

@@ -3,7 +3,7 @@ require 'open-uri'
 module HP
   module Cloud
     class Checker
-      attr_accessor :url, :deferment, :file
+      attr_accessor :url, :deferment, :file, :latest
 
       @@home = nil
 
@@ -55,13 +55,17 @@ module HP
         end
 
         begin
-          latest = open(@url).read
-          return false unless comparo(latest)
+          FileUtils.mkdir_p(@directory)
+          FileUtils.touch(@file)
+        rescue
+        end
+
+        begin
+          @latest = open(@url).read.strip
+          return false unless comparo(@latest)
         rescue
           return false
         end
-        FileUtils.mkdir_p(@directory)
-        FileUtils.touch(@file)
         return true
       end
 
