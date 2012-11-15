@@ -229,6 +229,8 @@ module HP
         opts.delete(:preferred_flavor)
         opts.delete(:preferred_image)
         opts.delete(:preferred_win_image)
+        opts.delete(:checker_url)
+        opts.delete(:checker_deferment)
         return creds, zones, opts
       end
     end

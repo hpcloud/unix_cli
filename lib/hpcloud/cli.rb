@@ -139,6 +139,10 @@ module HP
         rescue Exception => error
           display_error_message(error, :general_error)
         end
+        checker = Checker.new
+        if checker.process
+          warn "A new version v#{checker.latest} of the Unix CLI is available at https://docs.hpcloud.com/cli/unix/install"
+        end
         @exit_status = ERROR_TYPES[:success] if @exit_status.nil?
         exit @exit_status
       end
