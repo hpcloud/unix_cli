@@ -18,7 +18,7 @@ describe "Checker class" do
     it "has some default values" do
       checker = Checker.new
 
-      checker.file.should eq(CheckerHelper.tmp_dir + "/.hpcloud/checker")
+      checker.file.should eq(CheckerHelper.tmp_dir + "/.hpcloud/.checker")
       checker.url.should eq(CheckerHelper.latest)
       checker.deferment.should eq(CheckerHelper.deferment)
     end

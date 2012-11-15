@@ -12,7 +12,7 @@ module HP
           @@home = ENV['HOME']
         end
         @directory = @@home + "/.hpcloud/"
-        @file = @directory + "checker"
+        @file = @directory + ".checker"
         config = Config.new
         @url = config.get(:checker_url)
         @deferment = config.get(:checker_deferment)
