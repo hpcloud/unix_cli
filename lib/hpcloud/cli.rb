@@ -102,6 +102,9 @@ module HP
 
       def cli_command(options)
         @exit_status = ERROR_TYPES[:success]
+        if Checker.new.process
+          warn "A new version of the Unix CLI is available at https://docs.hpcloud.com/cli/unix/install"
+        end
         Connection.instance.set_options(options)
         begin
           yield

@@ -17,6 +17,7 @@ require 'hpcloud'
 
 require 'helpers/fixtures'
 require 'helpers/accounts_helper'
+require 'helpers/checker_helper'
 require 'helpers/config_helper'
 require 'helpers/connections'
 require 'helpers/directory_helper'

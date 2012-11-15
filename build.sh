@@ -65,6 +65,9 @@ fi
 hpcloud copy -a deploy hpcloud-${VERSION}.gem $DEST
 hpcloud copy -a deploy CHANGELOG ${DEST}CHANGELOG.txt
 hpcloud copy -a deploy ${REFERENCE} $DEST
+rm -f latest
+echo ${VERSION} >latest
+hpcloud copy -a deploy latest ":${CONTAINER}/unixcli/latest"
 hpcloud acl:set -a deploy ${CONTAINER} public-read
 
 rm -f ${REFERENCE} hpcloud-${VERSION}.gem ucssh.sh

@@ -31,6 +31,9 @@ describe "Config reading" do
       config.settings[:ssl_verify_peer].should be_true
       config.settings[:ssl_ca_path].should be_nil
       config.settings[:ssl_ca_file].should be_nil
+      config.settings[:default_account].should eq('default')
+      config.settings[:checker_url].should eq('https://region-a.geo-1.objects.hpcloudsvc.com:443/v1/89388614989714/documentation-downloads/unixcli/latest')
+      config.settings[:checker_deferment].should eq(604800) # one week
     end
 
     after(:each) do
@@ -56,6 +59,9 @@ describe "Config reading" do
       config.settings[:ssl_verify_peer].should be_true
       config.settings[:ssl_ca_path].should eq('capath')
       config.settings[:ssl_ca_file].should eq('cafile')
+      config.settings[:default_account].should eq('muse')
+      config.settings[:checker_url].should eq('https://greenday/')
+      config.settings[:checker_deferment].should eq(234) # one week
     end
 
     after(:all) {reset_all()}
@@ -177,6 +183,9 @@ describe "Config write" do
       @config.set('ssl_verify_peer', '9val')
       @config.set('ssl_ca_path', '10val')
       @config.set("ssl_ca_file", "11val")
+      @config.set("default_account", "12val")
+      @config.set("checker_url", "13val")
+      @config.set("checker_deferment", "14val")
       @config.write()
       contents = ConfigHelper.contents
       contents.should include(":default_auth_uri: 1val\n")
@@ -190,6 +199,9 @@ describe "Config write" do
       contents.should include(":ssl_verify_peer: true\n")
       contents.should include(":ssl_ca_path: 10val\n")
       contents.should include(":ssl_ca_file: 11val\n")
+      contents.should include(":default_account: 12val\n")
+      contents.should include(":checker_url: 13val\n")
+      contents.should include(":checker_deferment: 14val\n")
     end
   end
 
