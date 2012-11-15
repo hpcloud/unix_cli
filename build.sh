@@ -50,8 +50,9 @@ gem build hpcloud.gemspec
 gem install hpcloud-${VERSION}.gem
 
 #
-# Build the reference page
+# Build the notes and reference page
 #
+./notes.sh
 ./reference.sh
 
 #

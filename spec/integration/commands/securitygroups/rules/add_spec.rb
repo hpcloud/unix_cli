@@ -50,6 +50,20 @@ describe "securitygroups:rules:add command" do
     end
   end
 
+  context "tcp with port range and ip address" do
+    it "should show success message and create group" do
+      cptr("securitygroups:add httpsgroup rules")
+      cptr("securitygroups:rules:add httpsgroup tcp -p 443..443 -c 111.111.111.111/1")
+
+      rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 443..443 -g httpsgroup")
+puts rsp.stdout
+
+      rsp.stderr.should eq("")
+      @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)[0][0]
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
   context "tcp without port range" do
     it "should show error message" do
       rsp = cptr("securitygroups:rules:add mysecgroup tcp")

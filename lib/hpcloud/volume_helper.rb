@@ -2,7 +2,7 @@ module HP
   module Cloud
     class VolumeHelper
       @@serverous = nil
-      attr_accessor :error_string, :error_code, :fog, :snapshot_id
+      attr_accessor :error_string, :error_code, :fog, :snapshot_id, :imageref
       attr_accessor :id, :name, :size, :type, :created, :status, :description, :servers
       attr_accessor :meta
     
@@ -60,6 +60,7 @@ module HP
              :size => @size,
              :metadata => @meta.hsh}
           hsh[:snapshot_id] = @snapshot_id unless @snapshot_id.nil?
+          hsh[:imageRef] = @imageref unless @imageref.nil?
           volume = @connection.block.volumes.create(hsh)
           if volume.nil?
             @error_string = "Error creating volume '#{@name}'"
