@@ -1,6 +1,8 @@
 
 ##Release 1.3.0 Features##
 
+This release was made available on 11/20/2012 and contain the following new features:
+
 * Requires [Fog v0.0.18](https://docs.hpcloud.com/bindings/fog/install)
 * Added the servers:rebuild command
 * Allow the user to override the mime type with the -m option during copy command
