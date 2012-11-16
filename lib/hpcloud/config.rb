@@ -16,7 +16,9 @@ module HP
                 :ssl_verify_peer,
                 :ssl_ca_path,
                 :ssl_ca_file,
-                :default_account
+                :default_account,
+                :checker_url,
+                :checker_deferment
               ]
 
       def initialize(ignore=false)
@@ -60,6 +62,8 @@ module HP
                  :ssl_ca_path => nil,
                  :ssl_ca_file => nil,
                  :default_account => 'default',
+                 :checker_url => 'https://region-a.geo-1.objects.hpcloudsvc.com:443/v1/89388614989714/documentation-downloads/unixcli/latest',
+                 :checker_deferment => 604800,
                }
       end
 
@@ -122,6 +126,9 @@ module HP
         @settings[:ssl_ca_path] ||= options[:ssl_ca_path]
         @settings[:ssl_ca_file] ||= options[:ssl_ca_file]
         @settings[:default_account] ||= options[:default_account]
+        @settings[:checker_url] ||= options[:checker_url]
+        @settings[:checker_deferment] ||= options[:checker_deferment]
+        @settings[:checker_deferment] = @settings[:checker_deferment].to_i
         @settings.delete_if { |k,v| v.nil? }
       end
 

@@ -97,7 +97,7 @@ module HP
       end
 
       def get_account
-        return @options[:account_name] || 'default'
+        return @options[:account_name] || Config.new.get(:default_account) || 'default'
       end
 
       def create_options(zone)

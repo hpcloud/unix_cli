@@ -10,3 +10,6 @@
 :ssl_verify_peer: true
 :ssl_ca_path: 'capath'
 :ssl_ca_file: 'cafile'
+:default_account: 'muse'
+:checker_url: 'https://greenday/'
+:checker_deferment: '234'

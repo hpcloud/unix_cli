@@ -13,6 +13,8 @@ describe "Connection options" do
       eopts = HP::Cloud::Config.default_options.clone
       eopts.delete_if{ |k,v| v.nil? }
       eopts.delete(:default_account)
+      eopts.delete(:checker_url)
+      eopts.delete(:checker_deferment)
       return eopts
     end
 
