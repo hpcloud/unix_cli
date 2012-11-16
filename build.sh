@@ -17,10 +17,11 @@ rm -f ${FOG_GEM}
 # Move to the release branch
 #
 BRANCH="release/v${VERSION}"
-GIT_SCRIPT=${TOP}/ucssh.sh
-echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
-chmod 755 ${GIT_SCRIPT}
-export GIT_SSH=${GIT_SCRIPT}
+#GIT_SCRIPT=${TOP}/ucssh.sh
+#echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
+#chmod 755 ${GIT_SCRIPT}
+#export GIT_SSH=${GIT_SCRIPT}
+git pull || true
 git branch -d ${BRANCH} || git branch -D ${BRANCH} || true
 git push origin :${BRANCH} || true
 git checkout -b ${BRANCH}
@@ -39,7 +40,7 @@ mv out$$ Gemfile
 # Commit, push and tag
 #
 git commit -m 'Jenkins build new release' -a || true
-git push origin remotes/origin/${BRANCH}
+git push origin ${BRANCH}
 git tag -a v${VERSION}.${BUILD_NUMBER} -m "v${VERSION}.${BUILD_NUMBER}"
 git push --tags
 
