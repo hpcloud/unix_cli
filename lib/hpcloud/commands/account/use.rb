@@ -4,9 +4,9 @@ module HP
   module Cloud
     class CLI < Thor
     
-      desc 'account:use <account_to_use>', "Overwrite the default account with specified account."
+      desc 'account:use <account_to_use>', "Set the named account to the default account."
       long_desc <<-DESC
-  Use the specified account as your default account.  This command overwrites the default account.
+  Use the specified account as your default account.  Any command run without the -a account_name option will use this account.
   
 Examples:
   hpcloud account:use useast # Set the default account to `useast`:
