@@ -4,7 +4,7 @@ TOP=$(pwd)
 export `grep VERSION lib/hpcloud/version.rb | sed -e 's/ //g' -e "s/'//g"`
 CONTAINER="documentation-downloads"
 DEST=":${CONTAINER}/unixcli/v${VERSION}/"
-FOG_GEM=${FOG_GEM:="hpfog-0.0.17.gem"}
+FOG_GEM=${FOG_GEM:="hpfog-0.0.18.gem"}
 
 #
 # Install fog
@@ -17,10 +17,12 @@ rm -f ${FOG_GEM}
 # Move to the release branch
 #
 BRANCH="release/v${VERSION}"
-GIT_SCRIPT=${TOP}/ucssh.sh
-echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
-chmod 755 ${GIT_SCRIPT}
-export GIT_SSH=${GIT_SCRIPT}
+#GIT_SCRIPT=${TOP}/ucssh.sh
+#echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
+#chmod 755 ${GIT_SCRIPT}
+#export GIT_SSH=${GIT_SCRIPT}
+git pull || true
+git remote prune origin
 git branch -d ${BRANCH} || git branch -D ${BRANCH} || true
 git push origin :${BRANCH} || true
 git checkout -b ${BRANCH}
@@ -39,7 +41,7 @@ mv out$$ Gemfile
 # Commit, push and tag
 #
 git commit -m 'Jenkins build new release' -a || true
-git push origin remotes/origin/${BRANCH}
+git push origin ${BRANCH}
 git tag -a v${VERSION}.${BUILD_NUMBER} -m "v${VERSION}.${BUILD_NUMBER}"
 git push --tags
 
