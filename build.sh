@@ -22,7 +22,7 @@ BRANCH="release/v${VERSION}"
 #chmod 755 ${GIT_SCRIPT}
 #export GIT_SSH=${GIT_SCRIPT}
 git pull || true
-git remote prune origin
+git remote prune origin || true
 git branch -d ${BRANCH} || git branch -D ${BRANCH} || true
 git push origin :${BRANCH} || true
 git checkout -b ${BRANCH}
