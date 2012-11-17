@@ -21,6 +21,7 @@ BRANCH="release/v${VERSION}"
 #echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
 #chmod 755 ${GIT_SCRIPT}
 #export GIT_SSH=${GIT_SCRIPT}
+git checkout develop || true
 git pull || true
 git remote prune origin || true
 git branch -d ${BRANCH} || git branch -D ${BRANCH} || true
