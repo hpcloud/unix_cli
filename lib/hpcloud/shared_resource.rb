@@ -82,7 +82,7 @@ module HP
 
       def read
         begin
-          @storage.get_shared_object(@fname) { |chunk|
+          @storage.get_shared_object(@fname) { |chunk, one, two|
             yield chunk
           }
         rescue Fog::Storage::HP::NotFound => e
