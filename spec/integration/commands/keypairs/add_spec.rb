@@ -37,7 +37,7 @@ describe "keypairs:add command" do
     it "should list in keypairs" do
       @key_name = 'fog-key-201'
 
-      rsp = cptr ("keypairs:add #{@key_name} -f #{@fingerprint}")
+      rsp = cptr("keypairs:add #{@key_name} -f #{@fingerprint}")
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
