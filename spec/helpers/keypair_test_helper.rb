@@ -12,7 +12,7 @@ class KeypairTestHelper
     end
     keypair = keypairs.create()
     keypair.name = name
-    keypair.public_key = File.read(Dir.home() + '/.ssh/id_rsa.pub')
+    keypair.public_key = File.read(ENV['HOME'] + '/.ssh/id_rsa.pub')
     keypair.save
     @@keypair_cache[name] = keypair
     return keypair

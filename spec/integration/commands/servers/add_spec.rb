@@ -79,7 +79,7 @@ describe "servers:add command" do
   context "when creating windows image server" do
     it "should show success message" do
       @server_name = resource_name("add5")
-      @pem_file = Dir.home + "/.ssh/id_rsa"
+      @pem_file = ENV['HOME'] + "/.ssh/id_rsa"
 
       rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_win_image_id()} -k #{@keypair_name} -p #{@pem_file}")
 
