@@ -12,7 +12,8 @@ module HP
         if users.nil? || users.empty?
           @users = nil
         else
-          @users = users.split(",")
+          @users = users
+          @users = nil if users[0].empty?
         end
 
         if @permissions == "private"

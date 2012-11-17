@@ -12,17 +12,19 @@ Examples:
   hpcloud servers:rebuild DeepThought -z az-2.region-a.geo-1    # Rebuild server `DeepThought` for availability zone `az-2.region-a.geo-1`:
       DESC
       CLI.add_common_options
-      define_method "servers:rebuild" do |name_or_id, image_name_or_id=nil|
+      define_method "servers:rebuild" do |name_or_id, *image_name_or_id|
         cli_command(options) {
           server = Servers.new.get(name_or_id, false)
           if server.is_valid?
             image_id = server.image
             unless image_name_or_id.nil?
-              image = Images.new.get(image_name_or_id, false)
-              if image.is_valid?
-                image_id = image.id
-              else
-                error image.error_string, image.error_code
+              unless image_name_or_id.empty?
+                image = Images.new.get(image_name_or_id[0], false)
+                if image.is_valid?
+                  image_id = image.id
+                else
+                  error image.error_string, image.error_code
+                end
               end
             end
             server.fog.rebuild(image_id, nil)

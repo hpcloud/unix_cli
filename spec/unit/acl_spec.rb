@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "Acl construction" do
   context "r and user" do
     it "permissions and users are set correctly" do
-      acl = Acl.new("r", "elliott@newmoon.com")
+      acl = Acl.new("r", ["elliott@newmoon.com"])
 
       acl.is_valid?.should be_true
       acl.is_public?.should be_false
@@ -16,7 +16,7 @@ describe "Acl construction" do
   end
   context "rw and user" do
     it "permissions and users are set correctly" do
-      acl = Acl.new("rw", "elliott@newmoon.com")
+      acl = Acl.new("rw", ["elliott@newmoon.com"])
 
       acl.is_valid?.should be_true
       acl.is_public?.should be_false
@@ -29,7 +29,7 @@ describe "Acl construction" do
   end
   context "w and user" do
     it "permissions and users are set correctly" do
-      acl = Acl.new("w", "elliott@newmoon.com")
+      acl = Acl.new("w", ["elliott@newmoon.com"])
 
       acl.is_valid?.should be_true
       acl.is_public?.should be_false
@@ -42,7 +42,7 @@ describe "Acl construction" do
   end
   context "private and user" do
     it "permissions and users are set correctly" do
-      acl = Acl.new("private", "elliott@newmoon.com")
+      acl = Acl.new("private", ["elliott@newmoon.com"])
 
       acl.is_valid?.should be_false
       acl.is_public?.should be_false
@@ -55,7 +55,7 @@ describe "Acl construction" do
   end
   context "public-read and user" do
     it "permissions and users are set correctly" do
-      acl = Acl.new("public-read", "elliott@newmoon.com")
+      acl = Acl.new("public-read", ["elliott@newmoon.com"])
 
       acl.is_valid?.should be_true
       acl.is_public?.should be_false
@@ -68,7 +68,7 @@ describe "Acl construction" do
   end
   context "RW and user" do
     it "permissions and users are set correctly" do
-      acl = Acl.new("RW", "elliott@newmoon.com")
+      acl = Acl.new("RW", ["elliott@newmoon.com"])
 
       acl.is_valid?.should be_true
       acl.is_public?.should be_false
@@ -81,7 +81,7 @@ describe "Acl construction" do
   end
   context "bogus and user" do
     it "error set" do
-      acl = Acl.new("bogus", "elliott@newmoon.com,edward@sharpe.com")
+      acl = Acl.new("bogus", ["elliott@newmoon.com","edward@sharpe.com"])
 
       acl.is_valid?.should be_false
       acl.is_public?.should be_false
@@ -107,7 +107,7 @@ describe "Acl construction" do
   end
   context "r for public" do
     it "error set" do
-      acl = Acl.new("r", "")
+      acl = Acl.new("r", [""])
 
       acl.is_valid?.should be_true
       acl.is_public?.should be_true
@@ -120,7 +120,7 @@ describe "Acl construction" do
   end
   context "rw for public" do
     it "error set" do
-      acl = Acl.new("rw", "")
+      acl = Acl.new("rw", [""])
 
       acl.is_valid?.should be_false
       acl.is_public?.should be_true
@@ -133,7 +133,7 @@ describe "Acl construction" do
   end
   context "w for public" do
     it "error set" do
-      acl = Acl.new("w", "")
+      acl = Acl.new("w", [""])
 
       acl.is_valid?.should be_false
       acl.is_public?.should be_true
