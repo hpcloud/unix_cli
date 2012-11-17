@@ -23,7 +23,6 @@ module HP
               unless fname.start_with?('/')
                 unless fname.start_with?('.')
                   fname = ':' + fname
-puts '****' + fname
                 end
               end
             end
