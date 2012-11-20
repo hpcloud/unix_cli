@@ -2,8 +2,6 @@ require 'hpcloud/accounts'
 require 'hpcloud/commands/account/copy'
 require 'hpcloud/commands/account/edit'
 require 'hpcloud/commands/account/remove'
-require 'hpcloud/commands/account/setup'
-require 'hpcloud/commands/account/update'
 require 'hpcloud/commands/account/use'
 require 'hpcloud/commands/account/verify'
 
