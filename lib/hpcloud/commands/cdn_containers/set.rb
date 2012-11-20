@@ -22,6 +22,7 @@ Examples:
       define_method "cdn:containers:set" do |name, attribute, value|
         cli_command(options) {
           begin
+            name = name[1..-1] if name.start_with?(":")
             Connection.instance.cdn.head_container(name)
             allowed_attributes = ['X-Ttl', 'X-Cdn-Uri', 'X-Cdn-Enabled', 'X-Log-Retention']
             if attribute && value && allowed_attributes.include?(attribute)
