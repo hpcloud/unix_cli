@@ -8,8 +8,10 @@ describe "Snapshots command" do
   end
 
   before(:all) do
-    @snap1 = VolumeTestHelper.create("cli_test_snap1")
-    @snap2= VolumeTestHelper.create("cli_test_snap2")
+    @vol1 = VolumeTestHelper.create("cli_test_snap1")
+    @vol2= VolumeTestHelper.create("cli_test_snap2")
+    @snap1 = SnapshotTestHelper.create("cli_test_snap1", @vol1)
+    @snap2= SnapshotTestHelper.create("cli_test_snap2", @vol2)
   end
 
   context "snapshots" do
