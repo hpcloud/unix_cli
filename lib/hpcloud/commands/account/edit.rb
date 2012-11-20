@@ -31,7 +31,7 @@ module HP
   
 Examples:
   hpcloud account:edit  # Edit the 'default' account settings interactively:
-  hpcloud account:edit pro auth_uri='https://127.0.0.1/' block_availability_zone='region-a' # Set the account credential authorization URI to `https://127.0.0.1\` and the block availability zone to `region-a`:
+  hpcloud account:edit pro auth_uri='https://127.0.0.1/' block_availability_zone='az-2.region-a.geo-1' # Set the account credential authorization URI to `https://127.0.0.1\` and the block availability zone to `az-2.region-a.geo-1`:
 
 Aliases: account:add, account:setup, account:update
       DESC
