@@ -15,9 +15,10 @@ Examples:
         cli_command(options) {
           names = [name] + names
           names.each { |name|
-            name = Resource.container_name_for_service(name)
+            res = ContainerResource.new(Connection.instance.storage, name)
+            name = res.container
             begin
-              if Connection.instance.storage.directories.get(name)
+              if res.get_container()
                 response = Connection.instance.cdn.put_container(name)
                 display "Added container '#{name}' to the CDN."
               else

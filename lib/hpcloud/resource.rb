@@ -21,32 +21,6 @@ module HP
         parse()
       end
 
-      def self.container_name_for_service(container_string)
-        unless container_string.index('/').nil?
-          raise Exception.new("Valid container names do not contain the '/' character: #{container_string}")
-        end
-        unless container_string.length < 257
-          raise Exception.new("Valid container names must be less than 256 characters long")
-        end
-        if container_string[0,1] == ':'
-          container_string[1..-1]
-        else
-          container_string
-        end
-      end
-    
-      # is container_name a valid virtualhost name?
-      def self.valid_virtualhost?(container_name)
-        if (1..63).include?(container_name.length)
-          if container_name =~ /^[a-z0-9-]*$/
-            if container_name[0,1] != '-' and container_name[-1,1] != '-'
-              return true 
-            end
-          end
-        end
-        false
-      end
-
       def is_valid?
         return @error_string.nil?
       end
@@ -99,7 +73,7 @@ module HP
         return @ftype == :object
       end
 
-      def parse()
+      def parse
         @container = nil
         @path = nil
         if @fname.empty?
@@ -109,6 +83,9 @@ module HP
           @container, *rest = @fname.split('/')
           @container = @container[1..-1] if @container[0,1] == ':'
           @path = rest.empty? ? '' : rest.join('/')
+          unless @container.length < 257
+            raise Exception.new("Valid container names must be less than 256 characters long")
+          end
         else
           rest = @fname.split('/')
           @path = rest.empty? ? '' : rest.join('/')
