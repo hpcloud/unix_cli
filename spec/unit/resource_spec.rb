@@ -228,3 +228,78 @@ describe "Resource construction" do
     end
   end
 end
+
+describe 'Parsing container names' do
+  
+  context "when given a normal string" do
+    it 'should return the string' do
+      Resource.container_name_for_service('my_container').should eql('my_container')
+    end
+  end
+  
+  context "when given a resource string" do
+    it 'should return container name as a simple string' do
+      Resource.container_name_for_service(':my_container').should eql('my_container')
+    end
+  end
+  
+  context "when given an object string" do
+    it 'should throw an exception' do
+      lambda {
+        Resource.container_name_for_service(':my_container/object.txt')
+      }.should raise_error(Exception) {|e|
+        e.to_s.should include("Valid container names do not contain the '/' character: :my_container/object.txt")
+      }
+    end
+  end
+  
+  context "when given too long a string" do
+    it 'should throw an exception' do
+      lambda {
+        Resource.container_name_for_service('A'*257)
+      }.should raise_error(Exception) {|e|
+        e.to_s.should include("Valid container names must be less than 256 characters long")
+      }
+    end
+  end
+  
+  context "when given super long string" do
+    it 'should throw an exception' do
+      long_container_name = 'B'*256
+      Resource.container_name_for_service(long_container_name).should eql(long_container_name)
+    end
+  end
+  
+end
+
+describe "Validating container names for virtual host" do
+  
+  it "should not allow empty strings" do
+    Resource.valid_virtualhost?('').should be_false
+  end
+  
+  it "should not allow uppercase characters" do
+    Resource.valid_virtualhost?('UPPER').should be_false
+  end
+  
+  it "should not allow funky characters" do
+    Resource.valid_virtualhost?('yøgürt').should be_false
+  end
+  
+  it "should not allow strings that start with -" do
+    Resource.valid_virtualhost?('-mycontainer').should be_false
+  end
+  
+  it "should not allow strings that end with -" do
+    Resource.valid_virtualhost?('mycontainer-').should be_false
+  end
+  
+  it "should not allow strings longer than 63 characters" do
+    Resource.valid_virtualhost?('x' * 64).should be_false
+  end
+  
+  it "should return true for valid names" do
+    Resource.valid_virtualhost?('my-bucket').should be_true
+  end
+
+end

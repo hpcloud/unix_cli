@@ -20,7 +20,7 @@ Examples:
           names = [name] + names
           names.each { |name|
             begin
-              name = Container.container_name_for_service(name)
+              name = Resource.container_name_for_service(name)
               if Connection.instance.storage.directories.get(name)
                 error "Container '#{name}' already exists.", :conflicted
               else
@@ -39,7 +39,7 @@ Examples:
       private
       
       def acceptable_name?(name, options)
-        Container.valid_virtualhost?(name) or options[:force] or yes?('Specified container name is not a valid virtualhost, continue anyway? [y/n]')
+        Resource.valid_virtualhost?(name) or options[:force] or yes?('Specified container name is not a valid virtualhost, continue anyway? [y/n]')
       end
     
     end

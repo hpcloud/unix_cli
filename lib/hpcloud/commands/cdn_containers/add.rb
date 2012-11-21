@@ -15,7 +15,7 @@ Examples:
         cli_command(options) {
           names = [name] + names
           names.each { |name|
-            name = Container.container_name_for_service(name)
+            name = Resource.container_name_for_service(name)
             begin
               if Connection.instance.storage.directories.get(name)
                 response = Connection.instance.cdn.put_container(name)
