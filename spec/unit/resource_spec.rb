@@ -247,6 +247,36 @@ describe 'Parsing container names' do
     end
   end
   
+  context "when given an object string with <" do
+    it 'should throw an exception' do
+      lambda {
+        ResourceFactory.create(@storage, ':my_container/object<txt')
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Valid object names do not contain the '<' character: :my_container/object<txt")
+      }
+    end
+  end
+  
+  context "when given an object string with >" do
+    it 'should throw an exception' do
+      lambda {
+        ResourceFactory.create(@storage, ':my_container/object>txt')
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Valid object names do not contain the '>' character: :my_container/object>txt")
+      }
+    end
+  end
+  
+  context "when given an object string with quote" do
+    it 'should throw an exception' do
+      lambda {
+        ResourceFactory.create(@storage, ':my_container/object"txt')
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Valid object names do not contain the '\"' character: :my_container/object\"txt")
+      }
+    end
+  end
+  
   context "when given an object string" do
     it 'should throw an exception' do
       lambda {
