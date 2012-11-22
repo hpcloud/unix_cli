@@ -70,7 +70,7 @@ module HP
       end
 
       def isObject()
-        return @ftype == :object
+        return @ftype == :object || @ftype == :shared_resource
       end
 
       def parse()
