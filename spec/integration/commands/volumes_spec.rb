@@ -12,25 +12,33 @@ describe "Volumes command" do
     @vol2= VolumeTestHelper.create("cli_test_vol2")
   end
 
-  describe "with avl settings from config" do
-    context "volumes" do
-      it "should report success" do
-        rsp = cptr("volumes #{@vol1.name} #{@vol2.name}")
+  context "volumes" do
+    it "should report success" do
+      rsp = cptr("volumes #{@vol1.name} #{@vol2.name}")
 
-        rsp.stderr.should eq("")
-        then_expected_table(rsp.stdout)
-        rsp.exit_status.should be_exit(:success)
-      end
+      rsp.stderr.should eq("")
+      then_expected_table(rsp.stdout)
+      rsp.exit_status.should be_exit(:success)
     end
+  end
 
-    context "volumes:list" do
-      it "should report success" do
-        rsp = cptr("volumes:list #{@vol1.name} #{@vol2.name}")
+  context "volumes:list" do
+    it "should report success" do
+      rsp = cptr("volumes:list #{@vol1.name} #{@vol2.name}")
 
-        rsp.stderr.should eq("")
-        then_expected_table(rsp.stdout)
-        rsp.exit_status.should be_exit(:success)
-      end
+      rsp.stderr.should eq("")
+      then_expected_table(rsp.stdout)
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
+  context "volumes --bootable" do
+    it "should report success" do
+      rsp = cptr("volumes --bootable")
+
+      rsp.stderr.should eq("")
+      then_expected_table(rsp.stdout)
+      rsp.exit_status.should be_exit(:success)
     end
   end
 
