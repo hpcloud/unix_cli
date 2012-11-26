@@ -20,9 +20,9 @@ describe "SharedResource get_size" do
     @file3.stub(:key).and_return("")
     @file3.stub(:content_length).and_return(2)
     @files = double("files")
-    @files.stub(:get).with("/subdir/").and_return(@file0)
-    @files.stub(:get).with("/subdir/whatever.txt").and_return(@file1)
-    @files.stub(:get).with("/foo.txt").and_return(@file2)
+    @files.stub(:get).with("subdir/").and_return(@file0)
+    @files.stub(:get).with("subdir/whatever.txt").and_return(@file1)
+    @files.stub(:get).with("foo.txt").and_return(@file2)
     @files.stub(:each).and_yield(@file1).and_yield(@file2)
     @directory = double("directory")
     @directory.stub(:files).and_return(@files)
@@ -51,7 +51,7 @@ describe "SharedResource get_size" do
       source = double("source")
       source.stub(:isMulti).and_return(true)
       to = ResourceFactory.create(@storage, @file_name0)
-      to.path.should eq("/subdir/")
+      to.path.should eq("subdir/")
       to.ftype.should eq(:shared_directory)
 
       to.valid_destination(source).should be_true

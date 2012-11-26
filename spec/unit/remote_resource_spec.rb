@@ -602,11 +602,11 @@ describe "Remote resource grant" do
   context "grant failure" do
     it "returns false and sets error" do
       @directory.stub(:grant).and_raise(Exception.new("Grant failure"))
-      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container")
 
       res.grant(@acl).should be_false
 
-      res.error_string.should eq("Exception granting permissions for ':container/files/river.txt': Grant failure")
+      res.error_string.should eq("Exception granting permissions for ':container': Grant failure")
       res.error_code.should eq(:general_error)
     end
   end
@@ -614,18 +614,18 @@ describe "Remote resource grant" do
   context "save failure" do
     it "returns false and sets error" do
       @directory.stub(:save).and_raise(Exception.new("Save failure"))
-      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container")
 
       res.grant(@acl).should be_false
 
-      res.error_string.should eq("Exception granting permissions for ':container/files/river.txt': Save failure")
+      res.error_string.should eq("Exception granting permissions for ':container': Save failure")
       res.error_code.should eq(:general_error)
     end
   end
 
   context "grant good" do
     it "returns true and no error" do
-      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container")
 
       res.grant(@acl).should be_true
 
@@ -666,7 +666,7 @@ describe "Remote resource revoke" do
   context "revoke for container not found" do
     it "returns false and sets error" do
       @directories.stub(:get).and_return(nil)
-      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container")
 
       res.revoke(@acl).should be_false
 
@@ -675,26 +675,25 @@ describe "Remote resource revoke" do
     end
   end
 
-  context "revoke for file not found" do
+  context "revoke for file" do
     it "returns false and sets error" do
-      @files.stub(:get).and_return(nil)
       res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.revoke(@acl).should be_false
 
-      res.error_string.should eq("Cannot find object ':container/files/river.txt'.")
-      res.error_code.should eq(:not_found)
+      res.error_string.should eq("ACLs are only supported on containers (e.g. :container).")
+      res.error_code.should eq(:not_supported)
     end
   end
 
   context "revoke failure" do
     it "returns false and sets error" do
       @directory.stub(:revoke).and_raise(Exception.new("Grant failure"))
-      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container")
 
       res.revoke(@acl).should be_false
 
-      res.error_string.should eq("Exception revoking permissions for ':container/files/river.txt': Grant failure")
+      res.error_string.should eq("Exception revoking permissions for ':container': Grant failure")
       res.error_code.should eq(:general_error)
     end
   end
@@ -702,18 +701,18 @@ describe "Remote resource revoke" do
   context "save failure" do
     it "returns false and sets error" do
       @directory.stub(:save).and_raise(Exception.new("Save failure"))
-      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container")
 
       res.revoke(@acl).should be_false
 
-      res.error_string.should eq("Exception revoking permissions for ':container/files/river.txt': Save failure")
+      res.error_string.should eq("Exception revoking permissions for ':container': Save failure")
       res.error_code.should eq(:general_error)
     end
   end
 
   context "revoke good" do
     it "returns true and no error" do
-      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container")
 
       res.revoke(@acl).should be_true
 
