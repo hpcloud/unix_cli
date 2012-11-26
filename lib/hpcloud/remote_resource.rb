@@ -176,7 +176,9 @@ module HP
           if isObject()
             @destination = @path
           else
-            @destination = @path + '/' + name
+            @destination = @path
+            @destination += '/' unless @destination.end_with?('/')
+            @destination += name
           end
         end
         return true
