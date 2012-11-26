@@ -6,14 +6,14 @@ module HP
 
       map 'alias:set' => 'alias:grant'
 
-      desc 'acl:grant <resource> <permissions> [user ...]', "Grant the specified permissions."
+      desc 'acl:grant <container> <permissions> [user ...]', "Grant the specified permissions."
       long_desc <<-DESC
-  Set the Access Control List (ACL) values for the specified containers. The supported ACL settings are private or public-read. Optionally, you can select a specific availability zone.
+  Set the Access Control List (ACL) values for the specified container. The supported permissions are r for read, w for write, or rw for read and write. You may specify one or more user fo the given permission.  If no user is specified, the permissions are for the public.  Public write permissions are not allowed.
 
 Examples:
-  hpcloud acl:grant :my_container public-read    # Set the 'my_container' ACL value to public-read.
-  hpcloud acl:grant :my_container rw bob@example.com sally@example.com # Set the 'my_container' readable and writable by bob and sally
-  hpcloud acl:grant :my_container public-read -z region-a.geo-1  # Set 'my_container' ACL to public-read for an availability zone.
+  hpcloud acl:grant :my_container r    # Allow anyone to read 'my_container'
+  hpcloud acl:grant :my_container rw bob@example.com sally@example.com # Allow Bob and Sally to read and write 'my_container'
+  hpcloud acl:grant :my_container r billy@example.com # Give Billy read permissions to 'my_container'
 
 Aliases: acl:set
       DESC

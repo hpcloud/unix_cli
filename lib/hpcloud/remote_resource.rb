@@ -304,6 +304,12 @@ module HP
           return false if get_container == false
           return false if get_files == false
 
+          unless is_container?
+            @error_string = "ACLs are only supported on containers (e.g. :container)."
+            @error_code = :not_supported
+            return false
+          end
+
           @directory.grant(acl.permissions, acl.users)
           @directory.save
           return true
@@ -319,6 +325,12 @@ module HP
           return false if is_valid? == false
           return false if get_container == false
           return false if get_files == false
+
+          unless is_container?
+            @error_string = "ACLs are only supported on containers (e.g. :container)."
+            @error_code = :not_supported
+            return false
+          end
 
           @directory.revoke(acl.permissions, acl.users)
           @directory.save
