@@ -4,7 +4,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      map 'alias:set' => 'alias:grant'
+      map 'acl:set' => 'acl:grant'
 
       desc 'acl:grant <container> <permissions> [user ...]', "Grant the specified permissions."
       long_desc <<-DESC
