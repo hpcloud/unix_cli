@@ -78,7 +78,7 @@ describe "volumes:add command" do
       image_id = AccountsHelper.get_image_id()
       @volume_name = resource_name("add4")
 
-      rsp = cptr("volumes:add #{@volume_name} -i #{image_id}")
+      rsp = cptr("volumes:add #{@volume_name} 10 -i #{image_id}")
 
       rsp.stderr.should eq("")
       @new_volume_id = rsp.stdout.scan(/'([^']+)/)[2][0]
