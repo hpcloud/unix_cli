@@ -7,7 +7,8 @@ LINES=24;
 export COLUMNS LINES;
 REFERENCE=reference.txt
 
-function courierizer { echo "$1" | sed -e "s,<\([^>]*\)>,<i>\1</i>,g" -e "s,'\([^']*\)',<font face='courier'>\1</font>,g"; }
+#function courierizer { echo "$1" | sed -e "s,<\([^>]*\)>,<i>\1</i>,g" -e "s,'\([^']*\)',<font face='courier'>\1</font>,g"; }
+function courierizer { echo "$1" | sed -e "s,'\([^']*\)',\`\1\`,g"; }
 function dtizer {
   echo $1 | sed -e "s,\(-[^#]*\) # \(.*\)$,<dt><b>\1</b></dt><dd>\2</dd>,"
 }
@@ -64,8 +65,8 @@ do
         else
           if [ "${LINE}" ]
           then
-            LINE=$(echo ${LINE} | sed -e 's/\[/\[ITALICS_START/g' -e 's/]/ITALICS_END]/g' -e 's/</\&lt;ITALICS_START/g' -e 's,>,ITALICS_END\&gt;,g' -e 's/ITALICS_START/<i>/g' -e 's,ITALICS_END,</i>,g' )
-            echo -ne "<font face=\"Courier\">${LINE}</font>"
+            #LINE=$(echo ${LINE} | sed -e 's/\[/\[ITALICS_START/g' -e 's/]/ITALICS_END]/g' -e 's/</\&lt;ITALICS_START/g' -e 's,>,ITALICS_END\&gt;,g' -e 's/ITALICS_START/<i>/g' -e 's,ITALICS_END,</i>,g' )
+            echo -ne "\`${LINE}\`"
           fi
         fi
       fi
@@ -109,14 +110,14 @@ do
           then
             echo -ne "    ${EXAMPLE}\n"
           else
-            courierizer "${COMMENT}"
+            echo "${COMMENT}"
             echo -ne "\n    ${EXAMPLE}\n\n"
           fi
         fi
       fi
       ;;
     aliases)
-      echo "<font face='courier'>${LINE}</font>"
+      echo "\`${LINE}\`"
       ;;
     esac
   done
@@ -124,6 +125,6 @@ done >>${REFERENCE}
 
 CONTAINER="documentation-downloads"
 DEST=":${CONTAINER}/unixcli/"
-hpcloud copy -a deploy ${REFERENCE} $DEST
-hpcloud location -a deploy ${DEST}${REFERENCE}
-rm -f ${REFERENCE}
+#hpcloud copy -a deploy ${REFERENCE} $DEST
+#hpcloud location -a deploy ${DEST}${REFERENCE}
+#rm -f ${REFERENCE}
