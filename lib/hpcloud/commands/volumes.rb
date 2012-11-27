@@ -22,12 +22,18 @@ Examples:
 
 Aliases: volumes:list
       DESC
+      method_option :bootable, :type => :boolean, :aliases => '-b',
+                    :default => false, :desc => 'List the bootable volumes.'
       CLI.add_common_options
       def volumes(*arguments)
         cli_command(options) {
-          volumes = Volumes.new
+          volumes = Volumes.new(options[:bootable])
           if volumes.empty?
-            display "You currently have no block volume devices, use `#{selfname} volumes:add <name>` to create one."
+            bootable = ""
+            if options[:bootable]
+              bootable = "bootable "
+            end
+            display "You currently have no #{bootable}block volume devices, use `#{selfname} volumes:add <name>` to create one."
           else
             hsh = volumes.get_hash(arguments)
             if hsh.empty?

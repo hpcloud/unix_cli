@@ -201,7 +201,7 @@ describe "Resource construction" do
       file.isRemote().should be_true
       file.isDirectory().should be_false
       file.isFile().should be_false
-      file.isObject().should be_false
+      file.isObject().should be_true
       file.is_valid?.should be_true
       file.is_shared?.should be_true
     end
@@ -222,7 +222,7 @@ describe "Resource construction" do
       file.isRemote().should be_true
       file.isDirectory().should be_false
       file.isFile().should be_false
-      file.isObject().should be_false
+      file.isObject().should be_true
       file.is_valid?.should be_true
       file.is_shared?.should be_true
     end

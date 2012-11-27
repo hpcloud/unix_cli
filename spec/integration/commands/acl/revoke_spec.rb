@@ -8,9 +8,19 @@ describe "acl:revoke command" do
     @hp_svc.put_object('revoker', 'foo.txt', read_file('foo.txt'))
   end
 
+  context "when setting object" do
+    it "should exit with message about not supported" do
+      rsp = cptr("acl:revoke :revoker/foo.txt r")
+
+      rsp.stderr.should eq("ACLs are only supported on containers (e.g. :container).\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_supported)
+    end
+  end
+
   context "when revoke private" do
     it "should exit with message about not supported" do
-      rsp = cptr("acl:revoke :foo/foo private")
+      rsp = cptr("acl:revoke :foo private")
 
       rsp.stderr.should eq("Use the acl:revoke command to revoke public read permissions\n")
       rsp.stdout.should eq("")
@@ -30,7 +40,7 @@ describe "acl:revoke command" do
 
   context "when revoke write public" do
     it "should exit with message about not supported" do
-      rsp = cptr("acl:revoke :foo/foo rw")
+      rsp = cptr("acl:revoke :foo rw")
 
       rsp.stderr.should eq("You may not make an object writable by everyone\n")
       rsp.stdout.should eq("")
@@ -40,7 +50,7 @@ describe "acl:revoke command" do
 
   context "when revoke local" do
     it "should exit with message about not supported" do
-      rsp = cptr("acl:revoke :foo/foo w")
+      rsp = cptr("acl:revoke :foo w")
 
       rsp.stderr.should eq("You may not make an object writable by everyone\n")
       rsp.stdout.should eq("")
@@ -73,13 +83,13 @@ describe "acl:revoke command" do
 
   context "when revoke the ACL for an object" do
     it "should report success" do
-      rsp = cptr("acl:grant :revoker/foo.txt r")
+      rsp = cptr("acl:grant :revoker r")
       rsp.stderr.should eq("")
 
-      rsp = cptr("acl:revoke :revoker/foo.txt public-read")
+      rsp = cptr("acl:revoke :revoker public-read")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Revoked public-read from :revoker/foo.txt\n")
+      rsp.stdout.should eq("Revoked public-read from :revoker\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
@@ -87,20 +97,20 @@ describe "acl:revoke command" do
   context "when revoke the ACL for an object" do
     it "should report success" do
       @username = AccountsHelper.get_username('secondary')
-      rsp = cptr("acl:grant :revoker/foo.txt rw #{@username}")
+      rsp = cptr("acl:grant :revoker rw #{@username}")
       rsp.stderr.should eq("")
 
-      rsp = cptr("acl:revoke :revoker/foo.txt rw #{@username}")
+      rsp = cptr("acl:revoke :revoker rw #{@username}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Revoked rw for #{@username} from :revoker/foo.txt\n")
+      rsp.stdout.should eq("Revoked rw for #{@username} from :revoker\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
 
   context "acl:revoke with valid avl" do
     it "should report success" do
-      rsp = cptr("acl:grant :revoker/foo.txt r -z region-a.geo-1")
+      rsp = cptr("acl:grant :revoker r -z region-a.geo-1")
       rsp.stderr.should eq("")
 
       rsp = cptr('acl:revoke :revoker r -z region-a.geo-1')

@@ -2,9 +2,9 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc 'acl:revoke <resource> <permissions> [user ...]', "Revoke the specified permissions."
+      desc 'acl:revoke <container> <permissions> [user ...]', "Revoke the specified permissions."
       long_desc <<-DESC
-  Revoke the Access Control List (ACL) values from the specified containers. The supported ACL settings are r, rw, and w. If no user is specified, it is assumed the ACL is public.  Setting a container to public write (rw or w) is not supported.
+  Revoke the permissions from the specified containers. The supported access control list (ACL) settings are r, rw, and w. If no user is specified, it is assumed the ACL is public.
 
 Examples:
   hpcloud acl:revoke :my_container public-read    # Revoke public read from 'my_container'

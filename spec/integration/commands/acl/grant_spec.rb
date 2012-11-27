@@ -8,9 +8,19 @@ describe "acl:grant command" do
     @hp_svc.put_object('acl_container', 'foo.txt', read_file('foo.txt'))
   end
 
+  context "when setting object" do
+    it "should exit with message about not supported" do
+      rsp = cptr("acl:grant :acl_container/foo.txt r")
+
+      rsp.stderr.should eq("ACLs are only supported on containers (e.g. :container).\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:not_supported)
+    end
+  end
+
   context "when setting private" do
     it "should exit with message about not supported" do
-      rsp = cptr("acl:grant :foo/foo private")
+      rsp = cptr("acl:grant :foo private")
 
       rsp.stderr.should eq("Use the acl:revoke command to revoke public read permissions\n")
       rsp.stdout.should eq("")
@@ -30,7 +40,7 @@ describe "acl:grant command" do
 
   context "when setting write public" do
     it "should exit with message about not supported" do
-      rsp = cptr("acl:grant :foo/foo rw")
+      rsp = cptr("acl:grant :foo rw")
 
       rsp.stderr.should eq("You may not make an object writable by everyone\n")
       rsp.stdout.should eq("")
@@ -40,7 +50,7 @@ describe "acl:grant command" do
 
   context "when setting local" do
     it "should exit with message about not supported" do
-      rsp = cptr("acl:grant :foo/foo w")
+      rsp = cptr("acl:grant :foo w")
 
       rsp.stderr.should eq("You may not make an object writable by everyone\n")
       rsp.stdout.should eq("")
@@ -70,10 +80,10 @@ describe "acl:grant command" do
 
   context "when setting the ACL for an object" do
     it "should report success" do
-      rsp = cptr("acl:grant :acl_container/foo.txt public-read")
+      rsp = cptr("acl:grant :acl_container public-read")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("ACL for :acl_container/foo.txt updated to public-read.\n")
+      rsp.stdout.should eq("ACL for :acl_container updated to public-read.\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
@@ -81,10 +91,10 @@ describe "acl:grant command" do
   context "when setting the ACL for an object" do
     it "should report success" do
       username = AccountsHelper.get_username('secondary')
-      rsp = cptr("acl:grant :acl_container/foo.txt rw #{username}")
+      rsp = cptr("acl:grant :acl_container rw #{username}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("ACL for :acl_container/foo.txt updated to rw for #{username}.\n")
+      rsp.stdout.should eq("ACL for :acl_container updated to rw for #{username}.\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
