@@ -1,26 +1,29 @@
-
 ##Release 1.3.0 Features##
 
-This release was made available on 11/20/2012 and contain the following new features:
+This release was made available on 11/20/2012 and contains the following new features:
 
-* Requires [Fog v0.0.18](https://docs.hpcloud.com/bindings/fog/install)
-* Added the servers:rebuild command
-* Allow the user to override the mime type with the -m option during copy command
-* Added option to print the SSL and non-SSL URLs for CDN objects with the cdn:containers:location command and the -s option
-* CDN add and remove now take multiple arguments
-* Massive updates to the help text
-* Allow the default account to be set to any account that is configured
-* Support for cross tenant ACLs is now supported with the acl:grant and acl:revoke commands
-* Support for bootable volumes has been added with the volumes:add to create the bootable volumes and servers:add to crerate a server from the volume.
+* Command `servers:rebuild` added
+* Option `-m` added to the `copy` command to allow you to override the mime type
+* Option `-s` added to the `cdn:containers:location` command to print the SSL and non-SSL URLs for CDN objects
+* Commands `cdn:containers:add` and `cdn:containers:remove` now accept multiple arguments
+* CLI help text significantly updated
+* Default account can be set to any configured account
+* Commands `acl:grant` and `acl:revoke` added to provide Support for cross tenant ACLs
+* Command `volumes:add` added to provide support for bootable volume creation
+* Command `servers:add` added to provide support for creating a server from a bootable volume
+
+**Note**: This release of the UNIX CLI requires the [Ruby Fog v0.0.18](https://docs.hpcloud.com/bindings/fog/install) binding.
 
 ###Known Issues###
 
-* The syntax of the servers:add command has changed.  The image or volume now must be passed in with a -i or -v option
-* The output of the acl command is now a table
+* The syntax of the `servers:add` command has changed; you must pass in an image or volume with the `-i` or `-v` option, respectively
+* Command `acl` displays data as a table
+
 
 ##Release 1.2.0 Features##
 
-* Requires [Fog v0.0.17](https://docs.hpcloud.com/bindings/fog/install)
+This release was made available on 10/22/2012 and contains the following new features:
+
 * Support for adding Windows servers from existing windows images 
 * Support for creating and removing server image snapshots
 * Support for creating a [Temporary URL](https://docs.hpcloud.com/cli/unix/object-storage#TmpurlCommand) for a file or object for sharing purposes
@@ -31,12 +34,17 @@ This release was made available on 11/20/2012 and contain the following new feat
   - security groups
   - servers
   - object store commands
+  
+**Note**: This release of the UNIX CLI requires the [Ruby Fog v0.0.17](https://docs.hpcloud.com/bindings/fog/install) binding.
 
 ###Known Issues###
 
-* None
+* None for this release.
+
 
 ##Release 1.1.0 Features##
+
+This release contains the following new features:
 
 * The following additions and modifications to the `config:list` command to support multiple account files:
   - `account:list` command that lists accounts and shows account settings
@@ -51,11 +59,15 @@ This release was made available on 11/20/2012 and contain the following new feat
 * Fixed mime type detection error, which could cause a non-text file (for example a `.js` file) to be incorrectly identified as text file, has been fixed
 * Copy/move operation now functional in Ruby v1.8.7
 
+
 ###Known Issues###
 
-* None
+* None for this release.
+
 
 ##Release 1.0.1 Features##
+
+This release contains the following new features:
 
 * Support for listing, adding, attaching, detaching and removing block volumes
 * Progress bar added for file copy local to remote and remote to local
@@ -69,7 +81,10 @@ This release was made available on 11/20/2012 and contain the following new feat
 
 * Copy/move operation not functional in Ruby v1.8.7
 
+
 ##Release 0.0.15 Features##
+
+This release contains the following new features:
 
 * Optional switch added to all commands to specify availability zone
 * New command config added to list the existing configuration settings
@@ -79,4 +94,4 @@ This release was made available on 11/20/2012 and contain the following new feat
 
 ###Known Issues###
 
-* None
+* None for this release.
