@@ -167,7 +167,7 @@ describe "Acl command (viewing acls)" do
 
   describe "when viewing the ACL for a public" do
     before(:all) do
-      @default_username = AccountsHelper.get_username('default')
+      @default_username = AccountsHelper.get_username('hp')
       @username = AccountsHelper.get_username('secondary')
       @dir = @hp_svc.directories.get('acl_container')
       @dir.public = false

@@ -4,7 +4,7 @@ module HP
   module Cloud
     class CLI < Thor
     
-      desc 'account:verify <account_to_verify>', "Set the named account to the default account."
+      desc 'account:verify <account_to_verify>', "Verify the credentials of the specified account."
       long_desc <<-DESC
   Verify the credentials of an account.
   

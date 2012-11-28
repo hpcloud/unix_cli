@@ -46,7 +46,7 @@ module HP
       
       def self.default_config
         return { :default_auth_uri => 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/',
-                 :default_account => 'default',
+                 :default_account => 'hp',
                  :block_availability_zone => 'az-1.region-a.geo-1',
                  :storage_availability_zone => 'region-a.geo-1',
                  :cdn_availability_zone => 'region-a.geo-1',
@@ -61,7 +61,7 @@ module HP
                  :ssl_verify_peer => true,
                  :ssl_ca_path => nil,
                  :ssl_ca_file => nil,
-                 :default_account => 'default',
+                 :default_account => 'hp',
                  :checker_url => 'https://region-a.geo-1.objects.hpcloudsvc.com:443/v1/89388614989714/documentation-downloads/unixcli/latest',
                  :checker_deferment => 604800,
                }

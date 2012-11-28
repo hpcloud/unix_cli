@@ -11,7 +11,7 @@ describe "account:edit" do
       input = ['foo','bar','https://127.0.0.1/','111111','A','B','C']
       rsp = cptr('account:setup --no-validate', input)
       rsp.stdout.should eq(
-        "****** Setup your HP Cloud Services default account ******\n" +
+        "****** Setup your HP Cloud Services hp account ******\n" +
         "Access Key Id: [] " +
         "Secret Key: [] " +
         "Auth Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] " +
@@ -28,7 +28,7 @@ describe "account:edit" do
       input = ['oof','rab','https://127.0.0.2/','222222','az-1.region-b.geo-1','region-b.geo-1','az-1.region-b.geo-1']
       rsp = cptr('account:setup', input)
       rsp.stdout.should eq(
-        "****** Setup your HP Cloud Services default account ******\n" +
+        "****** Setup your HP Cloud Services hp account ******\n" +
         "Access Key Id: [foo] " +
         "Secret Key: [bar] " +
         "Auth Uri: [https://127.0.0.1/] " +
