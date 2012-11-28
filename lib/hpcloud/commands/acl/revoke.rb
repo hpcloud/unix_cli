@@ -4,7 +4,7 @@ module HP
 
       desc 'acl:revoke <container> <permissions> [user ...]', "Revoke the specified permissions."
       long_desc <<-DESC
-  Revoke the permissions from the specified containers. The supported access control list (ACL) settings are `r`, `rw`, and `w`. If no user is specified, it is assumed the ACL is public.
+  Revoke the access control list (ACL) values from the specified container. The supported permissions are `r` (read), `w` (write), or `rw` (read and write). You may specify one or more user fo the given permission.  If you do not specify a user, the permissions are set to public.  Public write permissions are not allowed.
 
 Examples:
   hpcloud acl:revoke :my_container public-read    # Revoke public read from 'my_container'
