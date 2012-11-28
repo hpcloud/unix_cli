@@ -16,7 +16,7 @@ Aliases: cdn:containers:loc
       DESC
       method_option :ssl, :default => false,
                     :type => :boolean, :aliases => '-s',
-                    :desc => 'Print the ssl version of the url.'
+                    :desc => 'Print the SSL version of the URL.'
       CLI.add_common_options
       define_method "cdn:containers:location" do |name, *names|
         cli_command(options) {
