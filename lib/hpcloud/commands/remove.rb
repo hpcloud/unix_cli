@@ -11,7 +11,7 @@ module HP
 Examples:
   hpcloud remove :tainer/my.txt :tainer/other.txt # Delete objects 'my.txt' and 'other.txt' from container `tainer`:
   hpcloud remove :my_container                    # Delete container 'my_container':
-  hpcloud remove :my_container -z region-a.geo-1  # Delete container 'my_container` in availability zone `region-a.geo-1`:
+  hpcloud remove :my_container -z region-a.geo-1  # Delete container 'my_container' in availability zone `region-a.geo-1`:
 
 Aliases: rm, delete, destroy, del
       DESC
