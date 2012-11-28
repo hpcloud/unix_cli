@@ -514,11 +514,21 @@ describe "temp url" do
 
   context "tempurl succeeds" do
     it "return true" do
-      @file.should_receive(:temp_signed_url).and_return("http://woot.com/")
+      @file.should_receive(:temp_signed_url).with(1212, "GET").and_return("http://woot.com/")
 
       res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.tempurl(1212).should eq("http://woot.com/")
+    end
+  end
+
+  context "tempurl put" do
+    it "return true" do
+      @file.should_receive(:temp_signed_url).with(3333, "PUT").and_return("http://update.com/")
+
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
+
+      res.tempurl(3333, true).should eq("http://update.com/")
     end
   end
 

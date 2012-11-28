@@ -266,7 +266,7 @@ module HP
         return true
       end
 
-      def tempurl(period)
+      def tempurl(period, for_update=false)
         begin
           period = 172800 if period.nil?
           @head = container_head()
@@ -285,6 +285,7 @@ module HP
              @error_code = :not_found
              return nil
           end
+          return file.temp_signed_url(period, "PUT") if (for_update)
           return file.temp_signed_url(period, "GET")
         rescue Excon::Errors::Forbidden => error
           @error_string = "Permission denied for '#{@fname}."
