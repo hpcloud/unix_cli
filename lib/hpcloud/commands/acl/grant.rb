@@ -8,7 +8,7 @@ module HP
 
       desc 'acl:grant <container> <permissions> [user ...]', "Grant the specified permissions."
       long_desc <<-DESC
-  Set the Access Control List (ACL) values for the specified container. The supported permissions are r for read, w for write, or rw for read and write. You may specify one or more user for the given permission.  If no user is specified, the permissions are for the public, but public write permissions are not allowed.
+  Set the access control list (ACL) values for the specified container. The supported permissions are `r` (read), `w` (write), or `rw` (read and write). You may specify one or more user for the given permission.  If you do not specify a user, the permissions are set to public.  Public write permissions are not allowed.
 
 Examples:
   hpcloud acl:grant :my_container r    # Allow anyone to read 'my_container'

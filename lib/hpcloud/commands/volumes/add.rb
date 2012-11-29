@@ -18,13 +18,13 @@ Examples:
                     :desc => 'Description of the volume.'
       method_option :metadata,
                     :type => :string, :aliases => '-m',
-                    :desc => 'Set the meta data.'
+                    :desc => 'Set the metadata.'
       method_option :snapshot,
                     :type => :string, :aliases => '-s',
-                    :desc => 'Create volume from the specified snapshot.'
+                    :desc => 'Create a volume from the specified snapshot.'
       method_option :image,
                     :type => :string, :aliases => '-i',
-                    :desc => 'Create volume from the specified image.'
+                    :desc => 'Create a volume from the specified image.'
       CLI.add_common_options
       define_method "volumes:add" do |name, *volume_size|
         cli_command(options) {

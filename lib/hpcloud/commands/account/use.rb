@@ -6,7 +6,7 @@ module HP
     
       desc 'account:use <account_to_use>', "Set the named account to the default account."
       long_desc <<-DESC
-  Use the specified account as your default account.  Any command run without the -a account_name option will use this account.
+  Use the specified account as your default account.  Any command executed without the `-a` account_name option uses this account.
   
 Examples:
   hpcloud account:use useast # Set the default account to `useast`:
