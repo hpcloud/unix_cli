@@ -32,11 +32,11 @@ Examples:
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'
       CLI.add_common_options
-      define_method "servers:add" do |name, flavor|
+      define_method "servers:add" do |name, *flavor|
         cli_command(options) {
           srv = HP::Cloud::ServerHelper.new(Connection.instance.compute)
           srv.name = name
-          srv.set_flavor(flavor)
+          srv.set_flavor(flavor.first) unless flavor.first.nil?
           srv.set_image(options[:image])
           srv.set_volume(options[:volume])
           srv.set_keypair(options[:key_name])
