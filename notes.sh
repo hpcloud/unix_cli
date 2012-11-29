@@ -15,6 +15,7 @@ echo "These are the release notes for the HP Cloud services UNIX CLI.  The curre
 echo >>${NOTES}
 toc | grep '##Release' | sed -e 's/^##/* [/' -e 's/## /]/' -e 's/{/(/' -e 's/\}/)/' >>${NOTES}
 toc >>${NOTES}
+echo >>${NOTES}
 
 CONTAINER="documentation-downloads"
 DEST=":${CONTAINER}/unixcli/"
