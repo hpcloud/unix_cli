@@ -22,4 +22,3 @@ DEST=":${CONTAINER}/unixcli/"
 cat ${NOTES}
 hpcloud copy -a deploy ${NOTES} $DEST
 hpcloud location -a deploy ${DEST}${NOTES}
-rm -f ${NOTES}

@@ -125,6 +125,5 @@ done >>${REFERENCE}
 
 CONTAINER="documentation-downloads"
 DEST=":${CONTAINER}/unixcli/"
-#hpcloud copy -a deploy ${REFERENCE} $DEST
-#hpcloud location -a deploy ${DEST}${REFERENCE}
-#rm -f ${REFERENCE}
+hpcloud copy -a deploy ${REFERENCE} $DEST
+hpcloud location -a deploy ${DEST}${REFERENCE}
