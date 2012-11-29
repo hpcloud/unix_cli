@@ -40,3 +40,4 @@ permalink: /cli/unix/reference/
 cat ${REFERENCE} >>${REFERENCEMD}
 git commit -m 'Jenkins updating Unix CLI release notes and reference' -a
 git push origin develop
+rm -f ${REFERENCEMD} ${NOTES}
