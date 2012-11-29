@@ -20,6 +20,7 @@ Aliases: cdn:containers:rm, cdn:containers:delete, cdn:containers:del
           names = [name] + names
           names.each { |name|
             begin
+              name = name[1..-1] if name.start_with?(":")
               Connection.instance.cdn.delete_container(name)
               display "Removed container '#{name}' from the CDN."
             rescue Excon::Errors::NotFound, Fog::CDN::HP::NotFound

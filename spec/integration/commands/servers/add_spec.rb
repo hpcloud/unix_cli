@@ -9,6 +9,27 @@ describe "servers:add command" do
     KeypairTestHelper.create(@keypair_name)
   end
 
+  context "when creating server with name nearly nothing" do
+    it "should show success message" do
+      @server_name = resource_name("add0")
+
+      rsp = cptr("servers:add #{@server_name} -k #{@keypair_name}")
+
+      rsp.stderr.should eq("")
+      @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
+      rsp.stdout.should eq("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
+      rsp.exit_status.should be_exit(:success)
+      server = Servers.new.get(@server_name)
+      server.is_valid?.should be_true
+      server.flavor.should eq("#{AccountsHelper.get_flavor_id()}")
+      server.image.should eq("#{AccountsHelper.get_image_id()}")
+    end
+
+    after(:each) do
+      cptr("servers:remove #{@server_name}")
+    end
+  end
+
   context "when creating server with name, image and flavor (no security group)" do
     it "should show success message" do
       @server_name = resource_name("add1")
