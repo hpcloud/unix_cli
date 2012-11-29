@@ -33,7 +33,6 @@ require 'hpcloud/volume_helper'
 require 'hpcloud/volume_attachment'
 require 'hpcloud/volume_attachments'
 require 'hpcloud/error_response'
-require 'hpcloud/container'
 
 require 'hpcloud/cli'
 

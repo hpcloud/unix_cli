@@ -1,4 +1,5 @@
 require 'hpcloud/resource.rb'
+require 'hpcloud/container_resource.rb'
 require 'hpcloud/local_resource.rb'
 require 'hpcloud/remote_resource.rb'
 require 'hpcloud/shared_resource.rb'
@@ -33,14 +34,15 @@ module HP
 
       def self.create_any(storage, fname)
         ftype = detect_type(fname)
-        if LOCAL_TYPES.include?(ftype)
+        case ftype
+        when :directory, :file
           return LocalResource.new(storage, fname)
-        end
-        if ftype == :object_store
+        when :object_store
           return ObjectStore.new(storage, fname)
-        end
-        if ftype == :shared_resource || ftype == :shared_directory
+        when :shared_resource, :shared_directory
           return SharedResource.new(storage, fname)
+        when :container
+          return ContainerResource.new(storage, fname)
         end
         return RemoteResource.new(storage, fname)
       end

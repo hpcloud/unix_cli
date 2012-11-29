@@ -2,6 +2,20 @@ module HP
   module Cloud
     class RemoteResource < Resource
 
+      def parse
+        super
+        
+        unless @fname.index('<').nil?
+          raise Exception.new("Valid object names do not contain the '<' character: #{@fname}")
+        end
+        unless @fname.index('>').nil?
+          raise Exception.new("Valid object names do not contain the '>' character: #{@fname}")
+        end
+        unless @fname.index('"').nil?
+          raise Exception.new("Valid object names do not contain the '\"' character: #{@fname}")
+        end
+      end
+
       def get_size()
         begin
           head = @storage.head_object(@container, @path)

@@ -20,11 +20,12 @@ Examples:
           names = [name] + names
           names.each { |name|
             begin
-              name = Container.container_name_for_service(name)
-              if Connection.instance.storage.directories.get(name)
+              res = ContainerResource.new(Connection.instance.storage, name)
+              name = res.container
+              if res.get_container()
                 error "Container '#{name}' already exists.", :conflicted
               else
-                if acceptable_name?(name, options)
+                if acceptable_name?(res, options)
                   Connection.instance.storage.directories.create(:key => name)
                   display "Created container '#{name}'."
                 end
@@ -38,8 +39,8 @@ Examples:
       
       private
       
-      def acceptable_name?(name, options)
-        Container.valid_virtualhost?(name) or options[:force] or yes?('Specified container name is not a valid virtualhost, continue anyway? [y/n]')
+      def acceptable_name?(res, options)
+        res.valid_virtualhost? or options[:force] or yes?('Specified container name is not a valid virtualhost, continue anyway? [y/n]')
       end
     
     end

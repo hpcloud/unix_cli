@@ -20,7 +20,8 @@ Examples:
       CLI.add_common_options
       define_method "cdn:containers:get" do |name, attribute|
         cli_command(options) {
-          name = Container.container_name_for_service(name)
+          res = ContainerResource.new(Connection.instance.cdn, name)
+          name = res.container
           # check to see cdn container exists
           begin
             response = Connection.instance.cdn.head_container(name)
