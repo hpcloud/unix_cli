@@ -3,6 +3,8 @@ SRC=`pwd`
 TMP=/tmp/unix_cli_drupal
 NOTESMD='Release-Notes-for-the-HP-Cloud-Services-UNIX-CLI.md'
 REFERENCEMD='UNIX-CLI-Command-Line-Reference.md'
+NOTES=${SRC}/notes.txt
+REFERENCE=${SRC}/reference.txt
 rm -rf ${TMP}
 mkdir -p ${TMP}
 cd ${TMP}
@@ -22,7 +24,7 @@ permalink: /cli/unix/release-notes/
 
 ---
 !
-cat ${SRC}/notes.txt >>${NOTESMD}
+cat ${NOTES} >>${NOTESMD}
 
 #
 # Reference
@@ -35,6 +37,6 @@ permalink: /cli/unix/reference/
 
 ---
 !
-cat ${SRC}/reference.txt >>${REFERENCEMD}
+cat ${REFERENCE} >>${REFERENCEMD}
 git commit -m 'Jenkins updating Unix CLI release notes and reference' -a
 git push origin develop
