@@ -138,12 +138,12 @@ module HP
         hash
       end
 
-      def windows_password
+      def windows_password(retries=10)
         begin
-          (1..10).each { |x| 
+          (0..retries).each { |x|
             @epass = @fog.windows_password()
             break unless @epass.empty?
-            sleep (x*10)
+            sleep (x*10) unless retries == 1
           }
           return "Failed to get password" if @epass.empty?
           begin
