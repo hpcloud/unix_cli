@@ -488,13 +488,12 @@ describe "Server class" do
       srv.name = "bob"
       srv.flavor = "101"
       srv.keyname = "default"
-      srv.set_security_groups('x-wing,y-wing')
-      srv.meta.set_metadata('whiskey=tango,fox=trot')
+      srv.set_private_key('bogus')
 
       srv.save.should be_false
 
       srv.id.should be_nil
-      srv.error_string.should eq("You must specify either an image or a volume to create a server.")
+      srv.error_string.should include("Error reading private key file 'bogus'")
       srv.error_code.should eq(:incorrect_usage)
     end
   end

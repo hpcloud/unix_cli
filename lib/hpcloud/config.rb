@@ -13,6 +13,8 @@ module HP
                 :connect_timeout,
                 :read_timeout,
                 :write_timeout,
+                :preferred_flavor,
+                :preferred_image,
                 :ssl_verify_peer,
                 :ssl_ca_path,
                 :ssl_ca_file,
@@ -58,6 +60,7 @@ module HP
         return { :connect_timeout => 30,
                  :read_timeout => 30,
                  :write_timeout => 30,
+                 :preferred_flavor => 100,
                  :ssl_verify_peer => true,
                  :ssl_ca_path => nil,
                  :ssl_ca_file => nil,
@@ -112,6 +115,7 @@ module HP
         @settings[:connect_timeout] ||= options[:connect_timeout]
         @settings[:read_timeout] ||= options[:read_timeout]
         @settings[:write_timeout] ||= options[:write_timeout]
+        @settings[:preferred_flavor] ||= options[:preferred_flavor]
         @settings[:connect_timeout] = @settings[:connect_timeout].to_i
         @settings[:read_timeout] = @settings[:read_timeout].to_i
         @settings[:write_timeout] = @settings[:write_timeout].to_i

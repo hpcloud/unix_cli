@@ -190,6 +190,8 @@ module HP
         hsh[:options][:connect_timeout] ||= settings[:connect_timeout]
         hsh[:options][:read_timeout] ||= settings[:read_timeout]
         hsh[:options][:write_timeout] ||= settings[:write_timeout]
+        hsh[:options][:preferred_flavor] ||= settings[:preferred_flavor]
+        hsh[:options][:preferred_image] ||= settings[:preferred_image]
         hsh[:options][:connect_timeout] = hsh[:options][:connect_timeout].to_i
         hsh[:options][:read_timeout] = hsh[:options][:read_timeout].to_i
         hsh[:options][:write_timeout] = hsh[:options][:write_timeout].to_i
