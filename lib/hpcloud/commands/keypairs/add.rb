@@ -36,7 +36,7 @@ Examples:
           keypair.private_key = options[:private_key]
           if keypair.save == true
             if options.output?
-              filename = keypair.write
+              filename = keypair.private_add
               display "Created key pair '#{key_name}' and saved it to a file at '#{filename}'."
             else
               display keypair.fog.private_key

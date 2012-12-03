@@ -133,7 +133,7 @@ describe "Keypair methods" do
       FileUtils.stub(:chmod).and_return(true)
       keyp = HP::Cloud::KeypairHelper.new(@connection, @keypair)
 
-      keyp.write.should eq("#{ENV['HOME']}/.hpcloud/keypairs/cults.pem")
+      keyp.private_add.should eq("#{ENV['HOME']}/.hpcloud/keypairs/cults.pem")
     end
   end
 end

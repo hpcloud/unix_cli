@@ -10,7 +10,7 @@ describe "keypairs:add command" do
 
   context "when creating a keypair with name" do
     it "should show success message" do
-      @key_name = 'fog-key-200'
+      @key_name = resource_name('cli_test_add1')
 
       rsp = cptr("keypairs:add #{@key_name}")
 
@@ -35,7 +35,7 @@ describe "keypairs:add command" do
 
   context "when creating a keypair with name and fingerprint" do
     it "should list in keypairs" do
-      @key_name = 'fog-key-201'
+      @key_name = resource_name('cli_test_add2')
 
       rsp = cptr("keypairs:add #{@key_name} -f #{@fingerprint}")
 
@@ -57,7 +57,7 @@ describe "keypairs:add command" do
 
   context "when creating a keypair with name and private data" do
     it "should list in keypairs" do
-      @key_name = 'fog-key-202'
+      @key_name = resource_name('cli_test_add3')
 
       rsp = cptr("keypairs:add #{@key_name} -p #{@private_data}")
 
@@ -79,7 +79,7 @@ describe "keypairs:add command" do
 
   context "when creating a keypair with name, fingerprint and private data" do
     it "should list in keypairs" do
-      @key_name = 'fog-key-203'
+      @key_name = resource_name('cli_test_add4')
 
       rsp = cptr("keypairs:add #{@key_name} -f #{@fingerprint} -p #{@private_data}")
 
@@ -101,7 +101,7 @@ describe "keypairs:add command" do
 
   context "when creating a keypair with output flag" do
     it "should show success message" do
-      @key_name = 'fog-key-204'
+      @key_name = resource_name('cli_test_add5')
 
       rsp = cptr("keypairs:add #{@key_name} -o")
 
@@ -114,18 +114,20 @@ describe "keypairs:add command" do
       keypair.name.should eql(@key_name)
       keypair = get_keypair(@hp_svc, @key_name)
       keypair.fingerprint.should_not be_nil
+      @filename = "#{ENV['HOME']}/.hpcloud/keypairs/#{@key_name}.pem"
+      File.exists?(@filename).should be_true
     end
 
     after(:each) do
       keypair = get_keypair(@hp_svc, @key_name)
       keypair.destroy if keypair
-      File.delete("./#{@key_name}.pem") if File.exists?("./#{@key_name}.pem")
+      File.delete(@filename) if File.exists?(@filename)
     end
   end
 
   context "keypairs:add with valid avl" do
     it "should report success" do
-      @key_name = 'fog-key-205'
+      @key_name = resource_name('cli_test_add6')
 
       rsp = cptr("keypairs:add #{@key_name} -z az-1.region-a.geo-1")
 
