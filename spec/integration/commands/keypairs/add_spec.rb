@@ -106,7 +106,7 @@ describe "keypairs:add command" do
       rsp = cptr("keypairs:add #{@key_name} -o")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Created key pair '#{@key_name}' and saved it to a file at './#{@key_name}.pem'.")
+      rsp.stdout.should include("Created key pair '#{@key_name}' and saved it to a file at '#{ENV['HOME']}/.hpcloud/keypairs/#{@key_name}.pem'.")
       rsp.exit_status.should be_exit(:success)
       keypairs = @hp_svc.key_pairs.map {|kp| kp.name}
       keypairs.should include(@key_name)

@@ -7,6 +7,7 @@ require 'hpcloud/commands/servers/password'
 require 'hpcloud/commands/servers/metadata'
 require 'hpcloud/commands/servers/metadata/add'
 require 'hpcloud/commands/servers/metadata/remove'
+require 'hpcloud/commands/servers/ssh'
 require 'hpcloud/servers'
 
 module HP
