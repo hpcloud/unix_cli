@@ -12,6 +12,7 @@ describe "Connection options" do
     def expected_options()
       eopts = HP::Cloud::Config.default_options.clone
       eopts.delete_if{ |k,v| v.nil? }
+      eopts.delete(:preferred_flavor)
       eopts.delete(:default_account)
       eopts.delete(:checker_url)
       eopts.delete(:checker_deferment)

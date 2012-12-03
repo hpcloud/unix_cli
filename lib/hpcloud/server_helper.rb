@@ -176,7 +176,6 @@ module HP
         return false if is_valid? == false
         acct = Accounts.new.get(Connection.instance.get_account)
         @flavor = acct[:options][:preferred_flavor] if @flavor.nil?
-        @flavor = 100 if @flavor.nil?
         @image = acct[:options][:preferred_image] if @image.nil?  && @volume.nil?
         if @image.nil? && @volume.nil?
           @error_string = "You must specify either an image or a volume to create a server."
