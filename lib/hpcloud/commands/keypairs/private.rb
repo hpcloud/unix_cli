@@ -1,3 +1,5 @@
+require 'hpcloud/commands/keypairs/private/add'
+
 module HP
   module Cloud
     class CLI < Thor

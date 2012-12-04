@@ -70,7 +70,13 @@ module HP
         FileUtils.chmod(0700, directory)
         filename = private_filename()
         FileUtils.rm_f(filename)
-        fog.write(filename)
+        if @fog.nil?
+          file = File.new(filename, "w")
+          file.write(@private_key)
+          file.close
+        else
+          @fog.write(filename)
+        end
         FileUtils.chmod(0400, filename)
         return filename
       end
@@ -79,6 +85,8 @@ module HP
         ray = Dir.entries(KeypairHelper.private_directory)
         ray = ray.delete_if{|x| x == "."}
         ray = ray.delete_if{|x| x == ".."}
+        ray = ray.delete_if{|x| x.match(/\.pem$/) == nil }
+        ray.collect!{|x| x.gsub(/\.pem$/,'') }
         ray.sort
       end
     end
