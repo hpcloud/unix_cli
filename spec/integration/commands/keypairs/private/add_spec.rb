@@ -17,4 +17,14 @@ describe "keypairs:private:add" do
       rsp.exit_status.should be_exit(:success)
     end
   end
+
+  context "add bogus" do
+    it "should show failure message" do
+      rsp = cptr("keypairs:private:add cli_test_key4 ./bogus.pem")
+
+      rsp.stderr.should eq("No such file or directory - ./bogus.pem\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+  end
 end

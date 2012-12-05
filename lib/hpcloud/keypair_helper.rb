@@ -89,6 +89,12 @@ module HP
         ray.collect!{|x| x.gsub(/\.pem$/,'') }
         ray.sort
       end
+
+      def private_remove
+        filename = private_filename()
+        FileUtils.rm(filename)
+        filename
+      end
     end
   end
 end
