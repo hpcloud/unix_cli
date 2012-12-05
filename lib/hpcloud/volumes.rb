@@ -7,7 +7,7 @@ module HP
       def initialize(bootable=false)
         super("volume")
         if bootable
-          @items = @connection.block.volumes.all(:only_bootable => true)
+          @items = @connection.block.bootable_volumes
         else
           @items = @connection.block.volumes
         end
