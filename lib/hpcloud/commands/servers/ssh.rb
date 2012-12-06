@@ -22,16 +22,35 @@ Examples:
                     :type => :string, :aliases => '-l',
                     :default => 'ubuntu',
                     :desc => 'Login id to use.'
+      method_option :command,
+                    :type => :string, :aliases => '-c',
+                    :default => 'ssh',
+                    :desc => 'Command to use to connect.'
       CLI.add_common_options
       define_method "servers:ssh" do |name_or_id|
         cli_command(options) {
           server = Servers.new.get(name_or_id)
           if server.is_valid?
-            keypair = KeypairHelper.new(nil)
-            keypair.name = options[:keypair]
-            filename = keypair.private_filename
+            unless options[:keypair].nil?
+              keypair = KeypairHelper.new(nil)
+              keypair.name = options[:keypair]
+              filename = keypair.private_filename
+            end
+            unless options[:private_key_file].nil?
+              filename = options[:private_key_file]
+            end
+            if filename.nil?
+              keypair = KeypairHelper.new(nil)
+              keypair.name = "#{server.id}"
+              if keypair.private_exists? == false
+                error "There is no local configuration to determine what private key is associated with this server.  Use the keypairs:private:add command to add a key named #{server.id} for this server or use the -k or -p option.", :incorrect_usage
+              end
+              filename = keypair.private_filename
+            end
             loginid = options[:login]
-            puts("ssh #{loginid}@#{server.public_ip} -i #{filename}")
+            command = options[:command]
+            display "Connecting to '#{name_or_id}'..."
+            system("#{command} #{loginid}@#{server.public_ip} -i #{filename}")
           else
             error server.error_string, server.error_code
           end

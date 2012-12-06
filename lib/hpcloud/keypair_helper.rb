@@ -64,6 +64,16 @@ module HP
         "#{KeypairHelper.private_directory}#{name}.pem"
       end
 
+      def private_exists?
+        File.exists?(private_filename)
+      end
+
+      def private_read
+        filename = private_filename()
+        @private_key = File.read(filename)
+        @fog.private_key = @private_key unless @fog.nil?
+      end
+
       def private_add
         directory = KeypairHelper.private_directory
         FileUtils.mkdir_p(directory)
