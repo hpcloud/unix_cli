@@ -20,7 +20,6 @@ Examples:
                     :desc => 'Name of keypair to use.'
       method_option :login,
                     :type => :string, :aliases => '-l',
-                    :default => 'ubuntu',
                     :desc => 'Login id to use.'
       method_option :command,
                     :type => :string, :aliases => '-c',
@@ -44,6 +43,14 @@ Examples:
               end
             end
             loginid = options[:login]
+            if loginid.nil?
+              image = Images.new.get(server.image)
+              if image.is_valid?
+                loginid = image.login
+              else
+                loginid = "ubuntu"
+              end
+            end
             command = options[:command]
             display "Connecting to '#{name_or_id}'..."
             system("#{command} #{loginid}@#{server.public_ip} -i #{filename}")
