@@ -32,20 +32,16 @@ Examples:
           server = Servers.new.get(name_or_id)
           if server.is_valid?
             unless options[:keypair].nil?
-              keypair = KeypairHelper.new(nil)
-              keypair.name = options[:keypair]
-              filename = keypair.private_filename
+              filename = KeypairHelper.private_filename(options[:keypair])
             end
             unless options[:private_key_file].nil?
               filename = options[:private_key_file]
             end
             if filename.nil?
-              keypair = KeypairHelper.new(nil)
-              keypair.name = "#{server.id}"
-              if keypair.private_exists? == false
+              filename = KeypairHelper.private_filename("#{server.id}")
+              if File.exists?(filename) == false
                 error "There is no local configuration to determine what private key is associated with this server.  Use the keypairs:private:add command to add a key named #{server.id} for this server or use the -k or -p option.", :incorrect_usage
               end
-              filename = keypair.private_filename
             end
             loginid = options[:login]
             command = options[:command]

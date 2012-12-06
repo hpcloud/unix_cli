@@ -23,6 +23,8 @@ describe "servers:ssh" do
 
   context "when using no option" do
     it "should fail" do
+      FileUtils.rm_f(KeypairHelper.private_filename("#{@server2.id}"))
+
       rsp = cptr("servers:ssh cli_test_srv2 -c echo")
 
       expected_str = "There is no local configuration to determine what private key is associated with this server.  Use the keypairs:private:add command to add a key named #{@server2.id} for this server or use the -k or -p option.\n"
@@ -44,7 +46,8 @@ describe "servers:ssh" do
 
   context "when using the -p option" do
     it "should succeed" do
-      rsp = cptr("servers:ssh cli_test_srv2 -p #{ENV['HOME']}/.hpcloud/keypairs/cli_test_key1.pem -c echo")
+      filename = KeypairHelper.private_filename("cli_test_key1")
+      rsp = cptr("servers:ssh cli_test_srv2 -p #{filename} -c echo")
 
       rsp.stderr.should eq("")
       rsp.stdout.should include("Connecting to 'cli_test_srv2'...\n")
