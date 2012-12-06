@@ -107,7 +107,7 @@ describe "servers:add command" do
 
       rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_win_image_id()} -k #{@keypair_name} -p #{@pem_file}")
 
-      rsp.stderr.should eq("\n")
+      rsp.stderr.should eq("")
       @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
       rsp.stdout.should include("Created server '#{@server_name}' with id '#{@new_server_id}'.\nRetrieving password, this may take several minutes...\nWindows password: ")
       # If this fails at this point, the password did not decode.
@@ -133,7 +133,7 @@ describe "servers:add command" do
 
       rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_win_image_id()} -k #{@keypair_name}")
 
-      rsp.stderr.should eq("\n")
+      rsp.stderr.should eq("")
       @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
       rsp.stdout.should include("Created server '#{@server_name}' with id '#{@new_server_id}'.\nRetrieving password, this may take several minutes...\nWindows password: ")
       # If this fails at this point, the password did not decode.

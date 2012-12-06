@@ -51,7 +51,7 @@ Examples:
               display "Windows password: " + srv.windows_password
               display "Make sure the security group has RDP port 3389 open"
               display "You may wish to change the password when you log in"
-              if srv.is_valid?
+              if srv.is_valid? == false
                 error srv.error_string, srv.error_code
               end
             end
