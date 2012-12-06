@@ -18,14 +18,20 @@ Examples:
       method_option :keypair,
                     :type => :string, :aliases => '-k',
                     :desc => 'Name of keypair to use.'
+      method_option :login,
+                    :type => :string, :aliases => '-l',
+                    :default => 'ubuntu',
+                    :desc => 'Login id to use.'
       CLI.add_common_options
       define_method "servers:ssh" do |name_or_id|
         cli_command(options) {
           server = Servers.new.get(name_or_id)
           if server.is_valid?
-            filename = KeypairHelper.filename("keyu")
-            puts ("ssh #{server.public_ip} -i #{filename}")
-            system("ssh ubuntu@#{server.public_ip} -i #{filename}")
+            keypair = KeypairHelper.new(nil)
+            keypair.name = options[:keypair]
+            filename = keypair.private_filename
+            loginid = options[:login]
+            puts("ssh #{loginid}@#{server.public_ip} -i #{filename}")
           else
             error server.error_string, server.error_code
           end

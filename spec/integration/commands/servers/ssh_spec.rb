@@ -1,12 +1,19 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "servers:ssh" do
+  before(:all) do
+    KeypairTestHelper.create("cli_test_key1")
+    ServerTestHelper.create("cli_test_srv1")
+  end
+
   context "when calling ssh" do
     it "should show success message" do
-      ServerTestHelper.create("cli_test_srv1")
 
-      rsp = cptr("servers:ssh cli_test_srv1")
+      rsp = cptr("servers:ssh cli_test_srv1", ["yes", "exit"])
 
+puts '=========================================='
+puts rsp.stdout
+puts '=========================================='
       rsp.stderr.should eq("")
       rsp.stdout.should include("Connected to cli_test_srv1:\n")
       rsp.exit_status.should be_exit(:success)
@@ -17,7 +24,7 @@ describe "servers:ssh" do
     it "should show failure message" do
       ServerTestHelper.create("cli_test_srv1")
 
-      rsp = cptr("servers:ssh cli_test_srv1 -k key.pem")
+      rsp = cptr("servers:ssh cli_test_srv1 -k key.pem", ["exit"])
 
       rsp.stderr.should eq("")
       rsp.stdout.should include("Connected to cli_test_srv1:\n")
@@ -29,7 +36,7 @@ describe "servers:ssh" do
     it "should report success" do
       ServerTestHelper.create("cli_test_srv1")
 
-      rsp = cptr("servers:ssh cli_test_srv1 -z az-1.region-a.geo-1")
+      rsp = cptr("servers:ssh cli_test_srv1 -z az-1.region-a.geo-1", ["exit"])
 
       rsp.stderr.should eq("")
       rsp.stdout.should include("Connected to cli_test_srv1:\n")
