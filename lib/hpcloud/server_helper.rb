@@ -196,12 +196,12 @@ module HP
             hsh[:image_id] = @image
           end
           unless @volume.nil?
-            hsh[:block_device_mapping] = {
+            hsh[:block_device_mapping] = [{
                      'volume_size' => '',
-                     'volume_id' => @volume,
+                     'volume_id' => "#{@volume}",
                      'delete_on_termination' => '0',
                      'device_name' => 'vda'
-                   }
+                   }]
           end
           server = @compute.servers.create(hsh)
           if server.nil?
