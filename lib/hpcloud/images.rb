@@ -12,6 +12,10 @@ module HP
       def create(item = nil)
         return ImageHelper.new(item)
       end
+
+      def matches(arg, item)
+        return ((arg == item.id.to_s) || (item.name.to_s.match(arg)))
+      end
     end
   end
 end

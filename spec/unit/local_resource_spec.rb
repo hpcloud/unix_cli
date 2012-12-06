@@ -255,7 +255,7 @@ describe "Read directory" do
 
       ray.sort!
       ray[0].should eq("spec/fixtures/accounts/.hpcloud/accounts/bad")
-      ray[1].should eq("spec/fixtures/accounts/.hpcloud/accounts/default")
+      ray[1].should eq("spec/fixtures/accounts/.hpcloud/accounts/hp")
       ray[2].should eq("spec/fixtures/accounts/.hpcloud/accounts/pro")
       ray[3].should eq("spec/fixtures/config/.hpcloud/config.yml")
       ray[4].should eq("spec/fixtures/files/Matryoshka/Putin/Medvedev.txt")

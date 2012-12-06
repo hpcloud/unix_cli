@@ -13,6 +13,8 @@ module HP
                 :connect_timeout,
                 :read_timeout,
                 :write_timeout,
+                :preferred_flavor,
+                :preferred_image,
                 :ssl_verify_peer,
                 :ssl_ca_path,
                 :ssl_ca_file,
@@ -46,7 +48,7 @@ module HP
       
       def self.default_config
         return { :default_auth_uri => 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/',
-                 :default_account => 'default',
+                 :default_account => 'hp',
                  :block_availability_zone => 'az-1.region-a.geo-1',
                  :storage_availability_zone => 'region-a.geo-1',
                  :cdn_availability_zone => 'region-a.geo-1',
@@ -58,10 +60,11 @@ module HP
         return { :connect_timeout => 30,
                  :read_timeout => 30,
                  :write_timeout => 30,
+                 :preferred_flavor => 100,
                  :ssl_verify_peer => true,
                  :ssl_ca_path => nil,
                  :ssl_ca_file => nil,
-                 :default_account => 'default',
+                 :default_account => 'hp',
                  :checker_url => 'https://region-a.geo-1.objects.hpcloudsvc.com:443/v1/89388614989714/documentation-downloads/unixcli/latest',
                  :checker_deferment => 604800,
                }
@@ -112,6 +115,7 @@ module HP
         @settings[:connect_timeout] ||= options[:connect_timeout]
         @settings[:read_timeout] ||= options[:read_timeout]
         @settings[:write_timeout] ||= options[:write_timeout]
+        @settings[:preferred_flavor] ||= options[:preferred_flavor]
         @settings[:connect_timeout] = @settings[:connect_timeout].to_i
         @settings[:read_timeout] = @settings[:read_timeout].to_i
         @settings[:write_timeout] = @settings[:write_timeout].to_i

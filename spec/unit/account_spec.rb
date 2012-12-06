@@ -19,7 +19,7 @@ describe "Accounts getting credentials" do
   context "when default account exists" do
     it "should provide credentials for account from file" do
       accounts = Accounts.new()
-      acct = accounts.read()
+      acct = accounts.read('hp')
       acct[:credentials][:account_id].should eq('foo')
       acct[:credentials][:secret_key].should eq('bar')
       acct[:credentials][:auth_uri].should eq('http://192.168.1.1:8888/v2.0')
@@ -162,7 +162,7 @@ describe "Account get" do
     it "should include full default settings settings" do
       accounts = Accounts.new()
 
-      acct = accounts.get()
+      acct = accounts.get('hp')
 
       acct[:credentials][:account_id].should eq('foo')
       acct[:credentials][:secret_key].should eq('bar')
@@ -183,7 +183,7 @@ describe "Account get" do
   after(:all) {reset_all()}
 end
 
-describe "Accounts" do
+describe "Accounts create" do
   before(:each) do
     AccountsHelper.use_fixtures()
   end
@@ -203,7 +203,7 @@ describe "Accounts" do
   after(:all) {reset_all()}
 end
 
-describe "Accounts" do
+describe "Accounts rejigger" do
   before(:each) do
     AccountsHelper.use_tmp()
   end
@@ -225,7 +225,7 @@ describe "Accounts" do
   after(:all) {reset_all()}
 end
 
-describe "Accounts" do
+describe "Accounts set" do
   before(:each) do
     AccountsHelper.use_tmp()
   end
@@ -290,5 +290,59 @@ describe "Accounts" do
       options[:preferred_image].should be_nil
     end
   end
+  after(:all) {reset_all()}
+end
+
+describe "Accounts migrate" do
+  before(:each) do
+    AccountsHelper.use_tmp()
+    ConfigHelper.use_tmp()
+    config = HP::Cloud::Config.new(true)
+    config.set(:default_account, 'default')
+    config.write()
+  end
+
+  context "when we have nothing" do
+    it "should do nothing" do
+      accounts = Accounts.new()
+
+      accounts.migrate.should be_false
+    end
+  end
+
+  context "when we have default" do
+    it "should migrate" do
+      accounts = Accounts.new()
+      acct = accounts.create('default')
+      acct[:username] = 'default@example.com'
+      accounts.write('default')
+
+      accounts.migrate.should be_true
+
+      accounts = Accounts.new()
+      accounts.list.should eq("hp")
+      acct = accounts.read('hp')
+      acct[:username].should eq('default@example.com')
+      config = HP::Cloud::Config.new(true)
+      config.get(:default_account).should eq('hp')
+    end
+  end
+
+
+  context "when we have default and hp" do
+    it "should not migrate" do
+      accounts = Accounts.new()
+      acct = accounts.create('default')
+      acct[:username] = 'default@example.com'
+      accounts.write('default')
+      hp = accounts.create('hp')
+      hp[:username] = 'hp@example.com'
+      accounts.write('hp')
+
+      accounts.migrate.should be_false
+
+    end
+  end
+
   after(:all) {reset_all()}
 end

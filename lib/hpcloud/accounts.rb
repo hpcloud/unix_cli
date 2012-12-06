@@ -84,9 +84,12 @@ module HP
         return false
       end
 
-      def read(account = 'default', createIt=false)
+      def read(account, createIt=false)
         return @accts[account] if @accts[account].nil? == false
         file_name = get_file_name(account)
+        if account == 'hp' && File.exists?(file_name) == false
+          migrate
+        end
         if File.exists?(file_name)
           begin
             hsh = YAML::load(File.open(file_name))
@@ -180,13 +183,15 @@ module HP
         zones[:block_availability_zone] = compute
       end
 
-      def get(account = 'default')
+      def get(account)
         hsh = read(account).clone
         settings = Config.new.settings
         set_default_zones(hsh)
         hsh[:options][:connect_timeout] ||= settings[:connect_timeout]
         hsh[:options][:read_timeout] ||= settings[:read_timeout]
         hsh[:options][:write_timeout] ||= settings[:write_timeout]
+        hsh[:options][:preferred_flavor] ||= settings[:preferred_flavor]
+        hsh[:options][:preferred_image] ||= settings[:preferred_image]
         hsh[:options][:connect_timeout] = hsh[:options][:connect_timeout].to_i
         hsh[:options][:read_timeout] = hsh[:options][:read_timeout].to_i
         hsh[:options][:write_timeout] = hsh[:options][:write_timeout].to_i
@@ -205,7 +210,7 @@ module HP
         return hsh
       end
 
-      def write(account='default')
+      def write(account)
         config = @accts[account]
         if config.nil?
           raise Exception.new("Cannot find account information for #{account}")
@@ -232,6 +237,21 @@ module HP
         opts.delete(:checker_url)
         opts.delete(:checker_deferment)
         return creds, zones, opts
+      end
+
+      def migrate
+        ray = list
+        return false if ray.index('default').nil?
+        return false unless ray.index('hp').nil?
+        warn "Renaming account 'default' to 'hp'..."
+        return false unless copy('default', 'hp')
+        remove('default')
+
+        config = Config.new(true)
+        config.set(:default_account, 'hp')
+        config.write()
+        warn "Account 'hp' is now the default"
+        return true
       end
     end
   end

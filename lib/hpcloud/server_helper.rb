@@ -138,12 +138,12 @@ module HP
         hash
       end
 
-      def windows_password
+      def windows_password(retries=10)
         begin
-          (1..10).each { |x| 
+          (0..retries).each { |x|
             @epass = @fog.windows_password()
             break unless @epass.empty?
-            sleep (x*10)
+            sleep (x*10) unless retries == 1
           }
           return "Failed to get password" if @epass.empty?
           begin
@@ -174,6 +174,9 @@ module HP
           @error_code = @meta.error_code
         end
         return false if is_valid? == false
+        acct = Accounts.new.get(Connection.instance.get_account)
+        @flavor = acct[:options][:preferred_flavor] if @flavor.nil?
+        @image = acct[:options][:preferred_image] if @image.nil?  && @volume.nil?
         if @image.nil? && @volume.nil?
           @error_string = "You must specify either an image or a volume to create a server."
           @error_code = :incorrect_usage

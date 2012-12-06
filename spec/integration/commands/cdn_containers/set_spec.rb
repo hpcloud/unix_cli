@@ -34,6 +34,18 @@ describe "cdn:containers:set command" do
       end
     end
 
+    context "setting :container attribute with a valid value" do
+      it "should show success message" do
+        rsp = cptr('cdn:containers:set :my-added-container X-Ttl 900')
+
+        rsp.stderr.should eq("")
+        rsp.stdout.should eql("The attribute 'X-Ttl' with value '900' was set on CDN container 'my-added-container'.\n")
+        rsp.exit_status.should be_exit(:success)
+        response = @hp_cdn.head_container('my-added-container')
+        response.headers['X-Ttl'].should eql("900")
+      end
+    end
+
     context "setting an attribute with an invalid value" do
       it "should show error message" do
         rsp = cptr('cdn:containers:set my-added-container X-Ttl 1')

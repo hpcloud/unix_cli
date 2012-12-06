@@ -73,7 +73,7 @@ module HP
         return @ftype == :object || @ftype == :shared_resource
       end
 
-      def parse()
+      def parse
         @container = nil
         @path = nil
         if @fname.empty?
@@ -83,6 +83,9 @@ module HP
           @container, *rest = @fname.split('/')
           @container = @container[1..-1] if @container[0,1] == ':'
           @path = rest.empty? ? '' : rest.join('/')
+          unless @container.length < 257
+            raise Exception.new("Valid container names must be less than 256 characters long")
+          end
         else
           rest = @fname.split('/')
           @path = rest.empty? ? '' : rest.join('/')

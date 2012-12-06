@@ -228,3 +228,122 @@ describe "Resource construction" do
     end
   end
 end
+
+describe 'Parsing container names' do
+  
+  context "when given a normal string" do
+    it 'should return the string' do
+      resource = ResourceFactory.create(@storage, 'mycontainer')
+      resource.container.should eql('mycontainer')
+      resource.ftype.should eq(:container)
+    end
+  end
+  
+  context "when given a resource string" do
+    it 'should return container name as a simple string' do
+      resource = ResourceFactory.create(@storage, ':mycontainer')
+      resource.container.should eql('mycontainer')
+      resource.ftype.should eq(:container)
+    end
+  end
+  
+  context "when given an object string with <" do
+    it 'should throw an exception' do
+      lambda {
+        ResourceFactory.create(@storage, ':my_container/object<txt')
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Valid object names do not contain the '<' character: :my_container/object<txt")
+      }
+    end
+  end
+  
+  context "when given an object string with >" do
+    it 'should throw an exception' do
+      lambda {
+        ResourceFactory.create(@storage, ':my_container/object>txt')
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Valid object names do not contain the '>' character: :my_container/object>txt")
+      }
+    end
+  end
+  
+  context "when given an object string with quote" do
+    it 'should throw an exception' do
+      lambda {
+        ResourceFactory.create(@storage, ':my_container/object"txt')
+      }.should raise_error(Exception) {|e|
+        e.to_s.should eq("Valid object names do not contain the '\"' character: :my_container/object\"txt")
+      }
+    end
+  end
+  
+  context "when given an object string" do
+    it 'should throw an exception' do
+      lambda {
+        ContainerResource.new(@storage, ':my_container/object.txt')
+      }.should raise_error(Exception) {|e|
+        e.to_s.should include("Valid container names do not contain the '/' character: :my_container/object.txt")
+      }
+    end
+  end
+  
+  context "when given too long a string" do
+    it 'should throw an exception' do
+      lambda {
+        too_long_container_name = 'A'*257
+        ResourceFactory.create(@storage, too_long_container_name)
+      }.should raise_error(Exception) {|e|
+        e.to_s.should include("Valid container names must be less than 256 characters long")
+      }
+    end
+  end
+  
+  context "when given super long string" do
+    it 'should throw an exception' do
+      long_container_name = 'B'*256
+      resource = ResourceFactory.create(@storage, long_container_name)
+      resource.container.should eql(long_container_name)
+      resource.ftype.should eq(:container)
+    end
+  end
+  
+end
+
+describe "Validating container names for virtual host" do
+  
+  it "should not allow empty strings" do
+    resource = ContainerResource.new(@storage, '')
+    resource.valid_virtualhost?.should be_false
+  end
+  
+  it "should not allow uppercase characters" do
+    resource = ContainerResource.new(@storage, 'UPPER')
+    resource.valid_virtualhost?.should be_false
+  end
+  
+  it "should not allow funky characters" do
+    resource = ContainerResource.new(@storage, 'yøgürt')
+    resource.valid_virtualhost?.should be_false
+  end
+  
+  it "should not allow strings that start with -" do
+    resource = ContainerResource.new(@storage, '-mycontainer')
+    resource.valid_virtualhost?.should be_false
+  end
+  
+  it "should not allow strings that end with -" do
+    resource = ContainerResource.new(@storage, 'mycontainer-')
+    resource.valid_virtualhost?.should be_false
+  end
+  
+  it "should not allow strings longer than 63 characters" do
+    resource = ContainerResource.new(@storage, 'x' * 64)
+    resource.valid_virtualhost?.should be_false
+  end
+  
+  it "should return true for valid names" do
+    resource = ContainerResource.new(@storage, 'my-bucket')
+    resource.valid_virtualhost?.should be_true
+  end
+
+end

@@ -9,7 +9,7 @@ module HP
 Examples:
   hpcloud servers:add my_server small -i 7 -k key1          # Create a new small server named 'my_server' with image 7 and key1:
   hpcloud servers:add winserv large -i 100006567 -k winpair -s allowsRDP -p ./winpair.pem # Create a windows server with the specified key, security group, and private key to decrypt the password:
-  hpcloud servers:add my_server large -v natty -k key1 -s sg1   # Create a new largte server named 'my_server' using a volume natty, key1 and the sg1 security group:
+  hpcloud servers:add my_server large -v natty -k key1 -s sg1   # Create a new large server named 'my_server' using a volume natty, key1 and the sg1 security group:
   hpcloud servers:add my_server small -i 20634 -k key1 -m this=that     # Create a new small server named 'my_server' using the specified image, flavor, key and metadata this=that:
   hpcloud servers:add my_server xlarge -i 7 -k key1 -z az-2.region-a.geo-1  # Create a new server named 'my_server' using a key for  availability zone `az-2.region-a.geo-1`:
       DESC
@@ -32,11 +32,11 @@ Examples:
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'
       CLI.add_common_options
-      define_method "servers:add" do |name, flavor|
+      define_method "servers:add" do |name, *flavor|
         cli_command(options) {
           srv = HP::Cloud::ServerHelper.new(Connection.instance.compute)
           srv.name = name
-          srv.set_flavor(flavor)
+          srv.set_flavor(flavor.first) unless flavor.first.nil?
           srv.set_image(options[:image])
           srv.set_volume(options[:volume])
           srv.set_keypair(options[:key_name])
