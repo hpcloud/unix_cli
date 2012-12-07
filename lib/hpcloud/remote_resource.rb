@@ -146,8 +146,11 @@ module HP
                return false
             end
             @public_url = file.public_url
+            @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
             @cdn_public_url = file.cdn_public_url
+            @cdn_public_url = @cdn_public_url.gsub(/%2F/, '/') unless @cdn_public_url.nil?
             @cdn_public_ssl_url = file.cdn_public_ssl_url
+            @cdn_public_ssl_url = @cdn_public_ssl_url.gsub(/%2F/, '/') unless @cdn_public_ssl_url.nil?
             @public = @directory.public? ? "yes" : "no"
             @readers = @directory.list_users_with_read.join(",")
             @writers = @directory.list_users_with_write.join(",")
