@@ -22,7 +22,7 @@ Examples:
                     :desc => 'Specify private key data to be used.'
       method_option :output, :default => false,
                     :type => :boolean, :aliases => '-o',
-                    :desc => 'Save the key pair to a file in the current folder.'
+                    :desc => 'Save key pair in the ~/.hpcloud/keypairs folder.'
       CLI.add_common_options
       define_method "keypairs:add" do |key_name|
         cli_command(options) {
@@ -36,8 +36,8 @@ Examples:
           keypair.private_key = options[:private_key]
           if keypair.save == true
             if options.output?
-              keypair.fog.write("./#{keypair.name}.pem")
-              display "Created key pair '#{key_name}' and saved it to a file at './#{keypair.name}.pem'."
+              filename = keypair.private_add
+              display "Created key pair '#{key_name}' and saved it to a file at '#{filename}'."
             else
               display keypair.fog.private_key
               display "Created key pair '#{key_name}'."

@@ -78,13 +78,19 @@ module HP
         if value.nil?
           return true
         end
-        keypair = Keypairs.new.get(value, false)
-        unless keypair.is_valid?
-          @error_string = keypair.error_string
-          @error_code = keypair.error_code
+        @keypair = Keypairs.new.get(value, false)
+        unless @keypair.is_valid?
+          @error_string = @keypair.error_string
+          @error_code = @keypair.error_code
           return false
         end
-        @keyname = keypair.name
+        @keyname = @keypair.name
+        if @windows
+          begin
+            @private_key = @keypair.private_read
+          rescue
+          end
+        end
         return true
       end
 
@@ -114,15 +120,13 @@ module HP
 
       def set_private_key(value)
         if value.nil?
-          if @windows
-            @error_string = "You must specify the private key file if you want to create a windows instance."
-            @error_code = :incorrect_usage
-            return false
-          end
-          return true
+          return true unless @windows
+          return true unless @private_key.nil?
+          @error_string = "You must specify the private key file if you want to create a windows instance."
+          @error_code = :incorrect_usage
+          return false
         end
         begin
-          @private_key_path = File.expand_path(value)
           @private_key = File.read(File.expand_path(value))
         rescue Exception => e
           @error_string = "Error reading private key file '#{value}': " + e.to_s
@@ -192,12 +196,12 @@ module HP
             hsh[:image_id] = @image
           end
           unless @volume.nil?
-            hsh[:block_device_mapping] = {
+            hsh[:block_device_mapping] = [{
                      'volume_size' => '',
-                     'volume_id' => @volume,
+                     'volume_id' => "#{@volume}",
                      'delete_on_termination' => '0',
                      'device_name' => 'vda'
-                   }
+                   }]
           end
           server = @compute.servers.create(hsh)
           if server.nil?
@@ -207,6 +211,14 @@ module HP
           end
           @id = server.id
           @fog = server
+          begin
+            unless @keypair.nil?
+              @keypair.private_read if @keypair.private_key.nil?
+              @keypair.name = "#{@id}"
+              @keypair.private_add
+            end
+          rescue
+          end
           return true
         else
           raise "Update not implemented"

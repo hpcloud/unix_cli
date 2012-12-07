@@ -117,4 +117,23 @@ describe "Keypair methods" do
       keyp.error_code.should eq(:general_error)
     end
   end
+
+  context "private key add" do
+    it "saves it" do
+      @keypair = double("keypair")
+      @keypair.stub(:name).and_return("cults")
+      @keypair.stub(:fingerprint).and_return("fingerprint")
+      @keypair.stub(:public_key).and_return("public")
+      @keypair.stub(:private_key).and_return("private")
+      @keypair.stub(:write).and_return(true)
+      @compute = double("compute")
+      @compute.stub(:key_pairs).and_return(@keypairs)
+      @connection = double("connection")
+      @connection.stub(:compute).and_return(@compute)
+      FileUtils.stub(:chmod).and_return(true)
+      keyp = HP::Cloud::KeypairHelper.new(@connection, @keypair)
+
+      keyp.private_add.should eq("#{ENV['HOME']}/.hpcloud/keypairs/cults.pem")
+    end
+  end
 end

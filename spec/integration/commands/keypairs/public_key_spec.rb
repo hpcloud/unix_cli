@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "keypairs:add command" do
 
   before(:all) do
-    @key_name = "unix_cli_keyp2"
+    @key_name = "cli_test_key1"
     @keypair = KeypairTestHelper.create(@key_name)
   end
 

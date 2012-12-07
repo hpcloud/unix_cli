@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
-describe "keypairs:import command" do
+describe "keypairs:import" do
   def cli
     @cli ||= HP::Cloud::CLI.new
   end
@@ -11,10 +11,14 @@ describe "keypairs:import command" do
   end
 
   context "when importing a keypair" do
-    before(:all) { @key_name = 'fog-imp-200' }
+    before(:all) do
+      @key_name = 'cli_test_key1'
+    end
 
     it "should import" do
-      @key_name = 'fog-imp-200'
+      @key_name = 'cli_test_key1'
+      cptr("keypairs:rm #{@key_name}")
+
       rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}"])
 
       rsp.stderr.should eq("")
@@ -29,6 +33,9 @@ describe "keypairs:import command" do
     end
 
     it "should report key exists if imported again" do
+      @key_name = 'cli_test_key1'
+      rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}"])
+
       rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}"])
 
       rsp.stderr.should eq("Key pair '#{@key_name}' already exists.\n")
@@ -42,31 +49,32 @@ describe "keypairs:import command" do
     end
   end
 
-  context "when importing a keypair with avl settings passed in" do
+  context "keypairs:import with valid avl" do
     before(:all) do
-      @key_name = 'fog-imp-201'
+      @key_name = 'cli_test_key2'
     end
-    context "keypairs:import with valid avl" do
-      it "should report success" do
-        rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}", "-z", "az-1.region-a.geo-1"])
-        rsp.stderr.should eq("")
-        rsp.stdout.should include("Imported key pair '#{@key_name}'.\n")
-        rsp.exit_status.should be_exit(:success)
-      end
-      after(:all) do
-        keypair = get_keypair(@hp_svc, @key_name)
-        keypair.destroy if keypair
-      end
+
+    it "should report success" do
+      rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}", '-z', 'az-1.region-a.geo-1'])
+      rsp.stderr.should eq("")
+      rsp.stdout.should include("Imported key pair '#{@key_name}'.\n")
+      rsp.exit_status.should be_exit(:success)
     end
-    context "keypairs:import with invalid avl" do
-      it "should report error" do
-        rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}", "-z", "blah"])
-        rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
-        rsp.stdout.should eq("")
-        rsp.exit_status.should be_exit(:general_error)
-      end
-      after(:all) { Connection.instance.clear_options() }
+
+    after(:all) do
+      keypair = get_keypair(@hp_svc, @key_name)
+      keypair.destroy if keypair
     end
+  end
+
+  context "keypairs:import with invalid avl" do
+    it "should report error" do
+      rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}", "-z", "blah"])
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+    after(:all) { Connection.instance.clear_options() }
   end
 
   context "verify the -a option is activated" do

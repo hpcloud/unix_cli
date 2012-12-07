@@ -3,6 +3,12 @@ require 'hpcloud/metadata'
 module HP
   module Cloud
     class ImageHelper
+      OS_TYPES = { :ubuntu => 0,
+                   :centos => 1,
+                   :fedora => 2,
+                   :debian => 3,
+                   :windows => 4
+                 }
       attr_reader :meta, :fog
       attr_accessor :error_string, :error_code
       attr_accessor :id, :name, :created_at, :status
@@ -71,6 +77,28 @@ module HP
 
       def destroy
         @fog.destroy unless @fog.nil?
+      end
+
+      def os
+        return :windows if is_windows?
+        return :ubuntu if name.nil?
+        return :windows unless name.match(/[wW][iI][nN][dD][oO][wW]/).nil?
+        return :fedora unless name.match(/[fF][eE][dD][oO][rR][aA]/).nil?
+        return :centos unless name.match(/[cC][eE][nN][tT][oO][sS]/).nil?
+        return :debian unless name.match(/[dD][eE][bB][iI][aA][nN]/).nil?
+        return :ubuntu
+      end
+
+      def login
+        case os
+        when :ubuntu 
+          return 'ubuntu'
+        when :centos, :fedora, :debian
+          return 'root'
+        when :windows
+          return 'Administrator'
+        end
+        return 'ubuntu'
       end
     end
   end

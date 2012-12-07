@@ -72,7 +72,7 @@ describe "Get command" do
   context "when object and container exist and object is at container level" do
     it "should report success" do
       username = AccountsHelper.get_username('secondary')
-      rsp = cptr("acl:grant :get_container/highly_unusual_file_name.txt rw #{username}")
+      rsp = cptr("acl:grant :get_container rw #{username}")
       rsp.stderr.should eq("")
       rsp = cptr("location :get_container/highly_unusual_file_name.txt")
       rsp.stderr.should eq("")
@@ -94,7 +94,7 @@ describe "Get command" do
   context "when object and container exist but no grants" do
     it "should report failure" do
       username = AccountsHelper.get_username('secondary')
-      rsp = cptr("acl:revoke :get_container/highly_unusual_file_name.txt rw #{username}")
+      rsp = cptr("acl:revoke :get_container rw #{username}")
       rsp.stderr.should eq("")
       rsp = cptr("location :get_container/highly_unusual_file_name.txt")
       rsp.stderr.should eq("")

@@ -1,45 +1,73 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "servers:ssh" do
-  context "when calling ssh" do
-    it "should show success message" do
-      ServerTestHelper.create("cli_test_srv1")
+  before(:all) do
+    keypair = KeypairTestHelper.create("cli_test_key1")
+    @server1 = ServerTestHelper.create("cli_test_srv1")
+    keypair.private_read
+    keypair.name = "#{@server1.id}"
+    keypair.private_add
+    @server2 = ServerTestHelper.create("cli_test_srv2")
+  end
 
-      rsp = cptr("servers:ssh cli_test_srv1")
+  context "when using no option and the server is known" do
+    it "should show success message" do
+
+      rsp = cptr("servers:ssh cli_test_srv1 -c echo")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Connected to cli_test_srv1:\n")
+      rsp.stdout.should include("Connecting to 'cli_test_srv1'...\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
 
-  context "when gettting ssh bogus lines" do
-    it "should show failure message" do
-      ServerTestHelper.create("cli_test_srv1")
+  context "when using no option" do
+    it "should fail" do
+      FileUtils.rm_f(KeypairHelper.private_filename("#{@server2.id}"))
 
-      rsp = cptr("servers:ssh cli_test_srv1 -k key.pem")
+      rsp = cptr("servers:ssh cli_test_srv2 -c echo")
+
+      expected_str = "There is no local configuration to determine what private key is associated with this server.  Use the keypairs:private:add command to add a key named #{@server2.id} for this server or use the -k or -p option.\n"
+      rsp.stderr.should eq(expected_str)
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:incorrect_usage)
+    end
+  end
+
+  context "when using the -k option" do
+    it "should succeed" do
+      rsp = cptr("servers:ssh cli_test_srv2 -k cli_test_key1 -c echo")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Connected to cli_test_srv1:\n")
+      rsp.stdout.should include("Connecting to 'cli_test_srv2'...\n")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
+  context "when using the -p option" do
+    it "should succeed" do
+      filename = KeypairHelper.private_filename("cli_test_key1")
+      rsp = cptr("servers:ssh cli_test_srv2 -p #{filename} -c echo")
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should include("Connecting to 'cli_test_srv2'...\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
 
   context "servers:ssh with valid avl" do
-    it "should report success" do
-      ServerTestHelper.create("cli_test_srv1")
-
-      rsp = cptr("servers:ssh cli_test_srv1 -z az-1.region-a.geo-1")
+    it "should succeed" do
+      rsp = cptr("servers:ssh cli_test_srv1 -z az-1.region-a.geo-1 -c echo")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Connected to cli_test_srv1:\n")
+      rsp.stdout.should include("Connecting to 'cli_test_srv1'...\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
 
   context "servers with invalid avl" do
     it "should report error" do
-      rsp = cptr("servers:ssh cli_test_srv1 10 -z blah")
+      rsp = cptr("servers:ssh cli_test_srv1 -z blah -c echo")
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
@@ -52,7 +80,7 @@ describe "servers:ssh" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("servers:ssh cli_test_srv1 -a bogus")
+      rsp = cptr("servers:ssh cli_test_srv1 -a bogus -c echo")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")

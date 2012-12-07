@@ -55,6 +55,53 @@ module HP
       def destroy
         @fog.destroy unless @fog.nil?
       end
+
+      def self.private_directory
+        "#{ENV['HOME']}/.hpcloud/keypairs/"
+      end
+
+      def self.private_filename(name)
+        "#{KeypairHelper.private_directory}#{name}.pem"
+      end
+
+      def private_read
+        filename = KeypairHelper.private_filename(name)
+        @private_key = File.read(filename)
+        @fog.private_key = @private_key unless @fog.nil?
+        @private_key
+      end
+
+      def private_add
+        directory = KeypairHelper.private_directory
+        FileUtils.mkdir_p(directory)
+        FileUtils.chmod(0700, directory)
+        filename = KeypairHelper.private_filename(name)
+        FileUtils.rm_f(filename)
+        if @fog.nil?
+          file = File.new(filename, "w")
+          file.write(@private_key)
+          file.close
+        else
+          @fog.write(filename)
+        end
+        FileUtils.chmod(0400, filename)
+        return filename
+      end
+
+      def self.private_list
+        ray = Dir.entries(KeypairHelper.private_directory)
+        ray = ray.delete_if{|x| x == "."}
+        ray = ray.delete_if{|x| x == ".."}
+        ray = ray.delete_if{|x| x.match(/\.pem$/) == nil }
+        ray.collect!{|x| x.gsub(/\.pem$/,'') }
+        ray.sort
+      end
+
+      def private_remove
+        filename = KeypairHelper.private_filename(name)
+        FileUtils.rm(filename)
+        filename
+      end
     end
   end
 end
