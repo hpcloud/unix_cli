@@ -72,6 +72,12 @@ describe "Image class" do
 
       img.meta.hsh['hp_image_license'] = '1003'
       img.is_windows?.should be_true
+      img.meta.hsh['owner'] = 'bob'
+      img.is_private?.should be_true
+      img.meta.hsh['owner'] = ''
+      img.is_private?.should be_false
+      img.meta.hsh['owner'] = nil
+      img.is_private?.should be_false
     end
   end
 

@@ -14,6 +14,7 @@ module HP
       def initialize(compute, s = nil)
         @compute = compute
         @windows = false
+        @private_image = false
         @error_string = nil
         @error_code = nil
         @fog = s
@@ -50,6 +51,7 @@ module HP
       def set_image(value)
         return true if value.nil?
         @windows = false
+        @private_image = false
         image = Images.new().get(value, false)
         unless image.is_valid?
           @error_string = image.error_string
@@ -57,6 +59,7 @@ module HP
           return false
         end
         @windows = image.is_windows?
+        @private_image = image.is_private?
         @image = image.id
         return true
       end
@@ -227,6 +230,10 @@ module HP
 
       def is_windows?
         return @windows
+      end
+
+      def is_private_image?
+        return @private_image
       end
 
       def is_valid?
