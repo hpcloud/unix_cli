@@ -1,5 +1,3 @@
-require 'net/ssh'
-
 module HP
   module Cloud
     class CLI < Thor

@@ -235,6 +235,12 @@ module HP
 
       def destroy
         @fog.destroy unless @fog.nil?
+        begin
+          keypair = KeypairHelper.new(nil)
+          keypair.name = "#{@id}"
+          keypair.private_remove
+        rescue Exception => e
+        end
       end
     end
   end
