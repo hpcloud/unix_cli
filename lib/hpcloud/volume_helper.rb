@@ -108,6 +108,18 @@ module HP
       def self.clear_cache
         @@serverous = nil
       end
+
+      def map_device(device)
+        begin
+          return "/dev/sda" if device == "0"
+          i = device.to_i
+          return device if i < 1 || i > 25
+          i = i +  97
+          return "/dev/sd" + i.chr
+        rescue Exception => e
+        end
+        return device
+      end
     end
   end
 end
