@@ -15,7 +15,7 @@ describe "keypairs:private:location" do
       rsp = cptr("keypairs:private:location cli_test_srv1")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("The private key for 'cli_test_srv1' is at '#{ENV['HOME']}/.hpcloud/keypairs/#{@server1.id}.pem'.\n")
+      rsp.stdout.should eq("#{ENV['HOME']}/.hpcloud/keypairs/#{@server1.id}.pem\n")
       rsp.exit_status.should be_exit(:success)
     end
   end

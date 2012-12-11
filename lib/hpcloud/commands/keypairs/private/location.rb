@@ -14,7 +14,7 @@ Examples:
           server = Servers.new.get(server_name_or_id)
           if server.is_valid?
             location = KeypairHelper.private_filename("#{server.id}")
-            display "The private key for '#{server_name_or_id}' is at '#{location}'."
+            display "#{location}"
           else
             error server.error_string, server.error_code
           end
