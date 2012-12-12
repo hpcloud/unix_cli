@@ -19,8 +19,12 @@ Aliases: keypairs:private:rm, keypairs:private:del
           names = [name] + names
           names.each { |name|
             keypair.name = name
-            filename = keypair.private_remove
-            display "Removed private key '#{filename}'."
+            begin
+              filename = keypair.private_remove
+              display "Removed private key '#{filename}'."
+            rescue Exception => e
+              error_message e.to_s, :general_error
+            end
           }
         }
       end
