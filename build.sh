@@ -53,12 +53,6 @@ gem build hpcloud.gemspec
 gem install hpcloud-${VERSION}.gem
 
 #
-# Build the notes and reference page
-#
-./notes.sh
-./reference.sh
-
-#
 # Copy it up
 #
 if ! hpcloud containers | grep ${CONTAINER} >/dev/null
@@ -66,7 +60,6 @@ then
   hpcloud containers:add :${CONTAINER}
 fi
 hpcloud copy -a deploy hpcloud-${VERSION}.gem $DEST
-hpcloud copy -a deploy CHANGELOG ${DEST}CHANGELOG.txt
 rm -f latest
 echo ${VERSION} >latest
 hpcloud copy -a deploy latest ":${CONTAINER}/unixcli/latest"
