@@ -6,7 +6,7 @@ describe "account:verify" do
       rsp = cptr("account:verify secondary")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Verifying 'secondary' account...\nConnected to 'secondary' successfully\n")
+      rsp.stdout.should eq("Verifying 'secondary' account...\nAble to connect to valid account 'secondary'.\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
