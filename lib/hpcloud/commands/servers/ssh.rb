@@ -7,8 +7,8 @@ module HP
   Secure shell into the server.
 
 Examples:
-  hpcloud servers:console bugs -p bunny.pem  # Secure shell into the bugs server
-  hpcloud servers:console daffy              # Secure shell into daffy which has a know keypair
+  hpcloud servers:ssh bugs -p bunny.pem  # Secure shell into the bugs server
+  hpcloud servers:ssh daffy              # Secure shell into daffy which has a know keypair
       DESC
       method_option :private_key_file,
                     :type => :string, :aliases => '-p',

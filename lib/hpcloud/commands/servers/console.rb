@@ -13,7 +13,7 @@ Examples:
       DESC
       method_option :private_key_file,
                     :type => :string, :aliases => '-p',
-                    :desc => 'Name of the pem file with your private key.'
+                    :desc => 'Private key pem file used to decrypt windows password.'
       method_option :dump_password,
                     :type => :boolean, :aliases => '-d',
                     :desc => 'Dump the windows password if the private key is known by the CLI.'
@@ -33,6 +33,9 @@ Examples:
             if key_file.nil?
               unless options[:dump_password].nil?
                 key_file = KeypairHelper.private_filename("#{server.id}")
+                unless File.exists?(key_file)
+                  error "Cannot find private key file for '#{name_or_id}'.", :not_found
+                end
               end
             end
             if key_file.nil?
@@ -44,6 +47,8 @@ Examples:
               display output.body["output"]
             else
               server.set_private_key(key_file)
+              server.set_image(server.image)
+              display "Warning: Server does not appear to be a Windows server" unless server.is_windows?
               display server.windows_password(1)
             end
           else

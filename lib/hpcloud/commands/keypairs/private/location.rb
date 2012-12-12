@@ -14,7 +14,11 @@ Examples:
           server = Servers.new.get(server_name_or_id)
           if server.is_valid?
             location = KeypairHelper.private_filename("#{server.id}")
-            display "#{location}"
+            if File.exists?(location)
+              display "#{location}"
+            else
+              error "Cannot find private key file for '#{server_name_or_id}'.", :not_found
+            end
           else
             error server.error_string, server.error_code
           end
