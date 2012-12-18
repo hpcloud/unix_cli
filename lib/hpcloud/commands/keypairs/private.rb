@@ -7,7 +7,7 @@ module HP
 
       desc "keypairs:private", "List private keypairs in local directory"
       long_desc <<-DESC
-  List the private keys stored on this machine.  These private keys will *not* be available on other machines unless you copy them there.
+  List the private keys stored on this machine.  These private keys are *not* available on other systems unless you copy them to that system.
 
 Examples:
   hpcloud keypairs:private         # Create the key 'mykey':
