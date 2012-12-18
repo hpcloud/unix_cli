@@ -8,7 +8,7 @@ module HP
 
       desc 'account:edit <account_name> [name_value_pair ...]', "Create or edit your account credentials."
       long_desc <<-DESC
-  Create or edit your account credentials. If you do not specify an account name on the command line, the default account is updated.  If you do not specify name value pairs, you will be asked interactively to input account values.
+  Create or edit your account credentials. If you do not specify an account name on the command line, the default account is updated.  If you do not specify name value pairs, you are prompted to input the account values.
 
   You  need your Access Key Id, Secret Key and Tenant Id from the HP Cloud web site to set up your account. Optionally, you can specify your own endpoint to access, but in most cases we recommend you use the default.
   
