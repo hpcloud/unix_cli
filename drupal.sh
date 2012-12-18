@@ -11,7 +11,11 @@ cd ${TMP}
 export GIT_SSL_NO_VERIFY=1
 git clone git@git.hpcloud.net:DevExDocs/documentation.git
 cd documentation
-git checkout develop
+git checkout develop || true
+git pull || true
+git checkout unixcli
+git pull || true
+git merge develop || true
 
 #
 # Release notes
@@ -41,5 +45,5 @@ product: unix-cli
 !
 cat ${REFERENCE} >>${REFERENCEMD}
 git commit -m 'Jenkins updating Unix CLI release notes and reference' -a
-git push origin develop
+git push origin unixcli
 rm -f ${REFERENCE} ${NOTES}
