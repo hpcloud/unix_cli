@@ -46,13 +46,15 @@ Examples:
           if srv.save == true
             display "Created server '#{name}' with id '#{srv.id}'."
             if srv.is_windows?
-              display "Retrieving password, this may take several minutes..."
-              srv.fog.wait_for { ready? }
-              display "Windows password: " + srv.windows_password
-              display "Make sure the security group has RDP port 3389 open"
-              display "You may wish to change the password when you log in"
-              if srv.is_valid? == false
-                error srv.error_string, srv.error_code
+              unless srv.is_private_image?
+                display "Retrieving password, this may take several minutes..."
+                srv.fog.wait_for { ready? }
+                display "Windows password: " + srv.windows_password
+                display "Make sure the security group has RDP port 3389 open"
+                display "You may wish to change the password when you log in"
+                if srv.is_valid? == false
+                  error srv.error_string, srv.error_code
+                end
               end
             end
           else

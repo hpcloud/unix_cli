@@ -71,6 +71,11 @@ module HP
         return (@meta.hsh['hp_image_license'].nil? == false)
       end
 
+      def is_private?
+        return false if @meta.hsh['owner'].nil?
+        return @meta.hsh['owner'].empty? == false
+      end
+
       def is_valid?
         return @error_string.nil?
       end

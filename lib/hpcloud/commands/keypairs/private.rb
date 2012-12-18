@@ -1,4 +1,5 @@
 require 'hpcloud/commands/keypairs/private/add'
+require 'hpcloud/commands/keypairs/private/location'
 require 'hpcloud/commands/keypairs/private/remove'
 
 module HP

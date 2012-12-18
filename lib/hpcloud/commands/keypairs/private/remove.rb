@@ -4,9 +4,9 @@ module HP
 
       map %w(keypairs:private:rm keypairs:private:delete keypairs:private:destroy keypairs:private:del) => 'keypairs:private:remove'
 
-      desc "keypairs:private:remove <key_name> [key_name...]", "Make a private key available for the CLI"
+      desc "keypairs:private:remove <key_name> [key_name...]", "Remove a private key file"
       long_desc <<-DESC
-  This command copies the private key file to ~/.hpcloud/keypairs directory so the CLI can use it for various commands to access servers.  This command does *not* upload the private key anywhere and it will *only* be available for the CLI on the current server.
+  This command removes private key files from the ~/.hpcloud/keypairs directory which is the store used by the CLI. If you plan to continue to use this private key, make sure you have it stored somewhere else.  There is no way to recover a private key that has been deleted unless you have another copy of that key.  Keys are stored in the ~/.hpcloud/keypairs directory by key name and server id, so there may be multiple copies of a single key in the private key store.
 
 Examples:
   hpcloud keypairs:private:remove mykey spare  # Remove 'mykey' and 'spare' from the private key storage
@@ -19,8 +19,12 @@ Aliases: keypairs:private:rm, keypairs:private:del
           names = [name] + names
           names.each { |name|
             keypair.name = name
-            filename = keypair.private_remove
-            display "Removed private key '#{filename}'."
+            begin
+              filename = keypair.private_remove
+              display "Removed private key '#{filename}'."
+            rescue Exception => e
+              error_message e.to_s, :general_error
+            end
           }
         }
       end

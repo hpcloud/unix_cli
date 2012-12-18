@@ -21,6 +21,7 @@ cat >${NOTESMD} <<!
 layout: default
 title: "Release Notes for the HP Cloud Services UNIX CLI"
 permalink: /cli/unix/release-notes/
+product: unix-cli
 
 ---
 !
@@ -34,6 +35,7 @@ cat >${REFERENCEMD} <<!
 layout: default
 title: "UNIX CLI: Command Line Reference"
 permalink: /cli/unix/reference/
+product: unix-cli
 
 ---
 !

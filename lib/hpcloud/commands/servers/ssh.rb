@@ -1,5 +1,3 @@
-require 'net/ssh'
-
 module HP
   module Cloud
     class CLI < Thor
@@ -9,7 +7,7 @@ module HP
   Log in using the secure shell to the designated server.
 
 Examples:
-  hpcloud servers:console bugs -p bunny.pem  # Use the Secure shell to log in to the bugs server:
+  hpcloud servers:console bugs -p bunny.pem  # Use the secure shell to log in to the bugs server:
   hpcloud servers:console daffy              # Use the secure shell to log in to server `daffy`, which has a know keypair
       DESC
       method_option :private_key_file,
