@@ -31,7 +31,7 @@ Examples:
                 error "Error getting console response from #{name_or_id}", :general_error
               end
               display "Console output for #{name_or_id}:"
-              display output.body
+              display output.body["output"]
             else
               server.set_private_key(options[:private_key_file])
               display server.windows_password(1)
