@@ -181,4 +181,42 @@ describe "Volume methods" do
       vol.error_code.should eq(:general_error)
     end
   end
+
+  context "map_device" do
+    it "maps" do
+      vol = HP::Cloud::VolumeHelper.new(double("connection"), @fog_volume)
+
+      vol.map_device("-1").should eq("-1")
+      vol.map_device("0").should eq("/dev/sda")
+      vol.map_device("1").should eq("/dev/sdb")
+      vol.map_device("2").should eq("/dev/sdc")
+      vol.map_device("3").should eq("/dev/sdd")
+      vol.map_device("4").should eq("/dev/sde")
+      vol.map_device("5").should eq("/dev/sdf")
+      vol.map_device("6").should eq("/dev/sdg")
+      vol.map_device("7").should eq("/dev/sdh")
+      vol.map_device("8").should eq("/dev/sdi")
+      vol.map_device("9").should eq("/dev/sdj")
+      vol.map_device("10").should eq("/dev/sdk")
+      vol.map_device("11").should eq("/dev/sdl")
+      vol.map_device("12").should eq("/dev/sdm")
+      vol.map_device("13").should eq("/dev/sdn")
+      vol.map_device("14").should eq("/dev/sdo")
+      vol.map_device("15").should eq("/dev/sdp")
+      vol.map_device("16").should eq("/dev/sdq")
+      vol.map_device("17").should eq("/dev/sdr")
+      vol.map_device("18").should eq("/dev/sds")
+      vol.map_device("19").should eq("/dev/sdt")
+      vol.map_device("20").should eq("/dev/sdu")
+      vol.map_device("21").should eq("/dev/sdv")
+      vol.map_device("22").should eq("/dev/sdw")
+      vol.map_device("23").should eq("/dev/sdx")
+      vol.map_device("24").should eq("/dev/sdy")
+      vol.map_device("25").should eq("/dev/sdz")
+      vol.map_device("26").should eq("26")
+      vol.map_device("/dev/sda").should eq("/dev/sda")
+      vol.map_device("/dev/sdb").should eq("/dev/sdb")
+      vol.map_device("/dev/sdc").should eq("/dev/sdc")
+    end
+  end
 end

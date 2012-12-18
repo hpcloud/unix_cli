@@ -7,7 +7,7 @@ LINES=24;
 export COLUMNS LINES;
 NOTES=notes.txt
 DATE=$(date +'%D')
-RELEASE=$(cat lib/hpcloud/version.rb)
+export `grep VERSION lib/hpcloud/version.rb | sed -e 's/ //g' -e "s/'//g"`
 
 function toc { sed -e 's/^##Release \(.*\) Features##/##Release \1 Features## {\1}/' -e 's/Features## {\([^.]*\).\([^.]*\).\([^.]*\)}/Features## {#v\1_\2_\3}/' CHANGELOG; }
 
