@@ -4,7 +4,7 @@ module HP
 
       desc "servers:console <server_name_or_id> [lines]", "Get the console output of a server or extract the windows password."
       long_desc <<-DESC
-  Display the console output of a server.  If the `-p` option is used with the private key file for the server, if the decrypted password is still available on the console, it is displayed. 
+  Display the console output of a server.  When the `-p` option is used with the private key file for the server, if the decrypted password is still available on the console, it is displayed. 
 
 Examples:
   hpcloud servers:console my-server 100         # Display 100 lines of console ouput:
