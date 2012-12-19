@@ -1,8 +1,8 @@
 #!/bin/bash -ex
 SRC=`pwd`
 TMP=/tmp/unix_cli_drupal
-NOTESMD='Release-Notes-for-the-HP-Cloud-Services-UNIX-CLI.md'
-REFERENCEMD='UNIX-CLI-Command-Line-Reference.md'
+NOTESMD='cli.unix.release-notes.md'
+REFERENCEMD='cli.unix.reference.md'
 NOTES=${SRC}/notes.txt
 REFERENCE=${SRC}/reference.txt
 rm -rf ${TMP}
