@@ -35,10 +35,10 @@ describe "images:remove command" do
     it "should report success" do
       @image_name2 = resource_name("del2")
       @server2 = ServerTestHelper.create("cli_test_srv2")
-      @server2.create_image(@image_name2, {})
+      @image_id2 = @server2.create_image(@image_name2, {})
       sleep(10)
 
-      rsp = cptr("images:remove #{@image_name2} -z az-1.region-a.geo-1")
+      rsp = cptr("images:remove #{@image_id2} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed image '#{@image_name2}'.\n")
