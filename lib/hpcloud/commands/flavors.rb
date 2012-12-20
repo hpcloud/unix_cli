@@ -22,11 +22,11 @@ Aliases: flavors:list
           if flavors.empty?
             display "You currently have no flavors."
           else
-            hsh = flavors.get_hash(arguments)
-            if hsh.empty?
+            ray = flavors.get_array(arguments)
+            if ray.empty?
               display "There are no flavors that match the provided arguments"
             else
-              Tableizer.new(options, FlavorHelper.get_keys(), hsh).print
+              Tableizer.new(options, FlavorHelper.get_keys(), ray).print
             end
           end
         }

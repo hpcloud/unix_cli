@@ -57,7 +57,7 @@ module HP
         return filter([arguments], false).first
       end
 
-      def get_hash(arguments = [])
+      def get_array(arguments = [])
         ray = []
         get(arguments, true).each { |x|
           if x.is_valid?

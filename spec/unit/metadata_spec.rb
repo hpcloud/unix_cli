@@ -22,9 +22,9 @@ describe "Metadata class" do
     end
   end
 
-  context "when we to_hash" do
+  context "when we to_array" do
     it "it returns some expected hash" do
-      hsh = HP::Cloud::Metadata.new(@fog_metadata).to_hash()
+      hsh = HP::Cloud::Metadata.new(@fog_metadata).to_array()
 
       hsh[0]["key"].should eql("rumblefish")
       hsh[0]["value"].should eql("am")

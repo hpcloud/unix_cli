@@ -27,11 +27,11 @@ Aliases: addresses:list
           if addresses.empty?
             display "You currently have no public IP addresses, use `#{selfname} addresses:add` to create one."
           else
-            hsh = addresses.get_hash(arguments)
-            if hsh.empty?
+            ray = addresses.get_array(arguments)
+            if ray.empty?
               display "There are no IP addresses that match the provided arguments"
             else
-              Tableizer.new(options, AddressHelper.get_keys(), hsh).print
+              Tableizer.new(options, AddressHelper.get_keys(), ray).print
             end
           end
         }

@@ -35,11 +35,11 @@ Aliases: volumes:list
             end
             display "You currently have no #{bootable}block volume devices, use `#{selfname} volumes:add <name>` to create one."
           else
-            hsh = volumes.get_hash(arguments)
-            if hsh.empty?
+            ray = volumes.get_array(arguments)
+            if ray.empty?
               display "There are no volumes that match the provided arguments"
             else
-              Tableizer.new(options, VolumeHelper.get_keys(), hsh).print
+              Tableizer.new(options, VolumeHelper.get_keys(), ray).print
             end
           end
         }

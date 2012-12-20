@@ -34,11 +34,11 @@ Aliases: servers:list
           if servers.empty?
             display "You currently have no servers, use `#{selfname} servers:add <name>` to create one."
           else
-            hsh = servers.get_hash(arguments)
-            if hsh.empty?
+            ray = servers.get_array(arguments)
+            if ray.empty?
               display "There are no servers that match the provided arguments"
             else
-              Tableizer.new(options, ServerHelper.get_keys(), hsh).print
+              Tableizer.new(options, ServerHelper.get_keys(), ray).print
             end
           end
         }

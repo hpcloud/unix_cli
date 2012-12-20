@@ -24,8 +24,8 @@ Aliases: securitygroups:rules:list
           if rules.empty?
             display "You currently have no rules for the security group '#{sec_group_name}'."
           else
-            hsh = rules.get_hash
-            Tableizer.new(options, RuleHelper.get_keys(), hsh).print
+            ray = rules.get_array
+            Tableizer.new(options, RuleHelper.get_keys(), ray).print
           end
         }
       end
