@@ -1,6 +1,6 @@
 module HP
   module Cloud
-    class KeypairHelper
+    class KeypairHelper < BaseHelper
       attr_accessor :error_string, :error_code, :fog
       attr_accessor :id, :name, :fingerprint, :public_key, :private_key
     
@@ -9,22 +9,13 @@ module HP
       end
 
       def initialize(connection, keypair = nil)
-        @connection = connection
-        @error_string = nil
-        @error_code = nil
-        @fog = keypair
+        super(connection, keypair)
         return if keypair.nil?
         @id = keypair.name
         @name = keypair.name
         @fingerprint = keypair.fingerprint
         @public_key = keypair.public_key
         @private_key = keypair.private_key
-      end
-
-      def to_hash
-        hash = {}
-        instance_variables.each {|var| hash[var.to_s.delete("@")] = instance_variable_get(var) }
-        hash
       end
 
       def save
@@ -46,14 +37,6 @@ module HP
         else
           raise "Update not implemented"
         end
-      end
-
-      def is_valid?
-        return @error_string.nil?
-      end
-
-      def destroy
-        @fog.destroy unless @fog.nil?
       end
 
       def self.private_directory
