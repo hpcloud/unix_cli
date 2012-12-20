@@ -10,8 +10,194 @@ _hpcloud()
   else
     cmds=""
     case "${words[1]}" in
+    account:edit)
+      opts="--no-validate "
+      ;;
+    account:setup)
+      opts="--no-validate "
+      ;;
+    acl)
+      opts="--availability-zone --account-name "
+      ;;
+    acl:grant)
+      opts="--availability-zone --account-name "
+      ;;
+    acl:revoke)
+      opts="--availability-zone --account-name "
+      ;;
+    addresses)
+      opts="--availability-zone --account-name "
+      ;;
+    addresses:add)
+      opts="--availability-zone --account-name "
+      ;;
+    addresses:associate)
+      opts="--availability-zone --account-name "
+      ;;
+    addresses:disassociate)
+      opts="--availability-zone --account-name "
+      ;;
+    addresses:remove)
+      opts="--availability-zone --account-name "
+      ;;
+    cdn:containers)
+      opts="--all --availability-zone --account-name "
+      ;;
+    cdn:containers:add)
+      opts="--availability-zone --account-name "
+      ;;
+    cdn:containers:get)
+      opts="--availability-zone --account-name "
+      ;;
+    cdn:containers:location)
+      opts="--ssl --availability-zone --account-name "
+      ;;
+    cdn:containers:remove)
+      opts="--availability-zone --account-name "
+      ;;
+    cdn:containers:set)
+      opts="--availability-zone --account-name "
+      ;;
+    containers:add)
+      opts="--force --availability-zone --account-name "
+      ;;
+    containers:remove)
+      opts="--force --availability-zone --account-name "
+      ;;
+    copy)
+      opts="--mime --availability-zone --account-name "
+      ;;
+    flavors)
+      opts="--availability-zone --account-name "
+      ;;
+    get)
+      opts="--availability-zone --account-name "
+      ;;
+    images)
+      opts="--availability-zone --account-name "
+      ;;
+    images:add)
+      opts="--availability-zone --account-name --metadata "
+      ;;
+    images:metadata)
+      opts="--availability-zone --account-name "
+      ;;
+    images:metadata:add)
+      opts="--availability-zone --account-name "
+      ;;
+    images:metadata:remove)
+      opts="--availability-zone --account-name "
+      ;;
+    images:remove)
+      opts="--availability-zone --account-name "
+      ;;
+    keypairs)
+      opts="--availability-zone --account-name "
+      ;;
+    keypairs:add)
+      opts="--fingerprint --private-key --output --availability-zone --account-name "
+      ;;
+    keypairs:import)
+      opts="--availability-zone --account-name "
+      ;;
+    keypairs:public_key)
+      opts="--availability-zone --account-name "
+      ;;
+    keypairs:remove)
+      opts="--availability-zone --account-name "
+      ;;
+    list)
+      opts="--availability-zone --account-name "
+      ;;
+    location)
+      opts="--availability-zone --account-name "
+      ;;
+    move)
+      opts="--availability-zone --account-name "
+      ;;
+    remove)
+      opts="--force --availability-zone --account-name "
+      ;;
+    securitygroups)
+      opts="--availability-zone --account-name "
+      ;;
+    securitygroups:add)
+      opts="--availability-zone --account-name "
+      ;;
+    securitygroups:remove)
+      opts="--availability-zone --account-name "
+      ;;
+    securitygroups:rules)
+      opts="--availability-zone --account-name "
+      ;;
+    securitygroups:rules:add)
+      opts="--port-range --cidr --source-group --availability-zone --account-name "
+      ;;
+    securitygroups:rules:remove)
+      opts="--availability-zone --account-name "
+      ;;
+    servers)
+      opts="--availability-zone --account-name "
+      ;;
+    servers:add)
+      opts="--key-name --image --volume --security-group --private-key-file --metadata --availability-zone --account-name "
+      ;;
+    servers:console)
+      opts="--private-key-file --dump-password --availability-zone --account-name "
+      ;;
+    servers:metadata)
+      opts="--availability-zone --account-name "
+      ;;
+    servers:metadata:add)
+      opts="--availability-zone --account-name "
+      ;;
+    servers:metadata:remove)
+      opts="--availability-zone --account-name "
+      ;;
+    servers:password)
+      opts="--availability-zone --account-name "
+      ;;
+    servers:reboot)
+      opts="--hard --availability-zone --account-name "
+      ;;
+    servers:rebuild)
+      opts="--availability-zone --account-name "
+      ;;
+    servers:remove)
+      opts="--availability-zone --account-name "
+      ;;
+    servers:ssh)
+      opts="--private-key-file --keypair --login --command # Default: ssh --availability-zone --account-name "
+      ;;
+    snapshots)
+      opts="--availability-zone --account-name "
+      ;;
+    snapshots:add)
+      opts="--description --metadata --availability-zone --account-name "
+      ;;
+    snapshots:remove)
+      opts="--availability-zone --account-name "
+      ;;
+    tempurl)
+      opts="--time-period --availability-zone --account-name "
+      ;;
+    volumes)
+      opts="--bootable --availability-zone --account-name "
+      ;;
     volumes:add)
       opts="--description --metadata --snapshot --image --availability-zone --account-name "
+      ;;
+    volumes:attach)
+      opts="--availability-zone --account-name "
+      ;;
+    volumes:detach)
+      opts="--availability-zone --account-name "
+      ;;
+    volumes:remove)
+      opts="--availability-zone --account-name "
+      ;;
+    volumes:server)
+      opts="--availability-zone --account-name "
       ;;
     esac
   fi
