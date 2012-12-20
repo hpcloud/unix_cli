@@ -38,6 +38,7 @@ require 'hpcloud/cli'
 
 require 'hpcloud/commands/info'
 require 'hpcloud/commands/account'
+require 'hpcloud/commands/complete'
 require 'hpcloud/commands/volumes'
 require 'hpcloud/commands/config'
 require 'hpcloud/commands/containers'

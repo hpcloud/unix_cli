@@ -1,8 +1,16 @@
-[Please download the latest version of the UNIX CLI software here](https://docs.hpcloud.com/file/hpcloud-1.4.0.gem)!
+##Release 1.5.0 Features##
+
+The 1.5.0 release is available for download from https://docs.hpcloud.com/file/hpcloud-1.5.0.gem.  This release was made available on 1/18/2013 and contains the following new features:
+
+* A new `complete` command attempts to install a bash completion file so you can tab complete hpcloud commands
+
+###Known Issues###
+
+* None at this time
 
 ##Release 1.4.0 Features##
 
-This release was made available on 12/11/2013 and contains the following new features:
+The 1.4.0 release is available for download from https://docs.hpcloud.com/file/hpcloud-1.4.0.gem.  This release was made available on 12/11/2012 and contains the following new features:
 
 * Command `servers:console` added to display the console of a server
 * Command `servers:ssh` added to allow you to log in via secure shell to a server

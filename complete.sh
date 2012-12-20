@@ -5,7 +5,7 @@
 COLUMNS=256;
 LINES=24;
 export COLUMNS LINES;
-OFILE=bash_complete
+OFILE=completion/hpcloud
 
 echo '_hpcloud()' >${OFILE}
 echo '{' >>${OFILE}

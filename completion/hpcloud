@@ -1,0 +1,31 @@
+_hpcloud()
+{
+  local cur prev opts cmds
+  COMPREPLY=()
+  _get_comp_words_by_ref -n : cur prev words
+  if [ "${prev}" == "hpcloud" ]
+  then
+    opts="--help --version"
+    cmds="account account:copy account:edit account:remove account:setup account:use account:verify acl acl:grant acl:revoke addresses addresses:add addresses:associate addresses:disassociate addresses:remove cdn:containers cdn:containers:add cdn:containers:get cdn:containers:location cdn:containers:remove cdn:containers:set complete config config:set containers:add containers:remove copy flavors get help images images:add images:metadata images:metadata:add images:metadata:remove images:remove info keypairs keypairs:add keypairs:import keypairs:private keypairs:private:add keypairs:private:location keypairs:private:remove keypairs:public_key keypairs:remove list location move remove securitygroups securitygroups:add securitygroups:remove securitygroups:rules securitygroups:rules:add securitygroups:rules:remove servers servers:add servers:console servers:metadata servers:metadata:add servers:metadata:remove servers:password servers:reboot servers:rebuild servers:remove servers:ssh snapshots snapshots:add snapshots:remove tempurl volumes volumes:add volumes:attach volumes:detach volumes:remove volumes:server"
+  else
+    cmds=""
+    case "${words[1]}" in
+    volumes:add)
+      opts="--description --metadata --snapshot --image --availability-zone --account-name "
+      ;;
+    esac
+  fi
+  if [[ ${cur} == -* ]] ; then
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    return 0
+  else
+    if [ -n "${cmds}" ]
+    then
+      COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
+      __ltrim_colon_completions "$cur"
+      return 0
+    fi
+  fi
+  return 0
+}
+complete -F _hpcloud hpcloud

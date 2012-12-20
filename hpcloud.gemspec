@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.5.0}
 
-  s.files = Dir.glob("{bin,lib}/**/**/*") + %w(LICENSE README.rdoc CHANGELOG)
+  s.files = Dir.glob("{bin,lib,completion}/**/**/*") + %w(LICENSE README.rdoc CHANGELOG)
   s.extra_rdoc_files = [
     "LICENSE",
     "README.rdoc"
