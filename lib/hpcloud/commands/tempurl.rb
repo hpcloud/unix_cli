@@ -26,9 +26,9 @@ Aliases: tmpurl
             resource = ResourceFactory.create(Connection.instance.storage, name)
             url = resource.tempurl(TimeParser.parse(options[:time_period]))
             unless url.nil?
-              display url
+              @log.display url
             else
-              error_message resource.error_string, resource.error_code
+              @log.error resource.error_string, resource.error_code
             end
           }
         }

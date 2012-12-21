@@ -24,12 +24,12 @@ Aliases: images:rm, images:delete, images:del
             begin
               if image.is_valid?
                 image.fog.destroy
-                display "Removed image '#{image.name}'."
+                @log.display "Removed image '#{image.name}'."
               else
-                error_message(image.error_string, image.error_code)
+                @log.error(image.error_string, image.error_code)
               end
             rescue Exception => e
-              error_message("Error removing image: " + e.to_s, :general_error)
+              @log.error("Error removing image: " + e.to_s, :general_error)
             end
           }
         }

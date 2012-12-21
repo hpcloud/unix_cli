@@ -24,12 +24,12 @@ Aliases: snapshots:rm, snapshots:delete, snapshots:del
             begin
               if snapshot.is_valid?
                 snapshot.destroy
-                display "Removed snapshot '#{snapshot.name}'."
+                @log.display "Removed snapshot '#{snapshot.name}'."
               else
-                error_message(snapshot.error_string, snapshot.error_code)
+                @log.error(snapshot.error_string, snapshot.error_code)
               end
             rescue Exception => e
-              error_message("Error removing snapshot: " + e.to_s, :general_error)
+              @log.error("Error removing snapshot: " + e.to_s, :general_error)
             end
           }
         }

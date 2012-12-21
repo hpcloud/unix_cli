@@ -21,28 +21,28 @@ Aliases: mv
         cli_command(options) {
           last = destination.pop
           if last.nil?
-            error "To move you must specify a source and a destination", :incorrect_usage
+            @log.fatal "To move you must specify a source and a destination", :incorrect_usage
           end
           source = [source] + destination
           destination = last
           to = ResourceFactory.create_any(Connection.instance.storage, destination)
           if source.length > 1 && to.isDirectory() == false
-            error("The destination '#{destination}' for multiple files must be a directory or container", :general_error)
+            @log.fatal("The destination '#{destination}' for multiple files must be a directory or container", :general_error)
           end
           source.each { |name|
             from = ResourceFactory.create_any(Connection.instance.storage, name)
             if from.isLocal()
-              error_message "Move is limited to remote objects. Please use '#{selfname} copy' instead.", :incorrect_usage
+              @log.error "Move is limited to remote objects. Please use '#{selfname} copy' instead.", :incorrect_usage
               next
             end
             if to.copy(from)
               if from.remove(false)
-                display "Moved #{from.fname} => #{to.fname}"
+                @log.display "Moved #{from.fname} => #{to.fname}"
               else
-                error_message from.error_string, from.error_code
+                @log.error from.error_string, from.error_code
               end
             else
-              error_message to.error_string, to.error_code
+              @log.error to.error_string, to.error_code
             end
           }
         }

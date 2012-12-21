@@ -34,9 +34,11 @@ Aliases: cdn:containers:list
           end
           cdn_containers = response.body
           if cdn_containers.nil? or cdn_containers.empty?
-            display "You currently have no containers on the CDN."
+            @log.display "You currently have no containers on the CDN."
           else
-            cdn_containers.each { |cdn_container| display cdn_container['name'] }
+            cdn_containers.each { |cdn_container|
+              @log.display cdn_container['name']
+            }
           end
         }
       end

@@ -32,11 +32,11 @@ Aliases: servers:list
         cli_command(options) {
           servers = Servers.new
           if servers.empty?
-            display "You currently have no servers, use `#{selfname} servers:add <name>` to create one."
+            @log.display "You currently have no servers, use `#{selfname} servers:add <name>` to create one."
           else
             ray = servers.get_array(arguments)
             if ray.empty?
-              display "There are no servers that match the provided arguments"
+              @log.display "There are no servers that match the provided arguments"
             else
               Tableizer.new(options, ServerHelper.get_keys(), ray).print
             end

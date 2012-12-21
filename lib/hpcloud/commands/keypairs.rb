@@ -26,11 +26,11 @@ Aliases: keypairs:list
         cli_command(options) {
           keypairs = Keypairs.new
           if keypairs.empty?
-            display "You currently have no keypairs, use `#{selfname} keypairs:add <name>` to create one."
+            @log.display "You currently have no keypairs, use `#{selfname} keypairs:add <name>` to create one."
           else
             ray = keypairs.get_array(arguments)
             if ray.empty?
-              display "There are no keypairs that match the provided arguments"
+              @log.display "There are no keypairs that match the provided arguments"
             else
               Tableizer.new(options, KeypairHelper.get_keys(), ray).print
             end

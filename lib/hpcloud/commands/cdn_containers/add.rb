@@ -20,12 +20,12 @@ Examples:
             begin
               if res.get_container()
                 response = Connection.instance.cdn.put_container(name)
-                display "Added container '#{name}' to the CDN."
+                @log.display "Added container '#{name}' to the CDN."
               else
-                error_message "The container '#{name}' does not exist in your storage account. Please create the storage container first and then add it to the CDN.", :incorrect_usage
+                @log.error "The container '#{name}' does not exist in your storage account. Please create the storage container first and then add it to the CDN.", :incorrect_usage
               end
             rescue Fog::Storage::HP::NotFound
-              error_message "The container '#{name}' does not exist in your storage account. Please create the storage container first and then add it to the CDN.", :incorrect_usage
+              @log.error "The container '#{name}' does not exist in your storage account. Please create the storage container first and then add it to the CDN.", :incorrect_usage
             end
           }
         }

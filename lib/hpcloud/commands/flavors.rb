@@ -20,11 +20,11 @@ Aliases: flavors:list
         cli_command(options) {
           flavors = Flavors.new
           if flavors.empty?
-            display "You currently have no flavors."
+            @log.display "You currently have no flavors."
           else
             ray = flavors.get_array(arguments)
             if ray.empty?
-              display "There are no flavors that match the provided arguments"
+              @log.display "There are no flavors that match the provided arguments"
             else
               Tableizer.new(options, FlavorHelper.get_keys(), ray).print
             end

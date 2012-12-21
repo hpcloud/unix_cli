@@ -19,9 +19,9 @@ Aliases: addresses:allocate
         cli_command(options) {
           address = AddressHelper.new(Connection.instance)
           if address.save
-            display "Created a public IP address '#{address.ip}'."
+            @log.display "Created a public IP address '#{address.ip}'."
           else
-            error address.error_string, address.error_code
+            @log.fatal address.error_string, address.error_code
           end
         }
       end

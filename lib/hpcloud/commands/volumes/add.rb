@@ -29,7 +29,7 @@ Examples:
       define_method "volumes:add" do |name, *volume_size|
         cli_command(options) {
           if Volumes.new.get(name).is_valid? == true
-            error "Volume with the name '#{name}' already exists", :general_error
+            @log.fatal "Volume with the name '#{name}' already exists", :general_error
           end
           vol = HP::Cloud::VolumeHelper.new(Connection.instance)
           vol.name = name
@@ -40,7 +40,7 @@ Examples:
               vol.snapshot_id = snapshot.id.to_s
               vol.size = snapshot.size.to_s if vol.size.nil?
             else
-              error snapshot.error_string, snapshot.error_code
+              @log.fatal snapshot.error_string, snapshot.error_code
             end
           end
           unless options[:image].nil?
@@ -48,16 +48,16 @@ Examples:
             if image.is_valid?
               vol.imageref = image.id.to_s
             else
-              error image.error_string, image.error_code
+              @log.fatal image.error_string, image.error_code
             end
           end
           vol.size = 1 if vol.size.nil?
           vol.description = options[:description]
           vol.meta.set_metadata(options[:metadata])
           if vol.save == true
-            display "Created volume '#{name}' with id '#{vol.id}'."
+            @log.display "Created volume '#{name}' with id '#{vol.id}'."
           else
-            error(vol.error_string, vol.error_code)
+            @log.fatal(vol.error_string, vol.error_code)
           end
         }
       end

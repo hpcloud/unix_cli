@@ -22,9 +22,9 @@ Aliases: account:rm, account:delete, account:del
           names.each{ |name|
             begin
               accounts.remove(name)
-              display("Removed account '#{name}'")
+              @log.display("Removed account '#{name}'")
             rescue Exception => e
-              error_message(e.to_s, :general_error)
+              @log.error(e.to_s, :general_error)
             end
           }
         }

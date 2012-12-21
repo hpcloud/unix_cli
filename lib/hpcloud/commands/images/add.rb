@@ -22,9 +22,9 @@ Examples:
           img.set_server(server_name)
           img.meta.set_metadata(options[:metadata])
           if img.save == true
-            display "Created image '#{name}' with id '#{img.id}'."
+            @log.display "Created image '#{name}' with id '#{img.id}'."
           else
-            display_error_message(img.error_string, img.error_code)
+            @log.fatal(img.error_string, img.error_code)
           end
         }
       end

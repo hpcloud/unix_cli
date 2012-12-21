@@ -19,11 +19,11 @@ Aliases: securitygroups:rules:rm, securitygroups:rules:revoke, securitygroups:ru
         cli_command(options) {
           security_group = SecurityGroups.new.get(sec_group_name)
           if security_group.is_valid? == false
-            error "You don't have a security group '#{sec_group_name}'.", :not_found
+            @log.fatal "You don't have a security group '#{sec_group_name}'.", :not_found
           end
 
           security_group.fog.delete_rule(rule_id)
-          display "Removed rule '#{rule_id}' for security group '#{sec_group_name}'."
+          @log.display "Removed rule '#{rule_id}' for security group '#{sec_group_name}'."
         }
       end
     end

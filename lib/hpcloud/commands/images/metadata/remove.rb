@@ -20,13 +20,13 @@ Aliases: images:metadata:rm
           if image.is_valid?
             metadata.each { |key|
               if image.meta.remove_metadata(key)
-                display "Removed metadata '#{key}' from image '#{name_or_id}'."
+                @log.display "Removed metadata '#{key}' from image '#{name_or_id}'."
               else
-                error_message(image.meta.error_string, image.meta.error_code)
+                @log.error(image.meta.error_string, image.meta.error_code)
               end
             }
           else
-            error(image.error_string, image.error_code)
+            @log.fatal(image.error_string, image.error_code)
           end
         }
       end

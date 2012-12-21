@@ -23,9 +23,9 @@ Aliases: loc
           names.each { |name|
             resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.read_header
-              display resource.public_url
+              @log.display resource.public_url
             else
-              error_message resource.error_string, resource.error_code
+              @log.error resource.error_string, resource.error_code
             end
           }
         }

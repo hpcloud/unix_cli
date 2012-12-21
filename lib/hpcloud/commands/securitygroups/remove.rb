@@ -24,12 +24,12 @@ Aliases: securitygroups:rm, securitygroups:delete, securitygroups:del
             begin
               if securitygroup.is_valid?
                 securitygroup.destroy
-                display "Removed security group '#{securitygroup.name}'."
+                @log.display "Removed security group '#{securitygroup.name}'."
               else
-                error_message(securitygroup.error_string, securitygroup.error_code)
+                @log.error(securitygroup.error_string, securitygroup.error_code)
               end
             rescue Exception => e
-              error_message("Error removing security group: " + e.to_s, :general_error)
+              @log.error("Error removing security group: " + e.to_s, :general_error)
             end
           }
         }

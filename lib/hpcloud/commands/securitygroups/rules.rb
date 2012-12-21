@@ -22,7 +22,7 @@ Aliases: securitygroups:rules:list
         cli_command(options) {
           rules = Rules.new(sec_group_name)
           if rules.empty?
-            display "You currently have no rules for the security group '#{sec_group_name}'."
+            @log.display "You currently have no rules for the security group '#{sec_group_name}'."
           else
             ray = rules.get_array
             Tableizer.new(options, RuleHelper.get_keys(), ray).print

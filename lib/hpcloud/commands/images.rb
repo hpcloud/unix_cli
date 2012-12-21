@@ -28,11 +28,11 @@ Aliases: images:list
         cli_command(options) {
           images = Images.new()
           if images.empty?
-            display "You currently have no images, use `#{selfname} images:add` to create one."
+            @log.display "You currently have no images, use `#{selfname} images:add` to create one."
           else
             ray = images.get_array(arguments)
             if ray.empty?
-              display "There are no images that match the provided arguments"
+              @log.display "There are no images that match the provided arguments"
             else
               Tableizer.new(options, ImageHelper.get_keys(), ray).print
             end

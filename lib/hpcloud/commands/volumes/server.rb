@@ -20,12 +20,12 @@ Examples:
           servers = Servers.new.get(arguments)
           servers.each { |server|
             if server.is_valid? == false
-              error_message server.error_string, server.error_code
+              @log.error server.error_string, server.error_code
               next
             end
             ray = VolumeAttachments.new(server).get_array()
             if ray.nil?
-              error_message "Cannot find any volumes for '#{server.name}'.", :not_found
+              @log.error "Cannot find any volumes for '#{server.name}'.", :not_found
               next
             end
             rayray += ray

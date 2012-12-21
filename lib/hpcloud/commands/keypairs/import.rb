@@ -16,7 +16,7 @@ Examples:
         cli_command(options) {
           keypair = Keypairs.new.get(key_name)
           if keypair.is_valid?
-            error "Key pair '#{key_name}' already exists.", :general_error
+            @log.fatal "Key pair '#{key_name}' already exists.", :general_error
           else
             keypair = KeypairHelper.new(Connection.instance)
             keypair.name = key_name
@@ -29,9 +29,9 @@ Examples:
             end
             keypair.public_key = public_key_data
             if keypair.save == true
-              display "Imported key pair '#{key_name}'."
+              @log.display "Imported key pair '#{key_name}'."
             else
-              error keypair.error_string, keypair.error_code
+              @log.fatal keypair.error_string, keypair.error_code
             end
           end
         }

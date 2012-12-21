@@ -17,12 +17,12 @@ Examples:
           if acl.is_valid?
             resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.revoke(acl)
-              display "Revoked #{acl} from #{name}"
+              @log.display "Revoked #{acl} from #{name}"
             else
-              error resource.error_string, resource.error_code
+              @log.fatal resource.error_string, resource.error_code
             end
           else
-            error acl.error_string, acl.error_code
+            @log.fatal acl.error_string, acl.error_code
           end
         }
       end

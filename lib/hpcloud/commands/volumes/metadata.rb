@@ -25,7 +25,7 @@ Aliases: volumes:metadata:list
             hsh = volume.meta.to_array()
             Tableizer.new(options, Metadata.get_keys(), hsh).print
           else
-            error volume.error_string, volume.error_code
+            @log.fatal volume.error_string, volume.error_code
           end
         }
       end

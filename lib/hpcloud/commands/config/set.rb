@@ -30,12 +30,12 @@ Aliases: config:add, config:update
               updated += " " if updated.empty? == false
               updated += nvp
             rescue Exception => e
-              error_message(e.to_s, :general_error)
+              @log.error(e.to_s, :general_error)
             end
           }
           if updated.empty? == false
             config.write()
-            display "Configuration set " + updated
+            @log.display "Configuration set " + updated
           end
         }
       end

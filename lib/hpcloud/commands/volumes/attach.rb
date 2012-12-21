@@ -22,15 +22,15 @@ Examples:
               if volume.fog.ready?
                 device = volume.map_device(device)
                 volume.attach(server, device)
-                display "Attached volume '#{volume.name}' to '#{server.name}' on '#{device}'."
+                @log.display "Attached volume '#{volume.name}' to '#{server.name}' on '#{device}'."
               else
-                error "Error attaching volume already in use '#{volume.name}'", :conflicted
+                @log.fatal "Error attaching volume already in use '#{volume.name}'", :conflicted
               end
             else
-              error volume.error_string, volume.error_code
+              @log.fatal volume.error_string, volume.error_code
             end
           else
-            error server.error_string, server.error_code
+            @log.fatal server.error_string, server.error_code
           end
         }
       end

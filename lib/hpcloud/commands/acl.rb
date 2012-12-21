@@ -25,12 +25,12 @@ Examples:
             if resource.read_header
               ray << resource.to_hash()
             else
-              error_message resource.error_string, resource.error_code
+              @log.error resource.error_string, resource.error_code
             end
           }
           keys =  [ "public", "readers", "writers", "public_url"]
           if ray.empty?
-            display "There are no resources that match the provided arguments"
+            @log.display "There are no resources that match the provided arguments"
           else
             Tableizer.new(options, keys, ray).print
           end

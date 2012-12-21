@@ -33,11 +33,11 @@ Aliases: volumes:list
             if options[:bootable]
               bootable = "bootable "
             end
-            display "You currently have no #{bootable}block volume devices, use `#{selfname} volumes:add <name>` to create one."
+            @log.display "You currently have no #{bootable}block volume devices, use `#{selfname} volumes:add <name>` to create one."
           else
             ray = volumes.get_array(arguments)
             if ray.empty?
-              display "There are no volumes that match the provided arguments"
+              @log.display "There are no volumes that match the provided arguments"
             else
               Tableizer.new(options, VolumeHelper.get_keys(), ray).print
             end

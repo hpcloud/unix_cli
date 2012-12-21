@@ -19,12 +19,12 @@ Aliases: images:metadata:update
           image = Images.new.get(name_or_id.to_s)
           if image.is_valid?
             if image.meta.set_metadata(metadata)
-              display "Image '#{name_or_id}' set metadata '#{metadata}'."
+              @log.display "Image '#{name_or_id}' set metadata '#{metadata}'."
             else
-              error(image.meta.error_string, image.meta.error_code)
+              @log.fatal(image.meta.error_string, image.meta.error_code)
             end
           else
-            error(image.error_string, image.error_code)
+            @log.fatal(image.error_string, image.error_code)
           end
         }
       end

@@ -25,12 +25,12 @@ Aliases: servers:rm, servers:delete, servers:del
             begin
               if server.is_valid?
                 server.destroy
-                display "Removed server '#{server.name}'."
+                @log.display "Removed server '#{server.name}'."
               else
-                error_message(server.error_string, server.error_code)
+                @log.error(server.error_string, server.error_code)
               end
             rescue Exception => e
-              error_message("Error removing server: " + e.to_s, :general_error)
+              @log.error("Error removing server: " + e.to_s, :general_error)
             end
           }
         }

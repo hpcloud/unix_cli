@@ -21,24 +21,16 @@ module HP
                :account_name => {:type => :string, :aliases => '-a',
                                  :desc => 'Select account.'}}
 
+      def initialize(*args)
+        super
+        @log = HP::Cloud::Log.new
+      end
+
       private
       def self.add_common_options
         GOPTS.each { |k,v| method_option(k, v) }
       end
 
-      # print some non-error output to the user
-      def display(message)
-        say message unless @silence_display
-      end
-    
-      # use as a block, will silence any output from #display while inside
-      def silence_display
-        current = @silence_display
-        @silence_display = true
-        yield
-        @silence_display = current # restore previous status
-      end
-    
       # display error message embedded in a REST response
       def display_error_message(error, exit_status=nil)
         error_message = error.respond_to?(:response) ? parse_error(error.response) : error.message
@@ -49,13 +41,6 @@ module HP
         end
       end
     
-      # pull the error message out of an XML response
-      def parse_error_xml(response)
-        response.body =~ /<Message>(.*)<\/Message>/
-        return $1 if $1
-        response.body
-      end
-
       # pull the error message out of an JSON response
       def parse_error(response)
         begin
@@ -66,12 +51,6 @@ module HP
           # Error message: "400 Bad Request\n\nBlah blah"
           response.body    #### the body is not in JSON format so just return it as it is
         end
-      end
-
-      # check to see if an error includes a particular text fragment
-      def error_message_includes?(error, text)
-        error_message = error.respond_to?(:response) ? parse_error(error.response) : error.message
-        error_message.include?(text)
       end
 
       # name of the running CLI script

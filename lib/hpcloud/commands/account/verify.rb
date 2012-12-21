@@ -14,12 +14,12 @@ Examples:
       define_method "account:verify" do |name|
         cli_command(options) {
           acct = HP::Cloud::Accounts.new().read(name)
-          display "Verifying '#{name}' account..."
+          @log.display "Verifying '#{name}' account..."
           begin
             Connection.instance.validate_account(acct[:credentials])
-            display "Able to connect to valid account '#{name}'."
+            @log.display "Able to connect to valid account '#{name}'."
           rescue Exception => e
-            error_message "Account verification failed. Error connecting to the service endpoint at: '#{acct[:credentials][:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}", :general_error
+            @log.error "Account verification failed. Error connecting to the service endpoint at: '#{acct[:credentials][:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}", :general_error
           end
         }
       end

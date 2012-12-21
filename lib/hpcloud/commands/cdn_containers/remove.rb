@@ -22,9 +22,9 @@ Aliases: cdn:containers:rm, cdn:containers:delete, cdn:containers:del
             begin
               name = name[1..-1] if name.start_with?(":")
               Connection.instance.cdn.delete_container(name)
-              display "Removed container '#{name}' from the CDN."
+              @log.display "Removed container '#{name}' from the CDN."
             rescue Excon::Errors::NotFound, Fog::CDN::HP::NotFound
-              error_message "You don't have a container named '#{name}' on the CDN.", :not_found
+              @log.error "You don't have a container named '#{name}' on the CDN.", :not_found
             end
           }
         }

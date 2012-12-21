@@ -22,11 +22,11 @@ Aliases: fetch
           sources.each { |name|
             from = ResourceFactory.create(Connection.instance.storage, name)
             if from.isRemote() == false
-              error_message "Source object does not appear to be remote '#{from.fname}'.", :incorrect_usage
+              @log.error "Source object does not appear to be remote '#{from.fname}'.", :incorrect_usage
             elsif to.copy(from)
-              display "Copied #{from.fname} => #{to.fname}"
+              @log.display "Copied #{from.fname} => #{to.fname}"
             else
-              error to.error_string, to.error_code
+              @log.fatal to.error_string, to.error_code
             end
           }
         }

@@ -27,12 +27,12 @@ Aliases: containers:rm, containers:delete, containers:del
             resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.is_container?
               if resource.remove(options.force)
-                display "Removed container '#{name}'."
+                @log.display "Removed container '#{name}'."
               else
-                error_message resource.error_string, resource.error_code
+                @log.error resource.error_string, resource.error_code
               end
             else
-              error_message "The specified object is not a container: #{name}", :incorrect_usage
+              @log.error "The specified object is not a container: #{name}", :incorrect_usage
             end
           }
         }

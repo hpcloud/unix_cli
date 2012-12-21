@@ -24,11 +24,11 @@ Aliases: securitygroups:list
         cli_command(options) {
           securitygroups = SecurityGroups.new
           if securitygroups.empty?
-            display "You currently have no security groups, , use `#{selfname} securitygroups:add <name>` to create one."
+            @log.display "You currently have no security groups, , use `#{selfname} securitygroups:add <name>` to create one."
           else
             ray = securitygroups.get_array(arguments)
             if ray.empty?
-              display "There are no security groups that match the provided arguments"
+              @log.display "There are no security groups that match the provided arguments"
             else
               Tableizer.new(options, SecurityGroupHelper.get_keys(), ray).print
             end

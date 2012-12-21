@@ -30,13 +30,13 @@ Aliases: account:list
             config = Config.new(true)
             name = config.get(:default_account)
             listo = accounts.list
-            display listo.gsub(/^(#{name})$/, '\1 <= default')
+            @log.display listo.gsub(/^(#{name})$/, '\1 <= default')
           else
             begin
               acct = accounts.read(name)
-              display acct.to_yaml.gsub(/---\n/,'').gsub(/^:/,'').gsub(/^[ ]*:/,'  ')
+              @log.display acct.to_yaml.gsub(/---\n/,'').gsub(/^:/,'').gsub(/^[ ]*:/,'  ')
             rescue Exception => e
-              error_message(e.to_s, :general_error)
+              @log.error(e.to_s, :general_error)
             end
           end
         }

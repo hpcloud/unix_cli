@@ -28,16 +28,16 @@ Aliases: rm, delete, destroy, del
             if resource.is_container?
               unless options.force?
                 unless yes?("Are you sure you want to remove the container '#{name}'?")
-                  display "Container '#{name}' not removed."
+                  @log.display "Container '#{name}' not removed."
                   next
                 end
                 forceit = true
               end
             end
             if resource.remove(forceit)
-              display "Removed '#{name}'."
+              @log.display "Removed '#{name}'."
             else
-              error_message resource.error_string, resource.error_code
+              @log.error resource.error_string, resource.error_code
             end
           }
         }

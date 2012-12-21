@@ -3,6 +3,7 @@ require 'fog'
 
 require 'hpcloud/version'
 require 'hpcloud/error_response'
+require 'hpcloud/log'
 
 require 'hpcloud/base_helper'
 require 'hpcloud/address_helper'
