@@ -31,16 +31,6 @@ module HP
         GOPTS.each { |k,v| method_option(k, v) }
       end
 
-      # display error message embedded in a REST response
-      def display_error_message(error, exit_status=nil)
-        error_message = error.respond_to?(:response) ? parse_error(error.response) : error.message
-        if exit_status === false # don't exit
-          $stderr.puts error_message
-        else
-          error error_message, exit_status
-        end
-      end
-    
       # pull the error message out of an JSON response
       def parse_error(response)
         begin
@@ -85,38 +75,38 @@ module HP
         begin
           yield
         rescue Excon::Errors::BadRequest => error
-          display_error_message(error, :incorrect_usage)
+          @log.fatal(error, :incorrect_usage)
         rescue Excon::Errors::InternalServerError => error
-          display_error_message(error, :general_error)
+          @log.fatal(error, :general_error)
         rescue Fog::HP::Errors::ServiceError => error
-          display_error_message(error, :general_error)
+          @log.fatal(error, :general_error)
         rescue Fog::BlockStorage::HP::NotFound => error
-          display_error_message(error, :not_found)
+          @log.fatal(error, :not_found)
         rescue Fog::CDN::HP::NotFound => error
-          display_error_message(error, :not_found)
+          @log.fatal(error, :not_found)
         rescue Fog::Compute::HP::NotFound => error
-          display_error_message(error, :not_found)
+          @log.fatal(error, :not_found)
         rescue Fog::Storage::HP::NotFound => error
-          display_error_message(error, :not_found)
+          @log.fatal(error, :not_found)
         rescue Fog::BlockStorage::HP::Error => error
-          display_error_message(error, :general_error)
+          @log.fatal(error, :general_error)
         rescue Fog::CDN::HP::Error => error
-          display_error_message(error, :general_error)
+          @log.fatal(error, :general_error)
         rescue Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
+          @log.fatal(error, :general_error)
         rescue Fog::Storage::HP::Error => error
-          display_error_message(error, :general_error)
+          @log.fatal(error, :general_error)
         rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
+          @log.fatal(error, :permission_denied)
         rescue Excon::Errors::Conflict => error
-          display_error_message(error, :conflicted)
+          @log.fatal(error, :conflicted)
         rescue Excon::Errors::NotFound => error
-          display_error_message(error, :not_found)
+          @log.fatal(error, :not_found)
         rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
+          @log.fatal(error, :rate_limited)
         rescue SystemExit => error
         rescue Exception => error
-          display_error_message(error, :general_error)
+          @log.fatal(error, :general_error)
         end
         checker = Checker.new
         if checker.process

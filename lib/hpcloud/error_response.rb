@@ -31,6 +31,9 @@ module HP
         error_message.include?(text)
       end
 
+      def to_s
+        @error_string
+      end
     end
   end
 end

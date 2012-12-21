@@ -27,12 +27,17 @@ module HP
         return exit_code
       end
 
-      def fatal(message, exit_status)
-        $stderr.puts message
-        exit Log.get_exit_code(exit_status)
+      def fatal(err, exit_status)
+        error(err, exit_status)
+        exit Log.get_exit_code(@exit_status)
       end
 
-      def error(message, exit_status)
+      def error(err, exit_status)
+        if err.kind_of?(String)
+          message = err
+        else
+          message = ErrorResponse.new(err).to_s
+        end
         $stderr.puts message
         @exit_status = exit_status
       end
