@@ -3,11 +3,11 @@ module HP
     class BaseHelper
       attr_accessor :error_string, :error_code, :fog, :connection
 
-      def initialize(connection, obj = nil)
+      def initialize(connection, foggy = nil)
         @connection = connection
         @error_string = nil
         @error_code = nil
-        @fog = obj
+        @fog = foggy
       end
 
       def to_hash

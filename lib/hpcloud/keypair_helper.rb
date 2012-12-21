@@ -1,21 +1,20 @@
 module HP
   module Cloud
     class KeypairHelper < BaseHelper
-      attr_accessor :error_string, :error_code, :fog
       attr_accessor :id, :name, :fingerprint, :public_key, :private_key
     
       def self.get_keys()
         return [ "name", "fingerprint" ]
       end
 
-      def initialize(connection, keypair = nil)
-        super(connection, keypair)
-        return if keypair.nil?
-        @id = keypair.name
-        @name = keypair.name
-        @fingerprint = keypair.fingerprint
-        @public_key = keypair.public_key
-        @private_key = keypair.private_key
+      def initialize(connection, foggy = nil)
+        super(connection, foggy)
+        return if foggy.nil?
+        @id = foggy.name
+        @name = foggy.name
+        @fingerprint = foggy.fingerprint
+        @public_key = foggy.public_key
+        @private_key = foggy.private_key
       end
 
       def save

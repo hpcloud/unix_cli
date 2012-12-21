@@ -2,39 +2,35 @@ require 'hpcloud/metadata'
 
 module HP
   module Cloud
-    class ServerHelper
-      attr_reader :meta, :private_key, :windows, :fog
-      attr_accessor :error_string, :error_code, :meta
-      attr_accessor :id, :name, :flavor, :image, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state, :volume
+    class ServerHelper < BaseHelper
+      attr_reader :private_key, :windows
+      attr_accessor :id, :name, :flavor, :image, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state, :volume, :meta
     
       def self.get_keys()
         return [ "id", "name", "flavor", "image", "public_ip", "private_ip", "keyname", "security_groups", "created", "state" ]
       end 
         
-      def initialize(compute, s = nil)
-        @compute = compute
+      def initialize(connection, foggy = nil)
+        super(connection, foggy)
         @windows = false
         @private_image = false
-        @error_string = nil
-        @error_code = nil
-        @fog = s
-        if s.nil?
+        if foggy.nil?
           @meta = HP::Cloud::Metadata.new(nil)
           return
         end
-        @id = s.id
-        @name = s.name
-        @flavor = s.flavor_id
-        @image = s.image_id
-        @public_ip = s.public_ip_address
-        @private_ip = s.private_ip_address
-        @keyname = s.key_name
-        unless s.security_groups.nil?
-          @security_groups = s.security_groups.map {|sg| sg["name"]}.join(', ')
+        @id = foggy.id
+        @name = foggy.name
+        @flavor = foggy.flavor_id
+        @image = foggy.image_id
+        @public_ip = foggy.public_ip_address
+        @private_ip = foggy.private_ip_address
+        @keyname = foggy.key_name
+        unless foggy.security_groups.nil?
+          @security_groups = foggy.security_groups.map {|sg| sg["name"]}.join(', ')
         end
-        @created = s.created_at
-        @state = s.state
-        @meta = HP::Cloud::Metadata.new(s.metadata)
+        @created = foggy.created_at
+        @state = foggy.state
+        @meta = HP::Cloud::Metadata.new(foggy.metadata)
       end
 
       def set_flavor(value)
@@ -139,12 +135,6 @@ module HP
         return true
       end
 
-      def to_hash
-        hash = {}
-        instance_variables.each {|var| hash[var.to_s.delete("@")] = instance_variable_get(var) }
-        hash
-      end
-
       def windows_password(retries=10)
         begin
           (0..retries).each { |x|
@@ -206,7 +196,7 @@ module HP
                      'device_name' => 'vda'
                    }]
           end
-          server = @compute.servers.create(hsh)
+          server = @connection.servers.create(hsh)
           if server.nil?
             @error_string = "Error creating server '#{@name}'"
             @error_code = :general_error
@@ -234,10 +224,6 @@ module HP
 
       def is_private_image?
         return @private_image
-      end
-
-      def is_valid?
-        return @error_string.nil?
       end
 
       def destroy
