@@ -1,35 +1,14 @@
 module HP
   module Cloud
     class Log
-      ERROR_TYPES = { :success              => 0,
-                      :general_error        => 1,
-                      :not_supported        => 3,
-                      :not_found            => 4,
-                      :conflicted           => 5,
-                      :incorrect_usage      => 64,
-                      :permission_denied    => 77,
-                      :rate_limited         => 88,
-                      :unknown_status       => 99
-                    }
-
-      def initialize
-        @error_status = nil
+      def initialize(shell)
         @silence_display = nil
-      end
-
-      def get_exit_code(exit_status)
-        if exit_status.is_a?(Symbol)
-          exit_code = ERROR_TYPES[exit_status]
-        else
-          exit_code = ERROR_TYPES[:unknown_status]
-        end
-        exit_code = ERROR_TYPES[:unknown_status] if exit_code.nil?
-        return exit_code
+        @shell = shell
       end
 
       def fatal(err, exit_status)
         error(err, exit_status)
-        exit Log.get_exit_code(@exit_status)
+        exit @shell.exit_status.get
       end
 
       def error(err, exit_status)
@@ -39,11 +18,11 @@ module HP
           message = ErrorResponse.new(err).to_s
         end
         $stderr.puts message
-        @exit_status = exit_status
+        @shell.exit_status.set(exit_status)
       end
 
       def display(message)
-        say message unless @silence_display
+        @shell.say message unless @silence_display
       end
     end
   end

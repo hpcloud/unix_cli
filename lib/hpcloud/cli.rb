@@ -5,17 +5,8 @@ require 'hpcloud/thor_ext/thor'
 module HP
   module Cloud
     class CLI < Thor
+      attr_accessor :exit_status
     
-      ERROR_TYPES = { :success              => 0,
-                      :general_error        => 1,
-                      :not_supported        => 3,
-                      :not_found            => 4,
-                      :conflicted           => 5,
-                      :incorrect_usage      => 64,
-                      :permission_denied    => 77,
-                      :rate_limited         => 88
-                    }
-
       GOPTS = {:availability_zone => {:type => :string, :aliases => '-z',
                                       :desc => 'Set the availability zone.'},
                :account_name => {:type => :string, :aliases => '-a',
@@ -23,24 +14,13 @@ module HP
 
       def initialize(*args)
         super
-        @log = HP::Cloud::Log.new
+        @exit_status = HP::Cloud::ExitStatus.new
+        @log = HP::Cloud::Log.new(self)
       end
 
       private
       def self.add_common_options
         GOPTS.each { |k,v| method_option(k, v) }
-      end
-
-      # pull the error message out of an JSON response
-      def parse_error(response)
-        begin
-          err_msg = MultiJson.decode(response.body)
-          # Error message:  {"badRequest": {"message": "Invalid IP protocol ttt.", "code": 400}}
-          err_msg.map {|_,v| v["message"] if v.has_key?("message")}
-        rescue MultiJson::DecodeError => error
-          # Error message: "400 Bad Request\n\nBlah blah"
-          response.body    #### the body is not in JSON format so just return it as it is
-        end
       end
 
       # name of the running CLI script
@@ -55,22 +35,7 @@ module HP
         return response.empty? ? default : response
       end
     
-      def error(message, exit_status=nil)
-        error_message(message, exit_status)
-        exit @exit_status || 1
-      end
-
-      def error_message(message, exit_status=nil)
-        $stderr.puts message
-        if exit_status.is_a?(Symbol)
-          @exit_status = ERROR_TYPES[exit_status]
-        else
-          @exit_status = ERROR_TYPES[:general_error]
-        end
-      end
-
       def cli_command(options)
-        @exit_status = ERROR_TYPES[:success]
         Connection.instance.set_options(options)
         begin
           yield
@@ -112,8 +77,7 @@ module HP
         if checker.process
           warn "A new version v#{checker.latest} of the Unix CLI is available at https://docs.hpcloud.com/cli/unix/install"
         end
-        @exit_status = ERROR_TYPES[:success] if @exit_status.nil?
-        exit @exit_status
+        exit @exit_status.get
       end
     end
   end

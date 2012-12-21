@@ -29,7 +29,7 @@ RSpec.configure do |config|
   RSpec::Matchers.define :be_exit do |expected|
     match do |actual|
       if expected.is_a?(Symbol)
-        actual == HP::Cloud::CLI::ERROR_TYPES[expected]
+        actual == HP::Cloud::ExitStatus::TYPES[expected]
       else
         actual == expected
       end
