@@ -1,6 +1,8 @@
 module HP
   module Cloud
-    class ExitStatus
+    class CliStatus
+      attr_accessor :message, :exit_code, :error_code
+
       TYPES = { :success              => 0,
                 :general_error        => 1,
                 :not_supported        => 3,
@@ -12,29 +14,44 @@ module HP
                 :unknown_status       => 99
               }
 
-      def initialize
-        @exit_status = :success
+      def initialize(message = nil, code = :success)
+        @message = message
+        @error_code = :success
         @exit_code = 0
+        set(code)
       end
 
-      def set(exit_status)
-        unless exit_status.is_a?(Symbol)
-          warn "Unknown exit status: #{exit_status.to_s}"
-          exit_status = :unknown_status
+      def set(code)
+        unless code.is_a?(Symbol)
+          if code.is_a?(CliStatus)
+            @message = code.message
+            code = code.error_code
+          else
+            warn "Incorrect error code: #{code.to_s}"
+            code = :unknown_status
+          end
         end
-        exit_code = TYPES[exit_status]
+        exit_code = TYPES[code]
         if exit_code.nil?
-          warn "Unknown exit status: #{exit_status.to_s}"
+          warn "Unknown error code: #{code.to_s}"
           exit_code = TYPES[:unknown_status]
         end
         if exit_code > @exit_code
-          @exit_status = exit_status
+          @error_code = code
           @exit_code = exit_code 
         end
       end
 
+      def is_success?
+        return @error_code == :success
+      end
+
       def get
         return @exit_code
+      end
+
+      def to_s
+        return @message.to_s
       end
     end
   end

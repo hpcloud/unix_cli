@@ -40,8 +40,7 @@ module HP
 
       def save
         if is_valid?
-          @error_string = @meta.error_string
-          @error_code = @meta.error_code
+          set_status(@meta.cstatus)
         end
         return false if is_valid? == false
         if @fog.nil?
@@ -53,8 +52,7 @@ module HP
           hsh[:image_id] = @imageref unless @imageref.nil?
           volume = @connection.block.volumes.create(hsh)
           if volume.nil?
-            @error_string = "Error creating volume '#{@name}'"
-            @error_code = :general_error
+            set_status("Error creating volume '#{@name}'", :general_error)
             return false
           end
           @id = volume.id
@@ -69,8 +67,7 @@ module HP
         begin
           @fog.attach(server.id, device)
         rescue Exception => e
-          @error_string = "Error attaching '#{name}' on server '#{server.name}' to device '#{device}'."
-          @error_code = :general_error
+          set_status("Error attaching '#{name}' on server '#{server.name}' to device '#{device}'.", :general_error)
           return false
         end
         return true
@@ -80,8 +77,7 @@ module HP
         begin
           @fog.detach
         rescue Exception => e
-          @error_string = "Error detaching '#{name}' from '#{@servers}'."
-          @error_code = :general_error
+          set_status("Error detaching '#{name}' from '#{@servers}'.", :general_error)
           return false
         end
         return true

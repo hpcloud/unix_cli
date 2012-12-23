@@ -21,8 +21,7 @@ module HP
         if @fog.nil?
           address = @connection.compute.addresses.create
           if address.nil?
-            @error_string = "Error creating ip address"
-            @error_code = :general_error
+            set_status("Error creating ip address", :general_error)
             return false
           end
           @id = address.id

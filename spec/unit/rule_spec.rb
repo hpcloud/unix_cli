@@ -36,8 +36,8 @@ describe "Rule methods" do
       item.protocol.should eq("tcp")
       item.from.should eq(3389)
       item.to.should eq(3390)
-      item.error_string.should be_nil
-      item.error_code.should be_nil
+      item.cstatus.message.should be_nil
+      item.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -57,8 +57,8 @@ describe "Rule methods" do
       item.protocol.should eq("tcp")
       item.from.should eq(3389)
       item.to.should eq(3390)
-      item.error_string.should be_nil
-      item.error_code.should be_nil
+      item.cstatus.message.should be_nil
+      item.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -71,8 +71,8 @@ describe "Rule methods" do
       item.protocol.should be_nil
       item.from.should be_nil
       item.to.should be_nil
-      item.error_string.should be_nil
-      item.error_code.should be_nil
+      item.cstatus.message.should be_nil
+      item.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -106,8 +106,8 @@ describe "Rule methods" do
 
       item.id.should eq(444)
       item.fog.should eq(@body['security_group_rule'])
-      item.error_string.should be_nil
-      item.error_code.should be_nil
+      item.cstatus.message.should be_nil
+      item.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -124,8 +124,8 @@ describe "Rule methods" do
 
       item.save.should be_false
 
-      item.error_string.should eq("Error creating rule")
-      item.error_code.should eq(:general_error)
+      item.cstatus.message.should eq("Error creating rule")
+      item.cstatus.error_code.should eq(:general_error)
     end
   end
 end

@@ -32,8 +32,8 @@ describe "Address methods" do
       disk.ip.should eql("127.0.0.1")
       disk.fixed_ip.should eql("127.0.0.2")
       disk.instance_id.should eql(2)
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -45,8 +45,8 @@ describe "Address methods" do
       disk.ip.should be_nil
       disk.fixed_ip.should be_nil
       disk.instance_id.should be_nil
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -98,8 +98,8 @@ describe "Address methods" do
       addy.id.should be_nil
       addy.ip.should be_nil
       addy.fixed_ip.should be_nil
-      addy.error_string.should eq("Error creating ip address")
-      addy.error_code.should eq(:general_error)
+      addy.cstatus.message.should eq("Error creating ip address")
+      addy.cstatus.error_code.should eq(:general_error)
     end
   end
 end

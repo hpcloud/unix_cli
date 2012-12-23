@@ -38,8 +38,7 @@ module HP
              :description => @description}
           snapshot = @connection.block.snapshots.create(hsh)
           if snapshot.nil?
-            @error_string = "Error creating snapshot '#{@name}'"
-            @error_code = :general_error
+            set_status("Error creating snapshot '#{@name}'", :general_error)
             return false
           end
           @id = snapshot.id

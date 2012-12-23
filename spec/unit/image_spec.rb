@@ -125,15 +125,14 @@ describe "Image class" do
       img.name = "bob"
       img.set_server("Hal")
       img.meta.set_metadata('luke=skywalker,han=solo')
-      @server.stub(:error_string).and_return('bogus server')
-      @server.stub(:error_code).and_return(:not_found)
+      @server.stub(:cstatus).and_return(CliStatus.new("bogus server", :not_found))
       @server.stub(:is_valid?).and_return(false)
 
       img.save.should be_false
 
       img.id.should be_nil
-      img.error_string.should eq("bogus server")
-      img.error_code.should eq(:not_found)
+      img.cstatus.message.should eq("bogus server")
+      img.cstatus.error_code.should eq(:not_found)
     end
   end
 
@@ -144,14 +143,13 @@ describe "Image class" do
       img.set_server("Hal")
       img.meta.set_metadata('luke=skywalker,han=solo')
       @server.should_receive(:create_image).with("bob", {"luke"=>"skywalker","han"=>"solo"}).and_return(nil)
-      @server.stub(:error_string).and_return("Error creating image 'bob'")
-      @server.stub(:error_code).and_return(:general_error)
+      @server.stub(:cstatus).and_return(CliStatus.new("Error creating image 'bob'", :general_error))
 
       img.save.should be_false
 
       img.id.should be_nil
-      img.error_string.should eq("Error creating image 'bob'")
-      img.error_code.should eq(:general_error)
+      img.cstatus.message.should eq("Error creating image 'bob'")
+      img.cstatus.error_code.should eq(:general_error)
     end
   end
 
@@ -165,8 +163,8 @@ describe "Image class" do
       img.save.should be_false
 
       img.id.should be_nil
-      img.error_string.should eq("Invalid metadata 'bogusmetadata' should be in the form 'k1=v1,k2=v2,...'")
-      img.error_code.should eq(:incorrect_usage)
+      img.cstatus.message.should eq("Invalid metadata 'bogusmetadata' should be in the form 'k1=v1,k2=v2,...'")
+      img.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 

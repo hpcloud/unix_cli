@@ -29,8 +29,8 @@ describe "SecurityGroup methods" do
       disk.id.should eq(2)
       disk.name.should eq("cave")
       disk.description.should eq("allegory")
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -41,8 +41,8 @@ describe "SecurityGroup methods" do
       disk.id.should be_nil
       disk.name.should be_nil
       disk.description.should be_nil
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -74,8 +74,8 @@ describe "SecurityGroup methods" do
       secg.save.should be_true
 
       secg.id.should eq(3333)
-      secg.error_string.should be_nil
-      secg.error_code.should be_nil
+      secg.cstatus.message.should be_nil
+      secg.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -93,8 +93,8 @@ describe "SecurityGroup methods" do
 
       secg.save.should be_false
 
-      secg.error_string.should eq("Error creating security group")
-      secg.error_code.should eq(:general_error)
+      secg.cstatus.message.should eq("Error creating security group")
+      secg.cstatus.error_code.should eq(:general_error)
     end
   end
 end

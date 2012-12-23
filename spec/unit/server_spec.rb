@@ -98,8 +98,8 @@ describe "Server class" do
 
       srv.set_flavor('bogus').should be_false
 
-      srv.error_string.should eq("Cannot find a flavor matching 'bogus'.")
-      srv.error_code.should eq(:not_found)
+      srv.cstatus.message.should eq("Cannot find a flavor matching 'bogus'.")
+      srv.cstatus.error_code.should eq(:not_found)
       srv.is_windows?.should be_false
       srv.image.should be_nil
     end
@@ -119,8 +119,8 @@ describe "Server class" do
 
       srv.set_flavor('flavor_flav').should be_true
 
-      srv.error_string.should be_nil
-      srv.error_code.should be_nil
+      srv.cstatus.message.should be_nil
+      srv.cstatus.error_code.should eq(:success)
       srv.flavor.should eq(1959)
     end
   end
@@ -134,8 +134,8 @@ describe "Server class" do
 
       srv.set_image('bogus').should be_false
 
-      srv.error_string.should eq("Cannot find a image matching 'bogus'.")
-      srv.error_code.should eq(:not_found)
+      srv.cstatus.message.should eq("Cannot find a image matching 'bogus'.")
+      srv.cstatus.error_code.should eq(:not_found)
       srv.is_windows?.should be_false
       srv.image.should be_nil
     end
@@ -159,8 +159,8 @@ describe "Server class" do
 
       srv.set_image('good').should be_true
 
-      srv.error_string.should be_nil
-      srv.error_code.should be_nil
+      srv.cstatus.message.should be_nil
+      srv.cstatus.error_code.should eq(:success)
       srv.is_windows?.should be_true
       srv.image.should eq(2222)
     end
@@ -178,8 +178,8 @@ describe "Server class" do
 
       srv.set_volume('bogus').should be_false
 
-      srv.error_string.should eq("Cannot find a volume matching 'bogus'.")
-      srv.error_code.should eq(:not_found)
+      srv.cstatus.message.should eq("Cannot find a volume matching 'bogus'.")
+      srv.cstatus.error_code.should eq(:not_found)
       srv.is_windows?.should be_false
       srv.volume.should be_nil
     end
@@ -210,8 +210,8 @@ describe "Server class" do
 
       srv.set_volume('good').should be_true
 
-      srv.error_string.should be_nil
-      srv.error_code.should be_nil
+      srv.cstatus.message.should be_nil
+      srv.cstatus.error_code.should eq(:success)
       srv.is_windows?.should be_false
       srv.volume.should eq(2222)
     end
@@ -225,8 +225,8 @@ describe "Server class" do
 
       srv.set_keypair(nil).should be_true
 
-      srv.error_string.should be_nil
-      srv.error_code.should be_nil
+      srv.cstatus.message.should be_nil
+      srv.cstatus.error_code.should eq(:success)
       srv.keyname.should be_nil
     end
   end
@@ -240,8 +240,8 @@ describe "Server class" do
 
       srv.set_keypair('bogus').should be_false
 
-      srv.error_string.should eq("Cannot find a keypair matching 'bogus'.")
-      srv.error_code.should eq(:not_found)
+      srv.cstatus.message.should eq("Cannot find a keypair matching 'bogus'.")
+      srv.cstatus.error_code.should eq(:not_found)
       srv.keyname.should be_nil
     end
   end
@@ -260,8 +260,8 @@ describe "Server class" do
 
       srv.set_keypair('good').should be_true
 
-      srv.error_string.should be_nil
-      srv.error_code.should be_nil
+      srv.cstatus.message.should be_nil
+      srv.cstatus.error_code.should eq(:success)
       srv.keyname.should eq('good')
     end
   end
@@ -275,8 +275,8 @@ describe "Server class" do
       srv.set_private_key("spec/fixtures/files/foo.txt").should be_true
 
       srv.private_key.should eq("This is a foo file.")
-      srv.error_string.should be_nil
-      srv.error_code.should be_nil
+      srv.cstatus.message.should be_nil
+      srv.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -290,8 +290,8 @@ describe "Server class" do
 
       srv.private_key.should be_nil
       path = File.expand_path(File.dirname(__FILE__) + '/../..')
-      srv.error_string.should eq("Error reading private key file 'non/existent/file.txt': No such file or directory - #{path}/non/existent/file.txt")
-      srv.error_code.should eq(:incorrect_usage)
+      srv.cstatus.message.should eq("Error reading private key file 'non/existent/file.txt': No such file or directory - #{path}/non/existent/file.txt")
+      srv.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 
@@ -304,8 +304,8 @@ describe "Server class" do
       srv.set_private_key(nil).should be_true
 
       srv.private_key.should be_nil
-      srv.error_string.should be_nil
-      srv.error_code.should be_nil
+      srv.cstatus.message.should be_nil
+      srv.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -329,8 +329,8 @@ describe "Server class" do
       srv.set_private_key(nil).should be_false
 
       srv.private_key.should be_nil
-      srv.error_string.should eq("You must specify the private key file if you want to create a windows instance.")
-      srv.error_code.should eq(:incorrect_usage)
+      srv.cstatus.message.should eq("You must specify the private key file if you want to create a windows instance.")
+      srv.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 
@@ -377,8 +377,8 @@ describe "Server class" do
     it "it changes the security_groups and returns false" do
       srv = HP::Cloud::ServerHelper.new(double("connection"))
       srv.set_security_groups('un","deux",trois').should be_false
-      srv.error_string.should eq("Invalid security group 'un\",\"deux\",trois' should be comma separated list")
-      srv.error_code.should eq(:incorrect_usage)
+      srv.cstatus.message.should eq("Invalid security group 'un\",\"deux\",trois' should be comma separated list")
+      srv.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 
@@ -459,8 +459,8 @@ describe "Server class" do
       srv.save.should be_false
 
       srv.id.should be_nil
-      srv.error_string.should eq("Error creating server 'bob'")
-      srv.error_code.should eq(:general_error)
+      srv.cstatus.message.should eq("Error creating server 'bob'")
+      srv.cstatus.error_code.should eq(:general_error)
     end
   end
 
@@ -477,8 +477,8 @@ describe "Server class" do
       srv.save.should be_false
 
       srv.id.should be_nil
-      srv.error_string.should eq("Invalid metadata 'whiskeytangofoxtrot' should be in the form 'k1=v1,k2=v2,...'")
-      srv.error_code.should eq(:incorrect_usage)
+      srv.cstatus.message.should eq("Invalid metadata 'whiskeytangofoxtrot' should be in the form 'k1=v1,k2=v2,...'")
+      srv.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 
@@ -493,8 +493,8 @@ describe "Server class" do
       srv.save.should be_false
 
       srv.id.should be_nil
-      srv.error_string.should include("Error reading private key file 'bogus'")
-      srv.error_code.should eq(:incorrect_usage)
+      srv.cstatus.message.should include("Error reading private key file 'bogus'")
+      srv.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 end

@@ -1,12 +1,11 @@
 module HP
   module Cloud
     class BaseHelper
-      attr_accessor :error_string, :error_code, :fog, :connection
+      attr_accessor :fog, :connection, :cstatus
 
       def initialize(connection, foggy = nil)
         @connection = connection
-        @error_string = nil
-        @error_code = nil
+        @cstatus = CliStatus.new
         @fog = foggy
       end
 
@@ -16,8 +15,15 @@ module HP
         hash
       end
 
+      def set_status(noo, status = :general_error)
+        unless noo.is_a?(CliStatus)
+          noo = CliStatus.new(noo, status)
+        end
+        @cstatus.set(noo)
+      end
+
       def is_valid?
-        return @error_string.nil?
+        return @cstatus.is_success?
       end
 
       def destroy

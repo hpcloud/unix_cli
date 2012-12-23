@@ -14,7 +14,7 @@ module HP
 
       def initialize(*args)
         super
-        @exit_status = HP::Cloud::ExitStatus.new
+        @exit_status = HP::Cloud::CliStatus.new
         @log = HP::Cloud::Log.new(self)
       end
 

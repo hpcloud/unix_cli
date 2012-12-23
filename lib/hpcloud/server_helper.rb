@@ -36,8 +36,7 @@ module HP
       def set_flavor(value)
         flav = Flavors.new.get(value, false)
         unless flav.is_valid?
-          @error_string = flav.error_string
-          @error_code = flav.error_code
+          set_status(flav.cstatus)
           return false
         end
         @flavor = flav.id
@@ -50,8 +49,7 @@ module HP
         @private_image = false
         image = Images.new().get(value, false)
         unless image.is_valid?
-          @error_string = image.error_string
-          @error_code = image.error_code
+          set_status(image.cstatus)
           return false
         end
         @windows = image.is_windows?
@@ -65,8 +63,7 @@ module HP
         @windows = false # windows not supported right now
         volume = Volumes.new().get(value, false)
         unless volume.is_valid?
-          @error_string = volume.error_string
-          @error_code = volume.error_code
+          set_status(volume.cstatus)
           return false
         end
         @volume = volume.id
@@ -79,8 +76,7 @@ module HP
         end
         @keypair = Keypairs.new.get(value, false)
         unless @keypair.is_valid?
-          @error_string = @keypair.error_string
-          @error_code = @keypair.error_code
+          set_status(@keypair.cstatus)
           return false
         end
         @keyname = @keypair.name
@@ -112,8 +108,7 @@ module HP
         rescue SyntaxError => se
         rescue NameError => ne
         end
-        @error_string = "Invalid security group '#{value}' should be comma separated list"
-        @error_code = :incorrect_usage
+        set_status("Invalid security group '#{value}' should be comma separated list", :incorrect_usage)
         return false
       end
 
@@ -121,15 +116,13 @@ module HP
         if value.nil?
           return true unless @windows
           return true unless @private_key.nil?
-          @error_string = "You must specify the private key file if you want to create a windows instance."
-          @error_code = :incorrect_usage
+          set_status("You must specify the private key file if you want to create a windows instance.", :incorrect_usage)
           return false
         end
         begin
           @private_key = File.read(File.expand_path(value))
         rescue Exception => e
-          @error_string = "Error reading private key file '#{value}': " + e.to_s
-          @error_code = :incorrect_usage
+          set_status("Error reading private key file '#{value}': " + e.to_s, :incorrect_usage)
           return false
         end
         return true
@@ -158,8 +151,7 @@ module HP
       def create_image(name, hash)
         resp = @fog.create_image(name , hash)
         if resp.nil?
-          @error_string = "Error creating image '#{name}'"
-          @error_code = :general_error
+          set_status("Error creating image '#{name}'", :general_error)
           return nil
         end
         return resp.headers["Location"].gsub(/.*\/images\//,'')
@@ -167,16 +159,14 @@ module HP
 
       def save
         if is_valid?
-          @error_string = @meta.error_string
-          @error_code = @meta.error_code
+          set_status(@meta.cstatus)
         end
         return false if is_valid? == false
         acct = Accounts.new.get(Connection.instance.get_account)
         @flavor = acct[:options][:preferred_flavor] if @flavor.nil?
         @image = acct[:options][:preferred_image] if @image.nil?  && @volume.nil?
         if @image.nil? && @volume.nil?
-          @error_string = "You must specify either an image or a volume to create a server."
-          @error_code = :incorrect_usage
+          set_status("You must specify either an image or a volume to create a server.", :incorrect_usage)
           return false
         end
         if @fog.nil?
@@ -198,8 +188,7 @@ module HP
           end
           server = @connection.servers.create(hsh)
           if server.nil?
-            @error_string = "Error creating server '#{@name}'"
-            @error_code = :general_error
+            set_status("Error creating server '#{@name}'", :general_error)
             return false
           end
           @id = server.id

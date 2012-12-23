@@ -31,8 +31,8 @@ describe "Keypair methods" do
       disk.public_key.should eq("bones")
       disk.private_key.should eq("cartilage")
       disk.fingerprint.should eq("exoskeleton")
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -45,8 +45,8 @@ describe "Keypair methods" do
       disk.public_key.should be_nil
       disk.private_key.should be_nil
       disk.fingerprint.should be_nil
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -78,8 +78,8 @@ describe "Keypair methods" do
 
       keyp.save.should be_true
 
-      keyp.error_string.should be_nil
-      keyp.error_code.should be_nil
+      keyp.cstatus.message.should be_nil
+      keyp.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -96,8 +96,8 @@ describe "Keypair methods" do
 
       keyp.save.should be_true
 
-      keyp.error_string.should be_nil
-      keyp.error_code.should be_nil
+      keyp.cstatus.message.should be_nil
+      keyp.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -113,8 +113,8 @@ describe "Keypair methods" do
 
       keyp.save.should be_false
 
-      keyp.error_string.should eq("Error creating keypair")
-      keyp.error_code.should eq(:general_error)
+      keyp.cstatus.message.should eq("Error creating keypair")
+      keyp.cstatus.error_code.should eq(:general_error)
     end
   end
 

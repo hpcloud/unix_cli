@@ -94,8 +94,8 @@ describe "Snapshots getter" do
       snapshots = Snapshots.new.get(["snap3"], false)
 
       snapshots[0].is_valid?.should be_false
-      snapshots[0].error_code.should eq(:general_error)
-      snapshots[0].error_string.should eq("More than one snapshot matches 'snap3', use the id instead of name.")
+      snapshots[0].cstatus.error_code.should eq(:general_error)
+      snapshots[0].cstatus.message.should eq("More than one snapshot matches 'snap3', use the id instead of name.")
       snapshots.length.should eql(1)
     end
   end
@@ -105,8 +105,8 @@ describe "Snapshots getter" do
       snapshots = Snapshots.new.get(["bogus"])
 
       snapshots[0].is_valid?.should be_false
-      snapshots[0].error_code.should eq(:not_found)
-      snapshots[0].error_string.should eq("Cannot find a snapshot matching 'bogus'.")
+      snapshots[0].cstatus.error_code.should eq(:not_found)
+      snapshots[0].cstatus.message.should eq("Cannot find a snapshot matching 'bogus'.")
       snapshots.length.should eql(1)
     end
   end
