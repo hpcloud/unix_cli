@@ -26,7 +26,7 @@ Aliases: keypairs:rm, keypairs:delete, keypairs:del
                 keypair.destroy
                 @log.display "Removed key pair '#{keypair.name}'."
               else
-                @log.error(keypair.error_string, keypair.error_code)
+                @log.error keypair.cstatus
               end
             rescue Exception => e
               @log.error("Error removing keypair: " + e.to_s, :general_error)

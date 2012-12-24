@@ -18,12 +18,12 @@ Aliases: volumes:metadata:update
         cli_command(options) {
           volume = Volumes.new.get(name_or_id.to_s)
           if volume.is_valid? == false
-            @log.fatal volume.error_string, volume.error_code
+            @log.fatal volume.cstatus
           else
             if volume.meta.set_metadata(metadata)
               @log.display "Volume '#{name_or_id}' set metadata '#{metadata}'."
             else
-              @log.fatal(volume.meta.error_string, volume.meta.error_code)
+              @log.fatal volume.meta.cstatus
             end
           end
         }

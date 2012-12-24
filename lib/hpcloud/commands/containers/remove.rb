@@ -29,7 +29,7 @@ Aliases: containers:rm, containers:delete, containers:del
               if resource.remove(options.force)
                 @log.display "Removed container '#{name}'."
               else
-                @log.error resource.error_string, resource.error_code
+                @log.error resource.cstatus
               end
             else
               @log.error "The specified object is not a container: #{name}", :incorrect_usage

@@ -27,10 +27,10 @@ Examples:
                 @log.fatal "Error attaching volume already in use '#{volume.name}'", :conflicted
               end
             else
-              @log.fatal volume.error_string, volume.error_code
+              @log.fatal volume.cstatus
             end
           else
-            @log.fatal server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

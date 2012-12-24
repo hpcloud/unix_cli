@@ -30,7 +30,7 @@ Aliases: cdn:containers:loc
                 @log.display resource.cdn_public_url
               end
             else
-              @log.error resource.error_string, resource.error_code
+              @log.error resource.cstatus
             end
           }
         }

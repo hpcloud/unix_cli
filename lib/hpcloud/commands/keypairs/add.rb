@@ -43,7 +43,7 @@ Examples:
               @log.display "Created key pair '#{key_name}'."
             end
           else
-            @log.fatal keypair.error_string, keypair.error_code
+            @log.fatal keypair.cstatus
           end
         }
       end

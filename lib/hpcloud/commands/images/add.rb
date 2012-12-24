@@ -24,7 +24,7 @@ Examples:
           if img.save == true
             @log.display "Created image '#{name}' with id '#{img.id}'."
           else
-            @log.fatal(img.error_string, img.error_code)
+            @log.fatal img.cstatus
           end
         }
       end

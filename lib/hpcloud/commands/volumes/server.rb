@@ -20,7 +20,7 @@ Examples:
           servers = Servers.new.get(arguments)
           servers.each { |server|
             if server.is_valid? == false
-              @log.error server.error_string, server.error_code
+              @log.error server.cstatus
               next
             end
             ray = VolumeAttachments.new(server).get_array()

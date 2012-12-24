@@ -20,7 +20,7 @@ Examples:
               @log.fatal "Cannot find private key file for '#{server_name_or_id}'.", :not_found
             end
           else
-            @log.fatal server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

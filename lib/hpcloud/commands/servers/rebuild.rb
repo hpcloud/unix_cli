@@ -23,14 +23,14 @@ Examples:
                 if image.is_valid?
                   image_id = image.id
                 else
-                  @log.fatal image.error_string, image.error_code
+                  @log.fatal image.cstatus
                 end
               end
             end
             server.fog.rebuild(image_id, nil)
             @log.display "Server '#{server.name}' being rebuilt."
           else
-            @log.fatal server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

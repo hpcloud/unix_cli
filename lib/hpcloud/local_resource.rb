@@ -12,8 +12,7 @@ module HP
 
       def valid_source()
         if !File.exists?(@fname)
-          @error_string = "File not found at '#{@fname}'."
-          @error_code = :not_found
+          @cstatus = CliStatus.new("File not found at '#{@fname}'.", :not_found)
           return false
         end
         return true
@@ -24,15 +23,13 @@ module HP
           dir_path = File.expand_path(@path)
         else
           if source.isMulti() == true
-            @error_string = "Invalid target for directory/multi-file copy '#{@fname}'."
-            @error_code = :incorrect_usage
+            @cstatus = CliStatus.new("Invalid target for directory/multi-file copy '#{@fname}'.", :incorrect_usage)
             return false
           end
           dir_path = File.expand_path(File.dirname(@path))
         end
         if !File.directory?(dir_path)
-          @error_string = "No directory exists at '#{dir_path}'."
-          @error_code = :not_found
+          @cstatus = CliStatus.new("No directory exists at '#{dir_path}'.", :not_found)
           return false
         end
         return true
@@ -53,8 +50,7 @@ module HP
             begin
               FileUtils.mkpath(dir_path)
             rescue Exception => e
-              @error_string = "Error creating target directory '#{dir_path}'."
-              @error_code = :general_error
+              @cstatus = CliStatus.new("Error creating target directory '#{dir_path}'.", :general_error)
               return false
             end
           end
@@ -76,8 +72,7 @@ module HP
             @file = File.open(@fname, 'r')
           end
         rescue Exception => e
-          @error_string = e.to_s
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new(e.to_s, :permission_denied)
           return false
         end
         return true
@@ -155,8 +150,7 @@ module HP
             end
           }
         rescue Errno::EACCES
-          @error_string  = "You don't have permission to access '#{path}'."
-          @error_code = :permission_denied
+          @cstatus  = CliStatus.new("You don't have permission to access '#{path}'.", :permission_denied)
         end
       end
     end

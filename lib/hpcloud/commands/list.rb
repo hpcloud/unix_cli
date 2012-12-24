@@ -54,7 +54,7 @@ Aliases: ls
                   end
                 end
               else
-                @log.error from.error_string, from.error_code
+                @log.error from.cstatus
               end
             rescue Exception => e
               @log.error "Exception reading '#{name}': " + e.to_s, :general_error

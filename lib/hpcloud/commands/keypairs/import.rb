@@ -31,7 +31,7 @@ Examples:
             if keypair.save == true
               @log.display "Imported key pair '#{key_name}'."
             else
-              @log.fatal keypair.error_string, keypair.error_code
+              @log.fatal keypair.cstatus
             end
           end
         }

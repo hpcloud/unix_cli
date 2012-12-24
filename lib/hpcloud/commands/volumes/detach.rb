@@ -23,10 +23,10 @@ Examples:
               if (volume.detach() == true)
                 @log.display "Detached volume '#{volume.name}' from '#{volume.servers}'."
               else
-                @log.fatal volume.error_string, volume.error_code
+                @log.fatal volume.cstatus
               end
             else
-              @log.fatal volume.error_string, volume.error_code
+              @log.fatal volume.cstatus
             end
           }
         }

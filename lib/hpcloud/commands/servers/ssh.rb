@@ -53,7 +53,7 @@ Examples:
             @log.display "Connecting to '#{name_or_id}'..."
             system("#{command} #{loginid}@#{server.public_ip} -i #{filename}")
           else
-            @log.fatal server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

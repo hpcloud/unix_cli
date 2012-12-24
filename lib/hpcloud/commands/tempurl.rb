@@ -28,7 +28,7 @@ Aliases: tmpurl
             unless url.nil?
               @log.display url
             else
-              @log.error resource.error_string, resource.error_code
+              @log.error resource.cstatus
             end
           }
         }

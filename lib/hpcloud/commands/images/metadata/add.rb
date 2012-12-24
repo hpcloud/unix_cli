@@ -21,10 +21,10 @@ Aliases: images:metadata:update
             if image.meta.set_metadata(metadata)
               @log.display "Image '#{name_or_id}' set metadata '#{metadata}'."
             else
-              @log.fatal(image.meta.error_string, image.meta.error_code)
+              @log.fatal image.meta.cstatus
             end
           else
-            @log.fatal(image.error_string, image.error_code)
+            @log.fatal image.cstatus
           end
         }
       end

@@ -21,7 +21,7 @@ Examples:
           ip_or_ids.each { |ip_or_id|
             address = addresses.get(ip_or_id)
             if address.is_valid? == false
-              @log.error address.error_string, address.error_code
+              @log.error address.cstatus
             else
               if address.instance_id.nil?
                 @log.display "You don't have any server associated with address '#{ip_or_id}'."

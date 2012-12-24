@@ -25,7 +25,7 @@ Aliases: servers:metadata:list
             ray = server.meta.to_array()
             Tableizer.new(options, Metadata.get_keys(), ray).print
           else
-            @log.fatal server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

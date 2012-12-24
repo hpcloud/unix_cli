@@ -18,12 +18,12 @@ Aliases: servers:metadata:update
         cli_command(options) {
           server = Servers.new.get(name_or_id.to_s)
           if server.is_valid? == false
-            @log.fatal server.error_string, server.error_code
+            @log.fatal server.cstatus
           else
             if server.meta.set_metadata(metadata)
               @log.display "Server '#{name_or_id}' set metadata '#{metadata}'."
             else
-              @log.fatal(server.meta.error_string, server.meta.error_code)
+              @log.fatal server.meta.cstatus
             end
           end
 

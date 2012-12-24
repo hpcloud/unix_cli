@@ -19,10 +19,10 @@ Examples:
             if resource.revoke(acl)
               @log.display "Revoked #{acl} from #{name}"
             else
-              @log.fatal resource.error_string, resource.error_code
+              @log.fatal resource.cstatus
             end
           else
-            @log.fatal acl.error_string, acl.error_code
+            @log.fatal acl.cstatus
           end
         }
       end

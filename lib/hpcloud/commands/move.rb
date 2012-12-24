@@ -39,10 +39,10 @@ Aliases: mv
               if from.remove(false)
                 @log.display "Moved #{from.fname} => #{to.fname}"
               else
-                @log.error from.error_string, from.error_code
+                @log.error from.cstatus
               end
             else
-              @log.error to.error_string, to.error_code
+              @log.error to.cstatus
             end
           }
         }

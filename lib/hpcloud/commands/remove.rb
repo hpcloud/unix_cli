@@ -37,7 +37,7 @@ Aliases: rm, delete, destroy, del
             if resource.remove(forceit)
               @log.display "Removed '#{name}'."
             else
-              @log.error resource.error_string, resource.error_code
+              @log.error resource.cstatus
             end
           }
         }

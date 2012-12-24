@@ -26,7 +26,7 @@ Aliases: images:rm, images:delete, images:del
                 image.fog.destroy
                 @log.display "Removed image '#{image.name}'."
               else
-                @log.error(image.error_string, image.error_code)
+                @log.error image.cstatus
               end
             rescue Exception => e
               @log.error("Error removing image: " + e.to_s, :general_error)

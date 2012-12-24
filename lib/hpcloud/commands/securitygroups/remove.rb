@@ -26,7 +26,7 @@ Aliases: securitygroups:rm, securitygroups:delete, securitygroups:del
                 securitygroup.destroy
                 @log.display "Removed security group '#{securitygroup.name}'."
               else
-                @log.error(securitygroup.error_string, securitygroup.error_code)
+                @log.error securitygroup.cstatus
               end
             rescue Exception => e
               @log.error("Error removing security group: " + e.to_s, :general_error)

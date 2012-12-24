@@ -26,22 +26,18 @@ module HP
 
           @directory = @storage.shared_directories.get(@container)
           if @directory.nil?
-            @error_string = "Cannot find container '#{@container}'."
-            @error_code = :not_found
+            @cstatus = CliStatus.new("Cannot find container '#{@container}'.", :not_found)
             return false
           end
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
-          @error_string  = resp.error_string
-          @error_code = :permission_denied
+          @cstatus  = CliStatus.new(resp.error_string, :permission_denied)
           return false
         rescue Fog::HP::Errors::Forbidden => error
-          @error_string  = "Permission denied trying to access '#{@fname}'."
-          @error_code = :permission_denied
+          @cstatus  = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
           return false
         rescue Exception => error
-          @error_string = "Error reading '#{@fname}': " + error.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return false
         end
         return true
@@ -86,8 +82,7 @@ module HP
             yield chunk
           }
         rescue Fog::Storage::HP::NotFound => e
-          @error_string = "The specified object does not exist."
-          @error_code = :not_found
+          @cstatus = CliStatus.new("The specified object does not exist.", :not_found)
           result = false
         end
       end
@@ -105,8 +100,7 @@ module HP
           begin
             @storage.put_shared_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
           rescue Fog::Storage::HP::NotFound => e
-            @error_string = "The specified object does not exist."
-            @error_code = :not_found
+            @cstatus = CliStatus.new("The specified object does not exist.", :not_found)
             result = false
           end
         end
@@ -115,8 +109,7 @@ module HP
 
       def remove(force)
         if @path.empty?
-          @error_string = "Removal of shared containers is not supported."
-          @error_code = :not_supported
+          @cstatus = CliStatus.new("Removal of shared containers is not supported.", :not_supported)
           return false
         end
         super(force)

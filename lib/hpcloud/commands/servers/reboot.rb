@@ -30,7 +30,7 @@ Examples:
                   @log.display "Soft rebooting server '#{server.name}'."
                 end
               else
-                @log.error server.error_string, server.error_code
+                @log.error server.cstatus
               end
             rescue Exception => e
               @log.error("Error rebooting server: " + e.to_s, :general_error)

@@ -26,7 +26,7 @@ Aliases: snapshots:rm, snapshots:delete, snapshots:del
                 snapshot.destroy
                 @log.display "Removed snapshot '#{snapshot.name}'."
               else
-                @log.error(snapshot.error_string, snapshot.error_code)
+                @log.error snapshot.cstatus
               end
             rescue Exception => e
               @log.error("Error removing snapshot: " + e.to_s, :general_error)

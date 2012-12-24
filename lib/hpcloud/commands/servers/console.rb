@@ -51,7 +51,7 @@ Examples:
               @log.display server.windows_password(1)
             end
           else
-            @log.fatal server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

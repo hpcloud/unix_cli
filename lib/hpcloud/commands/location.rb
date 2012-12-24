@@ -25,7 +25,7 @@ Aliases: loc
             if resource.read_header
               @log.display resource.public_url
             else
-              @log.error resource.error_string, resource.error_code
+              @log.error resource.cstatus
             end
           }
         }

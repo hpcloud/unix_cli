@@ -26,7 +26,7 @@ Aliases: volumes:rm, volumes:delete, volumes:del
                 volume.destroy
                 @log.display "Removed volume '#{volume.name}'."
               else
-                @log.error(volume.error_string, volume.error_code)
+                @log.error volume.cstatus
               end
             rescue Exception => e
               @log.error("Error removing volume: " + e.to_s, :general_error)

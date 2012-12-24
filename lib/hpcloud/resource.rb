@@ -7,12 +7,11 @@ module HP
     class Resource
       attr_reader :fname, :ftype, :container, :path
       attr_reader :public_url, :cdn_public_url, :cdn_public_ssl_url, :public
-      attr_reader :destination, :error_string, :error_code
+      attr_reader :destination, :cstatus
       attr_reader :readers, :writers
     
       def initialize(storage, fname)
-        @error_string = nil
-        @error_code = nil
+        @cstatus = CliStatus.new
         @storage = storage
         @fname = fname
         @ftype = ResourceFactory.detect_type(@fname)
@@ -22,18 +21,16 @@ module HP
       end
 
       def is_valid?
-        return @error_string.nil?
+        return @cstatus.is_success?
       end
 
       def set_error(from)
         return unless is_valid?
-        @error_string = from.error_string
-        @error_code = from.error_code
+        @cstatus.set(from.cstatus)
       end
 
       def not_implemented(value)
-        @error_string = "Not implemented: #{value}"
-        @error_code = :general_error
+        @cstatus = CliStatus.new("Not implemented: #{value}", :general_error)
         return false
       end
 
@@ -136,8 +133,7 @@ module HP
       end
 
       def read_header()
-        @error_string = "Not supported on local object '#{@fname}'."
-        @error_code = :not_supported
+        @cstatus = CliStatus.new("Not supported on local object '#{@fname}'.", :not_supported)
         return false
       end
 
@@ -168,8 +164,7 @@ module HP
           end
           set_error(from)
           if is_valid?
-            @error_string = 'Unknown error copying'
-            @error_code = :unknown
+            @cstatus = CliStatus('Unknown error copying', :unknown)
           end
           return false
       end
@@ -192,8 +187,7 @@ module HP
         }
 
         if (copiedfile == false)
-          @error_string = "No files found matching source '#{from.path}'"
-          @error_code = :not_found
+          @cstatus = CliStatus.new("No files found matching source '#{from.path}'", :not_found)
           return false
         end
         return true
@@ -208,26 +202,22 @@ module HP
       end
 
       def remove(force)
-        @error_string = "Removal of local objects is not supported: #{@fname}"
-        @error_code = :incorrect_usage
+        @cstatus = CliStatus.new("Removal of local objects is not supported: #{@fname}", :incorrect_usage)
         return false
       end
 
       def tempurl(period = 172800)
-        @error_string = "Temporary URLs of local objects is not supported: #{@fname}"
-        @error_code = :incorrect_usage
+        @cstatus = CliStatus.new("Temporary URLs of local objects is not supported: #{@fname}", :incorrect_usage)
         return nil
       end
 
       def grant(acl)
-        @error_string = "ACLs of local objects are not supported: #{@fname}"
-        @error_code = :incorrect_usage
+        @cstatus = CliStatus.new("ACLs of local objects are not supported: #{@fname}", :incorrect_usage)
         return false
       end
 
       def revoke(acl)
-        @error_string = "ACLs of local objects are not supported: #{@fname}"
-        @error_code = :incorrect_usage
+        @cstatus = CliStatus.new("ACLs of local objects are not supported: #{@fname}", :incorrect_usage)
         return false
       end
     end

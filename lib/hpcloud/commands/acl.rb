@@ -25,7 +25,7 @@ Examples:
             if resource.read_header
               ray << resource.to_hash()
             else
-              @log.error resource.error_string, resource.error_code
+              @log.error resource.cstatus
             end
           }
           keys =  [ "public", "readers", "writers", "public_url"]

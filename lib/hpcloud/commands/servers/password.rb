@@ -22,7 +22,7 @@ Aliases: servers:passwd
               server.fog.change_password(password)
               @log.display "Password changed for server '#{name}'."
           else
-            @log.fatal server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

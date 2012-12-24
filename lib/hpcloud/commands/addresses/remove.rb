@@ -23,7 +23,7 @@ Aliases: addresses:rm, addresses:delete, addresses:release, addresses:del
           ips.each { |ip_or_id|
             address = addresses.get(ip_or_id)
             if address.is_valid? == false
-              @log.error address.error_string, address.error_code
+              @log.error address.cstatus
             else
               address.fog.server = nil unless address.instance_id.nil?
               address.destroy

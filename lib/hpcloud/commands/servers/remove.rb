@@ -27,7 +27,7 @@ Aliases: servers:rm, servers:delete, servers:del
                 server.destroy
                 @log.display "Removed server '#{server.name}'."
               else
-                @log.error(server.error_string, server.error_code)
+                @log.error server.cstatus
               end
             rescue Exception => e
               @log.error("Error removing server: " + e.to_s, :general_error)

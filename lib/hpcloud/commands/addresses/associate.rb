@@ -17,12 +17,12 @@ Examples:
         cli_command(options) {
           server = Servers.new.get(server_name_or_id)
           if server.is_valid? == false
-            @log.fatal server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
 
           address = Addresses.new.get(ip_or_id)
           if address.is_valid? == false
-            @log.fatal address.error_string, address.error_code
+            @log.fatal address.cstatus
           end
 
           if address.instance_id.nil? == false

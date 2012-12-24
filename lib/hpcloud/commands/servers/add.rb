@@ -53,12 +53,12 @@ Examples:
                 @log.display "Make sure the security group has RDP port 3389 open"
                 @log.display "You may wish to change the password when you log in"
                 if srv.is_valid? == false
-                  @log.fatal srv.error_string, srv.error_code
+                  @log.fatal srv.cstatus
                 end
               end
             end
           else
-            @log.fatal(srv.error_string, srv.error_code)
+            @log.fatal srv.cstatus
           end
         }
       end

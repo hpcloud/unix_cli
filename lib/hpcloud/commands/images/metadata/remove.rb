@@ -22,11 +22,11 @@ Aliases: images:metadata:rm
               if image.meta.remove_metadata(key)
                 @log.display "Removed metadata '#{key}' from image '#{name_or_id}'."
               else
-                @log.error(image.meta.error_string, image.meta.error_code)
+                @log.error image.meta.cstatus
               end
             }
           else
-            @log.fatal(image.error_string, image.error_code)
+            @log.fatal image.cstatus
           end
         }
       end

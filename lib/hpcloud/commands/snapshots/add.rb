@@ -29,7 +29,7 @@ Examples:
             if vol.save == true
               @log.display "Created snapshot '#{name}' from volume with id '#{vol.id}'."
             else
-              @log.fatal(vol.error_string, vol.error_code)
+              @log.fatal vol.cstatus
             end
           else
             @log.fatal "Cannot find volume '#{volume_name_id}'", :general_error

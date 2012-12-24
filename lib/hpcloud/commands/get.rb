@@ -26,7 +26,7 @@ Aliases: fetch
             elsif to.copy(from)
               @log.display "Copied #{from.fname} => #{to.fname}"
             else
-              @log.fatal to.error_string, to.error_code
+              @log.fatal to.cstatus
             end
           }
         }

@@ -23,7 +23,7 @@ Examples:
           if security_group.save == true
             @log.display "Created security group '#{sec_group_name}' with id '#{security_group.id}'."
           else
-            @log.fatal(security_group.error_string, security_group.error_code)
+            @log.fatal security_group.cstatus
           end
         }
       end

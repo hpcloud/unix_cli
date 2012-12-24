@@ -21,7 +21,7 @@ Aliases: addresses:allocate
           if address.save
             @log.display "Created a public IP address '#{address.ip}'."
           else
-            @log.fatal address.error_string, address.error_code
+            @log.fatal address.cstatus
           end
         }
       end

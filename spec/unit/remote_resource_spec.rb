@@ -20,8 +20,7 @@ describe "Valid source" do
 
       to.valid_source().should be_true
 
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
     end
   end
 
@@ -32,8 +31,8 @@ describe "Valid source" do
 
       to.valid_source().should be_false
 
-      to.error_string.should eq("Cannot find container ':bogus_container'.")
-      to.error_code.should eq(:not_found)
+      to.cstatus.message.should eq("Cannot find container ':bogus_container'.")
+      to.cstatus.error_code.should eq(:not_found)
     end
   end
 end
@@ -59,8 +58,7 @@ describe "Valid destination" do
 
       to.valid_destination(src).should be_true
 
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
     end
   end
 
@@ -72,8 +70,7 @@ describe "Valid destination" do
 
       to.valid_destination(src).should be_true
 
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
     end
   end
 
@@ -85,8 +82,7 @@ describe "Valid destination" do
 
       to.valid_destination(src).should be_true
 
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
     end
   end
 
@@ -98,8 +94,8 @@ describe "Valid destination" do
 
       to.valid_destination(src).should be_false
 
-      to.error_string.should eq("Invalid target for directory/multi-file copy ':container/whatever.txt'.")
-      to.error_code.should eq(:incorrect_usage)
+      to.cstatus.message.should eq("Invalid target for directory/multi-file copy ':container/whatever.txt'.")
+      to.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 
@@ -110,8 +106,8 @@ describe "Valid destination" do
 
       to.valid_source().should be_false
 
-      to.error_string.should eq("Cannot find container ':bogus_container'.")
-      to.error_code.should eq(:not_found)
+      to.cstatus.message.should eq("Cannot find container ':bogus_container'.")
+      to.cstatus.error_code.should eq(:not_found)
     end
   end
 end
@@ -137,8 +133,7 @@ describe "Set destination" do
       rc = to.set_destination("file.txt")
 
       rc.should be_true
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
       to.destination.should eq("file.txt")
     end
   end
@@ -150,8 +145,7 @@ describe "Set destination" do
       rc = to.set_destination("file.txt")
 
       rc.should be_true
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
       to.destination.should eq("directory/file.txt")
     end
   end
@@ -163,8 +157,7 @@ describe "Set destination" do
       rc = to.set_destination("file.txt")
 
       rc.should be_true
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
       to.destination.should eq("directory/new.txt")
     end
   end
@@ -177,8 +170,8 @@ describe "Set destination" do
       rc = to.set_destination("file.txt")
 
       rc.should be_false
-      to.error_string.should eq("Cannot find container ':missing_container'.")
-      to.error_code.should eq(:not_found)
+      to.cstatus.message.should eq("Cannot find container ':missing_container'.")
+      to.cstatus.error_code.should eq(:not_found)
       to.destination.should be_nil
     end
   end
@@ -300,8 +293,8 @@ describe "File copy" do
 
       dest.copy(src).should be_false
 
-      dest.error_string.should eq("The specified object does not exist.")
-      dest.error_code.should eq(:not_found)
+      dest.cstatus.message.should eq("The specified object does not exist.")
+      dest.cstatus.error_code.should eq(:not_found)
     end
   end
 end
@@ -481,8 +474,8 @@ describe "Remote resource remove" do
 
       res.remove(false).should be_false
 
-      res.error_string.should eq("Cannot find container ':container'.")
-      res.error_code.should eq(:not_found)
+      res.cstatus.message.should eq("Cannot find container ':container'.")
+      res.cstatus.error_code.should eq(:not_found)
     end
   end
 
@@ -493,8 +486,8 @@ describe "Remote resource remove" do
 
       res.remove(false).should be_false
 
-      res.error_string.should eq("You don't have an object named ':container/files/river.txt'.")
-      res.error_code.should eq(:not_found)
+      res.cstatus.message.should eq("You don't have an object named ':container/files/river.txt'.")
+      res.cstatus.error_code.should eq(:not_found)
     end
   end
 end
@@ -529,8 +522,8 @@ describe "temp url" do
 
       res.tempurl(1212).should be_nil
 
-      res.error_string.should eq("Cannot find container ':container'.")
-      res.error_code.should eq(:not_found)
+      res.cstatus.message.should eq("Cannot find container ':container'.")
+      res.cstatus.error_code.should eq(:not_found)
     end
   end
 
@@ -541,8 +534,8 @@ describe "temp url" do
 
       res.tempurl(1212).should be_nil
 
-      res.error_string.should eq("Cannot find object named ':container/files/river.txt'.")
-      res.error_code.should eq(:not_found)
+      res.cstatus.message.should eq("Cannot find object named ':container/files/river.txt'.")
+      res.cstatus.error_code.should eq(:not_found)
     end
   end
 end
@@ -570,8 +563,8 @@ describe "Remote resource grant" do
 
       res.grant(@acl).should be_false
 
-      res.error_string.should eq("ACLs of local objects are not supported: /files/river.txt")
-      res.error_code.should eq(:incorrect_usage)
+      res.cstatus.message.should eq("ACLs of local objects are not supported: /files/river.txt")
+      res.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 
@@ -582,8 +575,8 @@ describe "Remote resource grant" do
 
       res.grant(@acl).should be_false
 
-      res.error_string.should eq("Cannot find container ':container'.")
-      res.error_code.should eq(:not_found)
+      res.cstatus.message.should eq("Cannot find container ':container'.")
+      res.cstatus.error_code.should eq(:not_found)
     end
   end
 
@@ -594,8 +587,8 @@ describe "Remote resource grant" do
 
       res.grant(@acl).should be_false
 
-      res.error_string.should eq("Cannot find object ':container/files/river.txt'.")
-      res.error_code.should eq(:not_found)
+      res.cstatus.message.should eq("Cannot find object ':container/files/river.txt'.")
+      res.cstatus.error_code.should eq(:not_found)
     end
   end
 
@@ -606,8 +599,8 @@ describe "Remote resource grant" do
 
       res.grant(@acl).should be_false
 
-      res.error_string.should eq("Exception granting permissions for ':container': Grant failure")
-      res.error_code.should eq(:general_error)
+      res.cstatus.message.should eq("Exception granting permissions for ':container': Grant failure")
+      res.cstatus.error_code.should eq(:general_error)
     end
   end
 
@@ -618,8 +611,8 @@ describe "Remote resource grant" do
 
       res.grant(@acl).should be_false
 
-      res.error_string.should eq("Exception granting permissions for ':container': Save failure")
-      res.error_code.should eq(:general_error)
+      res.cstatus.message.should eq("Exception granting permissions for ':container': Save failure")
+      res.cstatus.error_code.should eq(:general_error)
     end
   end
 
@@ -629,8 +622,7 @@ describe "Remote resource grant" do
 
       res.grant(@acl).should be_true
 
-      res.error_string.should be_nil
-      res.error_code.should be_nil
+      res.cstatus.is_success?.should be_true
     end
   end
 end
@@ -658,8 +650,8 @@ describe "Remote resource revoke" do
 
       res.revoke(@acl).should be_false
 
-      res.error_string.should eq("ACLs of local objects are not supported: /files/river.txt")
-      res.error_code.should eq(:incorrect_usage)
+      res.cstatus.message.should eq("ACLs of local objects are not supported: /files/river.txt")
+      res.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 
@@ -670,8 +662,8 @@ describe "Remote resource revoke" do
 
       res.revoke(@acl).should be_false
 
-      res.error_string.should eq("Cannot find container ':container'.")
-      res.error_code.should eq(:not_found)
+      res.cstatus.message.should eq("Cannot find container ':container'.")
+      res.cstatus.error_code.should eq(:not_found)
     end
   end
 
@@ -681,8 +673,8 @@ describe "Remote resource revoke" do
 
       res.revoke(@acl).should be_false
 
-      res.error_string.should eq("ACLs are only supported on containers (e.g. :container).")
-      res.error_code.should eq(:not_supported)
+      res.cstatus.message.should eq("ACLs are only supported on containers (e.g. :container).")
+      res.cstatus.error_code.should eq(:not_supported)
     end
   end
 
@@ -693,8 +685,8 @@ describe "Remote resource revoke" do
 
       res.revoke(@acl).should be_false
 
-      res.error_string.should eq("Exception revoking permissions for ':container': Grant failure")
-      res.error_code.should eq(:general_error)
+      res.cstatus.message.should eq("Exception revoking permissions for ':container': Grant failure")
+      res.cstatus.error_code.should eq(:general_error)
     end
   end
 
@@ -705,8 +697,8 @@ describe "Remote resource revoke" do
 
       res.revoke(@acl).should be_false
 
-      res.error_string.should eq("Exception revoking permissions for ':container': Save failure")
-      res.error_code.should eq(:general_error)
+      res.cstatus.message.should eq("Exception revoking permissions for ':container': Save failure")
+      res.cstatus.error_code.should eq(:general_error)
     end
   end
 
@@ -716,8 +708,7 @@ describe "Remote resource revoke" do
 
       res.revoke(@acl).should be_true
 
-      res.error_string.should be_nil
-      res.error_code.should be_nil
+      res.cstatus.is_success?.should be_true
     end
   end
 end

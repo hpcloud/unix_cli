@@ -40,7 +40,7 @@ Examples:
               vol.snapshot_id = snapshot.id.to_s
               vol.size = snapshot.size.to_s if vol.size.nil?
             else
-              @log.fatal snapshot.error_string, snapshot.error_code
+              @log.fatal snapshot.cstatus
             end
           end
           unless options[:image].nil?
@@ -48,7 +48,7 @@ Examples:
             if image.is_valid?
               vol.imageref = image.id.to_s
             else
-              @log.fatal image.error_string, image.error_code
+              @log.fatal image.cstatus
             end
           end
           vol.size = 1 if vol.size.nil?
@@ -57,7 +57,7 @@ Examples:
           if vol.save == true
             @log.display "Created volume '#{name}' with id '#{vol.id}'."
           else
-            @log.fatal(vol.error_string, vol.error_code)
+            @log.fatal vol.cstatus
           end
         }
       end

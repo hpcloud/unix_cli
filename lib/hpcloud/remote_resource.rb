@@ -33,22 +33,18 @@ module HP
 
           @directory = @storage.directories.get(@container)
           if @directory.nil?
-            @error_string = "Cannot find container ':#{@container}'."
-            @error_code = :not_found
+            @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return false
           end
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
-          @error_string  = resp.error_string
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new(resp.error_string, :permission_denied)
           return false
         rescue Fog::HP::Errors::Forbidden => error
-          @error_string  = "Permission denied trying to access '#{@fname}'."
-          @error_code = :permission_denied
+          @cstatus  = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
           return false
         rescue Exception => error
-          @error_string = "Error reading '#{@fname}': " + error.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return false
         end
         return true
@@ -61,23 +57,19 @@ module HP
           unless @path.empty?
             @file = @directory.files.get(@path)
             if @file.nil?
-              @error_string = "Cannot find object '#{@fname}'."
-              @error_code = :not_found
+              @cstatus = CliStatus.new("Cannot find object '#{@fname}'.", :not_found)
               return false
             end
           end
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
-          @error_string  = resp.error_string
-          @error_code = :permission_denied
+          @cstatus  = CliStatus.new(resp.error_string, :permission_denied)
           return false
         rescue Fog::HP::Errors::Forbidden => error
-          @error_string  = "Permission denied trying to access '#{@fname}'."
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
           return false
         rescue Exception => error
-          @error_string = "Error reading '#{@fname}': " + error.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return false
         end
         return true
@@ -89,22 +81,18 @@ module HP
 
           @head = @storage.directories.head(@container)
           if @head.nil?
-            @error_string = "Cannot find container ':#{@container}'."
-            @error_code = :not_found
+            @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return nil
           end
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
-          @error_string  = resp.error_string
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new(resp.error_string, :permission_denied)
           return nil
         rescue Fog::HP::Errors::Forbidden => error
-          @error_string  = "Permission denied trying to access '#{@fname}'."
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
           return nil
         rescue Exception => error
-          @error_string = "Error reading '#{@fname}': " + error.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return nil
         end
         return @head
@@ -116,8 +104,7 @@ module HP
             yield chunk
           }
         rescue Fog::Storage::HP::NotFound => e
-          @error_string = "The specified object does not exist."
-          @error_code = :not_found
+          @cstatus = CliStatus.new("The specified object does not exist.", :not_found)
           result = false
         end
       end
@@ -141,8 +128,7 @@ module HP
           else
             file = @directory.files.head(@path)
             if file.nil?
-               @error_string = "Cannot find object named '#{@fname}'."
-               @error_code = :not_found
+               @cstatus = CliStatus.new("Cannot find object named '#{@fname}'.", :not_found)
                return false
             end
             @public_url = file.public_url
@@ -156,8 +142,7 @@ module HP
             @writers = @directory.list_users_with_write.join(",")
           end
         rescue Exception => error
-          @error_string = "Error reading '#{@fname}': " + error.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return false
         end
         return true
@@ -172,8 +157,7 @@ module HP
           return false
         end
         if ((source.isMulti() == true) && (isDirectory() == false))
-          @error_string = "Invalid target for directory/multi-file copy '#{@fname}'."
-          @error_code = :incorrect_usage
+          @cstatus = CliStatus.new("Invalid target for directory/multi-file copy '#{@fname}'.", :incorrect_usage)
           return false
         end
         return true
@@ -214,8 +198,7 @@ module HP
           begin
             @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
           rescue Fog::Storage::HP::NotFound => e
-            @error_string = "The specified object does not exist."
-            @error_code = :not_found
+            @cstatus = CliStatus.new("The specified object does not exist.", :not_found)
             result = false
           end
         end
@@ -257,27 +240,23 @@ module HP
             begin
               @directory.destroy
             rescue Excon::Errors::Conflict
-              @error_string = "The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it."
-              @error_code = :conflicted
+              @cstatus = CliStatus.new("The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it.", :conflicted)
               return false
             end
           else
             file = @directory.files.head(@path)
             if file.nil?
-               @error_string = "You don't have an object named '#{@fname}'."
-               @error_code = :not_found
+               @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
                return false
             end
             file.destroy
           end
 
         rescue Excon::Errors::Forbidden => error
-          @error_string = "Permission denied for '#{@fname}."
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
           return false
         rescue Exception => e
-          @error_string = "Exception removing '#{@fname}': " + e.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Exception removing '#{@fname}': " + e.to_s, :general_error)
           return false
         end
         return true
@@ -291,25 +270,21 @@ module HP
 
           # container should be a class
           if is_container?
-             @error_string = "Temporary URLs not supported on containers ':#{@container}'."
-             @error_code = :incorrect_usage
+             @cstatus = CliStatus.new("Temporary URLs not supported on containers ':#{@container}'.", :incorrect_usage)
              return nil
           end
 
           file = @head.files.get(@path)
           if file.nil?
-             @error_string = "Cannot find object named '#{@fname}'."
-             @error_code = :not_found
+             @cstatus = CliStatus.new("Cannot find object named '#{@fname}'.", :not_found)
              return nil
           end
           return file.temp_signed_url(period, "GET")
         rescue Excon::Errors::Forbidden => error
-          @error_string = "Permission denied for '#{@fname}."
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
           return nil
         rescue Exception => e
-          @error_string = "Exception getting temporary URL for '#{@fname}': " + e.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Exception getting temporary URL for '#{@fname}': " + e.to_s, :general_error)
           return nil
         end
         return nil
@@ -322,8 +297,7 @@ module HP
           return false if get_files == false
 
           unless is_container?
-            @error_string = "ACLs are only supported on containers (e.g. :container)."
-            @error_code = :not_supported
+            @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
             return false
           end
 
@@ -331,8 +305,7 @@ module HP
           @directory.save
           return true
         rescue Exception => e
-          @error_string = "Exception granting permissions for '#{@fname}': " + e.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Exception granting permissions for '#{@fname}': " + e.to_s, :general_error)
           return false
         end
       end
@@ -344,8 +317,7 @@ module HP
           return false if get_files == false
 
           unless is_container?
-            @error_string = "ACLs are only supported on containers (e.g. :container)."
-            @error_code = :not_supported
+            @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
             return false
           end
 
@@ -353,8 +325,7 @@ module HP
           @directory.save
           return true
         rescue Exception => e
-          @error_string = "Exception revoking permissions for '#{@fname}': " + e.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Exception revoking permissions for '#{@fname}': " + e.to_s, :general_error)
           return false
         end
       end
