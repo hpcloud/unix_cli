@@ -30,7 +30,7 @@ Aliases: servers:rm, servers:delete, servers:del
                 @log.error server.cstatus
               end
             rescue Exception => e
-              @log.error("Error removing server: " + e.to_s, :general_error)
+              @log.error("Error removing server: " + e.to_s)
             end
           }
         }

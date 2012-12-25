@@ -31,7 +31,7 @@ module HP
                 if found.length == 0
                   found << item
                 else
-                  found[0].set_status("More than one #{@name} matches '#{arg}', use the id instead of name.", :general_error)
+                  found[0].set_error("More than one #{@name} matches '#{arg}', use the id instead of name.")
                 end
               end
             end
@@ -39,7 +39,7 @@ module HP
           if found.length == 0
             item = create()
             item.name = arg
-            item.set_status("Cannot find #{@article} #{@name} matching '#{arg}'.", :not_found)
+            item.set_error("Cannot find #{@article} #{@name} matching '#{arg}'.", :not_found)
             retray << item
           else
             retray += found

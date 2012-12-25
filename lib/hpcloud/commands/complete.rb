@@ -31,7 +31,7 @@ Examples:
           FileUtils.copy(completion_file, destination)
           @log.display "Success"
         rescue Exception => e
-          @log.error "Error configuring bash completion: #{e}", :general_error
+          @log.error "Error configuring bash completion: #{e}"
         end
       end
     end

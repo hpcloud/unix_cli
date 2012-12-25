@@ -29,7 +29,7 @@ Aliases: securitygroups:rm, securitygroups:delete, securitygroups:del
                 @log.error securitygroup.cstatus
               end
             rescue Exception => e
-              @log.error("Error removing security group: " + e.to_s, :general_error)
+              @log.error("Error removing security group: " + e.to_s)
             end
           }
         }

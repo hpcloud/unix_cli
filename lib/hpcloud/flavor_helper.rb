@@ -18,7 +18,7 @@ module HP
       end
 
       def save
-        set_status("Save of flavors not supported at this time", :general_error)
+        set_error("Save of flavors not supported at this time")
         return false
       end
     end

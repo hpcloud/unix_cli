@@ -27,7 +27,7 @@ module HP
             keypair = @connection.compute.create_key_pair(@name, @public_key)
           end
           if keypair.nil?
-            set_status("Error creating keypair", :general_error)
+            set_error("Error creating keypair")
             return false
           end
           @fog = keypair

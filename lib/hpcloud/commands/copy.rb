@@ -32,7 +32,7 @@ Aliases: cp
           destination = last
           to = ResourceFactory.create_any(Connection.instance.storage, destination)
           if source.length > 1 && to.isDirectory() == false
-            @log.fatal("The destination '#{destination}' for multiple files must be a directory or container", :general_error)
+            @log.fatal("The destination '#{destination}' for multiple files must be a directory or container")
           end
           source.each { |name|
             from = ResourceFactory.create_any(Connection.instance.storage, name)

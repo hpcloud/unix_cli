@@ -35,19 +35,19 @@ module HP
 
       def save
         if is_valid?
-          set_status(@meta.cstatus)
+          set_error(@meta.cstatus)
         end
         return false if is_valid? == false
         if @fog.nil?
           server = Servers.new.get(@server_name_id)
           if server.is_valid? == false
-            set_status(server.cstatus)
+            set_error(server.cstatus)
             return false
           end
 
           @id = server.create_image(@name , @meta.hsh)
           if @id.nil?
-            set_status(server.cstatus)
+            set_error(server.cstatus)
             return false
           end
           return true

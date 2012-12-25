@@ -30,7 +30,7 @@ module HP
       end
 
       def not_implemented(value)
-        @cstatus = CliStatus.new("Not implemented: #{value}", :general_error)
+        @cstatus = CliStatus.new("Not implemented: #{value}")
         return false
       end
 

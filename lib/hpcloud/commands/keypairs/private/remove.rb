@@ -23,7 +23,7 @@ Aliases: keypairs:private:rm, keypairs:private:del
               filename = keypair.private_remove
               @log.display "Removed private key '#{filename}'."
             rescue Exception => e
-              @log.error e.to_s, :general_error
+              @log.error e.to_s
             end
           }
         }

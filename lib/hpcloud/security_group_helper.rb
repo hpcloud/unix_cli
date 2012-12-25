@@ -21,7 +21,7 @@ module HP
           hsh = {:name => @name, :description => @description}
           security_group = @connection.compute.security_groups.new(hsh)
           if security_group.nil?
-            set_status("Error creating security group", :general_error)
+            set_error("Error creating security group")
             return false
           end
           security_group.save

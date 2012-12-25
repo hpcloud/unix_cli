@@ -30,7 +30,7 @@ module HP
           port_range = @from.to_s + ".." + @to.to_s
           response = @security_group.fog.create_rule(port_range, @protocol, @cidr, @name)
           if response.nil?
-            set_status("Error creating rule", :general_error)
+            set_error("Error creating rule")
             return false
           end
           @fog = response.body["security_group_rule"]

@@ -29,7 +29,7 @@ Aliases: snapshots:rm, snapshots:delete, snapshots:del
                 @log.error snapshot.cstatus
               end
             rescue Exception => e
-              @log.error("Error removing snapshot: " + e.to_s, :general_error)
+              @log.error("Error removing snapshot: " + e.to_s)
             end
           }
         }

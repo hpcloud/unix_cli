@@ -15,7 +15,7 @@ module HP
         hash
       end
 
-      def set_status(noo, status = :general_error)
+      def set_error(noo, status = :general_error)
         unless noo.is_a?(CliStatus)
           noo = CliStatus.new(noo, status)
         end

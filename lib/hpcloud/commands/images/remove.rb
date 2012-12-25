@@ -29,7 +29,7 @@ Aliases: images:rm, images:delete, images:del
                 @log.error image.cstatus
               end
             rescue Exception => e
-              @log.error("Error removing image: " + e.to_s, :general_error)
+              @log.error("Error removing image: " + e.to_s)
             end
           }
         }

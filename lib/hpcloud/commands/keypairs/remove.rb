@@ -29,7 +29,7 @@ Aliases: keypairs:rm, keypairs:delete, keypairs:del
                 @log.error keypair.cstatus
               end
             rescue Exception => e
-              @log.error("Error removing keypair: " + e.to_s, :general_error)
+              @log.error("Error removing keypair: " + e.to_s)
             end
           }
         }

@@ -33,7 +33,7 @@ Examples:
                 @log.error server.cstatus
               end
             rescue Exception => e
-              @log.error("Error rebooting server: " + e.to_s, :general_error)
+              @log.error("Error rebooting server: " + e.to_s)
             end
           }
         }

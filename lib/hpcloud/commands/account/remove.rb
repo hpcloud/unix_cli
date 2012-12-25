@@ -24,7 +24,7 @@ Aliases: account:rm, account:delete, account:del
               accounts.remove(name)
               @log.display("Removed account '#{name}'")
             rescue Exception => e
-              @log.error(e.to_s, :general_error)
+              @log.error(e.to_s)
             end
           }
         }

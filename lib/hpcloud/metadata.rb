@@ -76,7 +76,7 @@ module HP
           begin
             pair.destroy
           rescue Exception => e
-            @cstatus = CliStatus.new("Error deleting metadata '#{key}': " + e.message, :general_error)
+            @cstatus = CliStatus.new("Error deleting metadata '#{key}': " + e.message)
           end
         end
         if @cstatus.is_success?

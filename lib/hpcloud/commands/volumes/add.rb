@@ -29,7 +29,7 @@ Examples:
       define_method "volumes:add" do |name, *volume_size|
         cli_command(options) {
           if Volumes.new.get(name).is_valid? == true
-            @log.fatal "Volume with the name '#{name}' already exists", :general_error
+            @log.fatal "Volume with the name '#{name}' already exists"
           end
           vol = HP::Cloud::VolumeHelper.new(Connection.instance)
           vol.name = name

@@ -14,7 +14,7 @@ Examples:
       define_method "securitygroups:add" do |sec_group_name, sg_desc|
         cli_command(options) {
           if SecurityGroups.new.get(sec_group_name).is_valid? == true
-            @log.fatal "Security group '#{sec_group_name}' already exists.", :general_error
+            @log.fatal "Security group '#{sec_group_name}' already exists."
           end
 
           security_group = SecurityGroupHelper.new(Connection.instance)

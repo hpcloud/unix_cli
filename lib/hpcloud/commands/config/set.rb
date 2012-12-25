@@ -30,7 +30,7 @@ Aliases: config:add, config:update
               updated += " " if updated.empty? == false
               updated += nvp
             rescue Exception => e
-              @log.error(e.to_s, :general_error)
+              @log.error(e.to_s)
             end
           }
           if updated.empty? == false

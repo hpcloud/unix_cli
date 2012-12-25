@@ -40,7 +40,7 @@ Examples:
             if key_file.nil?
               output = server.fog.console_output(lines)
               if output.nil?
-                @log.fatal "Error getting console response from #{name_or_id}", :general_error
+                @log.fatal "Error getting console response from #{name_or_id}"
               end
               @log.display "Console output for #{name_or_id}:"
               @log.display output.body["output"]

@@ -75,7 +75,7 @@ Aliases: account:add, account:setup, account:update
               begin
                 Connection.instance.validate_account(cred)
               rescue Exception => e
-                @log.error "Account verification failed. Error connecting to the service endpoint at: '#{cred[:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}", :general_error
+                @log.error "Account verification failed. Error connecting to the service endpoint at: '#{cred[:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
               end
             end
 
@@ -95,7 +95,7 @@ Aliases: account:add, account:setup, account:update
                 updated += " " if updated.empty? == false
                 updated += nvp
               rescue Exception => e
-                @log.error(e.to_s, :general_error)
+                @log.error(e.to_s)
               end
             }
             if updated.empty? == false

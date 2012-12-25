@@ -29,7 +29,7 @@ Aliases: volumes:rm, volumes:delete, volumes:del
                 @log.error volume.cstatus
               end
             rescue Exception => e
-              @log.error("Error removing volume: " + e.to_s, :general_error)
+              @log.error("Error removing volume: " + e.to_s)
             end
           }
         }

@@ -36,7 +36,7 @@ module HP
       def set_flavor(value)
         flav = Flavors.new.get(value, false)
         unless flav.is_valid?
-          set_status(flav.cstatus)
+          set_error(flav.cstatus)
           return false
         end
         @flavor = flav.id
@@ -49,7 +49,7 @@ module HP
         @private_image = false
         image = Images.new().get(value, false)
         unless image.is_valid?
-          set_status(image.cstatus)
+          set_error(image.cstatus)
           return false
         end
         @windows = image.is_windows?
@@ -63,7 +63,7 @@ module HP
         @windows = false # windows not supported right now
         volume = Volumes.new().get(value, false)
         unless volume.is_valid?
-          set_status(volume.cstatus)
+          set_error(volume.cstatus)
           return false
         end
         @volume = volume.id
@@ -76,7 +76,7 @@ module HP
         end
         @keypair = Keypairs.new.get(value, false)
         unless @keypair.is_valid?
-          set_status(@keypair.cstatus)
+          set_error(@keypair.cstatus)
           return false
         end
         @keyname = @keypair.name
@@ -108,7 +108,7 @@ module HP
         rescue SyntaxError => se
         rescue NameError => ne
         end
-        set_status("Invalid security group '#{value}' should be comma separated list", :incorrect_usage)
+        set_error("Invalid security group '#{value}' should be comma separated list", :incorrect_usage)
         return false
       end
 
@@ -116,13 +116,13 @@ module HP
         if value.nil?
           return true unless @windows
           return true unless @private_key.nil?
-          set_status("You must specify the private key file if you want to create a windows instance.", :incorrect_usage)
+          set_error("You must specify the private key file if you want to create a windows instance.", :incorrect_usage)
           return false
         end
         begin
           @private_key = File.read(File.expand_path(value))
         rescue Exception => e
-          set_status("Error reading private key file '#{value}': " + e.to_s, :incorrect_usage)
+          set_error("Error reading private key file '#{value}': " + e.to_s, :incorrect_usage)
           return false
         end
         return true
@@ -151,7 +151,7 @@ module HP
       def create_image(name, hash)
         resp = @fog.create_image(name , hash)
         if resp.nil?
-          set_status("Error creating image '#{name}'", :general_error)
+          set_error("Error creating image '#{name}'")
           return nil
         end
         return resp.headers["Location"].gsub(/.*\/images\//,'')
@@ -159,14 +159,14 @@ module HP
 
       def save
         if is_valid?
-          set_status(@meta.cstatus)
+          set_error(@meta.cstatus)
         end
         return false if is_valid? == false
         acct = Accounts.new.get(Connection.instance.get_account)
         @flavor = acct[:options][:preferred_flavor] if @flavor.nil?
         @image = acct[:options][:preferred_image] if @image.nil?  && @volume.nil?
         if @image.nil? && @volume.nil?
-          set_status("You must specify either an image or a volume to create a server.", :incorrect_usage)
+          set_error("You must specify either an image or a volume to create a server.", :incorrect_usage)
           return false
         end
         if @fog.nil?
@@ -188,7 +188,7 @@ module HP
           end
           server = @connection.servers.create(hsh)
           if server.nil?
-            set_status("Error creating server '#{@name}'", :general_error)
+            set_error("Error creating server '#{@name}'")
             return false
           end
           @id = server.id

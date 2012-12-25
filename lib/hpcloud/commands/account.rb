@@ -36,7 +36,7 @@ Aliases: account:list
               acct = accounts.read(name)
               @log.display acct.to_yaml.gsub(/---\n/,'').gsub(/^:/,'').gsub(/^[ ]*:/,'  ')
             rescue Exception => e
-              @log.error(e.to_s, :general_error)
+              @log.error(e.to_s)
             end
           end
         }

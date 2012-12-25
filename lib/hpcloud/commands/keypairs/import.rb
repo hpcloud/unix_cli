@@ -16,7 +16,7 @@ Examples:
         cli_command(options) {
           keypair = Keypairs.new.get(key_name)
           if keypair.is_valid?
-            @log.fatal "Key pair '#{key_name}' already exists.", :general_error
+            @log.fatal "Key pair '#{key_name}' already exists."
           else
             keypair = KeypairHelper.new(Connection.instance)
             keypair.name = key_name
