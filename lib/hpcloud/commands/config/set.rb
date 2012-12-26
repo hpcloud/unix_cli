@@ -24,14 +24,12 @@ Aliases: config:add, config:update
           updated = ""
           pairs = [pair] + pairs
           pairs.each { |nvp|
-            begin
+            sub_command {
               k, v = Config.split(nvp)
               config.set(k, v)
               updated += " " if updated.empty? == false
               updated += nvp
-            rescue Exception => e
-              @log.error(e.to_s)
-            end
+            }
           }
           if updated.empty? == false
             config.write()

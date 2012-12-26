@@ -11,6 +11,8 @@ module HP
 Examples:
   hpcloud account:verify useast # Verify the `useast` account credentials:
       DESC
+      method_option :debug, :type => :string, :alias => '-x',
+                    :desc => 'Debug logging 1,2,3,...'
       define_method "account:verify" do |name|
         cli_command(options) {
           acct = HP::Cloud::Accounts.new().read(name)

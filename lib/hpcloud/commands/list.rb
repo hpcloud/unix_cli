@@ -26,7 +26,7 @@ Aliases: ls
           sources = [""] if sources.empty?
           multi = sources.length > 1
           sources.each { |name|
-            begin
+            sub_command {
               from = ResourceFactory.create(Connection.instance.storage, name)
               if from.valid_source()
                 found = false
@@ -56,9 +56,7 @@ Aliases: ls
               else
                 @log.error from.cstatus
               end
-            rescue Exception => e
-              @log.error "Exception reading '#{name}': " + e.to_s
-            end
+            }
           }
         }
       end

@@ -89,14 +89,12 @@ Aliases: account:add, account:setup, account:update
             acct = accounts.read(name, true)
             updated = ""
             args.each { |nvp|
-              begin
+              sub_command {
                 k, v = Config.split(nvp)
                 accounts.set(name, k, v)
                 updated += " " if updated.empty? == false
                 updated += nvp
-              rescue Exception => e
-                @log.error(e.to_s)
-              end
+              }
             }
             if updated.empty? == false
               accounts.write(name)

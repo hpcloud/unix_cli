@@ -20,12 +20,10 @@ Aliases: account:rm, account:delete, account:del
           accounts = HP::Cloud::Accounts.new()
           names = [name] + names
           names.each{ |name|
-            begin
+            sub_command {
               accounts.remove(name)
               @log.display("Removed account '#{name}'")
-            rescue Exception => e
-              @log.error(e.to_s)
-            end
+            }
           }
         }
       end

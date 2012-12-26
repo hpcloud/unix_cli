@@ -19,7 +19,7 @@ Examples:
         cli_command(options) {
           names = [name] + names
           names.each { |name|
-            begin
+            sub_command("Error adding container: ") {
               res = ContainerResource.new(Connection.instance.storage, name)
               name = res.container
               if res.get_container()
@@ -30,9 +30,7 @@ Examples:
                   @log.display "Created container '#{name}'."
                 end
               end
-            rescue Fog::Storage::HP::NotFound => error
-              @log.fatal 'The container name specified is invalid. Please see API documentation for valid naming guidelines.', :permission_denied
-            end
+            }
           }
         }
       end

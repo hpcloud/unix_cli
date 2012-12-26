@@ -21,16 +21,14 @@ Aliases: volumes:rm, volumes:delete, volumes:del
           name_or_ids = [name_or_id] + name_or_ids
           volumes = Volumes.new.get(name_or_ids, false)
           volumes.each { |volume|
-            begin
+            sub_command("Error removing volume: ") {
               if volume.is_valid?
                 volume.destroy
                 @log.display "Removed volume '#{volume.name}'."
               else
                 @log.error volume.cstatus
               end
-            rescue Exception => e
-              @log.error("Error removing volume: " + e.to_s)
-            end
+            }
           }
         }
       end

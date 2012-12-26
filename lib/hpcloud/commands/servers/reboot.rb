@@ -20,7 +20,7 @@ Examples:
           name_or_ids = [name_or_id] + name_or_ids
           servers = Servers.new.get(name_or_ids, false)
           servers.each { |server|
-            begin
+            sub_command("Error rebooting server: ") {
               if server.is_valid?
                 if options.hard?
                   server.fog.reboot("HARD")
@@ -32,9 +32,7 @@ Examples:
               else
                 @log.error server.cstatus
               end
-            rescue Exception => e
-              @log.error("Error rebooting server: " + e.to_s)
-            end
+            }
           }
         }
       end

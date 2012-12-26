@@ -32,12 +32,10 @@ Aliases: account:list
             listo = accounts.list
             @log.display listo.gsub(/^(#{name})$/, '\1 <= default')
           else
-            begin
+            sub_command {
               acct = accounts.read(name)
               @log.display acct.to_yaml.gsub(/---\n/,'').gsub(/^:/,'').gsub(/^[ ]*:/,'  ')
-            rescue Exception => e
-              @log.error(e.to_s)
-            end
+            }
           end
         }
       end
