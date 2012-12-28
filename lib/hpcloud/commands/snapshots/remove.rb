@@ -21,7 +21,7 @@ Aliases: snapshots:rm, snapshots:delete, snapshots:del
           name_or_ids = [name_or_id] + name_or_ids
           snapshots = Snapshots.new.get(name_or_ids, false)
           snapshots.each { |snapshot|
-            sub_command("Error removing snapshot: ") {
+            sub_command("removing snapshot") {
               if snapshot.is_valid?
                 snapshot.destroy
                 @log.display "Removed snapshot '#{snapshot.name}'."

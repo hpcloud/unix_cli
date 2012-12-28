@@ -20,7 +20,7 @@ Examples:
           name_or_ids = [name_or_id] + name_or_ids
           servers = Servers.new.get(name_or_ids, false)
           servers.each { |server|
-            sub_command("Error rebooting server: ") {
+            sub_command("rebooting server") {
               if server.is_valid?
                 if options.hard?
                   server.fog.reboot("HARD")

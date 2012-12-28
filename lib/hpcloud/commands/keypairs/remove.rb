@@ -21,7 +21,7 @@ Aliases: keypairs:rm, keypairs:delete, keypairs:del
           names = [name] + names
           keypairs = Keypairs.new.get(names, false)
           keypairs.each { |keypair|
-            sub_command("Error removing keypair: ") {
+            sub_command("removing keypair") {
               if keypair.is_valid?
                 keypair.destroy
                 @log.display "Removed key pair '#{keypair.name}'."

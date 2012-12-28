@@ -19,7 +19,7 @@ Examples:
         cli_command(options) {
           names = [name] + names
           names.each { |name|
-            sub_command("Error adding container: ") {
+            sub_command("adding container") {
               res = ContainerResource.new(Connection.instance.storage, name)
               name = res.container
               if res.get_container()

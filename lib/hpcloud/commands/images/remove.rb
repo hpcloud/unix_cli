@@ -21,7 +21,7 @@ Aliases: images:rm, images:delete, images:del
           name_or_ids = [name_or_id] + name_or_ids
           images = Images.new.get(name_or_ids, false)
           images.each { |image|
-            sub_command("Error removing image: ") {
+            sub_command("removing image") {
               if image.is_valid?
                 image.fog.destroy
                 @log.display "Removed image '#{image.name}'."

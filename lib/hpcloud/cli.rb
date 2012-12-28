@@ -55,7 +55,7 @@ module HP
         exit @exit_status.get
       end
     
-      def sub_command(message=nil)
+      def sub_command(action=nil)
         error_status = nil
         begin
           yield
@@ -111,7 +111,12 @@ module HP
           error_status = :general_error
         end
         unless error_status.nil?
-          @log.error(@@error, error_status)
+          if action.nil?
+            @log.error(@@error, error_status)
+          else
+            @@error = Exception.new("Error #{action}: #{@@error.to_s}")
+            @log.error(@@error, error_status)
+          end
         end
         if @@debugging == true
           unless @@error.nil?
