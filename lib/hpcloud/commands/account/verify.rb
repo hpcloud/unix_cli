@@ -21,6 +21,7 @@ Examples:
             Connection.instance.validate_account(acct[:credentials])
             @log.display "Able to connect to valid account '#{name}'."
           rescue Exception => e
+            e = ErrorResponse.new(e).to_s
             @log.error "Account verification failed. Error connecting to the service endpoint at: '#{acct[:credentials][:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
           end
         }

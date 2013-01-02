@@ -75,6 +75,7 @@ Aliases: account:add, account:setup, account:update
               begin
                 Connection.instance.validate_account(cred)
               rescue Exception => e
+                e = ErrorResponse.new(e).to_s
                 @log.error "Account verification failed. Error connecting to the service endpoint at: '#{cred[:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
               end
             end
