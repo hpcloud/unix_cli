@@ -59,7 +59,8 @@ module HP
         begin
           @storage_connection[account] = Fog::Storage.new(opts)
         rescue Exception => e
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n Exception: #{e}"
+          respo = ErrorResponse.new(e).to_s
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n Exception: #{respo}"
         end
       end
 
