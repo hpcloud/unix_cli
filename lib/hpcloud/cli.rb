@@ -60,10 +60,10 @@ module HP
         begin
           yield
         rescue Excon::Errors::BadRequest => error
-          @@error = error
+          @@error = ErrorResponse.new(error).to_s
           error_status = :incorrect_usage
         rescue Excon::Errors::InternalServerError => error
-          @@error = error
+          @@error = ErrorResponse.new(error).to_s
           error_status = :general_error
         rescue Fog::HP::Errors::ServiceError => error
           @@error = error
@@ -93,16 +93,16 @@ module HP
           @@error = error
           error_status = :general_error
         rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          @@error = error
+          @@error = ErrorResponse.new(error).to_s
           error_status = :permission_denied
         rescue Excon::Errors::Conflict => error
-          @@error = error
+          @@error = ErrorResponse.new(error).to_s
           error_status = :conflicted
         rescue Excon::Errors::NotFound => error
-          @@error = error
+          @@error = ErrorResponse.new(error).to_s
           error_status = :not_found
         rescue Excon::Errors::RequestEntityTooLarge => error
-          @@error = error
+          @@error = ErrorResponse.new(error).to_s
           error_status = :rate_limited
         rescue SystemExit => error
           @@error = error
@@ -114,13 +114,15 @@ module HP
           if action.nil?
             @log.error(@@error, error_status)
           else
-            @@error = Exception.new("Error #{action}: #{@@error.to_s}")
+            @@error = "Error #{action}: #{@@error.to_s}"
             @log.error(@@error, error_status)
           end
         end
         if @@debugging == true
           unless @@error.nil?
-            puts @@error.backtrace
+            if @@error.kind_of?(Exception)
+              puts @@error.backtrace
+            end
           end
         end
         @exit_status.get
