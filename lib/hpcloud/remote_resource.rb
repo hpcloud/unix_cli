@@ -109,7 +109,36 @@ module HP
         end
       end
 
+      def write(chunk)
+        if @write_io.nil?
+          begin
+            @read_io, @write_io = IO.pipe
+            @write_thread = Thread.new {
+              @storage.put_object(@container, @destination, {}, @options) {
+                @read_io.read
+              }
+            }
+          rescue Exception => e
+            @cstatus = CliStatus.new("Error writing object creating thread.")
+            return false
+          end
+        end
+        begin
+          @write_io.write(chunk)
+        rescue Exception => e
+          @cstatus = CliStatus.new("Error writing object.")
+          return false
+        end
+        return true
+      end
+
       def close
+        @write_io.close unless @write_io.nil?
+        @write_io = nil
+        @write_thread.join unless @write_thread.nil?
+        @write_thread = nil
+        @read_io.close unless @read_io.nil?
+        @read_io = nil
         return true
       end
 
@@ -189,14 +218,26 @@ module HP
         result = true
         if from.isLocal()
           if (from.open() == false) then return false end
-          options = { 'Content-Type' => from.get_mime_type() }
-          @storage.put_object(@container, @destination, {}, options) {
+          @options = { 'Content-Type' => from.get_mime_type() }
+          @storage.put_object(@container, @destination, {}, @options) {
             from.read().to_s
           }
           result = false if ! from.close()
         else
           begin
-            @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
+            if from.has_same_account(@storage)
+              @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
+            else
+              @options = { 'Content-Type' => from.get_mime_type() }
+              from.read() { |chunk|
+                if ! write(chunk)
+                  result = false
+                  break
+                end
+              }
+              result = false unless from.close()
+              result = false unless close()
+            end
           rescue Fog::Storage::HP::NotFound => e
             @cstatus = CliStatus.new("The specified object does not exist.", :not_found)
             result = false
@@ -328,6 +369,10 @@ module HP
           @cstatus = CliStatus.new("Exception revoking permissions for '#{@fname}': " + e.to_s, :general_error)
           return false
         end
+      end
+
+      def has_same_account(storage)
+        return storage == @storage
       end
     end
   end

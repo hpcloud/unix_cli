@@ -163,9 +163,6 @@ module HP
             return true
           end
           set_error(from)
-          if is_valid?
-            @cstatus = CliStatus('Unknown error copying', :unknown)
-          end
           return false
       end
 
@@ -182,7 +179,10 @@ module HP
             filename = file.path
           end
           return false unless set_destination(filename)
-          return false unless copy_file(file)
+          unless copy_file(file)
+            from.set_error(file)
+            return false
+          end
           copiedfile = true
         }
 
