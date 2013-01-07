@@ -19,10 +19,10 @@ Examples:
         cli_command(options) {
           keypair = Keypairs.new.get(key_name)
           unless keypair.is_valid?
-            error keypair.error_string, keypair.error_code
+            @log.fatal keypair.cstatus
           end
 
-          display keypair.public_key
+          @log.display keypair.public_key
         }
       end
     end

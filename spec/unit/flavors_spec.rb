@@ -68,8 +68,8 @@ describe "Flavors getter" do
       flavors = Flavors.new.get(["large"], false)
 
       flavors[0].is_valid?.should be_false
-      flavors[0].error_code.should eq(:general_error)
-      flavors[0].error_string.should eq("More than one flavor matches 'large', use the id instead of name.")
+      flavors[0].cstatus.error_code.should eq(:general_error)
+      flavors[0].cstatus.message.should eq("More than one flavor matches 'large', use the id instead of name.")
       flavors.length.should eql(1)
     end
   end
@@ -79,8 +79,8 @@ describe "Flavors getter" do
       flavors = Flavors.new.get(["bogus"])
 
       flavors[0].is_valid?.should be_false
-      flavors[0].error_code.should eq(:not_found)
-      flavors[0].error_string.should eq("Cannot find a flavor matching 'bogus'.")
+      flavors[0].cstatus.error_code.should eq(:not_found)
+      flavors[0].cstatus.message.should eq("Cannot find a flavor matching 'bogus'.")
       flavors.length.should eql(1)
     end
   end

@@ -48,8 +48,8 @@ describe "Snapshot methods" do
       disk.created.should eql(Date.new(2011, 10, 31))
       disk.status.should eql("available")
       disk.description.should eq("My cool disk")
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -64,8 +64,8 @@ describe "Snapshot methods" do
       disk.created.should be_nil
       disk.status.should be_nil
       disk.description.should be_nil
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -120,8 +120,8 @@ describe "Snapshot methods" do
       snappy.save.should be_false
 
       snappy.id.should be_nil
-      snappy.error_string.should eq("Error creating snapshot 'lion'")
-      snappy.error_code.should eq(:general_error)
+      snappy.cstatus.message.should eq("Error creating snapshot 'lion'")
+      snappy.cstatus.error_code.should eq(:general_error)
     end
   end
 end

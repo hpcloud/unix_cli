@@ -21,16 +21,14 @@ Aliases: securitygroups:rm, securitygroups:delete, securitygroups:del
           name_or_ids = [name_or_id] + name_or_ids
           securitygroups = SecurityGroups.new.get(name_or_ids, false)
           securitygroups.each { |securitygroup|
-            begin
+            sub_command("removing security group") {
               if securitygroup.is_valid?
                 securitygroup.destroy
-                display "Removed security group '#{securitygroup.name}'."
+                @log.display "Removed security group '#{securitygroup.name}'."
               else
-                error_message(securitygroup.error_string, securitygroup.error_code)
+                @log.error securitygroup.cstatus
               end
-            rescue Exception => e
-              error_message("Error removing security group: " + e.to_s, :general_error)
-            end
+            }
           }
         }
       end

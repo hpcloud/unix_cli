@@ -26,39 +26,37 @@ Aliases: ls
           sources = [""] if sources.empty?
           multi = sources.length > 1
           sources.each { |name|
-            begin
+            sub_command {
               from = ResourceFactory.create(Connection.instance.storage, name)
               if from.valid_source()
                 found = false
                 from.foreach { |file|
                   if from.is_container?
                     if multi
-                      display file.fname
+                      @log.display file.fname
                     else
-                      display file.path
+                      @log.display file.path
                     end
                   else
                     if file.is_container?
-                      display file.container
+                      @log.display file.container
                     else
-                      display file.fname
+                      @log.display file.fname
                     end
                   end
                   found = true
                 }
                 unless found
                   if from.is_object_store?
-                    error_message "Cannot find any containers, use `#{selfname} containers:add <name>` to create one.", :not_found
+                    @log.error "Cannot find any containers, use `#{selfname} containers:add <name>` to create one.", :not_found
                   elsif from.isDirectory() == false
-                    error_message "Cannot find resource named '#{name}'.", :not_found
+                    @log.error "Cannot find resource named '#{name}'.", :not_found
                   end
                 end
               else
-                error_message from.error_string, from.error_code
+                @log.error from.cstatus
               end
-            rescue Exception => e
-              error_message "Exception reading '#{name}': " + e.to_s, :general_error
-            end
+            }
           }
         }
       end

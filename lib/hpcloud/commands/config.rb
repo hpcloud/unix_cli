@@ -17,7 +17,7 @@ Aliases: config:list
       DESC
       def config
         cli_command(options) {
-          display Config.new.list
+          @log.display Config.new.list
         }
       end
     end

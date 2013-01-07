@@ -20,21 +20,19 @@ Examples:
           name_or_ids = [name_or_id] + name_or_ids
           servers = Servers.new.get(name_or_ids, false)
           servers.each { |server|
-            begin
+            sub_command("rebooting server") {
               if server.is_valid?
                 if options.hard?
                   server.fog.reboot("HARD")
-                  display "Hard rebooting server '#{server.name}'."
+                  @log.display "Hard rebooting server '#{server.name}'."
                 else
                   server.fog.reboot
-                  display "Soft rebooting server '#{server.name}'."
+                  @log.display "Soft rebooting server '#{server.name}'."
                 end
               else
-                error_message server.error_string, server.error_code
+                @log.error server.cstatus
               end
-            rescue Exception => e
-              error_message("Error rebooting server: " + e.to_s, :general_error)
-            end
+            }
           }
         }
       end

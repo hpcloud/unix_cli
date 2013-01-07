@@ -78,8 +78,8 @@ describe "Addresses getter" do
       addresses = Addresses.new.get(["addy3"], false)
 
       addresses[0].is_valid?.should be_false
-      addresses[0].error_code.should eq(:general_error)
-      addresses[0].error_string.should eq("More than one ip address matches 'addy3', use the id instead of name.")
+      addresses[0].cstatus.error_code.should eq(:general_error)
+      addresses[0].cstatus.message.should eq("More than one ip address matches 'addy3', use the id instead of name.")
       addresses.length.should eql(1)
     end
   end
@@ -89,8 +89,8 @@ describe "Addresses getter" do
       addresses = Addresses.new.get(["bogus"])
 
       addresses[0].is_valid?.should be_false
-      addresses[0].error_code.should eq(:not_found)
-      addresses[0].error_string.should eq("Cannot find an ip address matching 'bogus'.")
+      addresses[0].cstatus.error_code.should eq(:not_found)
+      addresses[0].cstatus.message.should eq("Cannot find an ip address matching 'bogus'.")
       addresses.length.should eql(1)
     end
   end

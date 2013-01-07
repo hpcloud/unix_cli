@@ -37,7 +37,7 @@ Examples:
             if filename.nil?
               filename = KeypairHelper.private_filename("#{server.id}")
               if File.exists?(filename) == false
-                error "There is no local configuration to determine what private key is associated with this server.  Use the keypairs:private:add command to add a key named #{server.id} for this server or use the -k or -p option.", :incorrect_usage
+                @log.fatal "There is no local configuration to determine what private key is associated with this server.  Use the keypairs:private:add command to add a key named #{server.id} for this server or use the -k or -p option.", :incorrect_usage
               end
             end
             loginid = options[:login]
@@ -50,10 +50,10 @@ Examples:
               end
             end
             command = options[:command]
-            display "Connecting to '#{name_or_id}'..."
+            @log.display "Connecting to '#{name_or_id}'..."
             system("#{command} #{loginid}@#{server.public_ip} -i #{filename}")
           else
-            error server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

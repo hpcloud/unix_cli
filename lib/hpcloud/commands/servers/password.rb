@@ -20,9 +20,9 @@ Aliases: servers:passwd
           server = Servers.new.get(name)
           if server.is_valid?
               server.fog.change_password(password)
-              display "Password changed for server '#{name}'."
+              @log.display "Password changed for server '#{name}'."
           else
-            error server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

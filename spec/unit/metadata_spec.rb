@@ -22,9 +22,9 @@ describe "Metadata class" do
     end
   end
 
-  context "when we to_hash" do
+  context "when we to_array" do
     it "it returns some expected hash" do
-      hsh = HP::Cloud::Metadata.new(@fog_metadata).to_hash()
+      hsh = HP::Cloud::Metadata.new(@fog_metadata).to_array()
 
       hsh[0]["key"].should eql("rumblefish")
       hsh[0]["value"].should eql("am")
@@ -75,8 +75,8 @@ describe "Metadata class" do
     it "it changes the security_groups and returns false" do
       mta = HP::Cloud::Metadata.new()
       mta.set_metadata('garbage').should be_false
-      mta.error_string.should eq("Invalid metadata 'garbage' should be in the form 'k1=v1,k2=v2,...'")
-      mta.error_code.should eq(:incorrect_usage)
+      mta.cstatus.message.should eq("Invalid metadata 'garbage' should be in the form 'k1=v1,k2=v2,...'")
+      mta.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 
@@ -84,8 +84,8 @@ describe "Metadata class" do
     it "it changes the security_groups and returns false" do
       mta = HP::Cloud::Metadata.new()
       mta.set_metadata('asdf==ddd').should be_false
-      mta.error_string.should eq("Invalid metadata 'asdf==ddd' should be in the form 'k1=v1,k2=v2,...'")
-      mta.error_code.should eq(:incorrect_usage)
+      mta.cstatus.message.should eq("Invalid metadata 'asdf==ddd' should be in the form 'k1=v1,k2=v2,...'")
+      mta.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 
@@ -123,8 +123,8 @@ describe "Metadata class" do
 
       mta.remove_metadata('something').should be_false
 
-      mta.error_string.should eq("Metadata key 'something' not found")
-      mta.error_code.should eq(:not_found)
+      mta.cstatus.message.should eq("Metadata key 'something' not found")
+      mta.cstatus.error_code.should eq(:not_found)
     end
   end
 
@@ -137,8 +137,8 @@ describe "Metadata class" do
 
       mta.remove_metadata('something').should be_false
 
-      mta.error_string.should eq("Metadata key 'something' not found")
-      mta.error_code.should eq(:not_found)
+      mta.cstatus.message.should eq("Metadata key 'something' not found")
+      mta.cstatus.error_code.should eq(:not_found)
       mta.to_s.should eq('')
       mta.hsh.to_a.length.should eq(0)
     end

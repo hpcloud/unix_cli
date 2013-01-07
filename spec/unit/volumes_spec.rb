@@ -86,8 +86,8 @@ describe "Volumes getter" do
       volumes = Volumes.new.get(["vol3"], false)
 
       volumes[0].is_valid?.should be_false
-      volumes[0].error_code.should eq(:general_error)
-      volumes[0].error_string.should eq("More than one volume matches 'vol3', use the id instead of name.")
+      volumes[0].cstatus.error_code.should eq(:general_error)
+      volumes[0].cstatus.message.should eq("More than one volume matches 'vol3', use the id instead of name.")
       volumes.length.should eql(1)
     end
   end
@@ -97,8 +97,8 @@ describe "Volumes getter" do
       volumes = Volumes.new.get(["bogus"])
 
       volumes[0].is_valid?.should be_false
-      volumes[0].error_code.should eq(:not_found)
-      volumes[0].error_string.should eq("Cannot find a volume matching 'bogus'.")
+      volumes[0].cstatus.error_code.should eq(:not_found)
+      volumes[0].cstatus.message.should eq("Cannot find a volume matching 'bogus'.")
       volumes.length.should eql(1)
     end
   end

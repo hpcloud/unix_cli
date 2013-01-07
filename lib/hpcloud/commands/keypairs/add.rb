@@ -27,7 +27,7 @@ Examples:
       define_method "keypairs:add" do |key_name|
         cli_command(options) {
           if Keypairs.new.get(key_name).is_valid? == true
-            error "Key pair '#{key_name}' already exists.", :conflicted
+            @log.fatal "Key pair '#{key_name}' already exists.", :conflicted
           end
 
           keypair = KeypairHelper.new(Connection.instance)
@@ -37,13 +37,13 @@ Examples:
           if keypair.save == true
             if options.output?
               filename = keypair.private_add
-              display "Created key pair '#{key_name}' and saved it to a file at '#{filename}'."
+              @log.display "Created key pair '#{key_name}' and saved it to a file at '#{filename}'."
             else
-              display keypair.fog.private_key
-              display "Created key pair '#{key_name}'."
+              @log.display keypair.fog.private_key
+              @log.display "Created key pair '#{key_name}'."
             end
           else
-            error keypair.error_string, keypair.error_code
+            @log.fatal keypair.cstatus
           end
         }
       end

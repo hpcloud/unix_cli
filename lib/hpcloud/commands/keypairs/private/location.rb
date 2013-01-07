@@ -15,12 +15,12 @@ Examples:
           if server.is_valid?
             location = KeypairHelper.private_filename("#{server.id}")
             if File.exists?(location)
-              display "#{location}"
+              @log.display "#{location}"
             else
-              error "Cannot find private key file for '#{server_name_or_id}'.", :not_found
+              @log.fatal "Cannot find private key file for '#{server_name_or_id}'.", :not_found
             end
           else
-            error server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

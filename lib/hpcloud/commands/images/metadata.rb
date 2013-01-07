@@ -23,7 +23,7 @@ Aliases: images:metadata:list
             hsh = image.meta.to_hash()
             Tableizer.new(options, Metadata.get_keys(), hsh).print
           else
-            error(image.error_string, image.error_code)
+            @log.fatal image.cstatus
           end
         }
       end

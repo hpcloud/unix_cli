@@ -60,7 +60,7 @@ Aliases: account:add, account:setup, account:update
             zones = acct[:zones]
 
             # ask for credentials
-            display "****** Setup your HP Cloud Services #{name} account ******"
+            @log.display "****** Setup your HP Cloud Services #{name} account ******"
             cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
             cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
             cred[:auth_uri] = ask_with_default 'Auth Uri:', "#{cred[:auth_uri]}"
@@ -71,11 +71,12 @@ Aliases: account:add, account:setup, account:update
             zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
 
             unless options['no-validate']
-              display "Verifying your HP Cloud Services account..."
+              @log.display "Verifying your HP Cloud Services account..."
               begin
                 Connection.instance.validate_account(cred)
               rescue Exception => e
-                error_message "Account verification failed. Error connecting to the service endpoint at: '#{cred[:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}", :general_error
+                e = ErrorResponse.new(e).to_s
+                @log.error "Account verification failed. Error connecting to the service endpoint at: '#{cred[:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
               end
             end
 
@@ -84,23 +85,21 @@ Aliases: account:add, account:setup, account:update
             accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:block_availability_zone])
             accounts.write(name)
 
-            display "Account credentials for HP Cloud Services have been #{actionstring}."
+            @log.display "Account credentials for HP Cloud Services have been #{actionstring}."
           else
             acct = accounts.read(name, true)
             updated = ""
             args.each { |nvp|
-              begin
+              sub_command {
                 k, v = Config.split(nvp)
                 accounts.set(name, k, v)
                 updated += " " if updated.empty? == false
                 updated += nvp
-              rescue Exception => e
-                error_message(e.to_s, :general_error)
-              end
+              }
             }
             if updated.empty? == false
               accounts.write(name)
-              display "Account '#{name}' set " + updated
+              @log.display "Account '#{name}' set " + updated
             end
           end
         }

@@ -7,7 +7,7 @@ module HP
         super("rule")
         @security_group = SecurityGroups.new.get(sec_group_name)
         if @security_group.is_valid? == false
-          raise Exception.new(@security_group.error_string)
+          raise Exception.new(@security_group.cstatus.to_s)
         end
         @items = @security_group.fog.rules
       end

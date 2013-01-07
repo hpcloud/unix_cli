@@ -24,13 +24,13 @@ Aliases: snapshots:list
         cli_command(options) {
           snapshots = Snapshots.new
           if snapshots.empty?
-            display "You currently have no block snapshot devices, use `#{selfname} snapshots:add <name>` to create one."
+            @log.display "You currently have no block snapshot devices, use `#{selfname} snapshots:add <name>` to create one."
           else
-            hsh = snapshots.get_hash(arguments)
-            if hsh.empty?
-              display "There are no snapshots that match the provided arguments"
+            ray = snapshots.get_array(arguments)
+            if ray.empty?
+              @log.display "There are no snapshots that match the provided arguments"
             else
-              Tableizer.new(options, SnapshotHelper.get_keys(), hsh).print
+              Tableizer.new(options, SnapshotHelper.get_keys(), ray).print
             end
           end
         }

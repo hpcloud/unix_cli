@@ -41,8 +41,7 @@ describe "SharedResource" do
       to.get_container().should be_true
       to.get_size().should eq(111)
 
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
     end
   end
 
@@ -56,8 +55,7 @@ describe "SharedResource" do
 
       to.valid_destination(source).should be_true
 
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
     end
   end
 

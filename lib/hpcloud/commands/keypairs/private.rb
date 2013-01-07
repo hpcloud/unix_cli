@@ -17,7 +17,7 @@ Examples:
       define_method "keypairs:private" do
         cli_command(options) {
           KeypairHelper.private_list.each{ |private_key|
-            display private_key
+            @log.display private_key
           }
         }
       end

@@ -52,21 +52,22 @@ module HP
         reset_connections()
       end
 
-      def storage
-        account = get_account()
+      def storage(account_name=nil)
+        account = get_account(account_name)
         return @storage_connection[account] unless @storage_connection[account].nil?
-        opts = create_options(:storage_availability_zone)
+        opts = create_options(account, :storage_availability_zone)
         begin
           @storage_connection[account] = Fog::Storage.new(opts)
         rescue Exception => e
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n Exception: #{e}"
+          respo = ErrorResponse.new(e).to_s
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n Exception: #{respo}"
         end
       end
 
       def compute
         account = get_account()
         return @compute_connection[account] unless @compute_connection[account].nil?
-        opts = create_options(:compute_availability_zone)
+        opts = create_options(account, :compute_availability_zone)
         begin
           @compute_connection[account] = Fog::Compute.new(opts)
         rescue Exception => e
@@ -77,7 +78,7 @@ module HP
       def block
         account = get_account()
         return @block_connection[account] unless @block_connection[account].nil?
-        opts = create_options(:block_availability_zone)
+        opts = create_options(account, :block_availability_zone)
         begin
           @block_connection[account] = Fog::BlockStorage.new(opts)
         rescue Exception => e
@@ -88,7 +89,7 @@ module HP
       def cdn
         account = get_account()
         return @cdn_connection[account] unless @cdn_connection[account].nil?
-        opts = create_options(:cdn_availability_zone)
+        opts = create_options(account, :cdn_availability_zone)
         begin
           @cdn_connection[account] = Fog::CDN.new(opts)
         rescue Exception => e
@@ -96,12 +97,13 @@ module HP
         end
       end
 
-      def get_account
+      def get_account(account_name = nil)
+        return account_name unless account_name.nil?
         return @options[:account_name] || Config.new.get(:default_account) || 'hp'
       end
 
-      def create_options(zone)
-        creds, zones, options = Accounts.new.creds_zones_options(get_account())
+      def create_options(account_name, zone)
+        creds, zones, options = Accounts.new.creds_zones_options(account_name)
         avl_zone = @options[:availability_zone] || zones[zone]
         return { :provider => 'HP',
                  :connection_options => options,

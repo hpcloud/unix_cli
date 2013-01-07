@@ -22,7 +22,7 @@ describe "Connection options" do
     it "should have expected values with avail zone" do
       Connection.instance.set_options({:availability_zone=>'somethingelse'})
 
-      options = Connection.instance.create_options(:storage_availability_zone)
+      options = Connection.instance.create_options('hp', :storage_availability_zone)
 
       options[:provider].should eq('HP')
       options[:connection_options].should eq(expected_options)
@@ -35,7 +35,7 @@ describe "Connection options" do
     end
 
     it "should have expected values" do
-      options = Connection.instance.create_options(:compute_availability_zone)
+      options = Connection.instance.create_options('hp', :compute_availability_zone)
 
       options[:provider].should eq('HP')
       options[:connection_options].should eq(expected_options())
@@ -48,7 +48,7 @@ describe "Connection options" do
     end
 
     it "should have expected values" do
-      options = Connection.instance.create_options(:storage_availability_zone)
+      options = Connection.instance.create_options('hp', :storage_availability_zone)
 
       options[:provider].should eq('HP')
       options[:connection_options].should eq(expected_options())
@@ -61,7 +61,7 @@ describe "Connection options" do
     end
 
     it "should have expected values" do
-      options = Connection.instance.create_options(:cdn_availability_zone)
+      options = Connection.instance.create_options('hp', :cdn_availability_zone)
 
       options[:provider].should eq('HP')
       options[:connection_options].should eq(expected_options())
@@ -74,7 +74,7 @@ describe "Connection options" do
     end
 
     it "should have expected values" do
-      options = Connection.instance.create_options(:block_availability_zone)
+      options = Connection.instance.create_options('hp', :block_availability_zone)
 
       options[:provider].should eq('HP')
       options[:connection_options].should eq(expected_options())
@@ -88,9 +88,8 @@ describe "Connection options" do
 
     it "should throw exception" do
       directory = Accounts.new.directory
-      Connection.instance.set_options({:account_name => 'bogus'})
       lambda {
-        Connection.instance.create_options(:storage_availability_zone)
+        Connection.instance.create_options('bogus', :storage_availability_zone)
       }.should raise_error(Exception, "Could not find account file: #{directory}bogus")
     end
   end

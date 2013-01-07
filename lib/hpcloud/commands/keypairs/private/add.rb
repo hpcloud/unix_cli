@@ -15,7 +15,7 @@ Examples:
           keypair.name = key_name
           keypair.private_key = File.read(file_name)
           filename = keypair.private_add
-          display "Added private key '#{filename}'."
+          @log.display "Added private key '#{filename}'."
         }
       end
     end

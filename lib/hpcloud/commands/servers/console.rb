@@ -22,7 +22,7 @@ Examples:
           lines = ["50"] if lines.nil? || lines.empty?
           lines = lines[0]
           if lines.match(/[^0-9]/)
-            error "Invalid number of lines specified '#{lines}'", :incorrect_usage
+            @log.fatal "Invalid number of lines specified '#{lines}'", :incorrect_usage
           end
           lines = lines.to_i + 1
           lines = lines.to_s
@@ -33,25 +33,25 @@ Examples:
               unless options[:dump_password].nil?
                 key_file = KeypairHelper.private_filename("#{server.id}")
                 unless File.exists?(key_file)
-                  error "Cannot find private key file for '#{name_or_id}'.", :not_found
+                  @log.fatal "Cannot find private key file for '#{name_or_id}'.", :not_found
                 end
               end
             end
             if key_file.nil?
               output = server.fog.console_output(lines)
               if output.nil?
-                error "Error getting console response from #{name_or_id}", :general_error
+                @log.fatal "Error getting console response from #{name_or_id}"
               end
-              display "Console output for #{name_or_id}:"
-              display output.body["output"]
+              @log.display "Console output for #{name_or_id}:"
+              @log.display output.body["output"]
             else
               server.set_private_key(key_file)
               server.set_image(server.image)
-              display "Warning: Server does not appear to be a Windows server" unless server.is_windows?
-              display server.windows_password(1)
+              @log.display "Warning: Server does not appear to be a Windows server" unless server.is_windows?
+              @log.display server.windows_password(1)
             end
           else
-            error server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

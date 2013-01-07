@@ -24,6 +24,9 @@ Aliases: cp
       method_option :mime,
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the MIME type of the remote object.'
+      method_option :source_account,
+                    :type => :string, :aliases => '-s',
+                    :desc => 'Source account name.'
       CLI.add_common_options
       def copy(source, *destination)
         cli_command(options) {
@@ -32,15 +35,15 @@ Aliases: cp
           destination = last
           to = ResourceFactory.create_any(Connection.instance.storage, destination)
           if source.length > 1 && to.isDirectory() == false
-            error("The destination '#{destination}' for multiple files must be a directory or container", :general_error)
+            @log.fatal("The destination '#{destination}' for multiple files must be a directory or container")
           end
           source.each { |name|
-            from = ResourceFactory.create_any(Connection.instance.storage, name)
+            from = ResourceFactory.create_any(Connection.instance.storage(options[:source_account]), name)
             from.set_mime_type(options[:mime])
             if to.copy(from)
-              display "Copied #{from.fname} => #{to.fname}"
+              @log.display "Copied #{from.fname} => #{to.fname}"
             else
-              error to.error_string, to.error_code
+              @log.fatal to.cstatus
             end
           }
         }

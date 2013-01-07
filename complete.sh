@@ -34,7 +34,7 @@ echo '    case "${words[1]}" in' >>${OFILE}
 #
 # Get the options
 #
-hpcloud help | grep hpcloud | grep 'volumes:add' | while read HPCLOUD COMMAND ROL
+hpcloud help | grep hpcloud | while read HPCLOUD COMMAND ROL
 do
   OPT=''
   SEPER=''

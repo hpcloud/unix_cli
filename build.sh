@@ -32,6 +32,7 @@ git remote prune origin || true
 git branch -d ${BRANCH} || git branch -D ${BRANCH} || true
 git push origin :${BRANCH} || true
 git checkout -b ${BRANCH}
+SHA1=$(git log -1 | head -1 | sed -e 's/commit //')
 
 #
 # Prepare for release gem
@@ -42,6 +43,7 @@ sed -e 's/# Comment in for delivery//g' hpcloud.gemspec >out$$
 mv out$$ hpcloud.gemspec
 grep -v '# Comment out for delivery' Gemfile >out$$
 mv out$$ Gemfile
+sed -i -e "s/SHA1.*/SHA1 = '${SHA1}'/" lib/hpcloud/version.rb
 
 #
 # Commit, push and tag

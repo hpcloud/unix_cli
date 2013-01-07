@@ -22,16 +22,14 @@ Aliases: servers:rm, servers:delete, servers:del
           name_or_ids = [name_or_id] + name_or_ids
           servers = Servers.new.get(name_or_ids, false)
           servers.each { |server|
-            begin
+            sub_command("removing server") {
               if server.is_valid?
                 server.destroy
-                display "Removed server '#{server.name}'."
+                @log.display "Removed server '#{server.name}'."
               else
-                error_message(server.error_string, server.error_code)
+                @log.error server.cstatus
               end
-            rescue Exception => e
-              error_message("Error removing server: " + e.to_s, :general_error)
-            end
+            }
           }
         }
       end

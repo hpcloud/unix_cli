@@ -11,15 +11,21 @@ module HP
 Examples:
   hpcloud account:verify useast # Verify the `useast` account credentials:
       DESC
+      method_option :debug, :type => :string, :alias => '-x',
+                    :desc => 'Debug logging 1,2,3,...'
       define_method "account:verify" do |name|
         cli_command(options) {
           acct = HP::Cloud::Accounts.new().read(name)
-          display "Verifying '#{name}' account..."
+          @log.display "Verifying '#{name}' account..."
           begin
             Connection.instance.validate_account(acct[:credentials])
-            display "Able to connect to valid account '#{name}'."
+            @log.display "Able to connect to valid account '#{name}'."
           rescue Exception => e
-            error_message "Account verification failed. Error connecting to the service endpoint at: '#{acct[:credentials][:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}", :general_error
+            unless options[:debug].nil?
+              puts e.backtrace
+            end
+            e = ErrorResponse.new(e).to_s
+            @log.error "Account verification failed. Error connecting to the service endpoint at: '#{acct[:credentials][:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
           end
         }
       end

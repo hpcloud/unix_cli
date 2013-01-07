@@ -14,16 +14,16 @@ Examples:
       define_method "securitygroups:add" do |sec_group_name, sg_desc|
         cli_command(options) {
           if SecurityGroups.new.get(sec_group_name).is_valid? == true
-            error "Security group '#{sec_group_name}' already exists.", :general_error
+            @log.fatal "Security group '#{sec_group_name}' already exists."
           end
 
           security_group = SecurityGroupHelper.new(Connection.instance)
           security_group.name = sec_group_name
           security_group.description = sg_desc
           if security_group.save == true
-            display "Created security group '#{sec_group_name}' with id '#{security_group.id}'."
+            @log.display "Created security group '#{sec_group_name}' with id '#{security_group.id}'."
           else
-            error(security_group.error_string, security_group.error_code)
+            @log.fatal security_group.cstatus
           end
         }
       end

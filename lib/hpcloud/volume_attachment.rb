@@ -1,7 +1,7 @@
 module HP
   module Cloud
     class VolumeAttachment
-      attr_accessor :error_string, :error_code
+      attr_accessor :cstatus
       attr_accessor :id, :device, :serverId, :volumeId, :name, :server
       attr_accessor :meta
     
@@ -10,8 +10,7 @@ module HP
       end
 
       def initialize(va = nil)
-        @error_string = nil
-        @error_code = nil
+        @cstatus = CliStatus.new
         @fog_va = va
         if va.nil?
           return
@@ -31,7 +30,7 @@ module HP
       end
 
       def is_valid?
-        return @error_string.nil?
+        return @cstatus.is_success?
       end
     end
   end

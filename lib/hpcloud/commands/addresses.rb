@@ -25,13 +25,13 @@ Aliases: addresses:list
         cli_command(options) {
           addresses = Addresses.new
           if addresses.empty?
-            display "You currently have no public IP addresses, use `#{selfname} addresses:add` to create one."
+            @log.display "You currently have no public IP addresses, use `#{selfname} addresses:add` to create one."
           else
-            hsh = addresses.get_hash(arguments)
-            if hsh.empty?
-              display "There are no IP addresses that match the provided arguments"
+            ray = addresses.get_array(arguments)
+            if ray.empty?
+              @log.display "There are no IP addresses that match the provided arguments"
             else
-              Tableizer.new(options, AddressHelper.get_keys(), hsh).print
+              Tableizer.new(options, AddressHelper.get_keys(), ray).print
             end
           end
         }

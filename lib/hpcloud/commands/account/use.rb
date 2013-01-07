@@ -17,7 +17,7 @@ Examples:
           config = Config.new(true)
           config.set(:default_account, name)
           config.write()
-          display("Account '#{name}' is now the default")
+          @log.display("Account '#{name}' is now the default")
         }
       end
     end

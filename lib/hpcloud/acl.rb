@@ -4,9 +4,10 @@ module HP
       VALID_ACLS = ["r", "rw", "w"]
 
       attr_reader :permissions, :users
-      attr_reader :error_string, :error_code
+      attr_reader :cstatus
 
       def initialize(permissions, users)
+        @cstatus = CliStatus.new
         @permissions = permissions.downcase
         @permissions = "r" if @permissions == "public-read"
         if users.nil? || users.empty?
@@ -17,19 +18,16 @@ module HP
         end
 
         if @permissions == "private"
-          @error_string = "Use the acl:revoke command to revoke public read permissions"
-          @error_code = :incorrect_usage
+          @cstatus = CliStatus.new("Use the acl:revoke command to revoke public read permissions", :incorrect_usage)
           return
         end
         unless VALID_ACLS.include?(@permissions)
-          @error_string = "Your permissions '#{@permissions}' are not valid.\nValid settings are: #{VALID_ACLS.join(', ')}" 
-          @error_code = :incorrect_usage
+          @cstatus = CliStatus.new("Your permissions '#{@permissions}' are not valid.\nValid settings are: #{VALID_ACLS.join(', ')}", :incorrect_usage)
           return
         end
         @permissions = "pr" if is_public? && @permissions == "r"
         if is_public? && @permissions != "pr"
-          @error_string = "You may not make an object writable by everyone"
-          @error_code = :not_supported
+          @cstatus = CliStatus.new("You may not make an object writable by everyone", :not_supported)
           return
         end
       end
@@ -39,7 +37,7 @@ module HP
       end
 
       def is_valid?
-        return @error_string.nil?
+        return @cstatus.is_success?
       end
 
       def to_s

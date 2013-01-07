@@ -5,73 +5,26 @@ require 'hpcloud/thor_ext/thor'
 module HP
   module Cloud
     class CLI < Thor
+      attr_accessor :exit_status
     
-      ERROR_TYPES = { :success              => 0,
-                      :general_error        => 1,
-                      :not_supported        => 3,
-                      :not_found            => 4,
-                      :conflicted           => 5,
-                      :incorrect_usage      => 64,
-                      :permission_denied    => 77,
-                      :rate_limited         => 88
-                    }
-
       GOPTS = {:availability_zone => {:type => :string, :aliases => '-z',
                                       :desc => 'Set the availability zone.'},
+               :debug => {:type => :string, :aliases => '-x',
+                                 :desc => 'Debug logging 1,2,3,...'},
                :account_name => {:type => :string, :aliases => '-a',
                                  :desc => 'Select account.'}}
+
+      def initialize(*args)
+        super
+        @@debugging = false
+        @@error = nil
+        @exit_status = HP::Cloud::CliStatus.new
+        @log = HP::Cloud::Log.new(self)
+      end
 
       private
       def self.add_common_options
         GOPTS.each { |k,v| method_option(k, v) }
-      end
-
-      # print some non-error output to the user
-      def display(message)
-        say message unless @silence_display
-      end
-    
-      # use as a block, will silence any output from #display while inside
-      def silence_display
-        current = @silence_display
-        @silence_display = true
-        yield
-        @silence_display = current # restore previous status
-      end
-    
-      # display error message embedded in a REST response
-      def display_error_message(error, exit_status=nil)
-        error_message = error.respond_to?(:response) ? parse_error(error.response) : error.message
-        if exit_status === false # don't exit
-          $stderr.puts error_message
-        else
-          error error_message, exit_status
-        end
-      end
-    
-      # pull the error message out of an XML response
-      def parse_error_xml(response)
-        response.body =~ /<Message>(.*)<\/Message>/
-        return $1 if $1
-        response.body
-      end
-
-      # pull the error message out of an JSON response
-      def parse_error(response)
-        begin
-          err_msg = MultiJson.decode(response.body)
-          # Error message:  {"badRequest": {"message": "Invalid IP protocol ttt.", "code": 400}}
-          err_msg.map {|_,v| v["message"] if v.has_key?("message")}
-        rescue MultiJson::DecodeError => error
-          # Error message: "400 Bad Request\n\nBlah blah"
-          response.body    #### the body is not in JSON format so just return it as it is
-        end
-      end
-
-      # check to see if an error includes a particular text fragment
-      def error_message_includes?(error, text)
-        error_message = error.respond_to?(:response) ? parse_error(error.response) : error.message
-        error_message.include?(text)
       end
 
       # name of the running CLI script
@@ -86,65 +39,93 @@ module HP
         return response.empty? ? default : response
       end
     
-      def error(message, exit_status=nil)
-        error_message(message, exit_status)
-        exit @exit_status || 1
-      end
-
-      def error_message(message, exit_status=nil)
-        $stderr.puts message
-        if exit_status.is_a?(Symbol)
-          @exit_status = ERROR_TYPES[exit_status]
-        else
-          @exit_status = ERROR_TYPES[:general_error]
-        end
-      end
-
       def cli_command(options)
-        @exit_status = ERROR_TYPES[:success]
-        Connection.instance.set_options(options)
-        begin
-          yield
-        rescue Excon::Errors::BadRequest => error
-          display_error_message(error, :incorrect_usage)
-        rescue Excon::Errors::InternalServerError => error
-          display_error_message(error, :general_error)
-        rescue Fog::HP::Errors::ServiceError => error
-          display_error_message(error, :general_error)
-        rescue Fog::BlockStorage::HP::NotFound => error
-          display_error_message(error, :not_found)
-        rescue Fog::CDN::HP::NotFound => error
-          display_error_message(error, :not_found)
-        rescue Fog::Compute::HP::NotFound => error
-          display_error_message(error, :not_found)
-        rescue Fog::Storage::HP::NotFound => error
-          display_error_message(error, :not_found)
-        rescue Fog::BlockStorage::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Fog::CDN::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Fog::Compute::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Fog::Storage::HP::Error => error
-          display_error_message(error, :general_error)
-        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
-          display_error_message(error, :permission_denied)
-        rescue Excon::Errors::Conflict => error
-          display_error_message(error, :conflicted)
-        rescue Excon::Errors::NotFound => error
-          display_error_message(error, :not_found)
-        rescue Excon::Errors::RequestEntityTooLarge => error
-          display_error_message(error, :rate_limited)
-        rescue SystemExit => error
-        rescue Exception => error
-          display_error_message(error, :general_error)
+        unless options[:debug].nil?
+          if options[:debug] > '1'
+            ENV['EXCON_STANDARD_INSTRUMENTOR']='1'
+          end
+          @@debugging = true
         end
+        Connection.instance.set_options(options)
+        sub_command { yield }
         checker = Checker.new
         if checker.process
           warn "A new version v#{checker.latest} of the Unix CLI is available at https://docs.hpcloud.com/cli/unix/install"
         end
-        @exit_status = ERROR_TYPES[:success] if @exit_status.nil?
-        exit @exit_status
+        exit @exit_status.get
+      end
+    
+      def sub_command(action=nil)
+        error_status = nil
+        begin
+          yield
+        rescue Excon::Errors::BadRequest => error
+          @@error = ErrorResponse.new(error).to_s
+          error_status = :incorrect_usage
+        rescue Excon::Errors::InternalServerError => error
+          @@error = ErrorResponse.new(error).to_s
+          error_status = :general_error
+        rescue Fog::HP::Errors::ServiceError => error
+          @@error = error
+          error_status = :general_error
+        rescue Fog::BlockStorage::HP::NotFound => error
+          @@error = error
+          error_status = :not_found
+        rescue Fog::CDN::HP::NotFound => error
+          @@error = error
+          error_status = :not_found
+        rescue Fog::Compute::HP::NotFound => error
+          @@error = error
+          error_status = :not_found
+        rescue Fog::Storage::HP::NotFound => error
+          @@error = error
+          error_status = :not_found
+        rescue Fog::BlockStorage::HP::Error => error
+          @@error = error
+          error_status = :general_error
+        rescue Fog::CDN::HP::Error => error
+          @@error = error
+          error_status = :general_error
+        rescue Fog::Compute::HP::Error => error
+          @@error = error
+          error_status = :general_error
+        rescue Fog::Storage::HP::Error => error
+          @@error = error
+          error_status = :general_error
+        rescue Excon::Errors::Unauthorized, Excon::Errors::Forbidden => error
+          @@error = ErrorResponse.new(error).to_s
+          error_status = :permission_denied
+        rescue Excon::Errors::Conflict => error
+          @@error = ErrorResponse.new(error).to_s
+          error_status = :conflicted
+        rescue Excon::Errors::NotFound => error
+          @@error = ErrorResponse.new(error).to_s
+          error_status = :not_found
+        rescue Excon::Errors::RequestEntityTooLarge => error
+          @@error = ErrorResponse.new(error).to_s
+          error_status = :rate_limited
+        rescue SystemExit => error
+          @@error = error
+        rescue Exception => error
+          @@error = error
+          error_status = :general_error
+        end
+        unless error_status.nil?
+          if action.nil?
+            @log.error(@@error, error_status)
+          else
+            @@error = "Error #{action}: #{@@error.to_s}"
+            @log.error(@@error, error_status)
+          end
+        end
+        if @@debugging == true
+          unless @@error.nil?
+            if @@error.kind_of?(Exception)
+              puts @@error.backtrace
+            end
+          end
+        end
+        @exit_status.get
       end
     end
   end

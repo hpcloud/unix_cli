@@ -54,8 +54,8 @@ describe "Volume methods" do
       disk.status.should eql("available")
       disk.description.should eq("My cool disk")
       disk.servers.should eq('srv1,srv2')
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -70,8 +70,8 @@ describe "Volume methods" do
       disk.created.should be_nil
       disk.status.should be_nil
       disk.description.should be_nil
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -127,8 +127,8 @@ describe "Volume methods" do
       vol.save.should be_false
 
       vol.id.should be_nil
-      vol.error_string.should eq("Error creating volume 'lion'")
-      vol.error_code.should eq(:general_error)
+      vol.cstatus.message.should eq("Error creating volume 'lion'")
+      vol.cstatus.error_code.should eq(:general_error)
     end
   end
 
@@ -156,8 +156,8 @@ describe "Volume methods" do
 
       vol.attach(@server, @device).should be_false
 
-      vol.error_string.should eq("Error attaching 'MyDisk' on server 'zoidberg' to device '/dev/asdf'.")
-      vol.error_code.should eq(:general_error)
+      vol.cstatus.message.should eq("Error attaching 'MyDisk' on server 'zoidberg' to device '/dev/asdf'.")
+      vol.cstatus.error_code.should eq(:general_error)
     end
   end
 
@@ -177,8 +177,8 @@ describe "Volume methods" do
 
       vol.detach().should be_false
 
-      vol.error_string.should eq("Error detaching 'MyDisk' from 'srv1,srv2'.")
-      vol.error_code.should eq(:general_error)
+      vol.cstatus.message.should eq("Error detaching 'MyDisk' from 'srv1,srv2'.")
+      vol.cstatus.error_code.should eq(:general_error)
     end
   end
 

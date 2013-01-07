@@ -44,21 +44,21 @@ Examples:
           srv.set_private_key(options[:private_key_file])
           srv.meta.set_metadata(options[:metadata])
           if srv.save == true
-            display "Created server '#{name}' with id '#{srv.id}'."
+            @log.display "Created server '#{name}' with id '#{srv.id}'."
             if srv.is_windows?
               unless srv.is_private_image?
-                display "Retrieving password, this may take several minutes..."
+                @log.display "Retrieving password, this may take several minutes..."
                 srv.fog.wait_for { ready? }
-                display "Windows password: " + srv.windows_password
-                display "Make sure the security group has RDP port 3389 open"
-                display "You may wish to change the password when you log in"
+                @log.display "Windows password: " + srv.windows_password
+                @log.display "Make sure the security group has RDP port 3389 open"
+                @log.display "You may wish to change the password when you log in"
                 if srv.is_valid? == false
-                  error srv.error_string, srv.error_code
+                  @log.fatal srv.cstatus
                 end
               end
             end
           else
-            error(srv.error_string, srv.error_code)
+            @log.fatal srv.cstatus
           end
         }
       end

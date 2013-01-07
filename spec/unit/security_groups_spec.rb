@@ -67,8 +67,8 @@ describe "SecurityGroups getter" do
       security_groups = SecurityGroups.new.get(["secg3"], false)
 
       security_groups[0].is_valid?.should be_false
-      security_groups[0].error_code.should eq(:general_error)
-      security_groups[0].error_string.should eq("More than one security group matches 'secg3', use the id instead of name.")
+      security_groups[0].cstatus.error_code.should eq(:general_error)
+      security_groups[0].cstatus.message.should eq("More than one security group matches 'secg3', use the id instead of name.")
       security_groups.length.should eql(1)
     end
   end
@@ -78,8 +78,8 @@ describe "SecurityGroups getter" do
       security_groups = SecurityGroups.new.get(["bogus"])
 
       security_groups[0].is_valid?.should be_false
-      security_groups[0].error_code.should eq(:not_found)
-      security_groups[0].error_string.should eq("Cannot find a security group matching 'bogus'.")
+      security_groups[0].cstatus.error_code.should eq(:not_found)
+      security_groups[0].cstatus.message.should eq("Cannot find a security group matching 'bogus'.")
       security_groups.length.should eql(1)
     end
   end

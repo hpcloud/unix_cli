@@ -25,12 +25,12 @@ Aliases: cdn:containers:loc
             resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.read_header
               if options.ssl
-                display resource.cdn_public_ssl_url
+                @log.display resource.cdn_public_ssl_url
               else
-                display resource.cdn_public_url
+                @log.display resource.cdn_public_url
               end
             else
-              error_message resource.error_string, resource.error_code
+              @log.error resource.cstatus
             end
           }
         }

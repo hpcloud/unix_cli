@@ -12,8 +12,7 @@ describe "Valid source" do
 
       to.valid_source().should be_true
 
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
     end
   end
 
@@ -23,8 +22,8 @@ describe "Valid source" do
 
       to.valid_source().should be_false
 
-      to.error_string.should eq("File not found at 'bogus.txt'.")
-      to.error_code.should eq(:not_found)
+      to.cstatus.message.should eq("File not found at 'bogus.txt'.")
+      to.cstatus.error_code.should eq(:not_found)
     end
   end
 end
@@ -42,8 +41,7 @@ describe "Valid destination" do
 
       to.valid_destination(src).should be_true
 
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
     end
   end
 
@@ -55,8 +53,7 @@ describe "Valid destination" do
 
       to.valid_destination(src).should be_true
 
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
     end
   end
 
@@ -68,8 +65,7 @@ describe "Valid destination" do
 
       to.valid_destination(src).should be_true
 
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
     end
   end
 
@@ -83,8 +79,8 @@ describe "Valid destination" do
       to.valid_destination(src).should be_false
 
       dir = dir.sub(/\/$/, '')
-      to.error_string.should eq("No directory exists at '#{dir}'.")
-      to.error_code.should eq(:not_found)
+      to.cstatus.message.should eq("No directory exists at '#{dir}'.")
+      to.cstatus.error_code.should eq(:not_found)
     end
   end
 
@@ -96,8 +92,8 @@ describe "Valid destination" do
 
       to.valid_destination(src).should be_false
 
-      to.error_string.should eq("Invalid target for directory/multi-file copy '#{__FILE__}'.")
-      to.error_code.should eq(:incorrect_usage)
+      to.cstatus.message.should eq("Invalid target for directory/multi-file copy '#{__FILE__}'.")
+      to.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 
@@ -109,8 +105,7 @@ describe "Valid destination" do
 
       to.valid_destination(src).should be_true
 
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
     end
   end
 
@@ -124,8 +119,8 @@ describe "Valid destination" do
       to.valid_destination(src).should be_false
 
       dir = dir.sub(/\/$/, '')
-      to.error_string.should eq("No directory exists at '#{dir}'.")
-      to.error_code.should eq(:not_found)
+      to.cstatus.message.should eq("No directory exists at '#{dir}'.")
+      to.cstatus.error_code.should eq(:not_found)
     end
   end
 end
@@ -143,8 +138,7 @@ describe "Set destination" do
       rc = to.set_destination("file.txt")
 
       rc.should be_true
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
       to.destination.should eq(Dir.pwd + "/spec/tmp/file.txt")
     end
   end
@@ -156,8 +150,7 @@ describe "Set destination" do
       rc = to.set_destination("file.txt")
 
       rc.should be_true
-      to.error_string.should be_nil
-      to.error_code.should be_nil
+      to.cstatus.is_success?.should be_true
       to.destination.should eq(Dir.pwd + "/spec/tmp/new.txt")
     end
   end
@@ -170,8 +163,8 @@ describe "Set destination" do
 
       rc.should be_false
       dir=Dir.pwd
-      to.error_string.should eq("Error creating target directory '#{dir}/spec/fixtures/files/foo.txt/impossible/subdir'.")
-      to.error_code.should eq(:general_error)
+      to.cstatus.message.should eq("Error creating target directory '#{dir}/spec/fixtures/files/foo.txt/impossible/subdir'.")
+      to.cstatus.error_code.should eq(:general_error)
       to.destination.should eq("#{dir}/spec/fixtures/files/foo.txt/impossible/subdir/file.txt")
     end
   end
@@ -314,8 +307,8 @@ describe "Remove" do
 
       res.remove(false).should be_false
 
-      res.error_string.should eq("Removal of local objects is not supported: spec/fixtures/files/foo.txt")
-      res.error_code.should eq(:incorrect_usage)
+      res.cstatus.message.should eq("Removal of local objects is not supported: spec/fixtures/files/foo.txt")
+      res.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 end
@@ -327,8 +320,8 @@ describe "Temp URL" do
 
       res.tempurl.should be_nil
 
-      res.error_string.should eq("Temporary URLs of local objects is not supported: spec/fixtures/files/foo.txt")
-      res.error_code.should eq(:incorrect_usage)
+      res.cstatus.message.should eq("Temporary URLs of local objects is not supported: spec/fixtures/files/foo.txt")
+      res.cstatus.error_code.should eq(:incorrect_usage)
     end
   end
 end

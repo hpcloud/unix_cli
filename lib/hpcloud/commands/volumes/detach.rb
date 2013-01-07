@@ -21,12 +21,12 @@ Examples:
           Volumes.new.get(name_or_ids).each { |volume|
             if volume.is_valid?
               if (volume.detach() == true)
-                display "Detached volume '#{volume.name}' from '#{volume.servers}'."
+                @log.display "Detached volume '#{volume.name}' from '#{volume.servers}'."
               else
-                error volume.error_string, volume.error_code
+                @log.fatal volume.cstatus
               end
             else
-              error volume.error_string, volume.error_code
+              @log.fatal volume.cstatus
             end
           }
         }

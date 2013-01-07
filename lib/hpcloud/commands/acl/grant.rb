@@ -24,12 +24,12 @@ Aliases: acl:set
           if acl.is_valid?
             resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.grant(acl)
-              display "ACL for #{name} updated to #{acl}."
+              @log.display "ACL for #{name} updated to #{acl}."
             else
-              error resource.error_string, resource.error_code
+              @log.fatal resource.cstatus
             end
           else
-            error acl.error_string, acl.error_code
+            @log.fatal acl.cstatus
           end
         }
       end

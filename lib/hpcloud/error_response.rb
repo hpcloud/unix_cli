@@ -9,7 +9,11 @@ module HP
         if (error.respond_to?(:response))
           @error_string = parse_error(error.response)
         else
-          @error_string = error.message
+          begin
+            @error_string = error.message
+          rescue
+            @error_string = error.to_s
+          end
         end
       end
 
@@ -17,11 +21,15 @@ module HP
       def parse_error(response)
         begin
           err_msg = MultiJson.decode(response.body)
-          # Error message:  {"badRequest": {"message": "Invalid IP protocol ttt.", "code": 400}}
-          err_msg.map {|_,v| v["message"] if v.has_key?("message")}
+          ret = ''
+          err_msg.map { |_,v|
+            ret += v["code"].to_s + " " if v.has_key?("code")
+            ret += v["message"] if v.has_key?("message")
+            ret += ": " + v["details"] if v.has_key?("details")
+          }
+          return ret
         rescue MultiJson::DecodeError => error
-          # Error message: "400 Bad Request\n\nBlah blah"
-          response.body    #### the body is not in JSON format so just return it as it is
+          response.body
         end
       end
 
@@ -31,6 +39,9 @@ module HP
         error_message.include?(text)
       end
 
+      def to_s
+        @error_string
+      end
     end
   end
 end

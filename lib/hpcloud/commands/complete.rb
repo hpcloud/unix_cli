@@ -16,22 +16,22 @@ Examples:
           completion_dir = File.expand_path(File.join(File.dirname(__FILE__), '../../..', 'completion'))
           destination = '/etc/bash_completion.d/'
           unless File.writable?(destination)
-            display "The system wide #{destination} directory exists, but it not writable." if File.exists?(destination)
+            @log.display "The system wide #{destination} directory exists, but it not writable." if File.exists?(destination)
             destination = "/opt/local/etc/bash_completion.d"
             unless File.writable?(destination)
-              display "The system wide #{destination} directory exists, but it not writable." if File.exists?(destination)
+              @log.display "The system wide #{destination} directory exists, but it not writable." if File.exists?(destination)
               destination = "#{ENV['HOME']}/.bash_completion.d"
               FileUtils.mkdir(destination) unless File.exists?(destination)
-              display "You may have to manually call the bash completion script in your .bashrc"
+              @log.display "You may have to manually call the bash completion script in your .bashrc"
             end
           end
           completion_file = "#{completion_dir}/hpcloud"
           destination = "#{destination}/hpcloud"
-          display "Attempting to copy #{completion_file} file to #{destination}"
+          @log.display "Attempting to copy #{completion_file} file to #{destination}"
           FileUtils.copy(completion_file, destination)
-          display "Success"
+          @log.display "Success"
         rescue Exception => e
-          error_message "Error configuring bash completion: #{e}", :general_error
+          @log.error "Error configuring bash completion: #{e}"
         end
       end
     end

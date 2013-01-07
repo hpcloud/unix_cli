@@ -76,8 +76,8 @@ describe "Rules getter" do
       rules = Rules.new(@groupo).get(["rulo3"], false)
 
       rules[0].is_valid?.should be_false
-      rules[0].error_code.should eq(:general_error)
-      rules[0].error_string.should eq("More than one rule matches 'rulo3', use the id instead of name.")
+      rules[0].cstatus.error_code.should eq(:general_error)
+      rules[0].cstatus.message.should eq("More than one rule matches 'rulo3', use the id instead of name.")
       rules.length.should eql(1)
     end
   end
@@ -87,8 +87,8 @@ describe "Rules getter" do
       rules = Rules.new(@groupo).get(["bogus"])
 
       rules[0].is_valid?.should be_false
-      rules[0].error_code.should eq(:not_found)
-      rules[0].error_string.should eq("Cannot find a rule matching 'bogus'.")
+      rules[0].cstatus.error_code.should eq(:not_found)
+      rules[0].cstatus.message.should eq("Cannot find a rule matching 'bogus'.")
       rules.length.should eql(1)
     end
   end
