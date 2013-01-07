@@ -98,6 +98,10 @@ module HP
         return @head
       end
 
+      def open(output=false, siz=0)
+        return true
+      end
+
       def read
         begin
           @storage.get_object(@container, @path) { |chunk, remain, tot|
@@ -216,13 +220,12 @@ module HP
 
       def copy_file(from)
         result = true
+        return false if (from.open() == false)
         if from.isLocal()
-          if (from.open() == false) then return false end
           @options = { 'Content-Type' => from.get_mime_type() }
           @storage.put_object(@container, @destination, {}, @options) {
             from.read().to_s
           }
-          result = false if ! from.close()
         else
           begin
             if from.has_same_account(@storage)
@@ -235,14 +238,14 @@ module HP
                   break
                 end
               }
-              result = false unless from.close()
-              result = false unless close()
             end
           rescue Fog::Storage::HP::NotFound => e
             @cstatus = CliStatus.new("The specified object does not exist.", :not_found)
             result = false
           end
         end
+        result = false if ! from.close()
+        result = false unless close()
         return result
       end
 

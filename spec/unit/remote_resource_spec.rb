@@ -183,10 +183,11 @@ describe "Remote file open read write close" do
     it "everything does nothing" do
       @storage = double("storage")
       @storage.stub(:get_object).and_return("chunk", 0, 0)
+      @storage.stub(:put_object).and_return(true)
 
       res = ResourceFactory.create_any(@storage, ":container/whatever.txt")
 
-      res.open().should be_false
+      res.open().should be_true
       res.read().should eq("chunk")
       res.write("dkdkdkdkd").should be_true
       res.close().should be_true
