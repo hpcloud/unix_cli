@@ -39,6 +39,8 @@ Aliases: account:add, account:setup, account:update
       method_option 'no-validate', :type => :boolean, :aliases => '-n',
                     :default => false,
                     :desc => "Don't verify account settings during edit"
+      method_option 'provider', :type => :string, :aliases => '-p',
+                    :desc => "Cloud provider"
       define_method "account:edit" do |*args|
         cli_command(options) {
           if args.empty?
@@ -56,19 +58,40 @@ Aliases: account:add, account:setup, account:update
               acct = accounts.create(name)
               actionstring = "set up"
             end
+            acct[:provider] ||= 'hp'
+            unless options[:provider].nil?
+              if options[:provider] != acct[:provider]
+                acct[:provider] = options[:provider]
+                acct[:options] = {}
+                acct[:credentials] = {}
+                acct[:zones] = {}
+              end
+            end
             cred = acct[:credentials]
             zones = acct[:zones]
 
             # ask for credentials
-            @log.display "****** Setup your HP Cloud Services #{name} account ******"
-            cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
-            cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
-            cred[:auth_uri] = ask_with_default 'Auth Uri:', "#{cred[:auth_uri]}"
-            cred[:tenant_id] = ask_with_default 'Tenant Id:', "#{cred[:tenant_id]}"
-            zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
-            accounts.rejigger_zones(zones)
-            zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
-            zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
+            case acct[:provider]
+            when "rackspace"
+              @log.display "****** Setup your Rackspace #{name} account ******"
+              cred[:rackspace_username] = ask_with_default 'Username:', "#{cred[:rackspace_username]}"
+              cred[:rackspace_api_key] = ask_with_default 'API Key:', "#{cred[:rackspace_api_key]}"
+              acct[:options] = {}
+              acct[:zones] = {}
+            when "hp"
+              @log.display "****** Setup your HP Cloud Services #{name} account ******"
+              cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
+              cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
+              cred[:auth_uri] = ask_with_default 'Auth Uri:', "#{cred[:auth_uri]}"
+              cred[:tenant_id] = ask_with_default 'Tenant Id:', "#{cred[:tenant_id]}"
+              zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
+              accounts.rejigger_zones(zones)
+              zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
+              zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
+            else
+              @log.error "Provider '#{acct[:provider]}' not recognized.  Supported providers include hp and rackspace."
+              @log.error "If your provider is not supported, you may manually create an account configuration file in the ~/.hpcloud/accounts directory."
+            end
 
             unless options['no-validate']
               @log.display "Verifying your HP Cloud Services account..."
@@ -81,8 +104,8 @@ Aliases: account:add, account:setup, account:update
             end
 
             # update credentials and stash in config directory
-            accounts.set_credentials(name, cred[:account_id], cred[:secret_key], cred[:auth_uri], cred[:tenant_id])
-            accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:block_availability_zone])
+            accounts.set_cred(name, cred)
+            accounts.set_zones(name, zones)
             accounts.write(name)
 
             @log.display "Account credentials for HP Cloud Services have been #{actionstring}."

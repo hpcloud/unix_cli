@@ -103,17 +103,7 @@ module HP
       end
 
       def create_options(account_name, zone)
-        creds, zones, options = Accounts.new.creds_zones_options(account_name)
-        avl_zone = @options[:availability_zone] || zones[zone]
-        return { :provider => 'HP',
-                 :connection_options => options,
-                 :hp_account_id   => creds[:account_id],
-                 :hp_secret_key   => creds[:secret_key],
-                 :hp_auth_uri     => creds[:auth_uri],
-                 :hp_tenant_id    => creds[:tenant_id],
-                 :hp_avl_zone     => avl_zone,
-                 :user_agent => "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
-               }
+        return Accounts.new.create_options(account_name, zone, @options[:availability_zone])
       end
 
       def validate_account(account_credentials)

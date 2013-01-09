@@ -7,7 +7,7 @@ module HP
       @@home = nil
 
       DEFAULT_ACCOUNT = "default_account"
-      TOP_LEVEL = [:username]
+      TOP_LEVEL = [:username, :provider]
       CREDENTIALS = [:account_id,
                      :secret_key,
                      :auth_uri,
@@ -120,29 +120,23 @@ module HP
         return @accts[account]
       end
 
-      def set_credentials(account, id, key, uri, tenant)
+      def set_cred(account, cred)
         if @accts[account].nil?
           @accts[account] = {:credentials=>{}, :zones=>{}, :options=>{}}
         end
-        @accts[account][:credentials] = { :account_id => id,
-                                          :secret_key => key,
-                                          :auth_uri => uri,
-                                          :tenant_id => tenant
-                                        }
-        if uri.match(/hpcloud.net/)
+        @accts[account][:credentials] = cred
+        if cred[:auth_uri].match(/hpcloud.net/)
           @accts[account][:options][:ssl_verify_peer] = false
         end
       end
 
-      def set_zones(account, compute, storage, block)
+      def set_zones(account, zones)
         hsh = @accts[account]
-        hsh[:zones][:compute_availability_zone] = compute
-        hsh[:zones][:storage_availability_zone] = storage
-        hsh[:zones][:block_availability_zone] = block
+        hsh[:zones] = zones
         set_default_zones(hsh)
-        hsh[:zones].delete(:compute_availability_zone) if compute.empty?
-        hsh[:zones].delete(:storage_availability_zone) if storage.empty?
-        hsh[:zones].delete(:block_availability_zone) if block.empty?
+        hsh[:zones].delete(:compute_availability_zone) if zones[:compute_availability_zone].empty?
+        hsh[:zones].delete(:storage_availability_zone) if zones[:storage_availability_zone].empty?
+        hsh[:zones].delete(:block_availability_zone) if zones[:block_availability_zone].empty?
       end
 
       def set(account, key, value)
@@ -187,6 +181,7 @@ module HP
         hsh = read(account).clone
         settings = Config.new.settings
         set_default_zones(hsh)
+        hsh[:provider] ||= 'hp'
         hsh[:options][:connect_timeout] ||= settings[:connect_timeout]
         hsh[:options][:read_timeout] ||= settings[:read_timeout]
         hsh[:options][:write_timeout] ||= settings[:write_timeout]
@@ -226,8 +221,10 @@ module HP
         end
       end
 
-      def creds_zones_options(name)
-        hsh = get(name)
+      def create_options(account_name, zone, avl_zone = nil)
+        hsh = get(account_name)
+        provider = hsh[:provider] || 'hp'
+        provider = provider.downcase
         creds = hsh[:credentials]
         zones = hsh[:zones]
         opts = hsh[:options]
@@ -236,7 +233,23 @@ module HP
         opts.delete(:preferred_win_image)
         opts.delete(:checker_url)
         opts.delete(:checker_deferment)
-        return creds, zones, opts
+        avl_zone = avl_zone || zones[zone]
+
+        options = {}
+        if provider == 'hp'
+          options[:hp_account_id] = creds[:account_id] || creds[:hp_account_id]
+          options[:hp_secret_key] = creds[:secret_key] || creds[:hp_secret_key]
+          options[:hp_auth_uri] = creds[:auth_uri] || creds[:hp_auth_uri]
+          options[:hp_tenant_id ] = creds[:tenant_id] || creds[:hp_tenant_id]
+          options[:hp_avl_zone] = avl_zone
+          options[:connection_options] = opts
+          options[:user_agent] = "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
+        else
+          options = creds
+        end
+        options[:provider] = provider
+
+        return options
       end
 
       def migrate
