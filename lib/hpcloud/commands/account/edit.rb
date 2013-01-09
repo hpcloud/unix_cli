@@ -72,13 +72,6 @@ Aliases: account:add, account:setup, account:update
 
             # ask for credentials
             case acct[:provider]
-            when "rackspace"
-              service_name = "Rackspace"
-              @log.display "****** Setup your #{service_name} #{name} account ******"
-              cred[:rackspace_username] = ask_with_default 'Username:', "#{cred[:rackspace_username]}"
-              cred[:rackspace_api_key] = ask_with_default 'API Key:', "#{cred[:rackspace_api_key]}"
-              acct[:options] = {}
-              acct[:zones] = {}
             when "hp"
               service_name = "HP Cloud Services"
               @log.display "****** Setup your #{service_name} #{name} account ******"
@@ -90,8 +83,22 @@ Aliases: account:add, account:setup, account:update
               accounts.rejigger_zones(zones)
               zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
               zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
+            when "aws"
+              service_name = "AWS"
+              @log.display "****** Setup your #{service_name} #{name} account ******"
+              cred[:aws_access_key_id] = ask_with_default 'Access Key ID:', "#{cred[:aws_access_key_id]}"
+              cred[:aws_secret_access_key] = ask_with_default 'Secret Access Key:', "#{cred[:aws_secret_access_key]}"
+              acct[:options] = {}
+              acct[:zones] = {}
+            when "rackspace"
+              service_name = "Rackspace"
+              @log.display "****** Setup your #{service_name} #{name} account ******"
+              cred[:rackspace_username] = ask_with_default 'Username:', "#{cred[:rackspace_username]}"
+              cred[:rackspace_api_key] = ask_with_default 'API Key:', "#{cred[:rackspace_api_key]}"
+              acct[:options] = {}
+              acct[:zones] = {}
             else
-              @log.error "Provider '#{acct[:provider]}' not recognized.  Supported providers include hp and rackspace."
+              @log.error "Provider '#{acct[:provider]}' not recognized.  Supported providers include hp, aws and rackspace."
               @log.error "If your provider is not supported, you may manually create an account configuration file in the ~/.hpcloud/accounts directory."
             end
 

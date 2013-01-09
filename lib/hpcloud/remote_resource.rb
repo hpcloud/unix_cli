@@ -262,8 +262,10 @@ module HP
         end
         @directory.files.each { |x|
           name = x.key.to_s
-          if ! name.match(regex).nil?
-            yield ResourceFactory.create(@storage, ':' + container + '/' + name)
+          unless name.end_with?('/')
+            if ! name.match(regex).nil?
+              yield ResourceFactory.create(@storage, ':' + container + '/' + name)
+            end
           end
         }
       end
