@@ -97,6 +97,13 @@ Aliases: account:add, account:setup, account:update
               cred[:rackspace_api_key] = ask_with_default 'API Key:', "#{cred[:rackspace_api_key]}"
               acct[:options] = {}
               acct[:zones] = {}
+            when "google"
+              service_name = "Google"
+              @log.display "****** Setup your #{service_name} #{name} account ******"
+              cred[:google_storage_access_key_id] = ask_with_default 'Storage access key id:', "#{cred[:google_storage_access_key_id]}"
+              cred[:google_storage_secret_access_key] = ask_with_default 'Storage secret access key:', "#{cred[:google_storage_secret_access_key]}"
+              acct[:options] = {}
+              acct[:zones] = {}
             else
               @log.error "Provider '#{acct[:provider]}' not recognized.  Supported providers include hp, aws and rackspace."
               @log.error "If your provider is not supported, you may manually create an account configuration file in the ~/.hpcloud/accounts directory."
