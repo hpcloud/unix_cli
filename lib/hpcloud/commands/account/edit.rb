@@ -73,13 +73,15 @@ Aliases: account:add, account:setup, account:update
             # ask for credentials
             case acct[:provider]
             when "rackspace"
-              @log.display "****** Setup your Rackspace #{name} account ******"
+              service_name = "Rackspace"
+              @log.display "****** Setup your #{service_name} #{name} account ******"
               cred[:rackspace_username] = ask_with_default 'Username:', "#{cred[:rackspace_username]}"
               cred[:rackspace_api_key] = ask_with_default 'API Key:', "#{cred[:rackspace_api_key]}"
               acct[:options] = {}
               acct[:zones] = {}
             when "hp"
-              @log.display "****** Setup your HP Cloud Services #{name} account ******"
+              service_name = "HP Cloud Services"
+              @log.display "****** Setup your #{service_name} #{name} account ******"
               cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
               cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
               cred[:auth_uri] = ask_with_default 'Auth Uri:', "#{cred[:auth_uri]}"
@@ -93,22 +95,28 @@ Aliases: account:add, account:setup, account:update
               @log.error "If your provider is not supported, you may manually create an account configuration file in the ~/.hpcloud/accounts directory."
             end
 
-            unless options['no-validate']
-              @log.display "Verifying your HP Cloud Services account..."
-              begin
-                Connection.instance.validate_account(cred)
-              rescue Exception => e
-                e = ErrorResponse.new(e).to_s
-                @log.error "Account verification failed. Error connecting to the service endpoint at: '#{cred[:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
-              end
-            end
-
             # update credentials and stash in config directory
             accounts.set_cred(name, cred)
             accounts.set_zones(name, zones)
             accounts.write(name)
 
-            @log.display "Account credentials for HP Cloud Services have been #{actionstring}."
+            unless options['no-validate']
+              @log.display "Verifying your #{service_name} account..."
+              if cred[:auth_uri].nil?
+                identifier = cred.to_s
+              else
+                identifier = cred[:auth_uri]
+              end
+
+              begin
+                Connection.instance.validate_account(name)
+              rescue Exception => e
+                e = ErrorResponse.new(e).to_s
+                @log.error "Account verification failed. Error connecting to the service endpoint at: '#{identifier}'. Please verify your account credentials. \n Exception: #{e}"
+              end
+            end
+
+            @log.display "Account credentials for #{service_name} have been #{actionstring}."
           else
             acct = accounts.read(name, true)
             updated = ""

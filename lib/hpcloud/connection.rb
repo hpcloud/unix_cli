@@ -106,17 +106,15 @@ module HP
         return Accounts.new.create_options(account_name, zone, @options[:availability_zone])
       end
 
-      def validate_account(account_credentials)
-        options = Config.default_options.clone
-        options[:hp_account_id] = account_credentials[:account_id]
-        options[:hp_secret_key] = account_credentials[:secret_key]
-        options[:hp_auth_uri] = account_credentials[:auth_uri]
-        options[:hp_tenant_id] = account_credentials[:tenant_id]
-        options[:user_agent] = "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
-        if options[:hp_auth_uri].match(/hpcloud.net/)
-          options[:ssl_verify_peer] = false
+      def validate_account(account_name)
+        options = create_options(account_name, nil)
+        case options[:provider]
+        when "hp"
+          Fog::HP.authenticate_v2(options, options)
+        else
+          Fog::Storage.new(options).directories
+          return true
         end
-        Fog::HP.authenticate_v2(options, options)
       end
     end
   end

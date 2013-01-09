@@ -125,8 +125,10 @@ module HP
           @accts[account] = {:credentials=>{}, :zones=>{}, :options=>{}}
         end
         @accts[account][:credentials] = cred
-        if cred[:auth_uri].match(/hpcloud.net/)
-          @accts[account][:options][:ssl_verify_peer] = false
+        unless cred[:hp_auth_uri].nil?
+          if cred[:hp_auth_uri].match(/hpcloud.net/)
+            @accts[account][:options][:ssl_verify_peer] = false
+          end
         end
       end
 
