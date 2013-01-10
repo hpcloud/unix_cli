@@ -9,27 +9,21 @@ OFILE=completion/hpcloud
 
 echo '_hpcloud()' >${OFILE}
 echo '{' >>${OFILE}
-echo '  local cur prev opts cmds' >>${OFILE}
+echo '  local cur prev opts cmds cmd files' >>${OFILE}
 echo '  COMPREPLY=()' >>${OFILE}
 echo '  _get_comp_words_by_ref -n : cur prev words' >>${OFILE}
-echo '  if [ "${prev}" == "hpcloud" ]' >>${OFILE}
-echo '  then' >>${OFILE}
-echo '    opts="--help --version"' >>${OFILE}
-
-#
-# Get the commands
-#
-SPACER=''
-echo -n '    cmds="' >>${OFILE}
-hpcloud help | grep hpcloud | while read HPCLOUD COMMAND ROL
-do
-  echo -n "${SPACER}${COMMAND}" >>${OFILE}
-  SPACER=' '
-done
-echo '"' >>${OFILE}
-echo '  else' >>${OFILE}
-echo '    cmds=""' >>${OFILE}
-echo '    case "${words[1]}" in' >>${OFILE}
+echo >>${OFILE}
+echo '  if [[ ${cur} == -* ]] ; then' >>${OFILE}
+echo '    if [ "${prev}" == "hpcloud" ]' >>${OFILE}
+echo '    then' >>${OFILE}
+echo '      cmd="hpcloud"' >>${OFILE}
+echo '    else' >>${OFILE}
+echo '      cmd="${words[1]}"' >>${OFILE}
+echo '    fi' >>${OFILE}
+echo '    case "${cmd}" in' >>${OFILE}
+echo '    hpcloud)' >>${OFILE}
+echo '      opts="--help --version"' >>${OFILE}
+echo '      ;;' >>${OFILE}
 
 #
 # Get the options
@@ -69,19 +63,35 @@ do
 done
 
 echo "    esac" >>${OFILE}
+echo '    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )' >>${OFILE}
+echo '    return 0' >>${OFILE}
 echo "  fi" >>${OFILE}
 
 
-echo '  if [[ ${cur} == -* ]] ; then' >>${OFILE}
-echo '    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )' >>${OFILE}
+#
+# Get the commands
+#
+echo '  if [ "${prev}" == "hpcloud" ]' >>${OFILE}
+echo '  then' >>${OFILE}
+SPACER=''
+echo -n '    cmds="' >>${OFILE}
+hpcloud help | grep hpcloud | while read HPCLOUD COMMAND ROL
+do
+  echo -n "${SPACER}${COMMAND}" >>${OFILE}
+  SPACER=' '
+done
+echo '"' >>${OFILE}
+echo '    COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )' >>${OFILE}
+echo '    __ltrim_colon_completions "$cur"' >>${OFILE}
 echo '    return 0' >>${OFILE}
-echo '  else' >>${OFILE}
-echo '    if [ -n "${cmds}" ]' >>${OFILE}
-echo '    then' >>${OFILE}
-echo '      COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )' >>${OFILE}
-echo '      __ltrim_colon_completions "$cur"' >>${OFILE}
-echo '      return 0' >>${OFILE}
-echo '    fi' >>${OFILE}
+echo '  fi' >>${OFILE}
+echo  >>${OFILE}
+echo '  cmd="${words[1]}"' >>${OFILE}
+echo '  if [ "${cmd}" == "copy" ]' >>${OFILE}
+echo '  then' >>${OFILE}
+echo '    files="${cur}*"' >>${OFILE}
+echo '    COMPREPLY=( $(compgen -W "${files}" -- ${cur}) )' >>${OFILE}
+echo '    return 0' >>${OFILE}
 echo '  fi' >>${OFILE}
 echo '  return 0' >>${OFILE}
 echo '}' >>${OFILE}
