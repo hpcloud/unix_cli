@@ -24,7 +24,7 @@ Examples:
               next
             end
             ray = VolumeAttachments.new(server).get_array()
-            if ray.nil?
+            if ray.empty?
               @log.error "Cannot find any volumes for '#{server.name}'.", :not_found
               next
             end
