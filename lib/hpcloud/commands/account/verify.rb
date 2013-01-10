@@ -25,7 +25,7 @@ Examples:
               puts e.backtrace
             end
             e = ErrorResponse.new(e).to_s
-            @log.error "Account verification failed. Error connecting to the service endpoint at: '#{acct[:credentials][:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
+            @log.error "Account verification failed. Please verify your account credentials. \n Exception: #{e}"
           end
         }
       end

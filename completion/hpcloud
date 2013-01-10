@@ -120,6 +120,9 @@ _hpcloud()
     location)
       opts="--availability-zone --debug --account-name "
       ;;
+    migrate)
+      opts="--mime --availability-zone --debug --account-name "
+      ;;
     move)
       opts="--availability-zone --debug --account-name "
       ;;
@@ -213,7 +216,7 @@ _hpcloud()
   fi
   if [ "${prev}" == "hpcloud" ]
   then
-    cmds="account account:copy account:edit account:remove account:setup account:use account:verify acl acl:grant acl:revoke addresses addresses:add addresses:associate addresses:disassociate addresses:remove cdn:containers cdn:containers:add cdn:containers:get cdn:containers:location cdn:containers:remove cdn:containers:set complete config config:set containers:add containers:remove copy flavors get help images images:add images:metadata images:metadata:add images:metadata:remove images:remove info keypairs keypairs:add keypairs:import keypairs:private keypairs:private:add keypairs:private:location keypairs:private:remove keypairs:public_key keypairs:remove list location move remove securitygroups securitygroups:add securitygroups:remove securitygroups:rules securitygroups:rules:add securitygroups:rules:remove servers servers:add servers:console servers:metadata servers:metadata:add servers:metadata:remove servers:password servers:reboot servers:rebuild servers:remove servers:ssh snapshots snapshots:add snapshots:remove tempurl volumes volumes:add volumes:attach volumes:detach volumes:remove volumes:server"
+    cmds="account account:copy account:edit account:remove account:setup account:use account:verify acl acl:grant acl:revoke addresses addresses:add addresses:associate addresses:disassociate addresses:remove cdn:containers cdn:containers:add cdn:containers:get cdn:containers:location cdn:containers:remove cdn:containers:set complete config config:set containers:add containers:remove copy flavors get help images images:add images:metadata images:metadata:add images:metadata:remove images:remove info keypairs keypairs:add keypairs:import keypairs:private keypairs:private:add keypairs:private:location keypairs:private:remove keypairs:public_key keypairs:remove list location migrate move remove securitygroups securitygroups:add securitygroups:remove securitygroups:rules securitygroups:rules:add securitygroups:rules:remove servers servers:add servers:console servers:metadata servers:metadata:add servers:metadata:remove servers:password servers:reboot servers:rebuild servers:remove servers:ssh snapshots snapshots:add snapshots:remove tempurl volumes volumes:add volumes:attach volumes:detach volumes:remove volumes:server"
     COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
     __ltrim_colon_completions "$cur"
     return 0
@@ -222,8 +225,8 @@ _hpcloud()
   cmd="${words[1]}"
   if [ "${cmd}" == "copy" ]
   then
-    files="${cur}*"
-    COMPREPLY=( $(compgen -W "${files}" -- ${cur}) )
+    _compopt_o_filenames
+    COMPREPLY=( $( compgen -f -- "$cur" ) $( compgen -d -- "$cur" ) )
     return 0
   fi
   return 0

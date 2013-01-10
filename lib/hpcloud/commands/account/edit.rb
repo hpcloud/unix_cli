@@ -33,6 +33,7 @@ Examples:
   hpcloud account:setup # Create or edit the default account interactively:
   hpcloud account:edit  # Edit the default account settings interactively:
   hpcloud account:edit pro auth_uri='https://127.0.0.1/' block_availability_zone='az-2.region-a.geo-1' # Set the account credential authorization URI to `https://127.0.0.1\` and the block availability zone to `az-2.region-a.geo-1`:
+  hpcloud account:setup rackspace -p rackspace # Create a rackspace account for migration
 
 Aliases: account:add, account:setup, account:update
       DESC
@@ -40,7 +41,7 @@ Aliases: account:add, account:setup, account:update
                     :default => false,
                     :desc => "Don't verify account settings during edit"
       method_option 'provider', :type => :string, :aliases => '-p',
-                    :desc => "Cloud provider"
+                    :desc => "Cloud provider for migration aws, rackspace, or google"
       define_method "account:edit" do |*args|
         cli_command(options) {
           if args.empty?
@@ -106,7 +107,7 @@ Aliases: account:add, account:setup, account:update
               acct[:zones] = {}
             else
               @log.error "Provider '#{acct[:provider]}' not recognized.  Supported providers include hp, aws and rackspace."
-              @log.error "If your provider is not supported, you may manually create an account configuration file in the ~/.hpcloud/accounts directory."
+              @log.fatal "If your provider is not supported, you may manually create an account configuration file in the ~/.hpcloud/accounts directory."
             end
 
             # update credentials and stash in config directory
@@ -131,6 +132,9 @@ Aliases: account:add, account:setup, account:update
             end
 
             @log.display "Account credentials for #{service_name} have been #{actionstring}."
+            unless acct[:provider] == "hp"
+              @log.display "Accounts for providers other than HP are only supported for migration"
+            end
           else
             acct = accounts.read(name, true)
             updated = ""

@@ -30,7 +30,7 @@ describe "account:verify" do
 
       rsp = cptr("account:verify temporary")
 
-      rsp.stderr.should include("Account verification failed. Error connecting to the service endpoint at: ")
+      rsp.stderr.should include("Account verification failed.")
       rsp.stdout.should eq("Verifying 'temporary' account...\n")
       rsp.exit_status.should be_exit(:general_error)
     end

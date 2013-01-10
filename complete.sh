@@ -89,8 +89,8 @@ echo  >>${OFILE}
 echo '  cmd="${words[1]}"' >>${OFILE}
 echo '  if [ "${cmd}" == "copy" ]' >>${OFILE}
 echo '  then' >>${OFILE}
-echo '    files="${cur}*"' >>${OFILE}
-echo '    COMPREPLY=( $(compgen -W "${files}" -- ${cur}) )' >>${OFILE}
+echo '    _compopt_o_filenames' >>${OFILE}
+echo '    COMPREPLY=( $( compgen -f -- "$cur" ) $( compgen -d -- "$cur" ) )' >>${OFILE}
 echo '    return 0' >>${OFILE}
 echo '  fi' >>${OFILE}
 echo '  return 0' >>${OFILE}

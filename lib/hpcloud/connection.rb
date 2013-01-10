@@ -110,6 +110,9 @@ module HP
         options = create_options(account_name, nil)
         case options[:provider]
         when "hp"
+          unless options[:connection_options].nil?
+            options[:ssl_verify_peer] = options[:connection_options][:ssl_verify_peer]
+          end
           Fog::HP.authenticate_v2(options, options)
         else
           Fog::Storage.new(options).directories
