@@ -66,8 +66,13 @@ describe "Accounts setting credentials" do
   context "when existing account file" do
     it "should change the settings" do
       accounts = Accounts.new()
+      cred = { :account_id => 'LisaHannigan',
+               :secret_key => 'Passenger',
+               :auth_uri => 'http://ASail/',
+               :tenant_id => '336'
+             }
 
-      accounts.set_credentials('pro', 'LisaHannigan', 'Passenger', 'http://ASail/', '336')
+      accounts.set_cred('pro', cred)
 
       acct = accounts.read('pro')
       acct[:credentials][:account_id].should eq('LisaHannigan')
@@ -80,8 +85,13 @@ describe "Accounts setting credentials" do
   context "when new account" do
     it "should change the settings" do
       accounts = Accounts.new()
+      cred = { :account_id => 'SleeperAgent',
+               :secret_key => 'Celabrasion',
+               :auth_uri => 'http://ThatsMyBaby/',
+               :tenant_id => '335'
+             }
 
-      accounts.set_credentials('noob', 'SleeperAgent', 'Celabrasion', 'http://ThatsMyBaby/', '335')
+      accounts.set_cred('noob', cred)
 
       acct = accounts.read('noob')
       acct[:credentials][:account_id].should eq('SleeperAgent')
@@ -111,8 +121,17 @@ describe "Account write" do
   context "when new account file" do
     it "should change the settings" do
       accounts = Accounts.new()
-      accounts.set_credentials('nub', 'FionaApple', 'IdlerWheel', 'http://Daredevil/', '328')
-      accounts.set_zones('nub', 'az-1.region-a.geo-1', 'region-b.geo-1', 'az-1.region-d.geo-1')
+      cred = { :account_id => 'FionaApple',
+               :secret_key => 'IdlerWheel',
+               :auth_uri => 'http://Daredevil/',
+               :tenant_id => '328'
+             }
+      zones = { :compute_availability_zone => 'az-1.region-a.geo-1',
+                :storage_availability_zone => 'region-b.geo-1',
+                :block_availability_zone => 'az-1.region-d.geo-1'
+              }
+      accounts.set_cred('nub', cred)
+      accounts.set_zones('nub', zones)
 
       accounts.write('nub')
 
@@ -132,9 +151,19 @@ describe "Account write" do
   context "when existing account file" do
     it "should change the settings" do
       accounts = Accounts.new()
-      accounts.set_credentials('indy', 'Ceremony', 'Zoo', 'http://Quarantine/', '306')
+      cred = { :account_id => 'Ceremony',
+               :secret_key => 'Zoo',
+               :auth_uri => 'http://Quarantine/',
+               :tenant_id => '306'
+             }
+      accounts.set_cred('indy', cred)
       accounts.write('indy')
-      accounts.set_credentials('indy', 'TheHives', 'LexHives', 'http://GoRightAhead/', '307')
+      cred = { :account_id => 'TheHives',
+               :secret_key => 'LexHives',
+               :auth_uri => 'http://GoRightAhead/',
+               :tenant_id => '307'
+             }
+      accounts.set_cred('indy', cred)
 
       accounts.write('indy')
 
@@ -270,24 +299,6 @@ describe "Accounts set" do
       acct[:options][:ssl_ca_file].should eq("O6")
       acct[:options][:preferred_flavor].should eq("O8")
       acct[:options][:preferred_image].should eq("O9")
-
-      creds, zones, options = accounts.creds_zones_options('Hives')
-      creds[:account_id].should eq("C1")
-      creds[:secret_key].should eq("C2")
-      creds[:auth_uri].should eq("C3")
-      creds[:tenant_id].should eq("C4")
-      zones[:compute_availability_zone].should eq("Z1")
-      zones[:storage_availability_zone].should eq("Z2")
-      zones[:cdn_availability_zone].should eq("Z3")
-      zones[:block_availability_zone].should eq("Z4")
-      options[:connect_timeout].should eq(1)
-      options[:read_timeout].should eq(2)
-      options[:write_timeout].should eq(3)
-      options[:ssl_verify_peer].should eq(true)
-      options[:ssl_ca_path].should eq("O5")
-      options[:ssl_ca_file].should eq("O6")
-      options[:preferred_flavor].should be_nil
-      options[:preferred_image].should be_nil
     end
   end
   after(:all) {reset_all()}
@@ -344,5 +355,98 @@ describe "Accounts migrate" do
     end
   end
 
+  after(:all) {reset_all()}
+end
+
+describe "Connection options" do
+  context "when we create" do
+    before(:each) do
+      AccountsHelper.use_fixtures()
+      ConfigHelper.use_tmp()
+      Connection.instance.set_options({})
+    end
+
+    def expected_options()
+      eopts = HP::Cloud::Config.default_options.clone
+      eopts.delete_if{ |k,v| v.nil? }
+      eopts.delete(:preferred_flavor)
+      eopts.delete(:default_account)
+      eopts.delete(:checker_url)
+      eopts.delete(:checker_deferment)
+      return eopts
+    end
+
+    it "should have expected values with avail zone" do
+      options = Accounts.new.create_options('hp', :storage_availability_zone, 'somethingelse')
+
+      options[:provider].should eq('hp')
+      options[:connection_options].should eq(expected_options)
+      options[:hp_account_id].should eq('foo')
+      options[:hp_secret_key].should eq('bar')
+      options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eq('111111')
+      options[:hp_avl_zone].should eq('somethingelse')
+      options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
+    end
+
+    it "should have expected values" do
+      options = Accounts.new.create_options('hp', :compute_availability_zone)
+
+      options[:provider].should eq('hp')
+      options[:connection_options].should eq(expected_options())
+      options[:hp_account_id].should eq('foo')
+      options[:hp_secret_key].should eq('bar')
+      options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eq('111111')
+      options[:hp_avl_zone].should eq('az-1.region-a.geo-1')
+      options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
+    end
+
+    it "should have expected values" do
+      options = Accounts.new.create_options('hp', :storage_availability_zone)
+
+      options[:provider].should eq('hp')
+      options[:connection_options].should eq(expected_options())
+      options[:hp_account_id].should eq('foo')
+      options[:hp_secret_key].should eq('bar')
+      options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eq('111111')
+      options[:hp_avl_zone].should eq('region-a.geo-1')
+      options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
+    end
+
+    it "should have expected values" do
+      options = Accounts.new.create_options('hp', :cdn_availability_zone)
+
+      options[:provider].should eq('hp')
+      options[:connection_options].should eq(expected_options())
+      options[:hp_account_id].should eq('foo')
+      options[:hp_secret_key].should eq('bar')
+      options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eq('111111')
+      options[:hp_avl_zone].should eq('region-a.geo-1')
+      options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
+    end
+
+    it "should have expected values" do
+      options = Accounts.new.create_options('hp', :block_availability_zone)
+
+      options[:provider].should eq('hp')
+      options[:connection_options].should eq(expected_options())
+      options[:hp_account_id].should eq('foo')
+      options[:hp_secret_key].should eq('bar')
+      options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
+      options[:hp_tenant_id].should eq('111111')
+      options[:hp_avl_zone].should eq('az-1.region-a.geo-1')
+      options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
+    end
+
+    it "should throw exception" do
+      directory = Accounts.new.directory
+      lambda {
+        Accounts.new.create_options('bogus', :storage_availability_zone)
+      }.should raise_error(Exception, "Could not find account file: #{directory}bogus")
+    end
+  end
   after(:all) {reset_all()}
 end

@@ -143,6 +143,11 @@ module HP
         @write_thread = nil
         @read_io.close unless @read_io.nil?
         @read_io = nil
+        @pbar.increment(@lastread) unless @pbar.nil?
+        @pbar.finish unless @pbar.nil?
+        @lastread = 0
+        @pbar = nil
+
         return true
       end
 
@@ -231,12 +236,17 @@ module HP
             if from.has_same_account(@storage)
               @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
             else
+              @lastread = 0
+              siz = from.get_size()
+              @pbar = Progress.new(@destination, from.get_size())
               @options = { 'Content-Type' => from.get_mime_type() }
               from.read() { |chunk|
                 if ! write(chunk)
                   result = false
                   break
                 end
+                @pbar.increment(@lastread) unless @pbar.nil?
+                @lastread = chunk.length
               }
             end
           rescue Fog::Storage::HP::NotFound => e
@@ -262,8 +272,10 @@ module HP
         end
         @directory.files.each { |x|
           name = x.key.to_s
-          if ! name.match(regex).nil?
-            yield ResourceFactory.create(@storage, ':' + container + '/' + name)
+          unless name.end_with?('/')
+            if ! name.match(regex).nil?
+              yield ResourceFactory.create(@storage, ':' + container + '/' + name)
+            end
           end
         }
       end

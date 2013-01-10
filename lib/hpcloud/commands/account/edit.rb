@@ -33,12 +33,15 @@ Examples:
   hpcloud account:setup # Create or edit the default account interactively:
   hpcloud account:edit  # Edit the default account settings interactively:
   hpcloud account:edit pro auth_uri='https://127.0.0.1/' block_availability_zone='az-2.region-a.geo-1' # Set the account credential authorization URI to `https://127.0.0.1\` and the block availability zone to `az-2.region-a.geo-1`:
+  hpcloud account:setup rackspace -p rackspace # Create a rackspace account for migration
 
 Aliases: account:add, account:setup, account:update
       DESC
       method_option 'no-validate', :type => :boolean, :aliases => '-n',
                     :default => false,
                     :desc => "Don't verify account settings during edit"
+      method_option 'provider', :type => :string, :aliases => '-p',
+                    :desc => "Cloud provider for migration aws, rackspace, or google"
       define_method "account:edit" do |*args|
         cli_command(options) {
           if args.empty?
@@ -56,36 +59,82 @@ Aliases: account:add, account:setup, account:update
               acct = accounts.create(name)
               actionstring = "set up"
             end
+            acct[:provider] ||= 'hp'
+            unless options[:provider].nil?
+              if options[:provider] != acct[:provider]
+                acct[:provider] = options[:provider]
+                acct[:options] = {}
+                acct[:credentials] = {}
+                acct[:zones] = {}
+              end
+            end
             cred = acct[:credentials]
             zones = acct[:zones]
 
             # ask for credentials
-            @log.display "****** Setup your HP Cloud Services #{name} account ******"
-            cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
-            cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
-            cred[:auth_uri] = ask_with_default 'Auth Uri:', "#{cred[:auth_uri]}"
-            cred[:tenant_id] = ask_with_default 'Tenant Id:', "#{cred[:tenant_id]}"
-            zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
-            accounts.rejigger_zones(zones)
-            zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
-            zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
-
-            unless options['no-validate']
-              @log.display "Verifying your HP Cloud Services account..."
-              begin
-                Connection.instance.validate_account(cred)
-              rescue Exception => e
-                e = ErrorResponse.new(e).to_s
-                @log.error "Account verification failed. Error connecting to the service endpoint at: '#{cred[:auth_uri]}'. Please verify your account credentials. \n Exception: #{e}"
-              end
+            case acct[:provider]
+            when "hp"
+              service_name = "HP Cloud Services"
+              @log.display "****** Setup your #{service_name} #{name} account ******"
+              cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
+              cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
+              cred[:auth_uri] = ask_with_default 'Auth Uri:', "#{cred[:auth_uri]}"
+              cred[:tenant_id] = ask_with_default 'Tenant Id:', "#{cred[:tenant_id]}"
+              zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
+              accounts.rejigger_zones(zones)
+              zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
+              zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
+            when "aws"
+              service_name = "AWS"
+              @log.display "****** Setup your #{service_name} #{name} account ******"
+              cred[:aws_access_key_id] = ask_with_default 'Access Key ID:', "#{cred[:aws_access_key_id]}"
+              cred[:aws_secret_access_key] = ask_with_default 'Secret Access Key:', "#{cred[:aws_secret_access_key]}"
+              acct[:options] = {}
+              acct[:zones] = {}
+            when "rackspace"
+              service_name = "Rackspace"
+              @log.display "****** Setup your #{service_name} #{name} account ******"
+              cred[:rackspace_username] = ask_with_default 'Username:', "#{cred[:rackspace_username]}"
+              cred[:rackspace_api_key] = ask_with_default 'API Key:', "#{cred[:rackspace_api_key]}"
+              acct[:options] = {}
+              acct[:zones] = {}
+            when "google"
+              service_name = "Google"
+              @log.display "****** Setup your #{service_name} #{name} account ******"
+              cred[:google_storage_access_key_id] = ask_with_default 'Storage access key id:', "#{cred[:google_storage_access_key_id]}"
+              cred[:google_storage_secret_access_key] = ask_with_default 'Storage secret access key:', "#{cred[:google_storage_secret_access_key]}"
+              acct[:options] = {}
+              acct[:zones] = {}
+            else
+              @log.error "Provider '#{acct[:provider]}' not recognized.  Supported providers include hp, aws and rackspace."
+              @log.fatal "If your provider is not supported, you may manually create an account configuration file in the ~/.hpcloud/accounts directory."
             end
 
             # update credentials and stash in config directory
-            accounts.set_credentials(name, cred[:account_id], cred[:secret_key], cred[:auth_uri], cred[:tenant_id])
-            accounts.set_zones(name, zones[:compute_availability_zone], zones[:storage_availability_zone], zones[:block_availability_zone])
+            accounts.set_cred(name, cred)
+            accounts.set_zones(name, zones)
             accounts.write(name)
 
-            @log.display "Account credentials for HP Cloud Services have been #{actionstring}."
+            unless options['no-validate']
+              @log.display "Verifying your #{service_name} account..."
+              if cred[:auth_uri].nil?
+                identifier = cred.to_s
+              else
+                identifier = cred[:auth_uri]
+              end
+
+              begin
+                Connection.instance.validate_account(name)
+              rescue Exception => e
+                e = ErrorResponse.new(e).to_s
+                @log.error "Account verification failed. Error connecting to the service endpoint at: '#{identifier}'. Please verify your account credentials. \n Exception: #{e}"
+              end
+            end
+
+            @log.display "Account credentials for #{service_name} have been #{actionstring}."
+            unless acct[:provider] == "hp"
+              @log.display "Accounts for providers other than HP are only supported for migration"
+            end
           else
             acct = accounts.read(name, true)
             updated = ""

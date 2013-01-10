@@ -6,6 +6,8 @@ describe "Copy across" do
     file_name='spec/fixtures/files/Matryoshka/Putin/Yeltsin/'
     rsp = cptr("containers:remove -f :duplicate")
     rsp = cptr("containers:add :duplicate")
+    rsp = cptr("containers:remove -f :migrate")
+    rsp = cptr("containers:add :migrate")
     rsp.stderr.should eq("")
     rsp = cptr("containers:remove -f -a secondary :cross")
     rsp = cptr("containers:add -a secondary :cross")
@@ -14,14 +16,27 @@ describe "Copy across" do
     rsp.stderr.should eq("")
   end
     
-  context "when local file does not exist" do
-    it "should exit with file not found" do
+  context "cross copy" do
+    it "should copy files" do
       rsp = cptr('copy -s secondary :cross :duplicate')
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Copied :cross => :duplicate\n")
       rsp.exit_status.should be_exit(:success)
       rsp = cptr('list :duplicate')
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Yeltsin/Boris.txt\nYeltsin/Gorbachev/Andropov.txt\nYeltsin/Gorbachev/Chernenko.txt\nYeltsin/Gorbachev/Mikhail.txt\n")
+    end
+  end
+    
+  context "when migrate" do
+    it "should copy files" do
+      rsp = cptr('migrate secondary :cross :migrate')
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Migrated :cross => :migrate\n")
+      rsp.exit_status.should be_exit(:success)
+      rsp = cptr('list :migrate')
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Yeltsin/Boris.txt\nYeltsin/Gorbachev/Andropov.txt\nYeltsin/Gorbachev/Chernenko.txt\nYeltsin/Gorbachev/Mikhail.txt\n")
     end
