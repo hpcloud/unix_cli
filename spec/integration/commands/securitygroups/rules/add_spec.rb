@@ -132,7 +132,7 @@ puts rsp.stdout
     it "should show error message" do
       rsp = cptr("securitygroups:rules:add mysecgroup blah -p 22..22")
 
-      rsp.stderr.should eq("Invalid IP protocol blah.\n")
+      rsp.stderr.should eq("400 Invalid IP protocol blah.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:incorrect_usage)
     end
@@ -142,7 +142,7 @@ puts rsp.stdout
     it "should show error message" do
       rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 999999..999999")
 
-      rsp.stderr.should eq("Invalid port range 999999:999999. Valid TCP ports should be between 1-65535\n")
+      rsp.stderr.should eq("400 Invalid port range 999999:999999. Valid TCP ports should be between 1-65535\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:incorrect_usage)
     end
@@ -152,7 +152,7 @@ puts rsp.stdout
     it "should show error message" do
       rsp = cptr("securitygroups:rules:add mysecgroup tcp -p 8080..8080 -c 999.999.999.999/999")
 
-      rsp.stderr.should eq("Invalid cidr 999.999.999.999/999.\n")
+      rsp.stderr.should eq("400 Invalid cidr 999.999.999.999/999.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:incorrect_usage)
     end
