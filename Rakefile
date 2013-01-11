@@ -61,6 +61,7 @@ namespace :jenkins do
     rspectest = "rspec #{test}"
     task = RSpec::Core::RakeTask.new(rspectest) do |t|
       t.pattern = test
+      t.fail_on_error = false
       t.rspec_opts = %Q{--color --require "#{File.dirname(__FILE__)}/jenkins/triple_formatter.rb"}
     end
     task test => [ prerequisite, rspectest ] do
