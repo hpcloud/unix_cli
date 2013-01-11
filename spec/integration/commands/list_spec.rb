@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe "list command" do
   before(:all) do
     purge_container("mycontainer")
+    cptr("remove -f mycontainer")
     cptr("containers:add mycontainer")
   end
 
@@ -86,7 +87,7 @@ describe "list command" do
 
       tmpdir = AccountsHelper.tmp_dir()
       path = File.expand_path(File.dirname(__FILE__) + '/../../..')
-      rsp.stderr.should eq("Exception reading ':mycontainer': Could not find account file: #{path}/spec/tmp/home/.hpcloud/accounts/bogus\n")
+      rsp.stderr.should eq("Could not find account file: #{path}/spec/tmp/home/.hpcloud/accounts/bogus\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
