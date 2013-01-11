@@ -67,6 +67,6 @@ then
   hpcloud containers:add :${CONTAINER}
 fi
 hpcloud copy -a deploy hpcloud-${VERSION}.gem $DEST
-hpcloud acl:set -a deploy ${CONTAINER} public-read
+hpcloud location -a deploy ${DEST}/hpcloud-${VERSION}.gem
 
 rm -f ${REFERENCE} hpcloud-${VERSION}.gem ucssh.sh
