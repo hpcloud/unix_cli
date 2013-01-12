@@ -52,11 +52,10 @@ namespace :jenkins do
 #  end
 
   files = FileList['spec/integration/commands/**/*rb']
-  files.each do |test|
+  files.shuffle.each do |test|
     prerequisite = "pre #{test}"
     task prerequisite do
       puts "==== #{test} ===="
-      @start_time = Time.now
     end
     rspectest = "rspec #{test}"
     task = RSpec::Core::RakeTask.new(rspectest) do |t|
@@ -64,8 +63,17 @@ namespace :jenkins do
       t.fail_on_error = false
       t.rspec_opts = %Q{--color --require "#{File.dirname(__FILE__)}/jenkins/triple_formatter.rb"}
     end
-    task test => [ prerequisite, rspectest ] do
-      puts "==== #{test} ====".gsub(/./, '=') + ' ' + (Time.now - @start_time).to_s
+    if test != "spec/integration/commands/servers/add_spec.rb"
+      if test.include?("spec/integration/commands/addresses") ||
+         test.include?("spec/integration/commands/servers/metadata") ||
+         test.include?("spec/integration/commands/images/metadata") ||
+         test.include?("spec/integration/commands/securitygroups")
+        task test => [ prerequisite, rspectest ] do
+          puts "sleep 40"
+        end
+      else
+        task test => [ prerequisite ]
+      end
     end
   end
 
