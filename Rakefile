@@ -69,10 +69,10 @@ namespace :jenkins do
          test.include?("spec/integration/commands/images/metadata") ||
          test.include?("spec/integration/commands/securitygroups")
         task test => [ prerequisite, rspectest ] do
-          puts "sleep 40"
+          sleep 40
         end
       else
-        task test => [ prerequisite ]
+        task test => [ prerequisite, rspectest ]
       end
     end
   end
