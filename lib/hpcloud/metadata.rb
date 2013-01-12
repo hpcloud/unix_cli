@@ -19,10 +19,6 @@ module HP
         mta.map { |m| @hsh["#{m.key}"] = "#{m.value}" }
       end
 
-      def to_hash()
-        return @hsh
-      end
-
       def to_array()
         ray = []
         @hsh.each { |k,v| ray << {"key"=>k,"value"=>v} }
