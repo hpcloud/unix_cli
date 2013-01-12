@@ -46,7 +46,7 @@ describe "containers:add command" do
     it "should show error message" do
       rsp = cptr('containers:add my/container --force')
 
-      rsp.stderr.should eq("Valid container names do not contain the '/' character: my/container\n")
+      rsp.stderr.should eq("Error adding container: Valid container names do not contain the '/' character: my/container\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
@@ -93,7 +93,7 @@ describe "containers:add command" do
       rsp = cptr("containers:add tainer -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
-      rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
+      rsp.stderr.should eq("Error adding container: Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
