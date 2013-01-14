@@ -7,8 +7,8 @@ module HP
   Migrates files from the deisgnated provider to the HP Cloud destination. This command works similarly to `copy` except the first argument is the source account (for example, `AWS`).  The source objects may be containers, objects, or regular expressions.
 
 Examples:
-  hpcloud migrate aws :aws_tainer :hp_tainer # Migrate ojbects from the AWS `:aws_tainer` container to the `:hp_tainer` container:
-  hpcloud migrate rackspace :rackspace1 :rackspace2 :hp_tainer # Migrate ojbects from the two containers in the Rackspace account to the `:hp_tainer` container:
+  hpcloud migrate aws :aws_tainer :hp_tainer # Migrate objects from the AWS `:aws_tainer` container to the `:hp_tainer` container:
+  hpcloud migrate rackspace :rackspace1 :rackspace2 :hp_tainer # Migrate objects from the two containers in the Rackspace account to the `:hp_tainer` container:
 
       DESC
       method_option :mime,
