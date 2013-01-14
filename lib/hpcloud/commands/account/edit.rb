@@ -33,7 +33,7 @@ Examples:
   hpcloud account:setup # Create or edit the default account interactively:
   hpcloud account:edit  # Edit the default account settings interactively:
   hpcloud account:edit pro auth_uri='https://127.0.0.1/' block_availability_zone='az-2.region-a.geo-1' # Set the account credential authorization URI to `https://127.0.0.1\` and the block availability zone to `az-2.region-a.geo-1`:
-  hpcloud account:setup rackspace -p rackspace # Create a rackspace account for migration
+  hpcloud account:setup rackspace -p rackspace # Create a Rackspace account for migration
 
 Aliases: account:add, account:setup, account:update
       DESC
@@ -41,7 +41,7 @@ Aliases: account:add, account:setup, account:update
                     :default => false,
                     :desc => "Don't verify account settings during edit"
       method_option 'provider', :type => :string, :aliases => '-p',
-                    :desc => "Cloud provider for migration aws, rackspace, or google"
+                    :desc => "Cloud provider for migration: AWS, Rackspace, or Google"
       define_method "account:edit" do |*args|
         cli_command(options) {
           if args.empty?
