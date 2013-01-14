@@ -61,8 +61,9 @@ Aliases: account:add, account:setup, account:update
             end
             acct[:provider] ||= 'hp'
             unless options[:provider].nil?
-              if options[:provider] != acct[:provider]
-                acct[:provider] = options[:provider]
+              provider = options[:provider].downcase
+              if provider != acct[:provider]
+                acct[:provider] = provider
                 acct[:options] = {}
                 acct[:credentials] = {}
                 acct[:zones] = {}
