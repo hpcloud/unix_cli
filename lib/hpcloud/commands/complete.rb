@@ -4,25 +4,25 @@ module HP
   module Cloud
     class CLI < Thor
     
-      desc 'complete', "Attempt to install bash completion file."
+      desc 'complete', "Installs the bash completion file."
       long_desc <<-DESC
-  Running this will attempt to install the hpcloud bash completion file.  If you run this as root, it will install it in a system wide directory if there is one available.  Otherwise, it will install it in the ~/.bash_completion.d/ directory.  It is up to the user to make sure the bash completion script is run.  The ~/.bash_completion.d/ directory is normally not run by default.
+  Installs the HP Cloud bash completion file.  If you run this command as the root user, the file is installed in a system-wide directory (if one is available).  Otherwise, the file is installed  in the `~/.bash_completion.d/` directory.  The `~/.bash_completion.d/` directory is not run by default; you must run the completion script explicitly.
   
 Examples:
-  hpcloud complete # Attempt to install hpcloud bash completion
+  hpcloud complete # Installs the HP Cloud bash completion file.
       DESC
       def complete
         begin
           completion_dir = File.expand_path(File.join(File.dirname(__FILE__), '../../..', 'completion'))
           destination = '/etc/bash_completion.d/'
           unless File.writable?(destination)
-            @log.display "The system wide #{destination} directory exists, but it not writable." if File.exists?(destination)
+            @log.display "The system wide #{destination} directory exists, but is not writable." if File.exists?(destination)
             destination = "/opt/local/etc/bash_completion.d"
             unless File.writable?(destination)
-              @log.display "The system wide #{destination} directory exists, but it not writable." if File.exists?(destination)
+              @log.display "The system wide #{destination} directory exists, but is not writable." if File.exists?(destination)
               destination = "#{ENV['HOME']}/.bash_completion.d"
               FileUtils.mkdir(destination) unless File.exists?(destination)
-              @log.display "You may have to manually call the bash completion script in your .bashrc"
+              @log.display "You may need to manually execute the bash completion script in your .bashrc"
             end
           end
           completion_file = "#{completion_dir}/hpcloud"
