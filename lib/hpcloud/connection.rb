@@ -1,5 +1,4 @@
 require 'fog/hp'
-require 'fog/block_storage'
 
 module HP
   module Cloud
