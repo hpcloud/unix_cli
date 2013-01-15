@@ -2,13 +2,13 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "servers:ssh <server_name_or_id>", "Secure shell into the server."
+      desc "servers:ssh <server_name_or_id>", "Secure shell into a server."
       long_desc <<-DESC
-  Log in using the secure shell to the designated server.
+  Log in using the secure shell to the specified server.
 
 Examples:
-  hpcloud servers:console bugs -p bunny.pem  # Use the secure shell to log in to the bugs server:
-  hpcloud servers:console daffy              # Use the secure shell to log in to server `daffy`, which has a know keypair
+  hpcloud servers:ssh bugs -p bunny.pem  # Use the secure shell to log in to the bugs server:
+  hpcloud servers:ssh daffy              # Use the secure shell to log in to server `daffy`, which has a known keypair
       DESC
       method_option :private_key_file,
                     :type => :string, :aliases => '-p',
