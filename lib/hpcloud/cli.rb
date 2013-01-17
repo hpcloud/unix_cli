@@ -68,7 +68,7 @@ module HP
         rescue Fog::HP::Errors::ServiceError => error
           @@error = error
           error_status = :general_error
-        rescue Fog::BlockStorage::HP::NotFound => error
+        rescue Fog::HP::BlockStorage::NotFound => error
           @@error = error
           error_status = :not_found
         rescue Fog::CDN::HP::NotFound => error
@@ -80,7 +80,7 @@ module HP
         rescue Fog::Storage::HP::NotFound => error
           @@error = error
           error_status = :not_found
-        rescue Fog::BlockStorage::HP::Error => error
+        rescue Fog::HP::BlockStorage::Error => error
           @@error = error
           error_status = :general_error
         rescue Fog::CDN::HP::Error => error
