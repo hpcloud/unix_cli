@@ -381,7 +381,7 @@ describe "Connection options" do
 
       options[:provider].should eq('hp')
       options[:connection_options].should eq(expected_options)
-      options[:hp_account_id].should eq('foo')
+      options[:hp_access_key].should eq('foo')
       options[:hp_secret_key].should eq('bar')
       options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
       options[:hp_tenant_id].should eq('111111')
@@ -394,7 +394,7 @@ describe "Connection options" do
 
       options[:provider].should eq('hp')
       options[:connection_options].should eq(expected_options())
-      options[:hp_account_id].should eq('foo')
+      options[:hp_access_key].should eq('foo')
       options[:hp_secret_key].should eq('bar')
       options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
       options[:hp_tenant_id].should eq('111111')
@@ -407,7 +407,7 @@ describe "Connection options" do
 
       options[:provider].should eq('hp')
       options[:connection_options].should eq(expected_options())
-      options[:hp_account_id].should eq('foo')
+      options[:hp_access_key].should eq('foo')
       options[:hp_secret_key].should eq('bar')
       options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
       options[:hp_tenant_id].should eq('111111')
@@ -420,7 +420,7 @@ describe "Connection options" do
 
       options[:provider].should eq('hp')
       options[:connection_options].should eq(expected_options())
-      options[:hp_account_id].should eq('foo')
+      options[:hp_access_key].should eq('foo')
       options[:hp_secret_key].should eq('bar')
       options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
       options[:hp_tenant_id].should eq('111111')
@@ -433,7 +433,7 @@ describe "Connection options" do
 
       options[:provider].should eq('hp')
       options[:connection_options].should eq(expected_options())
-      options[:hp_account_id].should eq('foo')
+      options[:hp_access_key].should eq('foo')
       options[:hp_secret_key].should eq('bar')
       options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
       options[:hp_tenant_id].should eq('111111')
