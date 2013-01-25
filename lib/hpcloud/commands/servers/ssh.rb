@@ -7,8 +7,9 @@ module HP
   Log in using the secure shell to the specified server.
 
 Examples:
-  hpcloud servers:ssh bugs -p bunny.pem  # Use the secure shell to log in to the bugs server:
-  hpcloud servers:ssh daffy              # Use the secure shell to log in to server `daffy`, which has a known keypair
+  hpcloud servers:ssh bugs -p bunny.pem  # Use the secure shell to log into the bugs server:
+  hpcloud servers:ssh daffy              # Use the secure shell to log into server `daffy`, which has a known keypair
+  hpcloud servers:ssh 15.185.104.210     # Use the secure shell to log into server with given public ip, which has a known keypair known to the CLI
       DESC
       method_option :private_key_file,
                     :type => :string, :aliases => '-p',
@@ -26,7 +27,12 @@ Examples:
       CLI.add_common_options
       define_method "servers:ssh" do |name_or_id|
         cli_command(options) {
-          server = Servers.new.get(name_or_id)
+          servers = Servers.new
+          server = servers.get(name_or_id)
+          unless server.is_valid?
+            result = servers.find_by_ip(name_or_id)
+            server = result if result.is_valid?
+          end
           if server.is_valid?
             unless options[:keypair].nil?
               filename = KeypairHelper.private_filename(options[:keypair])

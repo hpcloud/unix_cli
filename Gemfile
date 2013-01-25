@@ -2,7 +2,7 @@ source "http://rubygems.org"
 
 gemspec
 #gem 'hpfog', :path => '~/projects/ruby_fog_os' # Comment out for delivery
-gem 'hpfog', :git => 'git@git01.hpcloud.net:SDK-CLI-Docs/ruby_fog_os.git', :branch => 'master' # Comment out for delivery
+gem 'hpfog', :git => 'git@git01.hpcloud.net:SDK-CLI-Docs/ruby_fog_os.git', :branch => 'feature/merge_from_upstream_fog_1.9.0' # Comment out for delivery
 
 group :development do
   gem "yard", "~> 0.6.0"
