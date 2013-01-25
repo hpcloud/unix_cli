@@ -27,18 +27,22 @@ Aliases: cdn:containers:list
       CLI.add_common_options
       define_method "cdn:containers" do
         cli_command(options) {
-          response = if options[:all]
-            Connection.instance.cdn.get_containers()
-          else
-            Connection.instance.cdn.get_containers({'enabled_only' => true})
-          end
-          cdn_containers = response.body
-          if cdn_containers.nil? or cdn_containers.empty?
+          begin
+            response = if options[:all]
+              Connection.instance.cdn.get_containers()
+            else
+              Connection.instance.cdn.get_containers({'enabled_only' => true})
+            end
+            cdn_containers = response.body
+            if cdn_containers.nil? or cdn_containers.empty?
+              @log.display "You currently have no containers on the CDN."
+            else
+              cdn_containers.each { |cdn_container|
+                @log.display cdn_container['name']
+              }
+            end
+          rescue Fog::CDN::HP::NotFound => e
             @log.display "You currently have no containers on the CDN."
-          else
-            cdn_containers.each { |cdn_container|
-              @log.display cdn_container['name']
-            }
           end
         }
       end

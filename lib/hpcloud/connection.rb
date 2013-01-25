@@ -1,5 +1,4 @@
 require 'fog/hp'
-require 'fog/block_storage'
 
 module HP
   module Cloud
@@ -79,8 +78,9 @@ module HP
         account = get_account()
         return @block_connection[account] unless @block_connection[account].nil?
         opts = create_options(account, :block_availability_zone)
+        opts.delete(:provider)
         begin
-          @block_connection[account] = Fog::BlockStorage.new(opts)
+          @block_connection[account] = Fog::HP::BlockStorage.new(opts)
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
