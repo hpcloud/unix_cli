@@ -12,6 +12,15 @@ module HP
       def create(item = nil)
         return ServerHelper.new(@connection.compute, item)
       end
+
+      def find_by_ip(ipaddy)
+        @items.each { |x| 
+          if ipaddy == x.public_ip_address
+            return create(x)
+          end
+        }
+        return nil
+      end
     end
   end
 end
