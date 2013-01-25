@@ -24,7 +24,7 @@ Examples:
                     :desc => 'Volume to use to create the server.'
       method_option :security_group,
                     :type => :string, :aliases => '-s',
-                    :desc => 'Specify a security group to be used.'
+                    :desc => 'Specify a security group or comma seperated list of security groups to be used.'
       method_option :private_key_file,
                     :type => :string, :aliases => '-p',
                     :desc => 'Name of the pem file with your private key.'

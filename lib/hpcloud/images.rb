@@ -14,6 +14,7 @@ module HP
       end
 
       def matches(arg, item)
+        return (arg == item.id.to_s) if arg.match(/^[0-9]+$/)
         return ((arg == item.id.to_s) || (item.name.to_s.match(arg)))
       end
     end
