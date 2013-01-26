@@ -249,7 +249,7 @@ describe "Copy command" do
         rsp.exit_status.should be_exit(:success)
         @get = @hp_svc.get_object('copy_inside_container', 'new/foo.txt')
         @get.status.should eql(200)
-        @get.headers['Content-Type'].should eql('application/json')
+        @get.headers['Content-Type'].should eql('text/plain')
         @get.body.should eql(read_file('foo.txt'))
       end
     end
@@ -360,7 +360,7 @@ describe "Copy command" do
         rsp.exit_status.should be_exit(:success)
         @get = @hp_svc.get_object('copy_between_two', 'new/foo.txt')
         @get.status.should eql(200)
-        @get.headers['Content-Type'].should eql('application/json')
+        @get.headers['Content-Type'].should eql('text/plain')
         @get.body.should eql(read_file('foo.txt'))
       end
     end

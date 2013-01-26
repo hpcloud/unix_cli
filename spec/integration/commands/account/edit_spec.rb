@@ -38,7 +38,7 @@ describe "account:edit" do
         "Block zone: [az-1.region-b.geo-1] " +
         "Verifying your HP Cloud Services account...\n" +
         "Account credentials for HP Cloud Services have been edited.\n")
-      rsp.stderr.should eq("Account verification failed. Error connecting to the service endpoint at: 'https://127.0.0.2/'. Please verify your account credentials. \n Exception: Connection refused - connect(2)\n")
+      rsp.stderr.should eq("Account verification failed. Error connecting to the service endpoint at: 'https://127.0.0.2/'. Please verify your account credentials. \n Exception: Connection refused - connect(2) (Errno::ECONNREFUSED)\n")
       rsp.exit_status.should be_exit(:general_error)
     end
 

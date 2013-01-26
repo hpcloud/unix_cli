@@ -239,7 +239,7 @@ module HP
 
         options = {}
         if provider == 'hp'
-          options[:hp_account_id] = creds[:account_id] || creds[:hp_account_id]
+          options[:hp_access_key] = creds[:account_id] || creds[:hp_access_key] || creds[:hp_account_id]
           options[:hp_secret_key] = creds[:secret_key] || creds[:hp_secret_key]
           options[:hp_auth_uri] = creds[:auth_uri] || creds[:hp_auth_uri]
           options[:hp_tenant_id ] = creds[:tenant_id] || creds[:hp_tenant_id]

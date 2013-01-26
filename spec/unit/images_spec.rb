@@ -1,9 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
       
 describe "Image getter" do
-  def mock_image(name)
+  def mock_image(name, id=1)
     fog_image = double("image")
-    fog_image.stub(:id).and_return(1)
+    fog_image.stub(:id).and_return(id)
     fog_image.stub(:name).and_return(name)
     fog_image.stub(:created_at).and_return("today")
     fog_image.stub(:status).and_return("WORKING")
@@ -32,6 +32,33 @@ describe "Image getter" do
   context "when check empty" do
     it "should return false" do
       Images.new.empty?.should be_false
+    end
+  end 
+      
+  context "matches" do
+    it "should return true or false" do
+      images = Images.new
+      i1 = mock_image("2", 1)
+      i2 = mock_image("1", 2)
+      i3 = mock_image("three", 3)
+      i4 = mock_image("tree", 4)
+
+      images.matches("1", i1).should be_true
+      images.matches("1", i2).should be_false
+      images.matches("1", i3).should be_false
+      images.matches("1", i4).should be_false
+      images.matches("2", i1).should be_false
+      images.matches("2", i2).should be_true
+      images.matches("2", i3).should be_false
+      images.matches("2", i4).should be_false
+      images.matches("three", i1).should be_false
+      images.matches("three", i2).should be_false
+      images.matches("three", i3).should be_true
+      images.matches("three", i4).should be_false
+      images.matches("ree", i1).should be_false
+      images.matches("ree", i2).should be_false
+      images.matches("ree", i3).should be_true
+      images.matches("ree", i4).should be_true
     end
   end 
 end

@@ -104,9 +104,12 @@ module HP
 
       def read
         begin
+          yielded_something = false
           @storage.get_object(@container, @path) { |chunk, remain, tot|
             yield chunk
+            yielded_something = true
           }
+          yield '' unless yielded_something
         rescue Fog::Storage::HP::NotFound => e
           @cstatus = CliStatus.new("The specified object does not exist.", :not_found)
           result = false
