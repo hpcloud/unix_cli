@@ -1,3 +1,11 @@
+##Release 1.6.0 Features##
+
+The 1.6.0 release is available for download from https://docs.hpcloud.com/file/hpcloud-1.6.0.gem.  This release was made available on 1/30/2013 and contains the following new features:
+
+* Compatibility for 0.0.19 hpfog gem
+* `servers:ssh` now supports using an IP address as well as server name or id
+* Other minor bug fixes
+
 ##Release 1.5.0 Features##
 
 The 1.5.0 release is available for download from https://docs.hpcloud.com/file/hpcloud-1.5.0.gem.  This release was made available on 1/18/2013 and contains the following new features:
