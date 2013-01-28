@@ -10,7 +10,7 @@ describe "volumes:detach command" do
       @vol1 = VolumeTestHelper.create("cli_test_vol1")
       @vol1.detach()
       @vol1.fog.wait_for { ready? }
-      @vol1.attach(@server, '/dev/sdf').should be_true
+      @vol1.attach(@server, '/dev/sdj').should be_true
       @vol1.fog.wait_for { in_use? }
 
       rsp = cptr("volumes:detach #{@vol1.name}")
