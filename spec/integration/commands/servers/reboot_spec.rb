@@ -1,11 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "servers:reboot command" do
-  def cli
-    @cli ||= HP::Cloud::CLI.new
-  end
-
-  pending "when soft rebooting server" do
+  context "when soft rebooting server" do
     it "should show success message" do
       @server_name = "cli_test_srv4"
       server = ServerTestHelper.create(@server_name)
@@ -18,7 +14,7 @@ describe "servers:reboot command" do
     end
   end
 
-  pending "when hard rebooting server" do
+  context "when hard rebooting server" do
     it "should show success message" do
       @server_name = "cli_test_srv5"
       server = ServerTestHelper.create(@server_name)

@@ -5,12 +5,19 @@ describe "Copy shared resources" do
     rsp = cptr("remove -f :copytainer")
     rsp = cptr("containers:add :copytainer")
     rsp.stderr.should eq("")
+    rsp = cptr("containers:add :readtainer")
+    rsp.stderr.should eq("")
     username = AccountsHelper.get_username('secondary')
     rsp = cptr("acl:grant :copytainer rw #{username}")
+    rsp.stderr.should eq("")
+    rsp = cptr("acl:grant :readtainer r #{username}")
     rsp.stderr.should eq("")
     rsp = cptr("location :copytainer")
     rsp.stderr.should eq("")
     @container = rsp.stdout.gsub("\n",'')
+    rsp = cptr("location :readtainer")
+    rsp.stderr.should eq("")
+    @readtainer = rsp.stdout.gsub("\n",'')
     @local = "spec/tmp/shared/"
     FileUtils.rm_rf(@local)
     FileUtils.mkdir_p(@local)
@@ -38,8 +45,6 @@ describe "Copy shared resources" do
   context "when file and container exist" do
     it "should copy" do
       rsp = cptr("copy #{@container}/Yeltsin/Boris.txt #{@local} -a secondary")
-puts "copy #{@container}/Yeltsin/Boris.txt #{@local} -a secondary"
-puts rsp.stdout
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Copied #{@container}/Yeltsin/Boris.txt => #{@local}\n")
@@ -97,7 +102,18 @@ puts rsp.stdout
     end
   end
   
+  context "when read only" do
+    it "should fail" do
+      rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Andropov.txt #{@readtainer}/ -a secondary")
+
+      rsp.stderr.should eq("403 Forbidden\n\nAccess was denied to this resource.\n\n   \n")
+      rsp.stdout.should eq("")
+      rsp.exit_status.should be_exit(:general_error)
+    end
+  end
+  
   after(:all) do
     cptr("remove -f :copytainer")
+    cptr("remove -f :readtainer")
   end
 end
