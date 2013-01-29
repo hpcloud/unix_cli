@@ -146,8 +146,8 @@ describe "Move command" do
   end
 
   after(:all) do
-#    cptr("containers:remove -f :move_source_container :move_target_container")
+    cptr("containers:remove -f :move_source_container :move_target_container")
     @localdir = 'spec/tmp/move/'
-    FileUtils.rm_f(@localdir) if File.exists?(@localdir)
+    FileUtils.rm_rf(@localdir) if File.exists?(@localdir)
   end
 end
