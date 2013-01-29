@@ -24,6 +24,7 @@ Aliases: volumes:list
       DESC
       method_option :bootable, :type => :boolean, :aliases => '-b',
                     :default => false, :desc => 'List the bootable volumes.'
+      CLI.add_report_options
       CLI.add_common_options
       def volumes(*arguments)
         cli_command(options) {
