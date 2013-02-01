@@ -20,33 +20,33 @@ Examples:
 
 Aliases: ls
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       def list(*sources)
         cli_command(options) {
           sources = [""] if sources.empty?
           multi = sources.length > 1
+          opt = Hash[options]
+          opt[Tableizer.option_name] = ' ' if opt[Tableizer.option_name].nil?
           sources.each { |name|
             sub_command {
               from = ResourceFactory.create(Connection.instance.storage, name)
               if from.valid_source()
                 found = false
+                ray = []
                 from.foreach { |file|
-                  if from.is_container?
-                    if multi
-                      @log.display file.fname
-                    else
-                      @log.display file.path
-                    end
-                  else
-                    if file.is_container?
-                      @log.display file.container
-                    else
-                      @log.display file.fname
-                    end
-                  end
+                  multi = true unless from.is_container?
+                  ray << file.to_hash
                   found = true
                 }
-                unless found
+                if found
+                  if multi
+                    keys = [ "lname" ]
+                  else
+                    keys = [ "sname" ]
+                  end
+                  Tableizer.new(opt, keys, ray).print
+                else
                   if from.is_object_store?
                     @log.error "Cannot find any containers, use `#{selfname} containers:add <name>` to create one.", :not_found
                   elsif from.isDirectory() == false
