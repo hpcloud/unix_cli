@@ -72,15 +72,12 @@ module HP
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
           @cstatus  = CliStatus.new(resp.error_string, :permission_denied)
-puts @cstatus
           return false
         rescue Fog::HP::Errors::Forbidden => error
           @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
-puts @cstatus
           return false
         rescue Exception => error
           @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
-puts @cstatus
           return false
         end
         return true
