@@ -26,7 +26,8 @@ Aliases: ls
         cli_command(options) {
           sources = [""] if sources.empty?
           multi = sources.length > 1
-          opt = Hash[options]
+          opt = {}
+          opt[Columns.option_name] = options[Columns.option_name]
           opt[Tableizer.option_name] = ' ' if opt[Tableizer.option_name].nil?
           sources.each { |name|
             sub_command {
