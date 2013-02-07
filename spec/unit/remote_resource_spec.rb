@@ -8,6 +8,7 @@ describe "Valid source" do
     @files.stub(:get).and_return(@file)
     @container = double("container")
     @container.stub(:files).and_return(@files)
+    @container.stub(:bytes).and_return(402)
     @directories = double("directories")
     @storage = double("storage")
     @storage.stub(:directories).and_return(@directories)
@@ -44,6 +45,7 @@ describe "Valid destination" do
     @files.stub(:get).and_return(@file)
     @container = double("container")
     @container.stub(:files).and_return(@files)
+    @container.stub(:bytes).and_return(403)
     @directories = double("directories")
     @directories.stub(:get).and_return(@container)
     @storage = double("storage")
@@ -120,6 +122,7 @@ describe "Set destination" do
     @files.stub(:get).and_return(@file)
     @container = double("container")
     @container.stub(:files).and_return(@files)
+    @container.stub(:bytes).and_return(405)
     @directories = double("directories")
     @directories.stub(:get).and_return(@container)
     @storage = double("storage")
@@ -201,6 +204,7 @@ describe "File copy" do
     @sourcetxt.stub(:key).and_return("source.txt")
     @container = double("container")
     @container.stub(:files).and_return([@sourcetxt])
+    @container.stub(:bytes).and_return(404)
     @directories = double("directories")
     @directories.stub(:get).and_return(@container)
     @get_object = double("get_object")
@@ -313,6 +317,7 @@ describe "Read directory" do
               @footxt ]
     @container = double("container")
     @container.stub(:files).and_return(@files)
+    @container.stub(:bytes).and_return(406)
     @directories = double("directories")
     @directories.stub(:get).and_return(@container)
     @storage = double("storage")
@@ -451,6 +456,7 @@ describe "Remote resource remove" do
     @files.stub(:head).and_return(@file)
     @directory = double("directory")
     @directory.stub(:files).and_return(@files)
+    @directory.stub(:bytes).and_return(123)
     @directories = double("directories")
     @directories.stub(:get).and_return(@directory)
     @storage = double("storage")
@@ -551,6 +557,7 @@ describe "Remote resource grant" do
     @directory = double("directory")
     @directory.stub(:files).and_return(@files)
     @directory.stub(:grant).and_return(true)
+    @directory.stub(:bytes).and_return(true)
     @directory.stub(:save).and_return(true)
     @directories = double("directories")
     @directories.stub(:get).and_return(@directory)
@@ -572,23 +579,11 @@ describe "Remote resource grant" do
   context "grant for container not found" do
     it "returns false and sets error" do
       @directories.stub(:get).and_return(nil)
-      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
+      res = ResourceFactory.create_any(@storage, ":container")
 
       res.grant(@acl).should be_false
 
       res.cstatus.message.should eq("Cannot find container ':container'.")
-      res.cstatus.error_code.should eq(:not_found)
-    end
-  end
-
-  context "grant for file not found" do
-    it "returns false and sets error" do
-      @files.stub(:get).and_return(nil)
-      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
-
-      res.grant(@acl).should be_false
-
-      res.cstatus.message.should eq("Cannot find object ':container/files/river.txt'.")
       res.cstatus.error_code.should eq(:not_found)
     end
   end
@@ -637,6 +632,7 @@ describe "Remote resource revoke" do
     @files.stub(:get).and_return(double("file"))
     @directory = double("directory")
     @directory.stub(:files).and_return(@files)
+    @directory.stub(:bytes).and_return(999)
     @directory.stub(:revoke).and_return(true)
     @directory.stub(:save).and_return(true)
     @directories = double("directories")

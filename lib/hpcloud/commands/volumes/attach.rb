@@ -4,12 +4,12 @@ module HP
 
       desc "volumes:attach <volume> <server> <device_or_number>", "Attach a volume to a server specified by device name or number."
       long_desc <<-DESC
-  Attach a volume to a server on the specified device name.  You may specify a device name in the format /dev/sdX where X is b, c, d, ... or a mount point 1, 2, 3,...  The mount point 1 would map to /dev/sdb on a Linux platform.
+  Attach a volume to a server on the specified device name.  You may specify a device name in the format /dev/vdX where X is b, c, d, ... or a mount point 1, 2, 3,...  The mount point 1 would map to /dev/vda on a Linux platform.
 
 Examples:
-  hpcloud volumes:attach myVolume myServer /dev/sdf                         # Attach volume `myVolume` to server `myServer` on device `/dev/sdf`:
-  hpcloud volumes:attach myVolume myServer 1                                # Attach volume `myVolume` to server `myServer` on device `/dev/sdb`:
-  hpcloud volumes:attach my-volume myServer /dev/sdg -z az-2.region-a.geo-1 # Attach volume `my-volume` to server `myServer` on device `/dev/sdf` for availability zone `az-2.region-a.geo-1`:
+  hpcloud volumes:attach myVolume myServer /dev/vdf                         # Attach volume `myVolume` to server `myServer` on device `/dev/vdf`:
+  hpcloud volumes:attach myVolume myServer 1                                # Attach volume `myVolume` to server `myServer` on device `/dev/vdb`:
+  hpcloud volumes:attach my-volume myServer /dev/vdg -z az-2.region-a.geo-1 # Attach volume `my-volume` to server `myServer` on device `/dev/vdf` for availability zone `az-2.region-a.geo-1`:
 
       DESC
       CLI.add_common_options

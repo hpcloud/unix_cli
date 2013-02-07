@@ -26,7 +26,9 @@ Examples:
             end
             ray = VolumeAttachments.new(server).get_array()
             if ray.empty?
-              @log.error "Cannot find any volumes for '#{server.name}'.", :not_found
+              unless arguments.empty?
+                @log.error "Cannot find any volumes for '#{server.name}'.", :not_found
+              end
               next
             end
             rayray += ray

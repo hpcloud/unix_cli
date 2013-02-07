@@ -35,7 +35,7 @@ module HP
           return true unless @directory.nil?
 
           @directory = @storage.directories.get(@container)
-          @size = @directory.bytes
+          @size = @directory.bytes unless @directory.nil?
           if @directory.nil?
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return false
@@ -60,14 +60,14 @@ module HP
 
           unless @path.empty?
             @file = @directory.files.get(@path)
-            @size = @file.content_length
-            @type = @file.content_type
-            @etag = @file.etag
-            @modified = @file.last_modified
             if @file.nil?
               @cstatus = CliStatus.new("Cannot find object '#{@fname}'.", :not_found)
               return false
             end
+            @size = @file.content_length
+            @type = @file.content_type
+            @etag = @file.etag
+            @modified = @file.last_modified
           end
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
