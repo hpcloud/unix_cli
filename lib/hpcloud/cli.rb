@@ -37,6 +37,12 @@ module HP
         ENV['HPCLOUD_CLI_NAME'] || 'hpcloud'
       end
 
+      class << self
+        def exit_on_failure?
+          true
+        end
+      end
+
       ### Thor extensions
     
       def ask_with_default(statement, default, color = nil)
