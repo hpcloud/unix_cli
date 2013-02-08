@@ -1,6 +1,7 @@
 module HP
   module Cloud
     class RemoteResource < Resource
+      attr_accessor :directory
 
       def parse
         super
@@ -276,7 +277,8 @@ module HP
           name = x.key.to_s
           unless name.end_with?('/')
             if ! name.match(regex).nil?
-              yield ResourceFactory.create(@storage, ':' + container + '/' + name)
+              res = ResourceFactory.create(@storage, ':' + container + '/' + name)
+              yield res
             end
           end
         }
