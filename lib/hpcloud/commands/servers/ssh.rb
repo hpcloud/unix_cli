@@ -31,7 +31,9 @@ Examples:
           server = servers.get(name_or_id)
           unless server.is_valid?
             result = servers.find_by_ip(name_or_id)
-            server = result if result.is_valid?
+            unless result.nil?
+              server = result if result.is_valid?
+            end
           end
           if server.is_valid?
             unless options[:keypair].nil?
