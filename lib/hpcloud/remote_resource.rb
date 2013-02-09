@@ -278,6 +278,7 @@ module HP
           unless name.end_with?('/')
             if ! name.match(regex).nil?
               res = ResourceFactory.create(@storage, ':' + container + '/' + name)
+              res.directory = @directory
               yield res
             end
           end
