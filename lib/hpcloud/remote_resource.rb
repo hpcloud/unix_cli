@@ -1,6 +1,7 @@
 module HP
   module Cloud
     class RemoteResource < Resource
+      attr_accessor :directory
 
       def parse
         super
@@ -14,6 +15,8 @@ module HP
         unless @fname.index('"').nil?
           raise Exception.new("Valid object names do not contain the '\"' character: #{@fname}")
         end
+        @lname = @fname
+        @sname = @path
       end
 
       def get_size()
@@ -29,9 +32,11 @@ module HP
 
       def get_container
         begin
-          return false if is_valid? == nil
+          return false if is_valid? == false
+          return true unless @directory.nil?
 
           @directory = @storage.directories.get(@container)
+          @size = @directory.bytes unless @directory.nil?
           if @directory.nil?
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return false
@@ -52,7 +57,7 @@ module HP
 
       def get_files
         begin
-          return false if is_valid? == nil
+          return false if is_valid? == false
 
           unless @path.empty?
             @file = @directory.files.get(@path)
@@ -60,6 +65,10 @@ module HP
               @cstatus = CliStatus.new("Cannot find object '#{@fname}'.", :not_found)
               return false
             end
+            @size = @file.content_length
+            @type = @file.content_type
+            @etag = @file.etag
+            @modified = @file.last_modified
           end
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
@@ -159,29 +168,20 @@ module HP
           return false if get_container == false
           return false if get_files == false
 
-          if is_container?
-            @public_url = @directory.public_url
-            @cdn_public_url = @directory.cdn_public_url
-            @cdn_public_ssl_url = @directory.cdn_public_ssl_url
-            @public = @directory.public? ? "yes" : "no"
-            @readers = @directory.list_users_with_read.join(",")
-            @writers = @directory.list_users_with_write.join(",")
-          else
-            file = @directory.files.head(@path)
-            if file.nil?
-               @cstatus = CliStatus.new("Cannot find object named '#{@fname}'.", :not_found)
-               return false
-            end
-            @public_url = file.public_url
-            @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
-            @cdn_public_url = file.cdn_public_url
-            @cdn_public_url = @cdn_public_url.gsub(/%2F/, '/') unless @cdn_public_url.nil?
-            @cdn_public_ssl_url = file.cdn_public_ssl_url
-            @cdn_public_ssl_url = @cdn_public_ssl_url.gsub(/%2F/, '/') unless @cdn_public_ssl_url.nil?
-            @public = @directory.public? ? "yes" : "no"
-            @readers = @directory.list_users_with_read.join(",")
-            @writers = @directory.list_users_with_write.join(",")
+          file = @directory.files.head(@path)
+          if file.nil?
+             @cstatus = CliStatus.new("Cannot find object named '#{@fname}'.", :not_found)
+             return false
           end
+          @public_url = file.public_url
+          @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
+          @cdn_public_url = file.cdn_public_url
+          @cdn_public_url = @cdn_public_url.gsub(/%2F/, '/') unless @cdn_public_url.nil?
+          @cdn_public_ssl_url = file.cdn_public_ssl_url
+          @cdn_public_ssl_url = @cdn_public_ssl_url.gsub(/%2F/, '/') unless @cdn_public_ssl_url.nil?
+          @public = @directory.public? ? "yes" : "no"
+          @readers = @directory.list_users_with_read.join(",")
+          @writers = @directory.list_users_with_write.join(",")
         rescue Exception => error
           @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return false
@@ -277,7 +277,9 @@ module HP
           name = x.key.to_s
           unless name.end_with?('/')
             if ! name.match(regex).nil?
-              yield ResourceFactory.create(@storage, ':' + container + '/' + name)
+              res = ResourceFactory.create(@storage, ':' + container + '/' + name)
+              res.directory = @directory
+              yield res
             end
           end
         }
@@ -291,26 +293,12 @@ module HP
         begin
           return false if get_container == false
 
-          # container should be a class
-          if is_container?
-            if force == true
-              @directory.files.each { |file| file.destroy }
-            end
-            begin
-              @directory.destroy
-            rescue Excon::Errors::Conflict
-              @cstatus = CliStatus.new("The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it.", :conflicted)
-              return false
-            end
-          else
-            file = @directory.files.head(@path)
-            if file.nil?
-               @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
-               return false
-            end
-            file.destroy
+          file = @directory.files.head(@path)
+          if file.nil?
+             @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
+             return false
           end
-
+          file.destroy
         rescue Excon::Errors::Forbidden => error
           @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
           return false
@@ -326,12 +314,6 @@ module HP
           period = 172800 if period.nil?
           @head = container_head()
           return nil if @head.nil?
-
-          # container should be a class
-          if is_container?
-             @cstatus = CliStatus.new("Temporary URLs not supported on containers ':#{@container}'.", :incorrect_usage)
-             return nil
-          end
 
           file = @head.files.get(@path)
           if file.nil?
@@ -350,43 +332,13 @@ module HP
       end
 
       def grant(acl)
-        begin
-          return false if is_valid? == false
-          return false if get_container == false
-          return false if get_files == false
-
-          unless is_container?
-            @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
-            return false
-          end
-
-          @directory.grant(acl.permissions, acl.users)
-          @directory.save
-          return true
-        rescue Exception => e
-          @cstatus = CliStatus.new("Exception granting permissions for '#{@fname}': " + e.to_s, :general_error)
-          return false
-        end
+        @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
+        return false
       end
 
       def revoke(acl)
-        begin
-          return false if is_valid? == false
-          return false if get_container == false
-          return false if get_files == false
-
-          unless is_container?
-            @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
-            return false
-          end
-
-          @directory.revoke(acl.permissions, acl.users)
-          @directory.save
-          return true
-        rescue Exception => e
-          @cstatus = CliStatus.new("Exception revoking permissions for '#{@fname}': " + e.to_s, :general_error)
-          return false
-        end
+        @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
+        return false
       end
 
       def has_same_account(storage)

@@ -82,11 +82,11 @@ module HP
 
       def map_device(device)
         begin
-          return "/dev/sda" if device == "0"
+          return "/dev/vda" if device == "0"
           i = device.to_i
-          return device if i < 1 || i > 25
-          i = i +  97
-          return "/dev/sd" + i.chr
+          return device if i < 1 || i > 26
+          i = i +  96
+          return "/dev/vd" + i.chr
         rescue Exception => e
         end
         return device

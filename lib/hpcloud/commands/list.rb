@@ -20,33 +20,47 @@ Examples:
 
 Aliases: ls
       DESC
+      method_option :long,
+                    :type => :boolean, :aliases => '-l',
+                    :desc => 'Long listing.'
+      CLI.add_report_options
       CLI.add_common_options
       def list(*sources)
         cli_command(options) {
           sources = [""] if sources.empty?
           multi = sources.length > 1
+          opt = {}
+          opt[Columns.option_name] = options[Columns.option_name]
+          opt[Tableizer.option_name] = options[Tableizer.option_name]
+          unless options[:long]
+            opt[Tableizer.option_name] = ' ' if opt[Tableizer.option_name].nil?
+          end
           sources.each { |name|
             sub_command {
               from = ResourceFactory.create(Connection.instance.storage, name)
               if from.valid_source()
                 found = false
+                ray = []
                 from.foreach { |file|
-                  if from.is_container?
-                    if multi
-                      @log.display file.fname
-                    else
-                      @log.display file.path
-                    end
-                  else
-                    if file.is_container?
-                      @log.display file.container
-                    else
-                      @log.display file.fname
-                    end
+                  multi = true unless from.is_container?
+                  if options[:long]
+                    file.get_container
+                    file.get_files
                   end
+                  ray << file.to_hash
                   found = true
                 }
-                unless found
+                if found
+                  if multi
+                    keys = [ "lname" ]
+                  else
+                    keys = [ "sname" ]
+                  end
+                  if options[:long]
+                    keys += [ "size", "type", "etag", "modified" ]
+                  end
+                  Tableizer.new(opt, keys, ray).print
+                else
                   if from.is_object_store?
                     @log.error "Cannot find any containers, use `#{selfname} containers:add <name>` to create one.", :not_found
                   elsif from.isDirectory() == false

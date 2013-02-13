@@ -14,6 +14,7 @@ Examples:
   hpcloud acl :my_container                     # Display the ACL for the container 'my_container':
   hpcloud acl :my_container -z region-a.geo-1  # Display the ACL for the container 'my_container' for availability zone `region-a.geo-1`:
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       def acl(name, *names)
         cli_command(options) {

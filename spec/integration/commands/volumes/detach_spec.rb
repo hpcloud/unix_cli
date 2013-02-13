@@ -10,7 +10,7 @@ describe "volumes:detach command" do
       @vol1 = VolumeTestHelper.create("cli_test_vol1")
       @vol1.detach()
       @vol1.fog.wait_for { ready? }
-      @vol1.attach(@server, '/dev/sdj').should be_true
+      @vol1.attach(@server, '/dev/vdc').should be_true
       @vol1.fog.wait_for { in_use? }
 
       rsp = cptr("volumes:detach #{@vol1.name}")
@@ -26,7 +26,7 @@ describe "volumes:detach command" do
       @vol2 = VolumeTestHelper.create("cli_test_vol2")
       @vol2.detach()
       @vol2.fog.wait_for { ready? }
-      @vol2.attach(@server, '/dev/sdg').should be_true
+      @vol2.attach(@server, '/dev/vdc').should be_true
       @vol2.fog.wait_for { in_use? }
 
       rsp = cptr("volumes:detach #{@vol2.name} -z az-1.region-a.geo-1")
@@ -42,7 +42,7 @@ describe "volumes:detach command" do
       @vol3 = VolumeTestHelper.create("cli_test_vol3")
       @vol3.detach()
       @vol3.fog.wait_for { ready? }
-      @vol3.attach(@server, '/dev/sdh').should be_true
+      @vol3.attach(@server, '/dev/vdc').should be_true
       @vol3.fog.wait_for { in_use? }
 
       rsp = cptr("volumes:detach #{@vol3.name} -z blah")

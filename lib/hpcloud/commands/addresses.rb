@@ -20,6 +20,7 @@ Examples:
 
 Aliases: addresses:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       def addresses(*arguments)
         cli_command(options) {

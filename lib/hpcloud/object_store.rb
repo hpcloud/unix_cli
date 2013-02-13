@@ -11,6 +11,10 @@ module HP
           yield ResourceFactory.create(@storage, ':' + x.key)
         }
       end
+
+      def is_container?
+        true # container of containers
+      end
     end
   end
 end
