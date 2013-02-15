@@ -30,8 +30,6 @@ module HP
           return false if get_container == false
 
           @public_url = @directory.public_url
-          @cdn_public_url = @directory.cdn_public_url
-          @cdn_public_ssl_url = @directory.cdn_public_ssl_url
           @public = @directory.public? ? "yes" : "no"
           @readers = @directory.list_users_with_read.join(",")
           @writers = @directory.list_users_with_write.join(",")
@@ -40,6 +38,14 @@ module HP
           return false
         end
         return true
+      end
+
+      def cdn_public_url
+          @directory.cdn_public_url
+      end
+
+      def cdn_public_ssl_url
+          @cdn_public_ssl_url = @directory.cdn_public_ssl_url
       end
 
       def remove(force)

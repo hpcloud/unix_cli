@@ -1,5 +1,3 @@
-require 'hpcloud/resource_factory'
-
 module HP
   module Cloud
     class CLI < Thor
@@ -57,7 +55,11 @@ Aliases: ls
                     keys = [ "sname" ]
                   end
                   if options[:long]
-                    keys += [ "size", "type", "etag", "modified" ]
+                    if from.is_object_store?
+                      keys += [ "count", "size" ]
+                    else
+                      keys += [ "size", "type", "etag", "modified" ]
+                    end
                   end
                   Tableizer.new(opt, keys, ray).print
                 else

@@ -37,6 +37,7 @@ module HP
 
           @directory = @storage.directories.get(@container)
           @size = @directory.bytes unless @directory.nil?
+          @count = @directory.count unless @directory.nil?
           if @directory.nil?
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return false
@@ -168,17 +169,13 @@ module HP
           return false if get_container == false
           return false if get_files == false
 
-          file = @directory.files.head(@path)
-          if file.nil?
+          @file_head = @directory.files.head(@path)
+          if @file_head.nil?
              @cstatus = CliStatus.new("Cannot find object named '#{@fname}'.", :not_found)
              return false
           end
-          @public_url = file.public_url
+          @public_url = @file_head.public_url
           @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
-          @cdn_public_url = file.cdn_public_url
-          @cdn_public_url = @cdn_public_url.gsub(/%2F/, '/') unless @cdn_public_url.nil?
-          @cdn_public_ssl_url = file.cdn_public_ssl_url
-          @cdn_public_ssl_url = @cdn_public_ssl_url.gsub(/%2F/, '/') unless @cdn_public_ssl_url.nil?
           @public = @directory.public? ? "yes" : "no"
           @readers = @directory.list_users_with_read.join(",")
           @writers = @directory.list_users_with_write.join(",")
@@ -187,6 +184,17 @@ module HP
           return false
         end
         return true
+      end
+
+      def cdn_public_url
+          @directory.cdn_public_url
+          @cdn_public_url = @file_head.cdn_public_url
+          @cdn_public_url = @cdn_public_url.gsub(/%2F/, '/') unless @cdn_public_url.nil?
+      end
+
+      def cdn_public_ssl_url
+          @cdn_public_ssl_url = @file_head.cdn_public_ssl_url
+          @cdn_public_ssl_url = @cdn_public_ssl_url.gsub(/%2F/, '/') unless @cdn_public_ssl_url.nil?
       end
 
       def valid_source()

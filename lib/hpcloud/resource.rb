@@ -6,7 +6,7 @@ module HP
   module Cloud
     class Resource
       attr_reader :fname, :ftype, :container, :path
-      attr_reader :public_url, :cdn_public_url, :cdn_public_ssl_url, :public
+      attr_reader :public_url, :public
       attr_reader :destination, :cstatus
       attr_reader :readers, :writers
     
