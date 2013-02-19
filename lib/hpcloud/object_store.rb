@@ -8,7 +8,10 @@ module HP
       def foreach(&block)
         containers = @storage.directories
         containers.each { |x|
-          yield ResourceFactory.create(@storage, ':' + x.key)
+          res = ResourceFactory.create(@storage, ':' + x.key)
+          res.size = x.bytes
+          res.count = x.count
+          yield res
         }
       end
 

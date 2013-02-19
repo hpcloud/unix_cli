@@ -41,10 +41,6 @@ Aliases: ls
                 ray = []
                 from.foreach { |file|
                   multi = true unless from.is_container?
-                  if options[:long]
-                    file.get_container
-                    file.get_files
-                  end
                   ray << file.to_hash
                   found = true
                 }

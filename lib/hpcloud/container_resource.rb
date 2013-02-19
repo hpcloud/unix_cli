@@ -3,6 +3,8 @@ require 'hpcloud/remote_resource.rb'
 module HP
   module Cloud
     class ContainerResource < RemoteResource
+      attr_accessor :count
+
       def parse
         unless @fname.index('/').nil?
           raise Exception.new("Valid container names do not contain the '/' character: #{@fname}")

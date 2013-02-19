@@ -1,7 +1,7 @@
 module HP
   module Cloud
     class RemoteResource < Resource
-      attr_accessor :directory
+      attr_accessor :directory, :size, :type, :etag, :modified
 
       def parse
         super
@@ -36,12 +36,12 @@ module HP
           return true unless @directory.nil?
 
           @directory = @storage.directories.get(@container)
-          @size = @directory.bytes unless @directory.nil?
-          @count = @directory.count unless @directory.nil?
           if @directory.nil?
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return false
           end
+          @size = @directory.bytes
+          @count = @directory.count
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
           @cstatus = CliStatus.new(resp.error_string, :permission_denied)
@@ -271,8 +271,6 @@ module HP
       end
 
       def foreach(&block)
-        return false if get_container == false
-        return if @directory.nil?
         case @ftype
         when :container_directory
           regex = "^" + path + ".*"
@@ -281,16 +279,33 @@ module HP
         else
           regex = "^" + path + '$'
         end
-        @directory.files.each { |x|
-          name = x.key.to_s
-          unless name.end_with?('/')
-            if ! name.match(regex).nil?
-              res = ResourceFactory.create(@storage, ':' + container + '/' + name)
-              res.directory = @directory
-              yield res
+        limit = 10000
+        total = 0
+        count = 0
+        marker = nil
+        begin
+          options = { :limit => limit, :marker => marker }
+          result = @storage.get_container(@container, options)
+          total = result.headers['X-Container-Object-Count'].to_i
+          lode = result.body.length
+          count += lode
+          result.body.each { |x|
+            name = x['name']
+            unless name.end_with?('/')
+              if ! name.match(regex).nil?
+                res = ResourceFactory.create(@storage, ':' + @container + '/' + name)
+                res.directory = @directory
+                res.etag = x['hash']
+                res.modified = x['last_modified']
+                res.size = x['bytes']
+                res.type = x['content_type']
+                yield res
+                marker = name
+              end
             end
-          end
-        }
+          }
+          break if lode < limit
+        end until count >= total
       end
 
       def get_destination()
@@ -320,15 +335,10 @@ module HP
       def tempurl(period)
         begin
           period = 172800 if period.nil?
-          @head = container_head()
-          return nil if @head.nil?
+          return nil if get_container == false
+          return nil if get_files == false
 
-          file = @head.files.get(@path)
-          if file.nil?
-             @cstatus = CliStatus.new("Cannot find object named '#{@fname}'.", :not_found)
-             return nil
-          end
-          return file.temp_signed_url(period, "GET")
+          return @file.temp_signed_url(period, "GET")
         rescue Excon::Errors::Forbidden => error
           @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
           return nil
