@@ -37,28 +37,27 @@ Aliases: ls
             sub_command {
               from = ResourceFactory.create(Connection.instance.storage, name)
               if from.valid_source()
-                found = false
-                ray = []
-                from.foreach { |file|
-                  multi = true unless from.is_container?
-                  ray << file.to_hash
-                  found = true
-                }
-                if found
-                  if multi
-                    keys = [ "lname" ]
-                  else
-                    keys = [ "sname" ]
-                  end
-                  if options[:long]
-                    if from.is_object_store?
-                      keys += [ "count", "size" ]
-                    else
-                      keys += [ "size", "type", "etag", "modified" ]
-                    end
-                  end
-                  Tableizer.new(opt, keys, ray).print
+                multi = true unless from.is_container?
+                if multi
+                  keys = [ "lname" ]
                 else
+                  keys = [ "sname" ]
+                end
+                if options[:long]
+                  if from.is_object_store?
+                    keys += [ "count", "size" ]
+                  else
+                    keys += [ "size", "type", "etag", "modified" ]
+                  end
+                end
+                tableizer = Tableizer.new(opt, keys)
+                from.foreach { |file|
+                  tableizer.add(file.to_hash)
+                }
+                tableizer.print
+
+
+                if tableizer.found == false
                   if from.is_object_store?
                     @log.error "Cannot find any containers, use `#{selfname} containers:add <name>` to create one.", :not_found
                   elsif from.isDirectory() == false

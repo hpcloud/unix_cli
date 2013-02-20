@@ -282,16 +282,7 @@ module HP
           regex = "^" + path + '$'
         end
         if @@limit.nil?
-          begin
-            @@limit = Config.new.get(:storage_page_limit).to_i
-          rescue
-            warn "Invalid :storage_page_limit setting in configuration"
-            @@limit = 10000
-          end
-          if @@limit <= 0
-            warn "Invalid :storage_page_limit setting in configuration"
-            @@limit = 10000
-          end
+          @@limit = Config.new.get_i(:storage_page_length, 10000)
         end
         total = 0
         count = 0
