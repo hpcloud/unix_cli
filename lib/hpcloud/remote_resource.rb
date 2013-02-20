@@ -3,6 +3,8 @@ module HP
     class RemoteResource < Resource
       attr_accessor :directory, :size, :type, :etag, :modified
 
+      @@limit = nil
+
       def parse
         super
         
@@ -279,12 +281,13 @@ module HP
         else
           regex = "^" + path + '$'
         end
-        limit = 10000
+        @@limit = Config.new.get(:storage_page_limit).to_i
+puts @@limit.to_s
         total = 0
         count = 0
         marker = nil
         begin
-          options = { :limit => limit, :marker => marker }
+          options = { :limit => @@limit, :marker => marker }
           result = @storage.get_container(@container, options)
           total = result.headers['X-Container-Object-Count'].to_i
           lode = result.body.length
@@ -304,7 +307,7 @@ module HP
               end
             end
           }
-          break if lode < limit
+          break if lode < @@limit
         end until count >= total
       end
 

@@ -19,6 +19,7 @@ module HP
                 :ssl_ca_path,
                 :ssl_ca_file,
                 :default_account,
+                :storage_page_limit,
                 :checker_url,
                 :checker_deferment
               ]
@@ -49,6 +50,7 @@ module HP
       def self.default_config
         return { :default_auth_uri => 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/',
                  :default_account => 'hp',
+                 :storage_page_limit => 5000,
                  :block_availability_zone => 'az-1.region-a.geo-1',
                  :storage_availability_zone => 'region-a.geo-1',
                  :cdn_availability_zone => 'region-a.geo-1',
