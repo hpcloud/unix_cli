@@ -10,6 +10,8 @@ module HP
       attr_reader :destination, :cstatus
       attr_reader :readers, :writers
     
+      @@limit = nil
+
       def initialize(storage, fname)
         @cstatus = CliStatus.new
         @storage = storage

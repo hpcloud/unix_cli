@@ -3,8 +3,6 @@ module HP
     class RemoteResource < Resource
       attr_accessor :directory, :size, :type, :etag, :modified
 
-      @@limit = nil
-
       def parse
         super
         
