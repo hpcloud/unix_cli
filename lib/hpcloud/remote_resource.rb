@@ -3,7 +3,7 @@ module HP
     class RemoteResource < Resource
       attr_accessor :directory, :size, :type, :etag, :modified
 
-      @@storage_chunk_size = 200
+      @@storage_chunk_size = nil
 
       def parse
         super
@@ -240,9 +240,10 @@ module HP
         result = true
         return false if (from.open() == false)
         if from.isLocal()
-          if @@limit.nil?
+          if @@storage_chunk_size.nil?
             @@storage_chunk_size = Config.new.get_i(:storage_chunk_size, Excon::CHUNK_SIZE)
           end
+@@storage_chunk_size = 200
           @options = { 'Content-Type' => from.get_mime_type() }
           count = 0
           segment = i=10000000001
@@ -251,19 +252,23 @@ module HP
           if pieces > 1
             prefix = @destination + '.segment.'
             begin
+              bytes_read = 0
+              bytes_to_read = total - count
+              bytes_to_read = @@storage_chunk_size if bytes_to_read > @@storage_chunk_size
               tmppath = prefix + segment.to_s[1..10]
-              body = from.read(@@storage_chunk_size).to_s
-              @storage.put_object(@container, tmppath, body, @options)
-              count = count + body.length
+              @storage.put_object(@container, tmppath, nil, @options) {
+                body = from.read(bytes_to_read)
+                bytes_read += body.length
+                bytes_to_read -= body.length
+                body
+              }
+              count = count + bytes_read
               segment = segment + 1
             end until count >= total
             prefix = @container + '/' + prefix
             manifest = prefix + 'manifest'
             @options['x-object-manifest'] = prefix
             @storage.put_object(@container, manifest, nil, @options)
-            @storage.get_object(@container, manifest) { |chunk, remain, tot|
-              puts chunk
-            }
             @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{@container}/#{manifest}" })
           else
             @storage.put_object(@container, @destination, nil, @options) {

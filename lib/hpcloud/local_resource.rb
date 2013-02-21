@@ -80,6 +80,10 @@ module HP
 
       def read(siz = Excon::CHUNK_SIZE)
         @pbar.increment(@lastread) unless @pbar.nil?
+        if siz == 0
+          @lastread = 0
+          return ''
+        end
         val = @file.read(siz).to_s
         @lastread = val.length
         return val
