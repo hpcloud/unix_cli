@@ -3,6 +3,8 @@ module HP
     class RemoteResource < Resource
       attr_accessor :directory, :size, :type, :etag, :modified
 
+      @@storage_chunk_size = 200
+
       def parse
         super
         
@@ -238,10 +240,30 @@ module HP
         result = true
         return false if (from.open() == false)
         if from.isLocal()
+          if @@limit.nil?
+            @@storage_chunk_size = Config.new.get_i(:storage_chunk_size, Excon::CHUNK_SIZE)
+          end
           @options = { 'Content-Type' => from.get_mime_type() }
-          @storage.put_object(@container, @destination, {}, @options) {
-            from.read().to_s
+          count = 0
+          segment = i=10000000001
+          total = from.get_size()
+          pieces = (total / @@storage_chunk_size) + 1
+          prefix = @destination + '.segment.'
+          begin
+            tmppath = prefix + segment.to_s[1..10]
+            body = from.read(@@storage_chunk_size).to_s
+            @storage.put_object(@container, tmppath, body, @options)
+            count = count + body.length
+            segment = segment + 1
+          end until count >= total
+          prefix = @container + '/' + prefix
+          manifest = prefix + 'manifest'
+          @options['x-object-manifest'] = prefix
+          @storage.put_object(@container, manifest, nil, @options)
+          @storage.get_object(@container, manifest) { |chunk, remain, tot|
+            puts chunk
           }
+          @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{@container}/#{manifest}" })
         else
           begin
             if from.has_same_account(@storage)
