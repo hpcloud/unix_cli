@@ -5,11 +5,6 @@ describe "cdn:containers:remove command" do
   before(:all) do
     @hp_svc = storage_connection
     @hp_cdn = cdn_connection
-    begin
-      purge_containers(@hp_svc)
-    rescue
-      # ignore errors
-    end
   end
 
   context "removing an existing CDN container" do

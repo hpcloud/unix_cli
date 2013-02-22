@@ -5,11 +5,11 @@ describe "volumes:server command" do
     @srv1 = ServerTestHelper.create("cli_test_srv1")
     @srv2 = ServerTestHelper.create("cli_test_srv2")
     @vol1 = VolumeTestHelper.create("cli_test_vol1")
-    @vol1.attach(@srv1, '/dev/sdi')
+    @vol1.attach(@srv1, '/dev/vdi')
     @vol2 = VolumeTestHelper.create("cli_test_vol2")
-    @vol2.attach(@srv2, '/dev/sdg')
+    @vol2.attach(@srv2, '/dev/vdg')
     @vol3 = VolumeTestHelper.create("cli_test_vol3")
-    @vol3.attach(@srv1, '/dev/sdh')
+    @vol3.attach(@srv1, '/dev/vdh')
     @vol1.fog.wait_for { in_use? }
     @vol2.fog.wait_for { in_use? }
     @vol3.fog.wait_for { in_use? }
@@ -22,9 +22,9 @@ describe "volumes:server command" do
       rsp.stderr.should eq("")
       rsp.stdout.should match(".*name.*\\|.*server.*\\|.*device")
 
-      rsp.stdout.should match(".*#{@vol1.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdi.*\\|\n")
-      rsp.stdout.should match(".*#{@vol2.name}.*\\|.*#{@srv2.name}.*\\|.*/dev/sdg.*\\|\n")
-      rsp.stdout.should match(".*#{@vol3.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdh.*\\|\n")
+      rsp.stdout.should match(".*#{@vol1.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/vdi.*\\|\n")
+      rsp.stdout.should match(".*#{@vol2.name}.*\\|.*#{@srv2.name}.*\\|.*/dev/vdg.*\\|\n")
+      rsp.stdout.should match(".*#{@vol3.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/vdh.*\\|\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
@@ -36,8 +36,8 @@ describe "volumes:server command" do
       rsp.stderr.should eq("")
       rsp.stdout.should match(".*name.*\\|.*server.*\\|.*device")
 
-      rsp.stdout.should match(".*#{@vol1.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdi.*\\|\n")
-      rsp.stdout.should match(".*#{@vol3.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/sdh.*\\|\n")
+      rsp.stdout.should match(".*#{@vol1.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/vdi.*\\|\n")
+      rsp.stdout.should match(".*#{@vol3.name}.*\\|.*#{@srv1.name}.*\\|.*/dev/vdh.*\\|\n")
       rsp.exit_status.should be_exit(:success)
     end
   end

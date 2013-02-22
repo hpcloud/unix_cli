@@ -27,6 +27,9 @@ Aliases: cp
       method_option :source_account,
                     :type => :string, :aliases => '-s',
                     :desc => 'Source account name.'
+      method_option :restart, :default => false,
+                    :type => :boolean, :aliases => '-r',
+                    :desc => 'Restart a previous large file upload.'
       CLI.add_common_options
       def copy(source, *destination)
         cli_command(options) {
@@ -40,6 +43,7 @@ Aliases: cp
           source.each { |name|
             from = ResourceFactory.create_any(Connection.instance.storage(options[:source_account]), name)
             from.set_mime_type(options[:mime])
+            to.set_restart(options[:restart])
             if to.copy(from)
               @log.display "Copied #{from.fname} => #{to.fname}"
             else

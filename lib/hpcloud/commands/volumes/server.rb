@@ -13,6 +13,7 @@ Examples:
   hpcloud volumes:server myServer                        # List the volumes on server `myServer`:
   hpcloud volumes:server myServer -z az-2.region-a.geo-1 # List the volumes on server `myServer` for availability zone `az-2.region-a.geo-1`:
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       define_method "volumes:server" do |*arguments|
         cli_command(options) {
@@ -25,7 +26,9 @@ Examples:
             end
             ray = VolumeAttachments.new(server).get_array()
             if ray.empty?
-              @log.error "Cannot find any volumes for '#{server.name}'.", :not_found
+              unless arguments.empty?
+                @log.error "Cannot find any volumes for '#{server.name}'.", :not_found
+              end
               next
             end
             rayray += ray

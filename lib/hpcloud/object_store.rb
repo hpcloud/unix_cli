@@ -6,10 +6,32 @@ module HP
       end
 
       def foreach(&block)
-        containers = @storage.directories
-        containers.each { |x|
-          yield ResourceFactory.create(@storage, ':' + x.key)
-        }
+        if @@limit.nil?
+          @@limit = Config.new.get_i(:storage_page_length, 10000)
+        end
+        total = 0
+        count = 0
+        marker = nil
+        begin
+          options = { :limit => @@limit, :marker => marker}
+          result = @storage.get_containers(options)
+          total = result.headers['X-Account-Container-Count'].to_i
+	  lode = result.body.length
+	  count += lode
+          result.body.each { |x|
+            name = x['name']
+            res = ResourceFactory.create(@storage, ':' + name)
+            res.size = x['bytes']
+            res.count = x['count']
+            yield res
+            marker = name
+          }
+          break if lode < @@limit
+        end until count >= total
+      end
+
+      def is_container?
+        true # container of containers
       end
     end
   end

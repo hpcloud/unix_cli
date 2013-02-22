@@ -27,9 +27,20 @@ module HP
         GOPTS.each { |k,v| method_option(k, v) }
       end
 
+      def self.add_report_options
+        method_option(Columns.option_name, Columns.option_args)
+        method_option(Tableizer.option_name, Tableizer.option_args)
+      end
+
       # name of the running CLI script
       def selfname
         ENV['HPCLOUD_CLI_NAME'] || 'hpcloud'
+      end
+
+      class << self
+        def exit_on_failure?
+          true
+        end
       end
 
       ### Thor extensions

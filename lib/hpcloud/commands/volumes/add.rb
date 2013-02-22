@@ -53,7 +53,6 @@ Examples:
           end
           vol.size = 1 if vol.size.nil?
           vol.description = options[:description]
-          vol.meta.set_metadata(options[:metadata])
           if vol.save == true
             @log.display "Created volume '#{name}' with id '#{vol.id}'."
           else

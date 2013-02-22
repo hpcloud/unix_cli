@@ -19,6 +19,7 @@ Examples:
 
 Aliases: securitygroups:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       def securitygroups(*arguments)
         cli_command(options) {

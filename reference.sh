@@ -15,6 +15,10 @@ function dtizer {
 
 echo 'Below you can find a full reference of supported UNIX command-line interface (CLI) commands. The commands are alphabetized.  You can also use the <font face="Courier">hpcloud help [<em>command</em>]</font> tool (where <em>command</em> is the name of the command on which you want help, for example <font face="Courier">account:setup</font>) to display usage, description, and option information from the command line.' >${REFERENCE}
 echo >>${REFERENCE}
+echo 'Many of the commands support a `--debug` option to print verbose trace.  This trace may help you diagnose problems if the CLI is having difficulty communicating with the servers.' >>${REFERENCE}
+echo >>${REFERENCE}
+echo 'The <font face="Courier">hpcloud complete</font> command will attempt to install a bash completion file into your environment.  This will help if you like to use tab completion of commands.' >>${REFERENCE}
+echo >>${REFERENCE}
 hpcloud help | grep hpcloud | while read HPCLOUD COMMAND ROL
 do
   if [ "${SAVE}" ]
