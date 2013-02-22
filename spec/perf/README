@@ -1,0 +1,3 @@
+
+hpcloud config:set write_timeout=240
+hpcloud config:set storage_chunk_size=10485760

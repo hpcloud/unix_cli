@@ -241,13 +241,14 @@ module HP
         return false if (from.open() == false)
         if from.isLocal()
           if @@storage_chunk_size.nil?
-            @@storage_chunk_size = Config.new.get_i(:storage_chunk_size, Excon::CHUNK_SIZE)
+            @@storage_chunk_size = Config.new.get_i(:storage_chunk_size, 10485760)
           end
           @options = { 'Content-Type' => from.get_mime_type() }
           count = 0
           segment = i=10000000001
           total = from.get_size()
-          pieces = (total / @@storage_chunk_size) + 1
+          pieces = (total / @@storage_chunk_size)
+          pieces += 1 if ((total % @@storage_chunk_size) != 0)
           if pieces > 1
             files_ray = []
             prefix = @destination + '.segment.'
