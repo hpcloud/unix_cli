@@ -9,6 +9,7 @@ module HP
       attr_reader :public_url, :public
       attr_reader :destination, :cstatus
       attr_reader :readers, :writers
+      attr_reader :restart
     
       @@limit = nil
 
@@ -19,6 +20,7 @@ module HP
         @ftype = ResourceFactory.detect_type(@fname)
         @disable_pbar = false
         @mime_type = nil
+        @restart = false
         parse()
       end
 
@@ -221,6 +223,10 @@ module HP
       def revoke(acl)
         @cstatus = CliStatus.new("ACLs of local objects are not supported: #{@fname}", :incorrect_usage)
         return false
+      end
+
+      def set_restart(value)
+        @restart = value
       end
     end
   end
