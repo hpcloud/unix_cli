@@ -20,7 +20,7 @@ module HP
                 :ssl_ca_file,
                 :default_account,
                 :storage_page_length,
-                :storage_chunk_size,
+                :storage_segement_size,
                 :report_page_length,
                 :checker_url,
                 :checker_deferment
