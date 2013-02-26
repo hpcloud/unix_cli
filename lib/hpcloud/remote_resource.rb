@@ -293,7 +293,7 @@ module HP
             begin
               @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "#{@container}/#{manifest}" })
             rescue Exception => e
-              @cstatus = CliStatus.new("There may have been an error copying the manifest file.  The manifest and the segments may still be in the container.  Use the -r option to retry the copy", :partial_error)
+              @cstatus = CliStatus.new("There may have been an error copying the manifest file.  The manifest and the segments may still be in the container.  Use the -r option to retry the copy. Error: " + e.to_s, :partial_error)
               result = false
             end
             if (result == true)
