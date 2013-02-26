@@ -4,11 +4,6 @@ describe "cdn:containers:location command" do
   before(:all) do
     @hp_svc = storage_connection
     @hp_cdn = cdn_connection
-    begin
-      purge_containers(@hp_svc)
-    rescue
-      # ignore errors
-    end
     @hp_svc.put_container('my-added-container2')
     @hp_cdn.put_container('my-added-container2')
   end

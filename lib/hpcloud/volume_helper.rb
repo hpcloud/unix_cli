@@ -12,7 +12,6 @@ module HP
       def initialize(connection, foggy = nil)
         super(connection, foggy)
         if foggy.nil?
-          @meta = HP::Cloud::Metadata.new(nil)
           return
         end
         @id = foggy.id
@@ -34,20 +33,14 @@ module HP
           end
           @servers += srv.name
         }
-# Meta issues need to be resolved
-#        @meta = HP::Cloud::Metadata.new(foggy.metadata)
       end
 
       def save
-        if is_valid?
-          set_error(@meta.cstatus)
-        end
         return false if is_valid? == false
         if @fog.nil?
           hsh = {:name => @name,
              :description => @description,
-             :size => @size,
-             :metadata => @meta.hsh}
+             :size => @size}
           hsh[:snapshot_id] = @snapshot_id unless @snapshot_id.nil?
           hsh[:image_id] = @imageref unless @imageref.nil?
           volume = @connection.block.volumes.create(hsh)
@@ -89,11 +82,11 @@ module HP
 
       def map_device(device)
         begin
-          return "/dev/sda" if device == "0"
+          return "/dev/vda" if device == "0"
           i = device.to_i
-          return device if i < 1 || i > 25
-          i = i +  97
-          return "/dev/sd" + i.chr
+          return device if i < 1 || i > 26
+          i = i +  96
+          return "/dev/vd" + i.chr
         rescue Exception => e
         end
         return device

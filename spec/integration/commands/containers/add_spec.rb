@@ -8,11 +8,6 @@ describe "containers:add command" do
 
   before(:all) do
     @hp_svc = storage_connection
-    begin
-      purge_containers(@hp_svc)
-    rescue
-      # ignore errors
-    end
   end
 
   context "when creating a new valid container" do

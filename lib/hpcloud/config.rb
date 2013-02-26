@@ -19,6 +19,9 @@ module HP
                 :ssl_ca_path,
                 :ssl_ca_file,
                 :default_account,
+                :storage_page_length,
+                :storage_chunk_size,
+                :report_page_length,
                 :checker_url,
                 :checker_deferment
               ]
@@ -138,6 +141,16 @@ module HP
 
       def get(key)
         return @settings[key.to_sym]
+      end
+
+      def get_i(key, default_value)
+        begin
+          value = @settings[key.to_sym].to_i
+          return default_value if value == 0
+          return value
+        rescue
+        end
+        return default_value
       end
 
       def set(key, value)

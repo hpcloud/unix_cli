@@ -15,6 +15,7 @@ Examples:
 
 Aliases: flavors:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       def flavors(*arguments)
         cli_command(options) {

@@ -17,6 +17,7 @@ Examples:
 
 Aliases: securitygroups:rules:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       define_method "securitygroups:rules" do |sec_group_name|
         cli_command(options) {

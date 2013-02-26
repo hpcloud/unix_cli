@@ -1,6 +1,9 @@
 module HP
   module Cloud
     class RemoteResource < Resource
+      attr_accessor :directory, :size, :type, :etag, :modified
+
+      @@storage_chunk_size = nil
 
       def parse
         super
@@ -14,6 +17,8 @@ module HP
         unless @fname.index('"').nil?
           raise Exception.new("Valid object names do not contain the '\"' character: #{@fname}")
         end
+        @lname = @fname
+        @sname = @path
       end
 
       def get_size()
@@ -29,13 +34,16 @@ module HP
 
       def get_container
         begin
-          return false if is_valid? == nil
+          return false if is_valid? == false
+          return true unless @directory.nil?
 
           @directory = @storage.directories.get(@container)
           if @directory.nil?
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return false
           end
+          @size = @directory.bytes
+          @count = @directory.count
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
           @cstatus = CliStatus.new(resp.error_string, :permission_denied)
@@ -52,7 +60,7 @@ module HP
 
       def get_files
         begin
-          return false if is_valid? == nil
+          return false if is_valid? == false
 
           unless @path.empty?
             @file = @directory.files.get(@path)
@@ -60,6 +68,10 @@ module HP
               @cstatus = CliStatus.new("Cannot find object '#{@fname}'.", :not_found)
               return false
             end
+            @size = @file.content_length
+            @type = @file.content_type
+            @etag = @file.etag
+            @modified = @file.last_modified
           end
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
@@ -159,34 +171,32 @@ module HP
           return false if get_container == false
           return false if get_files == false
 
-          if is_container?
-            @public_url = @directory.public_url
-            @cdn_public_url = @directory.cdn_public_url
-            @cdn_public_ssl_url = @directory.cdn_public_ssl_url
-            @public = @directory.public? ? "yes" : "no"
-            @readers = @directory.list_users_with_read.join(",")
-            @writers = @directory.list_users_with_write.join(",")
-          else
-            file = @directory.files.head(@path)
-            if file.nil?
-               @cstatus = CliStatus.new("Cannot find object named '#{@fname}'.", :not_found)
-               return false
-            end
-            @public_url = file.public_url
-            @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
-            @cdn_public_url = file.cdn_public_url
-            @cdn_public_url = @cdn_public_url.gsub(/%2F/, '/') unless @cdn_public_url.nil?
-            @cdn_public_ssl_url = file.cdn_public_ssl_url
-            @cdn_public_ssl_url = @cdn_public_ssl_url.gsub(/%2F/, '/') unless @cdn_public_ssl_url.nil?
-            @public = @directory.public? ? "yes" : "no"
-            @readers = @directory.list_users_with_read.join(",")
-            @writers = @directory.list_users_with_write.join(",")
+          @file_head = @directory.files.head(@path)
+          if @file_head.nil?
+             @cstatus = CliStatus.new("Cannot find object named '#{@fname}'.", :not_found)
+             return false
           end
+          @public_url = @file_head.public_url
+          @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
+          @public = @directory.public? ? "yes" : "no"
+          @readers = @directory.list_users_with_read.join(",")
+          @writers = @directory.list_users_with_write.join(",")
         rescue Exception => error
           @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return false
         end
         return true
+      end
+
+      def cdn_public_url
+          @directory.cdn_public_url
+          @cdn_public_url = @file_head.cdn_public_url
+          @cdn_public_url = @cdn_public_url.gsub(/%2F/, '/') unless @cdn_public_url.nil?
+      end
+
+      def cdn_public_ssl_url
+          @cdn_public_ssl_url = @file_head.cdn_public_ssl_url
+          @cdn_public_ssl_url = @cdn_public_ssl_url.gsub(/%2F/, '/') unless @cdn_public_ssl_url.nil?
       end
 
       def valid_source()
@@ -230,10 +240,64 @@ module HP
         result = true
         return false if (from.open() == false)
         if from.isLocal()
+          if @@storage_chunk_size.nil?
+            @@storage_chunk_size = Config.new.get_i(:storage_chunk_size, Excon::CHUNK_SIZE)
+          end
           @options = { 'Content-Type' => from.get_mime_type() }
-          @storage.put_object(@container, @destination, {}, @options) {
-            from.read().to_s
-          }
+          count = 0
+          segment = i=10000000001
+          total = from.get_size()
+          pieces = (total / @@storage_chunk_size) + 1
+          if pieces > 1
+            files_ray = []
+            prefix = @destination + '.segment.'
+            begin
+              bytes_read = 0
+              bytes_to_read = total - count
+              bytes_to_read = @@storage_chunk_size if bytes_to_read > @@storage_chunk_size
+              tmppath = prefix + segment.to_s[1..10]
+              files_ray << tmppath
+              already_exists = false
+              begin
+                if @restart == true
+                  response = @storage.head_object(@container, tmppath)
+                  segsiz = response.headers['Content-Length'].to_i
+                  if segsiz == bytes_to_read
+                    already_exists = true
+                  end
+                end
+              rescue
+              end
+              if already_exists
+                while bytes_to_read > 0 do
+                  body = from.read(bytes_to_read)
+                  bytes_read += body.length
+                  bytes_to_read -= body.length
+                end
+              else
+                @storage.put_object(@container, tmppath, nil, @options) {
+                  body = from.read(bytes_to_read)
+                  bytes_read += body.length
+                  bytes_to_read -= body.length
+                  body
+                }
+              end
+              count = count + bytes_read
+              segment = segment + 1
+            end until count >= total
+            manifest = @destination + '.manifest'
+            files_ray << manifest
+            @options['x-object-manifest'] = @container + '/' + prefix
+            @storage.put_object(@container, manifest, nil, @options)
+            @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "#{@container}/#{manifest}" })
+            files_ray.each{ |x|
+              @storage.delete_object(@container, x)
+            }
+          else
+            @storage.put_object(@container, @destination, nil, @options) {
+              from.read(@@storage_chunk_size)
+            }
+          end
         else
           begin
             if from.has_same_account(@storage)
@@ -263,8 +327,6 @@ module HP
       end
 
       def foreach(&block)
-        return false if get_container == false
-        return if @directory.nil?
         case @ftype
         when :container_directory
           regex = "^" + path + ".*"
@@ -273,14 +335,35 @@ module HP
         else
           regex = "^" + path + '$'
         end
-        @directory.files.each { |x|
-          name = x.key.to_s
-          unless name.end_with?('/')
-            if ! name.match(regex).nil?
-              yield ResourceFactory.create(@storage, ':' + container + '/' + name)
+        if @@limit.nil?
+          @@limit = Config.new.get_i(:storage_page_length, 10000)
+        end
+        total = 0
+        count = 0
+        marker = nil
+        begin
+          options = { :limit => @@limit, :marker => marker }
+          result = @storage.get_container(@container, options)
+          total = result.headers['X-Container-Object-Count'].to_i
+          lode = result.body.length
+          count += lode
+          result.body.each { |x|
+            name = x['name']
+            unless name.end_with?('/')
+              if ! name.match(regex).nil?
+                res = ResourceFactory.create(@storage, ':' + @container + '/' + name)
+                res.directory = @directory
+                res.etag = x['hash']
+                res.modified = x['last_modified']
+                res.size = x['bytes']
+                res.type = x['content_type']
+                yield res
+                marker = name
+              end
             end
-          end
-        }
+          }
+          break if lode < @@limit
+        end until count >= total
       end
 
       def get_destination()
@@ -291,26 +374,12 @@ module HP
         begin
           return false if get_container == false
 
-          # container should be a class
-          if is_container?
-            if force == true
-              @directory.files.each { |file| file.destroy }
-            end
-            begin
-              @directory.destroy
-            rescue Excon::Errors::Conflict
-              @cstatus = CliStatus.new("The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it.", :conflicted)
-              return false
-            end
-          else
-            file = @directory.files.head(@path)
-            if file.nil?
-               @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
-               return false
-            end
-            file.destroy
+          file = @directory.files.head(@path)
+          if file.nil?
+             @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
+             return false
           end
-
+          file.destroy
         rescue Excon::Errors::Forbidden => error
           @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
           return false
@@ -324,21 +393,10 @@ module HP
       def tempurl(period)
         begin
           period = 172800 if period.nil?
-          @head = container_head()
-          return nil if @head.nil?
+          return nil if get_container == false
+          return nil if get_files == false
 
-          # container should be a class
-          if is_container?
-             @cstatus = CliStatus.new("Temporary URLs not supported on containers ':#{@container}'.", :incorrect_usage)
-             return nil
-          end
-
-          file = @head.files.get(@path)
-          if file.nil?
-             @cstatus = CliStatus.new("Cannot find object named '#{@fname}'.", :not_found)
-             return nil
-          end
-          return file.temp_signed_url(period, "GET")
+          return @file.temp_signed_url(period, "GET")
         rescue Excon::Errors::Forbidden => error
           @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
           return nil
@@ -350,43 +408,13 @@ module HP
       end
 
       def grant(acl)
-        begin
-          return false if is_valid? == false
-          return false if get_container == false
-          return false if get_files == false
-
-          unless is_container?
-            @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
-            return false
-          end
-
-          @directory.grant(acl.permissions, acl.users)
-          @directory.save
-          return true
-        rescue Exception => e
-          @cstatus = CliStatus.new("Exception granting permissions for '#{@fname}': " + e.to_s, :general_error)
-          return false
-        end
+        @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
+        return false
       end
 
       def revoke(acl)
-        begin
-          return false if is_valid? == false
-          return false if get_container == false
-          return false if get_files == false
-
-          unless is_container?
-            @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
-            return false
-          end
-
-          @directory.revoke(acl.permissions, acl.users)
-          @directory.save
-          return true
-        rescue Exception => e
-          @cstatus = CliStatus.new("Exception revoking permissions for '#{@fname}': " + e.to_s, :general_error)
-          return false
-        end
+        @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
+        return false
       end
 
       def has_same_account(storage)

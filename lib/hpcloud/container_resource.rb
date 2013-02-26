@@ -3,12 +3,16 @@ require 'hpcloud/remote_resource.rb'
 module HP
   module Cloud
     class ContainerResource < RemoteResource
+      attr_accessor :count
+
       def parse
         unless @fname.index('/').nil?
           raise Exception.new("Valid container names do not contain the '/' character: #{@fname}")
         end
         @fname = ':' + @fname  if @fname[0,1] != ':'
         super
+        @lname = @fname
+        @sname = @container
       end
 
       def valid_virtualhost?
@@ -23,6 +27,86 @@ module HP
         false
       end
 
+      def read_header()
+        begin
+          return false if get_container == false
+
+          @public_url = @directory.public_url
+          @public = @directory.public? ? "yes" : "no"
+          @readers = @directory.list_users_with_read.join(",")
+          @writers = @directory.list_users_with_write.join(",")
+        rescue Exception => error
+          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
+          return false
+        end
+        return true
+      end
+
+      def cdn_public_url
+          @directory.cdn_public_url
+      end
+
+      def cdn_public_ssl_url
+          @cdn_public_ssl_url = @directory.cdn_public_ssl_url
+      end
+
+      def remove(force)
+        begin
+          return false if get_container == false
+
+          if force == true
+            @directory.files.each { |file| file.destroy }
+          end
+          begin
+            @directory.destroy
+          rescue Excon::Errors::Conflict
+            @cstatus = CliStatus.new("The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it.", :conflicted)
+            return false
+          end
+        rescue Excon::Errors::Forbidden => error
+          @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
+          return false
+        rescue Exception => e
+          @cstatus = CliStatus.new("Exception removing '#{@fname}': " + e.to_s, :general_error)
+          return false
+        end
+        return true
+      end
+
+      def tempurl(period)
+        @cstatus = CliStatus.new("Temporary URLs not supported on containers ':#{@container}'.", :incorrect_usage)
+        return nil
+      end
+
+      def grant(acl)
+        begin
+          return false if is_valid? == false
+          return false if get_container == false
+          return false if get_files == false
+
+          @directory.grant(acl.permissions, acl.users)
+          @directory.save
+          return true
+        rescue Exception => e
+          @cstatus = CliStatus.new("Exception granting permissions for '#{@fname}': " + e.to_s, :general_error)
+          return false
+        end
+      end
+
+      def revoke(acl)
+        begin
+          return false if is_valid? == false
+          return false if get_container == false
+          return false if get_files == false
+
+          @directory.revoke(acl.permissions, acl.users)
+          @directory.save
+          return true
+        rescue Exception => e
+          @cstatus = CliStatus.new("Exception revoking permissions for '#{@fname}': " + e.to_s, :general_error)
+          return false
+        end
+      end
     end
   end
 end

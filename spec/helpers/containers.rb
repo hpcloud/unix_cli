@@ -1,19 +1,6 @@
 
 RSpec.configure do |config|
   
-  # Generate a unique container name
-  # def container_name(seed=random_string(5))
-  #   'fog_' << HOSTNAME << '_' << Time.now.to_i.to_s << '_' << seed.to_s 
-  # end
-
-  # Delete any containers this connection currently has
-  def purge_containers(connection = nil, verbose = false)
-    connection ||= storage_connection
-    connection.directories.each do |directory|
-      purge_container(directory.key, :connection => connection, :verbose => verbose)
-    end
-  end
-
   # Delete a single container, regardless of files present
   def purge_container(container_name, options={})
     connection = options[:connection] || @hp_svc

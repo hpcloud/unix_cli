@@ -21,6 +21,7 @@ Examples:
 
 Aliases: keypairs:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       def keypairs(*arguments)
         cli_command(options) {

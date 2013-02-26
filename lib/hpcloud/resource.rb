@@ -6,10 +6,13 @@ module HP
   module Cloud
     class Resource
       attr_reader :fname, :ftype, :container, :path
-      attr_reader :public_url, :cdn_public_url, :cdn_public_ssl_url, :public
+      attr_reader :public_url, :public
       attr_reader :destination, :cstatus
       attr_reader :readers, :writers
+      attr_reader :restart
     
+      @@limit = nil
+
       def initialize(storage, fname)
         @cstatus = CliStatus.new
         @storage = storage
@@ -17,6 +20,7 @@ module HP
         @ftype = ResourceFactory.detect_type(@fname)
         @disable_pbar = false
         @mime_type = nil
+        @restart = false
         parse()
       end
 
@@ -219,6 +223,10 @@ module HP
       def revoke(acl)
         @cstatus = CliStatus.new("ACLs of local objects are not supported: #{@fname}", :incorrect_usage)
         return false
+      end
+
+      def set_restart(value)
+        @restart = value
       end
     end
   end

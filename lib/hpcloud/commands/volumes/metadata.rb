@@ -17,6 +17,7 @@ Examples:
 
 Aliases: volumes:metadata:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       define_method "volumes:metadata" do |name_or_id|
         cli_command(options) {
