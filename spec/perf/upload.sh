@@ -10,7 +10,7 @@ CONTAINER=":perfup"
 hpcloud remove -f ${CONTAINER} >/dev/null 2>/dev/null || true
 hpcloud containers:add ${CONTAINER} >/dev/null
 
-/usr/bin/time --format "%e" hpcloud copy ${FILE} ${CONTAINER} 2>&1 >/dev/null
+time -p hpcloud copy ${FILE} ${CONTAINER}
 
 BASE=$(basename ${FILE})
 RESULT=$(hpcloud list ${CONTAINER}/${BASE} -c etag)

@@ -241,7 +241,7 @@ module HP
         return false if (from.open() == false)
         if from.isLocal()
           if @@storage_chunk_size.nil?
-            @@storage_chunk_size = Config.new.get_i(:storage_chunk_size, 10485760)
+            @@storage_chunk_size = Config.new.get_i(:storage_chunk_size, 1073741824)
           end
           @options = { 'Content-Type' => from.get_mime_type() }
           count = 0
@@ -290,10 +290,22 @@ module HP
             files_ray << manifest
             @options['x-object-manifest'] = @container + '/' + prefix
             @storage.put_object(@container, manifest, nil, @options)
-            @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "#{@container}/#{manifest}" })
-            files_ray.each{ |x|
-              @storage.delete_object(@container, x)
-            }
+            begin
+              @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "#{@container}/#{manifest}" })
+            rescue Exception => e
+              @cstatus = CliStatus.new("There may have been an error copying the manifest file.  The manifest and the segments may still be in the container.  Use the -r option to retry the copy", :partial_error)
+              result = false
+            end
+            if (result == true)
+              files_ray.each{ |x|
+                begin
+                  @storage.delete_object(@container, x)
+                rescue Exception => e
+                  @cstatus = CliStatus.new("There may have been an error cleaning up manifest and segment files.", :partial_error)
+                  result = false
+                end
+              }
+            end
           else
             @storage.put_object(@container, @destination, nil, @options) {
               from.read(@@storage_chunk_size)

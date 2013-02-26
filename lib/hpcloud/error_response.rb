@@ -20,7 +20,11 @@ module HP
       # pull the error message out of an JSON response
       def parse_error(response)
         begin
-          err_msg = MultiJson.decode(response.body)
+          if (response.respond_to?(:body))
+            err_msg = MultiJson.decode(response.body)
+          elese
+            err_msg = "Unknown error response: " + response.to_s
+          end
           ret = ''
           err_msg.map { |_,v|
             ret += v["code"].to_s + " " if v.has_key?("code")

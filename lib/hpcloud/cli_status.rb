@@ -11,6 +11,7 @@ module HP
                 :incorrect_usage      => 64,
                 :permission_denied    => 77,
                 :rate_limited         => 88,
+                :partial_error        => 98,
                 :unknown_status       => 99
               }
 
