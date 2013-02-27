@@ -50,9 +50,7 @@ describe "Copy large" do
 
   before(:each) do
     cptr('remove -f :largetest')
-    puts rsp.stderr
-    rsp = cptr('containers:add :largetest')
-    puts rsp.stderr
+    cptr('containers:add :largetest')
   end
 
   context "Large file copy one under" do
