@@ -7,7 +7,7 @@ If you have an older installation, you may have configuration values that will n
 
 hpcloud config:set read_timeout=240
 hpcloud config:set write_timeout=240
-hpcloud config:set storage_segement_size=1073741824
+hpcloud config:set storage_segment_size=1073741824
 
 # makefile.sh
 
