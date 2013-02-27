@@ -4,13 +4,15 @@ module HP
     class Tableizer
       attr_reader :found
 
+      DEFAULT_REPORT_PAGE_LENGTH = 60
+
       def initialize(options, keys, values = [])
         @options = options
         columns = Columns.new(options, keys)
         @keys = columns.keys
         @values = values
         @found = false
-        @page_length = Config.new.get_i(:report_page_length, 60)
+        @page_length = Config.new.get_i(:report_page_length, DEFAULT_REPORT_PAGE_LENGTH)
       end
 
       def add(item)

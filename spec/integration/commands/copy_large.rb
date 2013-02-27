@@ -43,7 +43,7 @@ describe "Copy large" do
   before(:all) do
     ConfigHelper.use_tmp()
     config = HP::Cloud::Config.new
-    config.set(:storage_segement_size, LargeHelper.chunk_size)
+    config.set(:storage_segment_size, LargeHelper.chunk_size)
     config.write
   end
 

@@ -3,7 +3,10 @@ module HP
     class RemoteResource < Resource
       attr_accessor :directory, :size, :type, :etag, :modified
 
-      @@storage_segement_size = nil
+      DEFAULT_STORAGE_SEGMENT_SIZE = 1073741824
+      DEFAULT_STORAGE_PAGE_LENGTH = 10000
+
+      @@storage_segment_size = nil
 
       def parse
         super
@@ -240,22 +243,22 @@ module HP
         result = true
         return false if (from.open() == false)
         if from.isLocal()
-          if @@storage_segement_size.nil?
-            @@storage_segement_size = Config.new.get_i(:storage_segement_size, 1073741824)
+          if @@storage_segment_size.nil?
+            @@storage_segment_size = Config.new.get_i(:storage_segment_size, DEFAULT_STORAGE_SEGMENT_SIZE)
           end
           @options = { 'Content-Type' => from.get_mime_type() }
           count = 0
           segment = i=10000000001
           total = from.get_size()
-          pieces = (total / @@storage_segement_size)
-          pieces += 1 if ((total % @@storage_segement_size) != 0)
+          pieces = (total / @@storage_segment_size)
+          pieces += 1 if ((total % @@storage_segment_size) != 0)
           if pieces > 1
             files_ray = []
             prefix = @destination + '.segment.'
             begin
               bytes_read = 0
               bytes_to_read = total - count
-              bytes_to_read = @@storage_segement_size if bytes_to_read > @@storage_segement_size
+              bytes_to_read = @@storage_segment_size if bytes_to_read > @@storage_segment_size
               tmppath = prefix + segment.to_s[1..10]
               files_ray << tmppath
               already_exists = false
@@ -308,7 +311,7 @@ module HP
             end
           else
             @storage.put_object(@container, @destination, nil, @options) {
-              from.read(@@storage_segement_size)
+              from.read(@@storage_segment_size)
             }
           end
         else
@@ -349,7 +352,7 @@ module HP
           regex = "^" + path + '$'
         end
         if @@limit.nil?
-          @@limit = Config.new.get_i(:storage_page_length, 10000)
+          @@limit = Config.new.get_i(:storage_page_length, DEFAULT_STORAGE_PAGE_LENGTH)
         end
         total = 0
         count = 0
