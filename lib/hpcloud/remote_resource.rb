@@ -255,7 +255,6 @@ module HP
           segment = i=10000000001
           total = from.get_size()
           if total >= @@storage_max_size
-puts 'too big'
             prefix = @destination + '.segment.'
             begin
               bytes_read = 0
