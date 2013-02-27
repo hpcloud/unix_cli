@@ -1,0 +1,24 @@
+
+This perf directory is for tools to do performance testing for object uploads and downloads.  
+
+# Configuration
+
+If you have an older installation, you may have configuration values that will not work well for perforance testing.  It might be best to set these values or something similar:
+
+hpcloud config:set read_timeout=240
+hpcloud config:set write_timeout=240
+hpcloud config:set storage_segement_size=1073741824
+
+# makefile.sh
+
+This shell script takes a file name and a size (in 1024 byte blocks) and creates a file.  The /dev/urandom device is used to create the file so it will be unique and not follow any patern that could hide segment errors.  The script outputs the md5sum of the file for later verification.
+
+If the file already exists, this script just returns the md5sum.  If there was a problem creating a file, you should remove it before running this script again.
+
+# upload.sh
+
+This shell script takes a file name and md5sum of that file.  It creates a new container, copies the file to that container, and verifies the md5sum.  If the copy is successful, it removes the container.
+
+# test.sh
+
+This shells script takes a size in 1024 byte blocks and uses the makefile.sh and upload.sh scripts to run a test.

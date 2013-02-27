@@ -202,8 +202,8 @@ describe "Account get" do
       acct[:zones][:cdn_availability_zone].should eq('region-a.geo-1')
       acct[:zones][:block_availability_zone].should eq('az-1.region-a.geo-1')
       acct[:options][:connect_timeout].should eq(30)
-      acct[:options][:read_timeout].should eq(30)
-      acct[:options][:write_timeout].should eq(30)
+      acct[:options][:read_timeout].should eq(240)
+      acct[:options][:write_timeout].should eq(240)
       acct[:options][:ssl_verify_peer].should be_true
       acct[:options][:ssl_ca_path].should be_nil
       acct[:options][:ssl_ca_file].should be_nil

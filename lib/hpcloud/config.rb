@@ -20,7 +20,7 @@ module HP
                 :ssl_ca_file,
                 :default_account,
                 :storage_page_length,
-                :storage_chunk_size,
+                :storage_segement_size,
                 :report_page_length,
                 :checker_url,
                 :checker_deferment
@@ -61,8 +61,8 @@ module HP
 
       def self.default_options
         return { :connect_timeout => 30,
-                 :read_timeout => 30,
-                 :write_timeout => 30,
+                 :read_timeout => 240,
+                 :write_timeout => 240,
                  :preferred_flavor => 100,
                  :ssl_verify_peer => true,
                  :ssl_ca_path => nil,
