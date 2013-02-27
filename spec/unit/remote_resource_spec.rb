@@ -37,7 +37,8 @@ def mock_file(filename)
   return { 'name' => filename,
            'hash' => "123123123123123",
            'bytes' => "234",
-           'content_type' => "text"},
+           'content_type' => "text"
+         }
 end
 
 describe "Valid source" do
