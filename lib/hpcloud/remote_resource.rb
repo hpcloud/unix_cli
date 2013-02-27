@@ -3,9 +3,11 @@ module HP
     class RemoteResource < Resource
       attr_accessor :directory, :size, :type, :etag, :modified
 
+      DEFAULT_STORAGE_MAX_SIZE = 5368709120
       DEFAULT_STORAGE_SEGMENT_SIZE = 1073741824
       DEFAULT_STORAGE_PAGE_LENGTH = 10000
 
+      @@storage_max_size = nil
       @@storage_segment_size = nil
 
       def parse
@@ -244,23 +246,22 @@ module HP
         return false if (from.open() == false)
         if from.isLocal()
           if @@storage_segment_size.nil?
-            @@storage_segment_size = Config.new.get_i(:storage_segment_size, DEFAULT_STORAGE_SEGMENT_SIZE)
+            config = Config.new
+            @@storage_max_size = config.get_i(:storage_max_size, DEFAULT_STORAGE_MAX_SIZE)
+            @@storage_segment_size = config.get_i(:storage_segment_size, DEFAULT_STORAGE_SEGMENT_SIZE)
           end
           @options = { 'Content-Type' => from.get_mime_type() }
           count = 0
           segment = i=10000000001
           total = from.get_size()
-          pieces = (total / @@storage_segment_size)
-          pieces += 1 if ((total % @@storage_segment_size) != 0)
-          if pieces > 1
-            files_ray = []
+          if total >= @@storage_max_size
+puts 'too big'
             prefix = @destination + '.segment.'
             begin
               bytes_read = 0
               bytes_to_read = total - count
               bytes_to_read = @@storage_segment_size if bytes_to_read > @@storage_segment_size
               tmppath = prefix + segment.to_s[1..10]
-              files_ray << tmppath
               already_exists = false
               begin
                 if @restart == true
@@ -289,26 +290,9 @@ module HP
               count = count + bytes_read
               segment = segment + 1
             end until count >= total
-            manifest = @destination + '.manifest'
-            files_ray << manifest
+            manifest = @destination
             @options['x-object-manifest'] = @container + '/' + prefix
             @storage.put_object(@container, manifest, nil, @options)
-            begin
-              @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "#{@container}/#{manifest}" })
-            rescue Exception => e
-              @cstatus = CliStatus.new("There may have been an error copying the manifest file.  The manifest and the segments may still be in the container.  Use the -r option to retry the copy. Error: " + e.to_s, :partial_error)
-              result = false
-            end
-            if (result == true)
-              files_ray.each{ |x|
-                begin
-                  @storage.delete_object(@container, x)
-                rescue Exception => e
-                  @cstatus = CliStatus.new("There may have been an error cleaning up manifest and segment files.", :partial_error)
-                  result = false
-                end
-              }
-            end
           else
             @storage.put_object(@container, @destination, nil, @options) {
               from.read(@@storage_segment_size)
