@@ -19,18 +19,32 @@ module HP
 
       # pull the error message out of an JSON response
       def parse_error(response)
-        begin
-          err_msg = MultiJson.decode(response.body)
-          ret = ''
-          err_msg.map { |_,v|
-            ret += v["code"].to_s + " " if v.has_key?("code")
-            ret += v["message"] if v.has_key?("message")
-            ret += ": " + v["details"] if v.has_key?("details")
-          }
-          return ret
-        rescue MultiJson::DecodeError => error
-          response.body
+        ret = ''
+        code = nil
+        message = nil
+        details = nil
+        if (response.respond_to?(:status))
+          code = response.status.to_s
         end
+        if (response.respond_to?(:body))
+          details = response.body.to_s
+          begin
+            err_msg = MultiJson.decode(response.body)
+            err_msg.map { |_,v|
+              code = v["code"].to_s if v.has_key?("code")
+              message = v["message"] if v.has_key?("message")
+              details = nil
+              details = v["details"] if v.has_key?("details")
+            }
+          rescue MultiJson::DecodeError => error
+          end
+        else
+          message = "Unknown error response: " + response.to_s
+        end
+        ret += code + " " unless code.nil?
+        ret += message + ": " unless message.nil?
+        ret += details unless details.nil?
+        return ret
       end
 
       # check to see if an error includes a particular text fragment
