@@ -11,9 +11,9 @@ class LargeHelper
     cnt = 0
     ray = []
     chars = ('a'..'z').to_a
-    rand = Random.new
     while cnt < siz do
-      ray << chars[rand.rand(0..25)]
+      idx = rand(25).to_i
+      ray << chars[idx]
       cnt += 1
     end
     return ray.join('')
