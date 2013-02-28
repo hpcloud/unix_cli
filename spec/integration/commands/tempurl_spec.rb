@@ -36,7 +36,7 @@ describe 'tempurl command' do
 
       rsp = cptr('tempurl :empty/file')
 
-      rsp.stderr.should eq("Cannot find object named ':empty/file'.\n")
+      rsp.stderr.should eq("Cannot find object ':empty/file'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end
@@ -51,7 +51,7 @@ describe 'tempurl command' do
 
       rsp = cptr("tempurl :someoneelses/#{@file_name}")
 
-      rsp.stderr.should eq("Cannot find container ':someoneelses'.\n")
+      rsp.stderr.should eq("Cannot find object ':someoneelses/spec/fixtures/files/Matryoshka/Putin/Medvedev.txt'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end

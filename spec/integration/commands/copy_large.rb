@@ -11,9 +11,9 @@ class LargeHelper
     cnt = 0
     ray = []
     chars = ('a'..'z').to_a
-    rand = Random.new
     while cnt < siz do
-      ray << chars[rand.rand(0..25)]
+      idx = rand(25).to_i
+      ray << chars[idx]
       cnt += 1
     end
     return ray.join('')
@@ -31,7 +31,7 @@ class LargeHelper
   def self.verify_body(filename, body)
     download = 'spec/tmp/download'
     FileUtils.rm_f(download)
-    rsp = cptr("copy :large/#{filename} spec/tmp/download")
+    rsp = cptr("copy :largetest/#{filename} spec/tmp/download")
     file = File.new(download)
     result = file.read
     return result == body
@@ -44,13 +44,13 @@ describe "Copy large" do
     ConfigHelper.use_tmp()
     config = HP::Cloud::Config.new
     config.set(:storage_segment_size, LargeHelper.chunk_size)
+    config.set(:storage_max_size, LargeHelper.chunk_size)
     config.write
   end
 
   before(:each) do
-    cptr('remove -f :large')
-    rsp = cptr('containers:add -f :large')
-    rsp.stderr.should eq("")
+    cptr('remove -f :largetest')
+    cptr('containers:add :largetest')
   end
 
   context "Large file copy one under" do
@@ -59,12 +59,12 @@ describe "Copy large" do
       siz = (LargeHelper.chunk_size - 1)
       fname, body = LargeHelper.build_file(filename, siz)
 
-      rsp = cptr("copy #{fname} :large")
+      rsp = cptr("copy #{fname} :largetest")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Copied #{fname} => :large\n")
+      rsp.stdout.should eq("Copied #{fname} => :largetest\n")
       rsp.exit_status.should be_exit(:success)
-      rsp = cptr('list :large')
+      rsp = cptr('list :largetest')
       rsp.stderr.should eq("")
       rsp.stdout.should eq(filename + "\n")
       LargeHelper.verify_body(filename, body).should be_true
@@ -77,10 +77,10 @@ describe "Copy large" do
       siz = LargeHelper.chunk_size
       fname, body = LargeHelper.build_file(filename, siz)
 
-      rsp = cptr("copy #{fname} :large")
+      rsp = cptr("copy #{fname} :largetest")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Copied #{fname} => :large\n")
+      rsp.stdout.should eq("Copied #{fname} => :largetest\n")
       rsp.exit_status.should be_exit(:success)
       LargeHelper.verify_body(filename, body).should be_true
     end
@@ -92,10 +92,10 @@ describe "Copy large" do
       siz = (LargeHelper.chunk_size + 1)
       fname, body = LargeHelper.build_file(filename, siz)
 
-      rsp = cptr("copy #{fname} :large")
+      rsp = cptr("copy #{fname} :largetest")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Copied #{fname} => :large\n")
+      rsp.stdout.should eq("Copied #{fname} => :largetest\n")
       rsp.exit_status.should be_exit(:success)
       LargeHelper.verify_body(filename, body).should be_true
     end
@@ -107,16 +107,16 @@ describe "Copy large" do
       siz = (LargeHelper.chunk_size*10 + 11)
       fname, body = LargeHelper.build_file(filename, siz)
 
-      rsp = cptr("copy #{fname} :large")
+      rsp = cptr("copy #{fname} :largetest")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Copied #{fname} => :large\n")
+      rsp.stdout.should eq("Copied #{fname} => :largetest\n")
       rsp.exit_status.should be_exit(:success)
       LargeHelper.verify_body(filename, body).should be_true
     end
   end
     
   after(:all) do
-    ConfigHelper.reset()
+    #ConfigHelper.reset()
   end
 end

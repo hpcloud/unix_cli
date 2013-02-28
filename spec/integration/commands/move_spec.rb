@@ -64,7 +64,8 @@ describe "Move command" do
     it "should fail" do
       rsp = cptr("move :move_source_container/Putin/Medvedev.txt spec/tmp/move/unwriteable/")
 
-      rsp.stderr.should eq("Permission denied - /home/terry/hp/unix_cli/spec/tmp/move/unwriteable/Medvedev.txt\n")
+      path = File.expand_path(File.dirname(__FILE__) + '/../../..')
+      rsp.stderr.should eq("Permission denied - #{path}/spec/tmp/move/unwriteable/Medvedev.txt\n")
       rsp.stdout.should eq("")
     end
   end
@@ -79,7 +80,8 @@ describe "Move command" do
     it "should fail" do
       rsp = cptr("move :move_source_container/Putin/Medvedev.txt spec/tmp/move/target.txt")
 
-      rsp.stderr.should eq("Permission denied - /home/terry/hp/unix_cli/spec/tmp/move/target.txt\n")
+      path = File.expand_path(File.dirname(__FILE__) + '/../../..')
+      rsp.stderr.should eq("Permission denied - #{path}/spec/tmp/move/target.txt\n")
       rsp.stdout.should eq("")
     end
   end
