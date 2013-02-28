@@ -9,6 +9,7 @@ module HP
 
       @@storage_max_size = nil
       @@storage_segment_size = nil
+      @@storage_chunk_size = nil
 
       def parse
         super
@@ -249,6 +250,7 @@ module HP
             config = Config.new
             @@storage_max_size = config.get_i(:storage_max_size, DEFAULT_STORAGE_MAX_SIZE)
             @@storage_segment_size = config.get_i(:storage_segment_size, DEFAULT_STORAGE_SEGMENT_SIZE)
+            @@storage_chunk_size = config.get_i(:storage_chunk_size, Excon::DEFAULT_CHUNK_SIZE)
           end
           @options = { 'Content-Type' => from.get_mime_type() }
           count = 0
@@ -274,13 +276,13 @@ module HP
               end
               if already_exists
                 while bytes_to_read > 0 do
-                  body = from.read(bytes_to_read)
+                  body = from.read(@@storage_chunk_size)
                   bytes_read += body.length
                   bytes_to_read -= body.length
                 end
               else
                 @storage.put_object(@container, tmppath, nil, @options) {
-                  body = from.read(bytes_to_read)
+                  body = from.read(@@storage_chunk_size)
                   bytes_read += body.length
                   bytes_to_read -= body.length
                   body
@@ -294,7 +296,7 @@ module HP
             @storage.put_object(@container, manifest, nil, @options)
           else
             @storage.put_object(@container, @destination, nil, @options) {
-              from.read(@@storage_segment_size)
+              from.read(@@storage_chunk_size)
             }
           end
         else
