@@ -21,6 +21,7 @@ module HP
                 :default_account,
                 :storage_page_length,
                 :storage_segment_size,
+                :storage_chunk_size,
                 :storage_max_size,
                 :report_page_length,
                 :checker_url,
