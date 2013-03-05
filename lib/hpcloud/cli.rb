@@ -16,7 +16,6 @@ module HP
 
       def initialize(*args)
         super
-Fog.mock!
         @@debugging = false
         @@error = nil
         @exit_status = HP::Cloud::CliStatus.new
