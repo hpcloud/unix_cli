@@ -72,10 +72,8 @@ describe "Lbaas methods" do
       @new_lbaas.stub(:id).and_return(909)
       @lbaass = double("lbaass")
       @lbaass.stub(:create).and_return(@new_lbaas)
-      @block = double("block")
-      @block.stub(:lbaass).and_return(@lbaass)
       @connection = double("connection")
-      @connection.stub(:block).and_return(@block)
+      @connection.stub(:lbaas).and_return(@lbaass)
       lbs = HP::Cloud::LbaasHelper.new(@connection)
       lbs.name = 'dro'
       lbs.size = 100
@@ -92,10 +90,8 @@ describe "Lbaas methods" do
     it "it is false and we get errors" do
       @lbaass = double("lbaass")
       @lbaass.stub(:create).and_return(nil)
-      @block = double("block")
-      @block.stub(:lbaass).and_return(@lbaass)
       @connection = double("connection")
-      @connection.stub(:block).and_return(@block)
+      @connection.stub(:lbaas).and_return(@lbaass)
       lbs = HP::Cloud::LbaasHelper.new(@connection)
       lbs.name = 'den'
       lbs.size = 100

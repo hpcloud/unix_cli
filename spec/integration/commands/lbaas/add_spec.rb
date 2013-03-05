@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
-describe "lbaass:add command" do
+describe "lbaas:add command" do
   before(:all) do
     @hp_svc = HP::Cloud::Connection.instance.block
   end
@@ -10,7 +10,7 @@ describe "lbaass:add command" do
       @lbaas_description = 'Add_lbaas'
       @lbaas_name = resource_name("add1")
 
-      rsp = cptr("lbaass:add #{@lbaas_name} 1 -d #{@lbaas_description}")
+      rsp = cptr("lbaas:add #{@lbaas_name} 1 -d #{@lbaas_description}")
 
       rsp.stderr.should eq("")
       @new_lbaas_id = rsp.stdout.scan(/'([^']+)/)[2][0]
@@ -25,7 +25,7 @@ describe "lbaass:add command" do
     end
 
     after(:each) do
-      cptr("lbaass:remove #{@lbaas_name}")
+      cptr("lbaas:remove #{@lbaas_name}")
     end
   end
 
@@ -33,7 +33,7 @@ describe "lbaass:add command" do
     it "should show success message" do
       @lbaas_name = resource_name("add2")
 
-      rsp = cptr("lbaass:add #{@lbaas_name} 1")
+      rsp = cptr("lbaas:add #{@lbaas_name} 1")
 
       rsp.stderr.should eq("")
       @new_lbaas_id = rsp.stdout.scan(/'([^']+)/)[2][0]
@@ -46,7 +46,7 @@ describe "lbaass:add command" do
     end
 
     after(:each) do
-      cptr("lbaass:remove #{@lbaas_name}")
+      cptr("lbaas:remove #{@lbaas_name}")
     end
   end
 
@@ -56,7 +56,7 @@ describe "lbaass:add command" do
       @snap2= SnapshotTestHelper.create("cli_test_snap2", @lbs3)
       @lbaas_name = resource_name("add3")
 
-      rsp = cptr("lbaass:add #{@lbaas_name} -s #{@snap2.name}")
+      rsp = cptr("lbaas:add #{@lbaas_name} -s #{@snap2.name}")
 
       rsp.stderr.should eq("")
       @new_lbaas_id = rsp.stdout.scan(/'([^']+)/)[2][0]
@@ -69,7 +69,7 @@ describe "lbaass:add command" do
     end
 
     after(:each) do
-      cptr("lbaass:remove #{@lbaas_name}")
+      cptr("lbaas:remove #{@lbaas_name}")
     end
   end
 
@@ -78,7 +78,7 @@ describe "lbaass:add command" do
       image_id = AccountsHelper.get_image_id()
       @lbaas_name = resource_name("add4")
 
-      rsp = cptr("lbaass:add #{@lbaas_name} 10 -i #{image_id}")
+      rsp = cptr("lbaas:add #{@lbaas_name} 10 -i #{image_id}")
 
       rsp.stderr.should eq("")
       @new_lbaas_id = rsp.stdout.scan(/'([^']+)/)[2][0]
@@ -91,7 +91,7 @@ describe "lbaass:add command" do
     end
 
     after(:each) do
-      cptr("lbaass:remove #{@lbaas_name}")
+      cptr("lbaas:remove #{@lbaas_name}")
     end
   end
 
@@ -99,7 +99,7 @@ describe "lbaass:add command" do
     it "should fail" do
       @lbs1 = LbaasTestHelper.create("cli_test_lbs1")
 
-      rsp = cptr("lbaass:add #{@lbs1.name} 1")
+      rsp = cptr("lbaas:add #{@lbs1.name} 1")
 
       rsp.stderr.should eq("Lbaas with the name '#{@lbs1.name}' already exists\n")
       rsp.exit_status.should be_exit(:general_error)
@@ -110,7 +110,7 @@ describe "lbaass:add command" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("lbaass:add lbsler 1 -a bogus")
+      rsp = cptr("lbaas:add lbsler 1 -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")

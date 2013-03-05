@@ -16,14 +16,8 @@ describe "Lbaass getter" do
 
   before(:each) do
     @lbaass = [ mock_lbaas("lbs1"), mock_lbaas("lbs2"), mock_lbaas("lbs3"), mock_lbaas("lbs3") ]
-    @block = double("block")
-    @block.stub(:lbaass).and_return(@lbaass)
-
-    @compute = double("compute")
-    @compute.stub(:servers).and_return([])
     @connection = double("connection")
-    @connection.stub(:compute).and_return(@compute)
-    @connection.stub(:block).and_return(@block)
+    @connection.stub(:lbaas).and_return(@lbaass)
     Connection.stub(:instance).and_return(@connection)
   end
 
