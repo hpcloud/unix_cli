@@ -1,4 +1,5 @@
 require 'hpcloud/commands/lbaas/add.rb'
+require 'hpcloud/commands/lbaas/remove.rb'
 require 'hpcloud/lbaass'
 
 module HP
