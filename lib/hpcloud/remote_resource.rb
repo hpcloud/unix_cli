@@ -40,8 +40,8 @@ module HP
 
       def get_container
         begin
-          return false if is_valid? == false
-          return true unless @directory.nil?
+          return true unless @got_container.nil?
+          @got_container = true
 
           @directory = @storage.directories.get(@container)
           if @directory.nil?
@@ -95,13 +95,15 @@ module HP
 
       def container_head()
         begin
-          return nil if is_valid? == false
-
-          @head = @storage.directories.head(@container)
-          if @head.nil?
+          @directory = @storage.directories.head(@container)
+          if @directory.nil?
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return nil
           end
+          @size = @directory.bytes
+          @count = @directory.count
+          @synckey = @directory.synckey
+          @syncto = @directory.syncto
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
           @cstatus = CliStatus.new(resp.error_string, :permission_denied)
@@ -113,7 +115,7 @@ module HP
           @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return nil
         end
-        return @head
+        return @directory
       end
 
       def open(output=false, siz=0)
@@ -174,7 +176,7 @@ module HP
 
       def read_header()
         begin
-          return false if get_container == false
+          return false if container_head().nil?
           return false if get_files == false
 
           @file_head = @directory.files.head(@path)
@@ -221,7 +223,7 @@ module HP
       end
 
       def valid_container()
-        return get_container
+        return ! container_head().nil?
       end
 
       def set_destination(name)
@@ -251,12 +253,13 @@ module HP
             @@storage_max_size = config.get_i(:storage_max_size, DEFAULT_STORAGE_MAX_SIZE)
             @@storage_segment_size = config.get_i(:storage_segment_size, DEFAULT_STORAGE_SEGMENT_SIZE)
             @@storage_chunk_size = config.get_i(:storage_chunk_size, Excon::DEFAULT_CHUNK_SIZE)
+            @@storage_chunk_size = @@storage_segment_size if @@storage_segment_size < @@storage_chunk_size
           end
           @options = { 'Content-Type' => from.get_mime_type() }
           count = 0
           segment = i=10000000001
           total = from.get_size()
-          if total >= @@storage_max_size
+          if total > @@storage_max_size
             prefix = @destination + '.segment.'
             begin
               bytes_read = 0
@@ -275,14 +278,17 @@ module HP
               rescue
               end
               if already_exists
+                # skip the bytes
                 while bytes_to_read > 0 do
                   body = from.read(@@storage_chunk_size)
                   bytes_read += body.length
                   bytes_to_read -= body.length
                 end
               else
+                chunk_size = @@storage_chunk_size
                 @storage.put_object(@container, tmppath, nil, @options) {
-                  body = from.read(@@storage_chunk_size)
+                  chunk_size = bytes_to_read if bytes_to_read < chunk_size
+                  body = from.read(chunk_size)
                   bytes_read += body.length
                   bytes_to_read -= body.length
                   body

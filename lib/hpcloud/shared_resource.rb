@@ -19,9 +19,13 @@ module HP
         @path = @path.gsub(/^\/*/, '')
       end
 
+      def container_head
+        return true unless get_container().nil?
+        return false
+      end
+
       def get_container
         begin
-          return false if is_valid? == nil
           return true unless @directory.nil?
 
           @directory = @storage.shared_directories.get(@container)

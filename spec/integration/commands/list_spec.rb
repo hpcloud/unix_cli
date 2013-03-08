@@ -50,6 +50,22 @@ describe "list command" do
     end
   end
 
+  context "containers:list --long" do
+    it "should report success" do
+      rsp = cptr('containers:list --long')
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
+  context "containers:list --sync" do
+    it "should report success" do
+      rsp = cptr('containers:list --sync')
+      rsp.stderr.should eq("")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
   context "list on object" do
     it "should report failure" do
       rsp = cptr("list :mycontainer/object.txt")

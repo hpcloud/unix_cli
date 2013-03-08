@@ -3,7 +3,7 @@ require 'hpcloud/remote_resource.rb'
 module HP
   module Cloud
     class ContainerResource < RemoteResource
-      attr_accessor :count
+      attr_accessor :count, :synckey, :syncto
 
       def parse
         unless @fname.index('/').nil?
@@ -35,6 +35,8 @@ module HP
           @public = @directory.public? ? "yes" : "no"
           @readers = @directory.list_users_with_read.join(",")
           @writers = @directory.list_users_with_write.join(",")
+          @synckey = @directory.synckey
+          @syncto = @directory.syncto
         rescue Exception => error
           @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return false
@@ -106,6 +108,14 @@ module HP
           @cstatus = CliStatus.new("Exception revoking permissions for '#{@fname}': " + e.to_s, :general_error)
           return false
         end
+      end
+
+      def sync(synckey, syncto)
+        return false unless container_head()
+        @directory.synckey = synckey
+        @directory.syncto = syncto
+        @directory.save
+        return true
       end
     end
   end
