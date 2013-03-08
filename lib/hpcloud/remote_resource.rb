@@ -253,12 +253,13 @@ module HP
             @@storage_max_size = config.get_i(:storage_max_size, DEFAULT_STORAGE_MAX_SIZE)
             @@storage_segment_size = config.get_i(:storage_segment_size, DEFAULT_STORAGE_SEGMENT_SIZE)
             @@storage_chunk_size = config.get_i(:storage_chunk_size, Excon::DEFAULT_CHUNK_SIZE)
+            @@storage_chunk_size = @@storage_segment_size if @@storage_segment_size < @@storage_chunk_size
           end
           @options = { 'Content-Type' => from.get_mime_type() }
           count = 0
           segment = i=10000000001
           total = from.get_size()
-          if total >= @@storage_max_size
+          if total > @@storage_max_size
             prefix = @destination + '.segment.'
             begin
               bytes_read = 0
@@ -277,14 +278,17 @@ module HP
               rescue
               end
               if already_exists
+                # skip the bytes
                 while bytes_to_read > 0 do
                   body = from.read(@@storage_chunk_size)
                   bytes_read += body.length
                   bytes_to_read -= body.length
                 end
               else
+                chunk_size = @@storage_chunk_size
                 @storage.put_object(@container, tmppath, nil, @options) {
-                  body = from.read(@@storage_chunk_size)
+                  chunk_size = bytes_to_read if bytes_to_read < chunk_size
+                  body = from.read(chunk_size)
                   bytes_read += body.length
                   bytes_to_read -= body.length
                   body
