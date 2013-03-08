@@ -40,8 +40,8 @@ module HP
 
       def get_container
         begin
-          return false if is_valid? == false
-          return true unless @directory.nil?
+          return true unless @got_container.nil?
+          @got_container = true
 
           @directory = @storage.directories.get(@container)
           if @directory.nil?
@@ -95,13 +95,15 @@ module HP
 
       def container_head()
         begin
-          return nil if is_valid? == false
-
-          @head = @storage.directories.head(@container)
-          if @head.nil?
+          @directory = @storage.directories.head(@container)
+          if @directory.nil?
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return nil
           end
+          @size = @directory.bytes
+          @count = @directory.count
+          @synckey = @directory.synckey
+          @syncto = @directory.syncto
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
           @cstatus = CliStatus.new(resp.error_string, :permission_denied)
@@ -113,7 +115,7 @@ module HP
           @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return nil
         end
-        return @head
+        return @directory
       end
 
       def open(output=false, siz=0)
@@ -174,7 +176,7 @@ module HP
 
       def read_header()
         begin
-          return false if get_container == false
+          return false if container_head().nil?
           return false if get_files == false
 
           @file_head = @directory.files.head(@path)
@@ -221,7 +223,7 @@ module HP
       end
 
       def valid_container()
-        return get_container
+        return ! container_head().nil?
       end
 
       def set_destination(name)

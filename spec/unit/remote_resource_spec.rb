@@ -10,6 +10,8 @@ def mock_it(files = nil)
     @directory.stub(:files).and_return(@files)
     @directory.stub(:bytes).and_return(123)
     @directory.stub(:count).and_return(files.length)
+    @directory.stub(:synckey).and_return(nil)
+    @directory.stub(:syncto).and_return(nil)
     @directory.stub(:grant).and_return(true)
     @directory.stub(:revoke).and_return(true)
     @directory.stub(:save).and_return(true)
@@ -58,7 +60,7 @@ describe "Valid source" do
 
   context "when remote file" do
     it "is bogus file false" do
-      @directories.stub(:get).and_return(nil)
+      @directories.stub(:head).and_return(nil)
       to = ResourceFactory.create_any(@storage, ":bogus_container/whatever.txt")
 
       to.valid_source().should be_false
@@ -125,7 +127,7 @@ describe "Valid destination" do
 
   context "when remote file" do
     it "is bogus file false" do
-      @directories.stub(:get).and_return(nil)
+      @directories.stub(:head).and_return(nil)
       to = ResourceFactory.create_any(@storage, ":bogus_container/whatever.txt")
 
       to.valid_source().should be_false
@@ -180,7 +182,7 @@ describe "Set destination" do
   
   context "when remote container missing" do
     it "valid destination true" do
-      @directories.stub(:get).and_return(nil)
+      @directories.stub(:head).and_return(nil)
       to = ResourceFactory.create_any(@storage, ":missing_container/directory/new.txt")
 
       rc = to.set_destination("file.txt")
@@ -227,7 +229,7 @@ describe "File copy" do
 
   context "when local file source but bogus destination" do
     it "copy should return false" do
-      @directories.stub(:get).and_return(nil)
+      @directories.stub(:head).and_return(nil)
       src = ResourceFactory.create_any(@storage, "spec/fixtures/files/foo.txt")
       dest = ResourceFactory.create_any(@storage, ":container/destination.txt")
 
