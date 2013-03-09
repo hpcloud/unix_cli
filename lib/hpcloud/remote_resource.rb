@@ -102,8 +102,8 @@ module HP
           end
           @size = @directory.bytes
           @count = @directory.count
-          @synckey = @directory.synckey
-          @syncto = @directory.syncto
+          #@synckey = @directory.synckey
+          #@syncto = @directory.syncto
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
           @cstatus = CliStatus.new(resp.error_string, :permission_denied)
