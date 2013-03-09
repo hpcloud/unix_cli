@@ -35,8 +35,8 @@ module HP
           @public = @directory.public? ? "yes" : "no"
           @readers = @directory.list_users_with_read.join(",")
           @writers = @directory.list_users_with_write.join(",")
-          @synckey = @directory.synckey
-          @syncto = @directory.syncto
+          #@synckey = @directory.synckey
+          #@syncto = @directory.syncto
         rescue Exception => error
           @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return false
