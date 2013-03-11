@@ -22,7 +22,7 @@ Aliases: loc
           names = [name] + names
           names.each { |name|
             resource = ResourceFactory.create(Connection.instance.storage, name)
-            if resource.read_header
+            if resource.head
               @log.display resource.public_url
             else
               @log.error resource.cstatus

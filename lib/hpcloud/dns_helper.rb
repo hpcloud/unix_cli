@@ -32,7 +32,6 @@ module HP
              :description => @description,
              :size => @size,
              :metadata => @meta.hsh}
-puts @connection.dns.to_s
           dns = @connection.dns.create(hsh)
           if dns.nil?
             set_error("Error creating dns '#{@name}'")

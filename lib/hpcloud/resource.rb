@@ -8,7 +8,6 @@ module HP
       attr_reader :fname, :ftype, :container, :path
       attr_reader :public_url, :public
       attr_reader :destination, :cstatus
-      attr_reader :readers, :writers
       attr_reader :restart
     
       @@limit = nil
@@ -21,6 +20,8 @@ module HP
         @disable_pbar = false
         @mime_type = nil
         @restart = false
+        @readacl = []
+        @writeacl = []
         parse()
       end
 
@@ -31,6 +32,14 @@ module HP
       def set_error(from)
         return unless is_valid?
         @cstatus.set(from.cstatus)
+      end
+
+      def readers
+        @readacl.join(",")
+      end
+
+      def writers
+        @writeacl.join(",")
       end
 
       def not_implemented(value)
@@ -136,7 +145,7 @@ module HP
         return true
       end
 
-      def read_header()
+      def container_head()
         @cstatus = CliStatus.new("Not supported on local object '#{@fname}'.", :not_supported)
         return false
       end

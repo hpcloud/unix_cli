@@ -669,4 +669,20 @@ describe "Remote resource revoke" do
       res.cstatus.is_success?.should be_true
     end
   end
+
+  context "parse acl" do
+    it "returns true and no error" do
+      res = ResourceFactory.create_any(@storage, ":container")
+
+      res.parse_acl("*:terry").should eq(["terry"])
+      res.parse_acl("*:terry,*:bob,*:sue").should eq(["terry","bob","sue"])
+      res.parse_acl(".r:*,.rlist").should eq(["*"])
+
+      res.parse_public("*:terry").should eq("no")
+      res.parse_public("*:terry,*:bob,*:sue").should eq("no")
+      res.parse_public(".r:*,.rlist").should eq("yes")
+
+      res.cstatus.is_success?.should be_true
+    end
+  end
 end

@@ -27,21 +27,8 @@ module HP
         false
       end
 
-      def read_header()
-        begin
-          return false if get_container == false
-
-          @public_url = @directory.public_url
-          @public = @directory.public? ? "yes" : "no"
-          @readers = @directory.list_users_with_read.join(",")
-          @writers = @directory.list_users_with_write.join(",")
-          #@synckey = @directory.synckey
-          #@syncto = @directory.syncto
-        rescue Exception => error
-          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
-          return false
-        end
-        return true
+      def head
+        return container_head()
       end
 
       def cdn_public_url
@@ -54,7 +41,7 @@ module HP
 
       def remove(force)
         begin
-          return false if get_container == false
+          return false unless container_head()
 
           if force == true
             @directory.files.each { |file| file.destroy }
@@ -82,8 +69,7 @@ module HP
 
       def grant(acl)
         begin
-          return false if is_valid? == false
-          return false if get_container == false
+          return false unless container_head()
           return false if get_files == false
 
           @directory.grant(acl.permissions, acl.users)
@@ -97,8 +83,7 @@ module HP
 
       def revoke(acl)
         begin
-          return false if is_valid? == false
-          return false if get_container == false
+          return false unless container_head()
           return false if get_files == false
 
           @directory.revoke(acl.permissions, acl.users)
