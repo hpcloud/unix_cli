@@ -53,6 +53,19 @@ module HP
         return header.start_with?(".r:*")?"yes":"no"
       end
 
+      def copy(rhs)
+        @size = rhs.size
+        @count = rhs.count
+        @synckey = rhs.synckey
+        @syncto = rhs.syncto
+        @timestamp = rhs.timestamp
+        @writeacl = rhs.writeacl
+        @readacl = rhs.readacl
+        @public = rhs.public
+        @versions = rhs.versions
+        @public_url = rhs.public_url
+      end
+
       def parse_container_headers(headers)
         @size = headers['X-Container-Bytes-Used']
         @size = 0 if @size.nil?
@@ -342,7 +355,7 @@ puts '*************************************'
             unless name.end_with?('/')
               if ! name.match(regex).nil?
                 res = ResourceFactory.create(@storage, ':' + @container + '/' + name)
-                res.directory = @directory
+                res.copy(self)
                 res.etag = x['hash']
                 res.modified = x['last_modified']
                 res.size = x['bytes']

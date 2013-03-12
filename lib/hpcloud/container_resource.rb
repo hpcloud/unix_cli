@@ -84,7 +84,6 @@ module HP
       def revoke(acl)
         begin
           return false unless container_head()
-          return false if get_files == false
 
           @directory.revoke(acl.permissions, acl.users)
           @directory.save
