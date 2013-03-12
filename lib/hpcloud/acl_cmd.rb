@@ -1,6 +1,6 @@
 module HP
   module Cloud
-    class Acl
+    class AclCmd
       VALID_ACLS = ["r", "rw", "w"]
 
       attr_reader :permissions, :users

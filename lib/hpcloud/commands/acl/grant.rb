@@ -20,7 +20,7 @@ Aliases: acl:set
       CLI.add_common_options
       define_method 'acl:grant' do |name, permissions, *users|
         cli_command(options) {
-          acl = Acl.new(permissions, users)
+          acl = AclCmd.new(permissions, users)
           if acl.is_valid?
             resource = ResourceFactory.create(Connection.instance.storage, name)
             if resource.grant(acl)

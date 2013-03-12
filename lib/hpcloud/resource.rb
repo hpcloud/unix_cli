@@ -180,7 +180,10 @@ module HP
       end
 
       def copy_all(from)
-        if ! from.valid_source() then return false end
+        if ! from.valid_source()
+          @cstatus = from.cstatus
+          return false
+        end
         if ! valid_destination(from) then return false end
 
         copiedfile = false

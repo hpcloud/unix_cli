@@ -19,12 +19,11 @@ module HP
         @path = @path.gsub(/^\/*/, '')
       end
 
-      def container_head
-        return true unless get_container().nil?
-        return false
+      def head
+        return container_head()
       end
 
-      def get_container
+      def container_head
         begin
           return true unless @directory.nil?
 
@@ -45,6 +44,10 @@ module HP
           return false
         end
         return true
+      end
+
+      def object_head
+        return container_head()
       end
 
       def get_size()
