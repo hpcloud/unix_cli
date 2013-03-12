@@ -80,7 +80,7 @@ module HP
     end
 
     class AclWriter < Acl
-      KEY = 'X-Container-Read'
+      KEY = 'X-Container-Write'
       def initialize(hash)
         super(KEY, hash)
       end

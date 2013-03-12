@@ -40,6 +40,18 @@ module HP
         return @cstatus.is_success?
       end
 
+      def readers
+        return @users if @permissions == "r"
+        return @users if @permissions == "rw"
+        return nil
+      end
+
+      def writers
+        return @users if @permissions == "w"
+        return @users if @permissions == "rw"
+        return nil
+      end
+
       def to_s
         return "public-read" if @permissions == "pr"
         return (@permissions + " for " + @users.join(",")) unless @users.nil?

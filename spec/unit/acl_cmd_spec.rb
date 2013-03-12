@@ -9,6 +9,8 @@ describe "AclCmd construction" do
       acl.is_public?.should be_false
       acl.permissions.should eq("r")
       acl.users.should eq(["elliott@newmoon.com"])
+      acl.readers.should eq(["elliott@newmoon.com"])
+      acl.writers.should be_nil
       acl.to_s.should eq("r for elliott@newmoon.com")
       acl.cstatus.message.should be_nil
       acl.cstatus.error_code.should eq(:success)
@@ -22,6 +24,8 @@ describe "AclCmd construction" do
       acl.is_public?.should be_false
       acl.permissions.should eq("rw")
       acl.users.should eq(["elliott@newmoon.com"])
+      acl.readers.should eq(["elliott@newmoon.com"])
+      acl.writers.should eq(["elliott@newmoon.com"])
       acl.to_s.should eq("rw for elliott@newmoon.com")
       acl.cstatus.message.should be_nil
       acl.cstatus.error_code.should eq(:success)
@@ -35,6 +39,8 @@ describe "AclCmd construction" do
       acl.is_public?.should be_false
       acl.permissions.should eq("w")
       acl.users.should eq(["elliott@newmoon.com"])
+      acl.readers.should be_nil
+      acl.writers.should eq(["elliott@newmoon.com"])
       acl.to_s.should eq("w for elliott@newmoon.com")
       acl.cstatus.message.should be_nil
       acl.cstatus.error_code.should eq(:success)

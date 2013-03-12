@@ -85,7 +85,8 @@ module HP
         begin
           return false unless container_head()
 
-          @directory.revoke(acl.permissions, acl.users)
+          @readacl.revoke(acl.readers)
+          @writeacl.revoke(acl.writers)
           @directory.save
           return true
         rescue Exception => e
