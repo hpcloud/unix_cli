@@ -36,23 +36,6 @@ module HP
         return object_head()
       end
 
-      def parse_acl(header)
-        return ["*"] if header.start_with?(".r:*")
-        ray = []
-        header.split(",").each {|x|
-           if x.index(":")
-             ray << x.split(":")[1]
-           else
-             ray << x
-           end
-        }
-        return ray
-      end
-
-      def parse_public(header)
-        return header.start_with?(".r:*")?"yes":"no"
-      end
-
       def copy(rhs)
         @size = rhs.size
         @count = rhs.count
@@ -73,9 +56,9 @@ module HP
         @synckey = headers['X-Container-Sync-Key']
         @syncto = headers['X-Container-Sync-To']
         @timestamp = Time.at(headers['X-Timestamp'])
-        @writeacl = parse_acl(headers['X-Container-Write'])
-        @readacl = parse_acl(headers['X-Container-Read'])
-        @public = parse_public(headers['X-Container-Read'])
+        @writeacl = AclWriter.new(headers)
+        @readacl = AclReader.new(headers)
+        @public = @readacl.public
         @versions = headers['X-Versions-Location']
         @public_url = "#{@storage.url}/#{@container}"
         @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
@@ -86,9 +69,6 @@ module HP
         begin
           return true unless @size.nil?
           data = @storage.head_container(@container)
-puts '*************************************'
-p data
-puts '*************************************'
           if data.nil? || data.headers.nil?
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return false

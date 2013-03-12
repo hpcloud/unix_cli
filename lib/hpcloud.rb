@@ -23,6 +23,7 @@ require 'hpcloud/volume_helper'
 
 require 'hpcloud/accounts'
 require 'hpcloud/acl'
+require 'hpcloud/acl_cmd'
 require 'hpcloud/addresses'
 require 'hpcloud/checker'
 require 'hpcloud/databases'
