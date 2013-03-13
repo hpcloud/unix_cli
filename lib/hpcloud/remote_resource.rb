@@ -55,7 +55,7 @@ module HP
         @count = headers['X-Container-Object-Count']
         @synckey = headers['X-Container-Sync-Key']
         @syncto = headers['X-Container-Sync-To']
-        @timestamp = Time.at(headers['X-Timestamp'])
+        #@timestamp = Time.at(headers['X-Timestamp'].to_f)
         @writeacl = AclWriter.new(headers)
         @readacl = AclReader.new(headers)
         @public = @readacl.public
@@ -73,7 +73,8 @@ module HP
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return false
           end
-          return parse_container_headers(data.headers)
+          @tainer_head = data.headers
+          return parse_container_headers(@tainer_head)
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
           @cstatus = CliStatus.new(resp.error_string, :permission_denied)

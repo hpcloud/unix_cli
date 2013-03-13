@@ -45,6 +45,7 @@ module HP
       end
 
       def grant(ray)
+        return true if ray.nil?
         return true if ray.empty?
         @users = [] if @users.nil?
         ray.each{ |x|
@@ -54,6 +55,7 @@ module HP
       end
 
       def revoke(ray)
+        return true if ray.nil?
         return true if ray.empty?
         not_found = []
         if @users.nil?

@@ -70,11 +70,10 @@ module HP
       def grant(acl)
         begin
           return false unless container_head()
-          return false if get_files == false
 
-          @directory.grant(acl.permissions, acl.users)
-          @directory.save
-          return true
+          @readacl.grant(acl.readers)
+          @writeacl.grant(acl.writers)
+          return save()
         rescue Exception => e
           @cstatus = CliStatus.new("Exception granting permissions for '#{@fname}': " + e.to_s, :general_error)
           return false
@@ -87,8 +86,7 @@ module HP
 
           @readacl.revoke(acl.readers)
           @writeacl.revoke(acl.writers)
-          @directory.save
-          return true
+          return save()
         rescue Exception => e
           @cstatus = CliStatus.new("Exception revoking permissions for '#{@fname}': " + e.to_s, :general_error)
           return false
@@ -100,6 +98,15 @@ module HP
         @directory.synckey = synckey
         @directory.syncto = syncto
         @directory.save
+        return true
+      end
+
+      def save
+        @tainer_head.delete('X-Container-Sync-Key'] = @synckey
+        @tainer_head.delete('X-Container-Sync-To'] = @syncto
+        @tainer_head.merge(@readacl.to_hash)
+        @tainer_head.merge(@writeacl.to_hash)
+        @storage.put_container(@container, @tainer_head)
         return true
       end
     end
