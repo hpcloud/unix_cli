@@ -23,7 +23,7 @@ Examples:
           ray = []
           names.each { |name|
             resource = ResourceFactory.create(Connection.instance.storage, name)
-            if resource.is_valid?
+            if resource.container_head
               ray << resource.to_hash()
             else
               @log.error resource.cstatus

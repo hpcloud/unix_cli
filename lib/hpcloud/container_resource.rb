@@ -106,7 +106,12 @@ module HP
         options['X-Container-Sync-To'] = @syncto unless @syncto.nil?
         options.merge!(@readacl.to_hash)
         options.merge!(@writeacl.to_hash)
-        @storage.put_container(@container, options)
+        begin
+          @storage.put_container(@container, options)
+        rescue Excon::Errors::BadRequest => error
+          @@error = ErrorResponse.new(error).to_s
+          error_status = :incorrect_usage
+        end
         return true
       end
     end

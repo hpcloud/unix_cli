@@ -3,7 +3,7 @@ module HP
     class Acl
       ALL = ".r:*,.rlistings"
 
-      attr_reader :cstatus, :public
+      attr_reader :cstatus, :public, :users
 
       def initialize(key, hash)
         @key = key
@@ -39,7 +39,7 @@ module HP
       end
 
       def to_hash
-        return {} if @users.nil?
+        return { @key => '' } if @users.nil?
         return { @key => ALL } if @users.empty?
         return { @key => "*:" + @users.join(",*:") }
       end
@@ -68,6 +68,7 @@ module HP
             end
           }
         end
+        @users = nil if @users.empty?
         return true if not_found.empty?
         @cstatus = CliStatus.new("Revoke failed invalid user: #{not_found.join(',')}", :not_found)
         return false

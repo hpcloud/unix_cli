@@ -2,11 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe "Copy shared resources" do
   before(:all) do
-    rsp = cptr("remove -f :copytainer")
     rsp = cptr("containers:add :copytainer")
-    rsp.stderr.should eq("")
     rsp = cptr("containers:add :readtainer")
-    rsp.stderr.should eq("")
     username = AccountsHelper.get_username('secondary')
     rsp = cptr("acl:grant :copytainer rw #{username}")
     rsp.stderr.should eq("")
@@ -113,7 +110,7 @@ describe "Copy shared resources" do
   end
   
   after(:all) do
-    cptr("remove -f :copytainer")
-    cptr("remove -f :readtainer")
+#    cptr("remove -f :copytainer")
+#    cptr("remove -f :readtainer")
   end
 end

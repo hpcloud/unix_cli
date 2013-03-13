@@ -180,11 +180,10 @@ describe "Acl command (viewing acls)" do
 
     context "container" do
       it "should have 'public' permissions" do
-        rsp = cptr('acl :acl_container')
+        rsp = cptr("acl -d X :acl_container")
 
         rsp.stderr.should eq("")
-        rsp.stdout.should match("public.*readers.*writers.*public_url")
-        rsp.stdout.should match("no.*#{@default_username}.*#{@username}.*https.*acl_container")
+        rsp.stdout.should include("noXterrylhowe@gmail.comXfreshpow371@gmail.comXhttps://obje")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -205,6 +204,6 @@ describe "Acl command (viewing acls)" do
   end
 
   after(:all) do
-     purge_container('acl_container')
+    purge_container('acl_container')
   end
 end

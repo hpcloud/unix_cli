@@ -46,8 +46,14 @@ module HP
         @writeacl = AclWriter.new(headers)
         @readacl = AclReader.new(headers)
         @public = @readacl.public
+        @readers = @readacl.users.join(",") unless @readacl.users.nil?
+        @writers = @writeacl.users.join(",") unless @writeacl.users.nil?
         @versions = headers['X-Versions-Location']
-        @public_url = "#{@storage.url}/#{@container}"
+        if @path.nil? || @path.empty?
+          @public_url = "#{@storage.url}/#{@container}"
+        else
+          @public_url = "#{@storage.url}/#{@container}/#{@path}"
+        end
         @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
         return true
       end
@@ -66,6 +72,9 @@ module HP
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
           @cstatus = CliStatus.new(resp.error_string, :permission_denied)
+          return false
+        rescue Fog::Storage::HP::NotFound => error
+          @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
           return false
         rescue Fog::HP::Errors::Forbidden => error
           @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
@@ -97,6 +106,9 @@ module HP
             return false
           end
           return parse_object_headers(data.headers)
+        rescue Fog::Storage::HP::NotFound => error
+          @cstatus = CliStatus.new("Cannot find object ':#{@container}/#{@path}'.", :not_found)
+          return false
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
           @cstatus = CliStatus.new(resp.error_string, :permission_denied)
