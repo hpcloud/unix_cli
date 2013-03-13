@@ -1,37 +1,35 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 include HP::Cloud
 
-def mock_it(files = nil)
-    @file = double("file.txt")
-    @file.stub(:get)
-    files = [ @file ] if files.nil?
-    @files = files
-    @directory = double("directory")
-    @directory.stub(:files).and_return(@files)
-    @directory.stub(:bytes).and_return(123)
-    @directory.stub(:count).and_return(files.length)
-    @directory.stub(:synckey).and_return(nil)
-    @directory.stub(:syncto).and_return(nil)
-    @directory.stub(:grant).and_return(true)
-    @directory.stub(:revoke).and_return(true)
-    @directory.stub(:save).and_return(true)
-    @directories = double("directories")
-    @directories.stub(:get).and_return(@directory)
-    @directories.stub(:head).and_return(@directory)
-    @get_object = double("get_object")
-    @put_object = double("put_object")
-    @headers = { "Content-Length" => 9 }
-    @head = double("head")
-    @head.stub(:headers).and_return(@headers)
+def mock_it
+    @put_container = double("put_container")
+    @container_headers = {
+        'Content-Length' => 0,
+        'X-Container-Object-Count' => 3,
+        'X-Container-Bytes-Used' => 2342,
+        'X-Container-Reader' => '*:sue@example.com',
+        'X-Container-Writer' => '*:bob@example.com,*:pam@example.com'
+      }
+    @container_head = double("head")
+    @container_head.stub(:headers).and_return(@container_headers)
+    @container_get = double("get_container")
+    @container_get.stub(:headers).and_return(@container_headers)
+    @files = [
+        {'name'=>"files/cantread.txt",'bytes'=>3},
+        {'name'=>"files/foo.txt",'bytes'=>5},
+        {'name'=>"files/subdir/with space.txt",'bytes'=>4}
+      ]
+    @container_get.stub(:body).and_return(@files)
+    @object_head = double("head")
+    @object_head.stub(:headers).and_return({ "Content-Length" => 9 })
     @storage = double("storage")
-    @storage.stub(:directories).and_return(@directories)
-    @storage.stub(:head_object).and_return(@head)
-    @storage.stub(:get_object).and_return(@get_object)
-    @storage.stub(:put_object).and_return(@put_object)
-    result = double("result")
-    result.stub(:headers).and_return({'X-Container-Object-Count' => @files.length})
-    result.stub(:body).and_return(@files)
-    @storage.stub(:get_container).and_return(result)
+    @storage.stub(:head_container).and_return(@container_head)
+    @storage.stub(:get_container).and_return(@container_get)
+    @storage.stub(:head_object).and_return(@object_head)
+    @storage.stub(:get_object).and_yield("chunk", 0, 0)
+    @storage.stub(:put_object).and_return(double("put_object"))
+    @storage.stub(:put_container).and_return(double("put_container"))
+    @storage.stub(:url).and_return("http://localhost")
     return @storage
 end
 
@@ -60,7 +58,7 @@ describe "Valid source" do
 
   context "when remote file" do
     it "is bogus file false" do
-      @directories.stub(:head).and_return(nil)
+      @storage.stub(:head_container).and_return(nil)
       to = ResourceFactory.create_any(@storage, ":bogus_container/whatever.txt")
 
       to.valid_source().should be_false
@@ -127,7 +125,7 @@ describe "Valid destination" do
 
   context "when remote file" do
     it "is bogus file false" do
-      @directories.stub(:head).and_return(nil)
+      @storage.stub(:head_container).and_return(nil)
       to = ResourceFactory.create_any(@storage, ":bogus_container/whatever.txt")
 
       to.valid_source().should be_false
@@ -182,7 +180,7 @@ describe "Set destination" do
   
   context "when remote container missing" do
     it "valid destination true" do
-      @directories.stub(:head).and_return(nil)
+      @storage.stub(:head_container).and_return(nil)
       to = ResourceFactory.create_any(@storage, ":missing_container/directory/new.txt")
 
       rc = to.set_destination("file.txt")
@@ -199,9 +197,7 @@ end
 describe "Remote file open read write close" do
   context "when remote file" do
     it "everything does nothing" do
-      @storage = double("storage")
-      @storage.stub(:get_object).and_yield("chunk", 0, 0)
-      @storage.stub(:put_object).and_return(true)
+      @storage = mock_it
 
       res = ResourceFactory.create_any(@storage, ":container/whatever.txt")
 
@@ -215,7 +211,7 @@ end
 
 describe "File copy" do
   before(:each) do
-    @storage = mock_it([mock_file("source.txt")])
+    @storage = mock_it
   end
 
   context "when bogus local file source" do
@@ -229,7 +225,7 @@ describe "File copy" do
 
   context "when local file source but bogus destination" do
     it "copy should return false" do
-      @directories.stub(:head).and_return(nil)
+      @storage.stub(:head_container).and_return(nil)
       src = ResourceFactory.create_any(@storage, "spec/fixtures/files/foo.txt")
       dest = ResourceFactory.create_any(@storage, ":container/destination.txt")
 
@@ -273,7 +269,7 @@ describe "File copy" do
 
   context "when remote file source to local destination" do
     it "copies the data" do
-      src = ResourceFactory.create_any(@storage, ":container/source.txt")
+      src = ResourceFactory.create_any(@storage, ":container/files/foo.txt")
       dest = ResourceFactory.create_any(@storage, "spec/tmp/result.txt")
 
       dest.copy(src).should be_true
@@ -282,7 +278,7 @@ describe "File copy" do
 
   context "when remote file source and destination" do
     it "copies the data" do
-      src = ResourceFactory.create_any(@storage, ":container/source.txt")
+      src = ResourceFactory.create_any(@storage, ":container/files/foo.txt")
       dest = ResourceFactory.create_any(@storage, ":container/copy.txt")
 
       dest.copy(src).should be_true
@@ -292,7 +288,7 @@ describe "File copy" do
   context "when remote files, but source does not exist" do
     it "fails" do
       @storage.stub(:put_object).and_raise(Fog::Storage::HP::NotFound)
-      src = ResourceFactory.create_any(@storage, ":container/source.txt")
+      src = ResourceFactory.create_any(@storage, ":container/files/foo.txt")
       dest = ResourceFactory.create_any(@storage, ":container/copy.txt")
 
       dest.copy(src).should be_false
@@ -305,10 +301,7 @@ end
 
 describe "Read directory" do
   before(:each) do
-    @files = [ mock_file("files/cantread.txt"),
-               mock_file("files/subdir/with space.txt"),
-               mock_file("files/foo.txt") ]
-    @storage = mock_it(@files)
+    @storage = mock_it
   end
 
   context "when just a container" do
@@ -393,36 +386,14 @@ end
 describe "Remote resource get size" do
 
   before(:each) do
-    @headers = { "Content-Length" => 233 }
-    @head = double("head")
-    @head.stub(:headers).and_return(@headers)
-    @storage = double("storage")
-    @storage.stub(:head_object).and_return(@head)
-  end
-
-  context "get valid size" do
-    it "correctly" do
-      res = ResourceFactory.create_any(@storage, ":container/files/subdir/")
-
-      res.get_size().should eq(233)
-    end
+    @storage = mock_it
   end
 
   context "get valid size" do
     it "new size" do
-      @head.stub(:headers).and_return({"Content-Length" => 502 })
       res = ResourceFactory.create_any(@storage, ":container/files/subdir/")
 
-      res.get_size().should eq(502)
-    end
-  end
-
-  context "no content-length" do
-    it "gets zero" do
-      @head.stub(:headers).and_return({})
-      res = ResourceFactory.create_any(@storage, ":container/files/subdir/")
-
-      res.get_size().should eq(0)
+      res.get_size().should eq(9)
     end
   end
 
@@ -438,27 +409,12 @@ end
 
 describe "Remote resource remove" do
   before(:each) do
-    @remove_file = double("remove_file")
-    @remove_file.stub(:destroy).and_return(true)
-    @remove_files = double("remove_files")
-    @remove_files.stub(:head).and_return(@remove_file)
-    @remove_files.stub(:length).and_return(1)
-    @storage = mock_it(@remove_files)
-  end
-
-  context "remove succeeds" do
-    it "returns true" do
-      @remove_file.should_receive(:destroy).and_return(true)
-
-      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
-
-      res.remove(false).should be_true
-    end
+    @storage = mock_it
   end
 
   context "remove container not found" do
     it "returns false and sets error" do
-      @directories.stub(:get).and_return(nil)
+      @storage.stub(:head_container).and_return(nil)
       res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.remove(false).should be_false
@@ -470,7 +426,7 @@ describe "Remote resource remove" do
 
   context "remove file not found" do
     it "returns false and sets error" do
-      @remove_files.stub(:head).and_return(nil)
+      @storage.stub(:delete_object).and_raise(Fog::Storage::HP::NotFound.new)
       res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.remove(false).should be_false
@@ -483,41 +439,21 @@ end
 
 describe "temp url" do
   before(:each) do
-    @tmp_url_file = double("temp_url_file")
-    @tmp_url_file.stub(:content_length).and_return(2)
-    @tmp_url_file.stub(:content_type).and_return("text")
-    @tmp_url_file.stub(:etag).and_return("2222222222")
-    @tmp_url_file.stub(:last_modified).and_return("2/19/2013")
-    @files = double("temp_url_files")
-    @files.stub(:get).and_return(@tmp_url_file)
-    @files.stub(:length).and_return(1)
-    @storage = mock_it(@files)
+    @storage = mock_it
   end
 
   context "tempurl succeeds" do
     it "return true" do
-      @tmp_url_file.should_receive(:temp_signed_url).and_return("http://woot.com/")
+      @storage.should_receive(:get_object_temp_url).and_return("http://woot.com/")
       res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.tempurl(1212).should eq("http://woot.com/")
     end
   end
 
-  context "tempurl container not found" do
-    it "returns false and sets error" do
-      @directories.stub(:get).and_return(nil)
-      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
-
-      res.tempurl(1212).should be_nil
-
-      res.cstatus.message.should eq("Cannot find container ':container'.")
-      res.cstatus.error_code.should eq(:not_found)
-    end
-  end
-
   context "temp url file not found" do
     it "returns false and sets error" do
-      @files.stub(:get).and_return(nil)
+      @storage.stub(:head_object).and_return(nil)
       res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
 
       res.tempurl(1212).should be_nil
@@ -531,8 +467,8 @@ end
 describe "Remote resource grant" do
   before(:each) do
     @acl = double("acl")
-    @acl.stub(:permissions).and_return("rw")
-    @acl.stub(:users).and_return("bob@example.com")
+    @acl.stub(:readers).and_return(["sue@example.com"])
+    @acl.stub(:writers).and_return(["bob@example.com"])
     @storage = mock_it
   end
 
@@ -549,7 +485,7 @@ describe "Remote resource grant" do
 
   context "grant for container not found" do
     it "returns false and sets error" do
-      @directories.stub(:get).and_return(nil)
+      @storage.stub(:head_container).and_return(nil)
       res = ResourceFactory.create_any(@storage, ":container")
 
       res.grant(@acl).should be_false
@@ -561,7 +497,7 @@ describe "Remote resource grant" do
 
   context "grant failure" do
     it "returns false and sets error" do
-      @directory.stub(:grant).and_raise(Exception.new("Grant failure"))
+      @storage.stub(:put_container).and_raise(Exception.new("Grant failure"))
       res = ResourceFactory.create_any(@storage, ":container")
 
       res.grant(@acl).should be_false
@@ -573,7 +509,7 @@ describe "Remote resource grant" do
 
   context "save failure" do
     it "returns false and sets error" do
-      @directory.stub(:save).and_raise(Exception.new("Save failure"))
+      @storage.stub(:put_container).and_raise(Exception.new("Save failure"))
       res = ResourceFactory.create_any(@storage, ":container")
 
       res.grant(@acl).should be_false
@@ -597,8 +533,8 @@ end
 describe "Remote resource revoke" do
   before(:each) do
     @acl = double("acl")
-    @acl.stub(:permissions).and_return("rw")
-    @acl.stub(:users).and_return("bob@example.com")
+    @acl.stub(:readers).and_return(["sue@example.com"])
+    @acl.stub(:writers).and_return(["bob@example.com"])
     @storage = mock_it
   end
 
@@ -615,7 +551,7 @@ describe "Remote resource revoke" do
 
   context "revoke for container not found" do
     it "returns false and sets error" do
-      @directories.stub(:get).and_return(nil)
+      @storage.stub(:head_container).and_return(nil)
       res = ResourceFactory.create_any(@storage, ":container")
 
       res.revoke(@acl).should be_false
@@ -636,21 +572,9 @@ describe "Remote resource revoke" do
     end
   end
 
-  context "revoke failure" do
-    it "returns false and sets error" do
-      @directory.stub(:revoke).and_raise(Exception.new("Grant failure"))
-      res = ResourceFactory.create_any(@storage, ":container")
-
-      res.revoke(@acl).should be_false
-
-      res.cstatus.message.should eq("Exception revoking permissions for ':container': Grant failure")
-      res.cstatus.error_code.should eq(:general_error)
-    end
-  end
-
   context "save failure" do
     it "returns false and sets error" do
-      @directory.stub(:save).and_raise(Exception.new("Save failure"))
+      @storage.stub(:put_container).and_raise(Exception.new("Save failure"))
       res = ResourceFactory.create_any(@storage, ":container")
 
       res.revoke(@acl).should be_false

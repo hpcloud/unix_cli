@@ -95,18 +95,18 @@ module HP
 
       def sync(synckey, syncto)
         return false unless container_head()
-        @directory.synckey = synckey
-        @directory.syncto = syncto
-        @directory.save
-        return true
+        @synckey = synckey
+        @syncto = syncto
+        return save
       end
 
       def save
-        @tainer_head.delete('X-Container-Sync-Key'] = @synckey
-        @tainer_head.delete('X-Container-Sync-To'] = @syncto
-        @tainer_head.merge(@readacl.to_hash)
-        @tainer_head.merge(@writeacl.to_hash)
-        @storage.put_container(@container, @tainer_head)
+        options = {}
+        options['X-Container-Sync-Key'] = @synckey unless @synckey.nil?
+        options['X-Container-Sync-To'] = @syncto unless @syncto.nil?
+        options.merge!(@readacl.to_hash)
+        options.merge!(@writeacl.to_hash)
+        @storage.put_container(@container, options)
         return true
       end
     end

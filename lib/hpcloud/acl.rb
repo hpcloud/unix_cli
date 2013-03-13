@@ -59,7 +59,7 @@ module HP
         return true if ray.empty?
         not_found = []
         if @users.nil?
-          not_found = ray
+          not_found << ray
         else
           ray.each{ |x|
             if @users.delete(x).nil?

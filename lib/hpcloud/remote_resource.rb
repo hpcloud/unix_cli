@@ -1,7 +1,7 @@
 module HP
   module Cloud
     class RemoteResource < Resource
-      attr_accessor :directory, :size, :type, :etag, :modified
+      attr_accessor :size, :type, :etag, :modified
 
       DEFAULT_STORAGE_MAX_SIZE = 5368709120
       DEFAULT_STORAGE_SEGMENT_SIZE = 1073741824
@@ -34,19 +34,6 @@ module HP
 
       def head
         return object_head()
-      end
-
-      def copy(rhs)
-        @size = rhs.size
-        @count = rhs.count
-        @synckey = rhs.synckey
-        @syncto = rhs.syncto
-        @timestamp = rhs.timestamp
-        @writeacl = rhs.writeacl
-        @readacl = rhs.readacl
-        @public = rhs.public
-        @versions = rhs.versions
-        @public_url = rhs.public_url
       end
 
       def parse_container_headers(headers)
@@ -104,7 +91,7 @@ module HP
           return true unless @size.nil?
           data = @storage.head_object(@container, @path)
           if data.nil? || data.headers.nil?
-            @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
+            @cstatus = CliStatus.new("Cannot find object ':#{@container}/#{@path}'.", :not_found)
             return false
           end
           return parse_object_headers(data.headers)
@@ -193,9 +180,7 @@ module HP
       end
 
       def valid_destination(source)
-        if ! container_head()
-          return false
-        end
+        return false unless container_head()
         if ((source.isMulti() == true) && (isDirectory() == false))
           @cstatus = CliStatus.new("Invalid target for directory/multi-file copy '#{@fname}'.", :incorrect_usage)
           return false
@@ -204,9 +189,7 @@ module HP
       end
 
       def set_destination(name)
-        if ! container_head()
-          return false
-        end
+        return false unless container_head()
         if (@path.empty?)
           @destination = name
         else
@@ -336,7 +319,6 @@ module HP
             unless name.end_with?('/')
               if ! name.match(regex).nil?
                 res = ResourceFactory.create(@storage, ':' + @container + '/' + name)
-                res.copy(self)
                 res.etag = x['hash']
                 res.modified = x['last_modified']
                 res.size = x['bytes']
@@ -356,9 +338,11 @@ module HP
 
       def remove(force)
         begin
-          return false unless object_head()
-
+          return false unless container_head()
           @storage.delete_object(@container, @path)
+        rescue Fog::Storage::HP::NotFound => error
+          @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
+          return false
         rescue Excon::Errors::Forbidden => error
           @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
           return false
