@@ -165,13 +165,12 @@ module HP
       end
 
       def cdn_public_url
-          @directory.cdn_public_url
-          @cdn_public_url = @directory.cdn_public_url
+          @cdn_public_url = @storage.directories.get(@container).files.get(@path).cdn_public_url
           @cdn_public_url = @cdn_public_url.gsub(/%2F/, '/') unless @cdn_public_url.nil?
       end
 
       def cdn_public_ssl_url
-          @cdn_public_ssl_url = @directory.cdn_public_ssl_url
+          @cdn_public_ssl_url = @storage.directories.get(@container).files.get(@path).cdn_public_ssl_url
           @cdn_public_ssl_url = @cdn_public_ssl_url.gsub(/%2F/, '/') unless @cdn_public_ssl_url.nil?
       end
 

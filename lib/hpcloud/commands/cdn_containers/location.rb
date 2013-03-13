@@ -23,7 +23,7 @@ Aliases: cdn:containers:loc
           names = [name] + names
           names.each { |name|
             resource = ResourceFactory.create(Connection.instance.storage, name)
-            if resource.is_valid?
+            if resource.container_head
               if options.ssl
                 @log.display resource.cdn_public_ssl_url
               else

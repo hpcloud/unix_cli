@@ -32,11 +32,11 @@ module HP
       end
 
       def cdn_public_url
-          @directory.cdn_public_url
+        @storage.directories.head(@container).cdn_public_url
       end
 
       def cdn_public_ssl_url
-          @cdn_public_ssl_url = @directory.cdn_public_ssl_url
+        @storage.directories.head(@container).cdn_public_ssl_url
       end
 
       def remove(force)
