@@ -126,6 +126,6 @@ describe "Copy large" do
   end
     
   after(:all) do
-    #ConfigHelper.reset()
+    ConfigHelper.reset()
   end
 end

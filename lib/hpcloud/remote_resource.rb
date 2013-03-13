@@ -28,6 +28,7 @@ module HP
       end
 
       def get_size()
+        @size = nil if @size == 0 # manifest file
         return 0 unless object_head()
         return @size
       end
@@ -86,7 +87,7 @@ module HP
       end
 
       def parse_object_headers(headers)
-        @size = headers['Content-Length']
+        @size = headers['Content-Length'].to_i
         @size = 0 if @size.nil?
         @modified = headers['Last-Modified']
         @etag = headers['Etag']
@@ -123,7 +124,7 @@ module HP
       end
 
       def open(output=false, siz=0)
-        return true
+        return object_head()
       end
 
       def read
