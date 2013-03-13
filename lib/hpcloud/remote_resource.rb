@@ -55,6 +55,7 @@ module HP
       def container_head()
         begin
           return true unless @size.nil?
+          @size = 0
           data = @storage.head_container(@container)
           if data.nil? || data.headers.nil?
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
@@ -89,6 +90,7 @@ module HP
       def object_head()
         begin
           return true unless @size.nil?
+          @size = 0
           data = @storage.head_object(@container, @path)
           if data.nil? || data.headers.nil?
             @cstatus = CliStatus.new("Cannot find object ':#{@container}/#{@path}'.", :not_found)

@@ -25,8 +25,8 @@ module HP
 
       def container_head
         begin
-          return true unless @directory.nil?
-
+          return true unless @size.nil?
+          @size = 0
           @directory = @storage.shared_directories.get(@container)
           if @directory.nil?
             @cstatus = CliStatus.new("Cannot find container '#{@container}'.", :not_found)
@@ -51,14 +51,8 @@ module HP
       end
 
       def get_size()
-        begin
-          return 0 unless get_container
-          file = @directory.files.get(@path)
-          return 0 if file.nil?
-          return file.content_length
-        rescue Exception => e
-        end
-        return 0
+        return 0 unless container_head()
+        return @size
       end
 
       #
@@ -67,7 +61,7 @@ module HP
       # where we want to recursively copy things vs a regular file
       #
       def foreach(&block)
-        return false if get_container == false
+        return false unless container_head()
         return if @directory.nil?
         case @ftype
         when :shared_directory

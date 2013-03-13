@@ -44,10 +44,10 @@ module HP
           return false unless container_head()
 
           if force == true
-            @directory.files.each { |file| file.destroy }
+            foreach { |x| x.remove(force) }
           end
           begin
-            @directory.destroy
+            @storage.delete_container(@container)
           rescue Excon::Errors::Conflict
             @cstatus = CliStatus.new("The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it.", :conflicted)
             return false
