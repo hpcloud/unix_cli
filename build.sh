@@ -4,7 +4,7 @@ TOP=$(pwd)
 export `grep VERSION lib/hpcloud/version.rb | sed -e 's/ //g' -e "s/'//g"`
 CONTAINER="documentation-downloads"
 DEST=":${CONTAINER}/unixcli/v${VERSION}/"
-FOG_GEM=${FOG_GEM:="hpfog-0.0.18.gem"}
+FOG_GEM=${FOG_GEM:="hpfog.gem"}
 BUILD=
 if [ -n "${BUILD_NUMBER}" ]
 then
@@ -66,6 +66,7 @@ if ! hpcloud containers | grep ${CONTAINER} >/dev/null
 then
   hpcloud containers:add :${CONTAINER}
 fi
+hpcloud copy -a deploy hpcloud-${VERSION}.gem $DEST/hpcloud-test.gem
 hpcloud copy -a deploy hpcloud-${VERSION}.gem $DEST
 hpcloud location -a deploy ${DEST}hpcloud-${VERSION}.gem
 
