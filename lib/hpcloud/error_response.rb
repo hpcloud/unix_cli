@@ -42,8 +42,8 @@ module HP
           message = "Unknown error response: " + response.to_s
         end
         ret += code + " " unless code.nil?
-        ret += message + ": " unless message.nil?
-        ret += details unless details.nil?
+        ret += message unless message.nil?
+        ret += ": " + details unless details.nil?
         return ret
       end
 
