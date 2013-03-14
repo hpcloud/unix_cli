@@ -6,9 +6,8 @@ module HP
   module Cloud
     class Resource
       attr_reader :fname, :ftype, :container, :path
-      attr_reader :public_url, :public
+      attr_reader :public_url, :readers, :writers, :public
       attr_reader :destination, :cstatus
-      attr_reader :readers, :writers
       attr_reader :restart
     
       @@limit = nil
@@ -21,6 +20,8 @@ module HP
         @disable_pbar = false
         @mime_type = nil
         @restart = false
+        @readacl = []
+        @writeacl = []
         parse()
       end
 
@@ -136,7 +137,12 @@ module HP
         return true
       end
 
-      def read_header()
+      def head()
+        @cstatus = CliStatus.new("Not supported on local object '#{@fname}'.", :not_supported)
+        return false
+      end
+
+      def container_head()
         @cstatus = CliStatus.new("Not supported on local object '#{@fname}'.", :not_supported)
         return false
       end
@@ -171,7 +177,10 @@ module HP
       end
 
       def copy_all(from)
-        if ! from.valid_source() then return false end
+        if ! from.valid_source()
+          @cstatus = from.cstatus
+          return false
+        end
         if ! valid_destination(from) then return false end
 
         copiedfile = false

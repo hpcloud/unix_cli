@@ -22,7 +22,7 @@ Examples:
             sub_command("adding container") {
               res = ContainerResource.new(Connection.instance.storage, name)
               name = res.container
-              if res.get_container()
+              if res.container_head()
                 @log.fatal "Container '#{name}' already exists.", :conflicted
               else
                 if acceptable_name?(res, options)

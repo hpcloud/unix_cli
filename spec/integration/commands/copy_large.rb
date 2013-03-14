@@ -64,9 +64,9 @@ describe "Copy large" do
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Copied #{fname} => :largetest\n")
       rsp.exit_status.should be_exit(:success)
-      rsp = cptr('list :largetest')
+      rsp = cptr('list :largetest -c sname,size')
       rsp.stderr.should eq("")
-      rsp.stdout.should eq(filename + "\n")
+      rsp.stdout.should eq("oneunder 199\n")
       LargeHelper.verify_body(filename, body).should be_true
     end
   end
@@ -82,6 +82,9 @@ describe "Copy large" do
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Copied #{fname} => :largetest\n")
       rsp.exit_status.should be_exit(:success)
+      rsp = cptr('list :largetest -c sname,size')
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("exactly 200\n")
       LargeHelper.verify_body(filename, body).should be_true
     end
   end
@@ -97,6 +100,9 @@ describe "Copy large" do
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Copied #{fname} => :largetest\n")
       rsp.exit_status.should be_exit(:success)
+      rsp = cptr('list :largetest -c sname,size')
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("oneover 0\noneover.segment.0000000001 200\noneover.segment.0000000002 1\n")
       LargeHelper.verify_body(filename, body).should be_true
     end
   end
@@ -112,11 +118,14 @@ describe "Copy large" do
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Copied #{fname} => :largetest\n")
       rsp.exit_status.should be_exit(:success)
+      rsp = cptr('list :largetest -c sname,size')
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("manyover 0\nmanyover.segment.0000000001 200\nmanyover.segment.0000000002 200\nmanyover.segment.0000000003 200\nmanyover.segment.0000000004 200\nmanyover.segment.0000000005 200\nmanyover.segment.0000000006 200\nmanyover.segment.0000000007 200\nmanyover.segment.0000000008 200\nmanyover.segment.0000000009 200\nmanyover.segment.0000000010 200\nmanyover.segment.0000000011 11\n")
       LargeHelper.verify_body(filename, body).should be_true
     end
   end
     
   after(:all) do
-    #ConfigHelper.reset()
+    ConfigHelper.reset()
   end
 end

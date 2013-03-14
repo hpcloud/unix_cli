@@ -1,49 +1,91 @@
 module HP
   module Cloud
     class Acl
-      VALID_ACLS = ["r", "rw", "w"]
+      ALL = ".r:*,.rlistings"
 
-      attr_reader :permissions, :users
-      attr_reader :cstatus
+      attr_reader :cstatus, :public, :users
 
-      def initialize(permissions, users)
+      def initialize(key, hash)
+        @key = key
         @cstatus = CliStatus.new
-        @permissions = permissions.downcase
-        @permissions = "r" if @permissions == "public-read"
-        if users.nil? || users.empty?
-          @users = nil
-        else
-          @users = users
-          @users = nil if users[0].empty?
-        end
-
-        if @permissions == "private"
-          @cstatus = CliStatus.new("Use the acl:revoke command to revoke public read permissions", :incorrect_usage)
-          return
-        end
-        unless VALID_ACLS.include?(@permissions)
-          @cstatus = CliStatus.new("Your permissions '#{@permissions}' are not valid.\nValid settings are: #{VALID_ACLS.join(', ')}", :incorrect_usage)
-          return
-        end
-        @permissions = "pr" if is_public? && @permissions == "r"
-        if is_public? && @permissions != "pr"
-          @cstatus = CliStatus.new("You may not make an object writable by everyone", :not_supported)
-          return
-        end
+        hash = {} if hash.nil?
+        @users = parse_acl(hash[key])
+        @public = parse_public(hash[key])
       end
 
-      def is_public?
-        return @users.nil?
+      def parse_acl(header)
+        return nil if header.nil?
+        return [] if header.start_with?(".r:*")
+        ray = []
+        header.split(",").each {|x|
+           if x.index(":")
+             u = x.split(":")[1]
+             ray << u unless u.nil?
+           else
+             ray << x
+           end
+        }
+        return nil if ray.empty?
+        return ray
+      end
+
+      def parse_public(header)
+        return "no" if header.nil?
+        return header.start_with?(".r:*")?"yes":"no"
       end
 
       def is_valid?
         return @cstatus.is_success?
       end
 
-      def to_s
-        return "public-read" if @permissions == "pr"
-        return (@permissions + " for " + @users.join(",")) unless @users.nil?
-        return @permissions
+      def to_hash
+        return { @key => '' } if @users.nil?
+        return { @key => ALL } if @users.empty?
+        return { @key => "*:" + @users.join(",*:") }
+      end
+
+      def grant(ray)
+        return true if ray.nil?
+        return true if ray.empty?
+        @users = [] if @users.nil?
+        ray.each{ |x|
+          @users << x unless @users.index(x)
+        }
+        return true
+      end
+
+      def revoke(ray)
+        return true if ray.nil?
+        return true if ray.empty?
+        not_found = []
+        if @users.nil?
+          not_found << ray
+        else
+          ray.each{ |x|
+            if @users.delete(x).nil?
+              rc = false
+              not_found << x
+            end
+          }
+        end
+        @users = nil if @users.empty?
+        return true if not_found.empty?
+        @cstatus = CliStatus.new("Revoke failed invalid user: #{not_found.join(',')}", :not_found)
+        return false
+      end
+    end
+
+    class AclReader < Acl
+      KEY = 'X-Container-Read'
+      def initialize(hash)
+        super(KEY, hash)
+      end
+    end
+
+    class AclWriter < Acl
+      KEY = 'X-Container-Write'
+      def initialize(hash)
+        super(KEY, hash)
       end
     end
   end

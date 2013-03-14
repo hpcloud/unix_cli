@@ -21,6 +21,9 @@ Aliases: ls
       method_option :long,
                     :type => :boolean, :aliases => '-l',
                     :desc => 'Long listing.'
+      method_option :sync,
+                    :type => :boolean,
+                    :desc => 'List synchronizations.'
       CLI.add_report_options
       CLI.add_common_options
       def list(*sources)
@@ -30,8 +33,15 @@ Aliases: ls
           opt = {}
           opt[Columns.option_name] = options[Columns.option_name]
           opt[Tableizer.option_name] = options[Tableizer.option_name]
-          unless options[:long]
-            opt[Tableizer.option_name] = ' ' if opt[Tableizer.option_name].nil?
+          if options[:long]
+            longlist = true
+          else
+            if options[:sync]
+              longlist = true
+            else
+              longlist = false
+              opt[Tableizer.option_name] = ' ' if opt[Tableizer.option_name].nil?
+            end
           end
           sources.each { |name|
             sub_command {
@@ -43,15 +53,22 @@ Aliases: ls
                 else
                   keys = [ "sname" ]
                 end
-                if options[:long]
+                if longlist == true
                   if from.is_object_store?
-                    keys += [ "count", "size" ]
+                    if options[:sync]
+                      keys += [ "count", "size", "synckey", "syncto" ]
+                    else
+                      keys += [ "count", "size" ]
+                    end
                   else
                     keys += [ "size", "type", "etag", "modified" ]
                   end
                 end
                 tableizer = Tableizer.new(opt, keys)
                 from.foreach { |file|
+                  if options[:sync]
+                    file.container_head()
+                  end
                   tableizer.add(file.to_hash)
                 }
                 tableizer.print

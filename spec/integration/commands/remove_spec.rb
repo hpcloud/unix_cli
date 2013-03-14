@@ -44,7 +44,7 @@ describe "Remove command" do
 
         rsp = cptr("rm :notmycontainer/#{@file_name}")
 
-        rsp.stderr.should eq("Cannot find container ':notmycontainer'.\n")
+        rsp.stderr.should eq("You don't have an object named ':notmycontainer/spec/fixtures/files/Matryoshka/Putin/Medvedev.txt'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end

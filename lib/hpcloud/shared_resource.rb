@@ -17,18 +17,29 @@ module HP
         @container = @fname.match(/http[s]*:\/\/[^\/]*\/[^\/]*\/[^\/]*\/[^\/]*/).to_s
         @path = @fname.gsub(@container, '')
         @path = @path.gsub(/^\/*/, '')
+        @lname = @fname
+        @sname = @path
       end
 
-      def get_container
-        begin
-          return false if is_valid? == nil
-          return true unless @directory.nil?
+      def head
+        return container_head()
+      end
 
+      def container_head
+        begin
+          return true unless @size.nil?
+          @size = 0
           @directory = @storage.shared_directories.get(@container)
           if @directory.nil?
             @cstatus = CliStatus.new("Cannot find container '#{@container}'.", :not_found)
             return false
           end
+          @count = @directory.count.to_i
+          @size = @directory.bytes.to_i
+        rescue Fog::Storage::HP::NotFound => error
+p self
+          @cstatus = CliStatus.new("Cannot find container '#{@container}'.", :not_found)
+          return false
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
           @cstatus  = CliStatus.new(resp.error_string, :permission_denied)
@@ -43,15 +54,13 @@ module HP
         return true
       end
 
+      def object_head
+        return container_head()
+      end
+
       def get_size()
-        begin
-          return 0 unless get_container
-          file = @directory.files.get(@path)
-          return 0 if file.nil?
-          return file.content_length
-        rescue Exception => e
-        end
-        return 0
+        return 0 unless container_head()
+        return @size
       end
 
       #
@@ -60,8 +69,7 @@ module HP
       # where we want to recursively copy things vs a regular file
       #
       def foreach(&block)
-        return false if get_container == false
-        return if @directory.nil?
+        return false unless container_head()
         case @ftype
         when :shared_directory
           regex = "^" + path + ".*"
@@ -71,7 +79,7 @@ module HP
         @directory.files.each { |x|
           name = x.key.to_s
           if ! name.match(regex).nil?
-            yield ResourceFactory.create(@storage, container + '/' + name)
+            yield ResourceFactory.create(@storage, @container + '/' + name)
           end
         }
       end
@@ -112,7 +120,20 @@ module HP
           @cstatus = CliStatus.new("Removal of shared containers is not supported.", :not_supported)
           return false
         end
-        super(force)
+        begin
+          return false unless container_head()
+          @storage.delete_shared_object(@container + '/' + @path)
+        rescue Fog::Storage::HP::NotFound => error
+          @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
+          return false
+        rescue Excon::Errors::Forbidden => error
+          @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
+          return false
+        rescue Exception => e
+          @cstatus = CliStatus.new("Exception removing '#{@fname}': " + e.to_s, :general_error)
+          return false
+        end
+        return true
       end
     end
   end

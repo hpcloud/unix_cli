@@ -3,7 +3,7 @@ require 'hpcloud/remote_resource.rb'
 module HP
   module Cloud
     class ContainerResource < RemoteResource
-      attr_accessor :count
+      attr_accessor :count, :synckey, :syncto
 
       def parse
         unless @fname.index('/').nil?
@@ -27,38 +27,27 @@ module HP
         false
       end
 
-      def read_header()
-        begin
-          return false if get_container == false
-
-          @public_url = @directory.public_url
-          @public = @directory.public? ? "yes" : "no"
-          @readers = @directory.list_users_with_read.join(",")
-          @writers = @directory.list_users_with_write.join(",")
-        rescue Exception => error
-          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
-          return false
-        end
-        return true
+      def head
+        return container_head()
       end
 
       def cdn_public_url
-          @directory.cdn_public_url
+        @storage.directories.head(@container).cdn_public_url
       end
 
       def cdn_public_ssl_url
-          @cdn_public_ssl_url = @directory.cdn_public_ssl_url
+        @storage.directories.head(@container).cdn_public_ssl_url
       end
 
       def remove(force)
         begin
-          return false if get_container == false
+          return false unless container_head()
 
           if force == true
-            @directory.files.each { |file| file.destroy }
+            foreach { |x| x.remove(force) }
           end
           begin
-            @directory.destroy
+            @storage.delete_container(@container)
           rescue Excon::Errors::Conflict
             @cstatus = CliStatus.new("The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it.", :conflicted)
             return false
@@ -80,13 +69,11 @@ module HP
 
       def grant(acl)
         begin
-          return false if is_valid? == false
-          return false if get_container == false
-          return false if get_files == false
+          return false unless container_head()
 
-          @directory.grant(acl.permissions, acl.users)
-          @directory.save
-          return true
+          @readacl.grant(acl.readers)
+          @writeacl.grant(acl.writers)
+          return save()
         rescue Exception => e
           @cstatus = CliStatus.new("Exception granting permissions for '#{@fname}': " + e.to_s, :general_error)
           return false
@@ -95,17 +82,37 @@ module HP
 
       def revoke(acl)
         begin
-          return false if is_valid? == false
-          return false if get_container == false
-          return false if get_files == false
+          return false unless container_head()
 
-          @directory.revoke(acl.permissions, acl.users)
-          @directory.save
-          return true
+          @readacl.revoke(acl.readers)
+          @writeacl.revoke(acl.writers)
+          return save()
         rescue Exception => e
           @cstatus = CliStatus.new("Exception revoking permissions for '#{@fname}': " + e.to_s, :general_error)
           return false
         end
+      end
+
+      def sync(synckey, syncto)
+        return false unless container_head()
+        @synckey = synckey
+        @syncto = syncto
+        return save
+      end
+
+      def save
+        options = {}
+        options['X-Container-Sync-Key'] = @synckey unless @synckey.nil?
+        options['X-Container-Sync-To'] = @syncto unless @syncto.nil?
+        options.merge!(@readacl.to_hash)
+        options.merge!(@writeacl.to_hash)
+        begin
+          @storage.put_container(@container, options)
+        rescue Excon::Errors::BadRequest => error
+          @@error = ErrorResponse.new(error).to_s
+          error_status = :incorrect_usage
+        end
+        return true
       end
     end
   end

@@ -1,7 +1,7 @@
 module HP
   module Cloud
     class RemoteResource < Resource
-      attr_accessor :directory, :size, :type, :etag, :modified
+      attr_accessor :size, :type, :etag, :modified
 
       DEFAULT_STORAGE_MAX_SIZE = 5368709120
       DEFAULT_STORAGE_SEGMENT_SIZE = 1073741824
@@ -28,96 +28,103 @@ module HP
       end
 
       def get_size()
-        begin
-          head = @storage.head_object(@container, @path)
-          return 0 if head.nil?
-          return 0 if head.headers["Content-Length"].nil?
-          return head.headers["Content-Length"].to_i
-        rescue
-          return 0
-        end
+        @size = nil if @size == 0 # manifest file
+        return 0 unless object_head()
+        return @size
       end
 
-      def get_container
-        begin
-          return false if is_valid? == false
-          return true unless @directory.nil?
-
-          @directory = @storage.directories.get(@container)
-          if @directory.nil?
-            @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
-            return false
-          end
-          @size = @directory.bytes
-          @count = @directory.count
-        rescue Excon::Errors::Forbidden => e
-          resp = ErrorResponse.new(e)
-          @cstatus = CliStatus.new(resp.error_string, :permission_denied)
-          return false
-        rescue Fog::HP::Errors::Forbidden => error
-          @cstatus  = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
-          return false
-        rescue Exception => error
-          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
-          return false
-        end
-        return true
+      def head
+        return object_head()
       end
 
-      def get_files
-        begin
-          return false if is_valid? == false
-
-          unless @path.empty?
-            @file = @directory.files.get(@path)
-            if @file.nil?
-              @cstatus = CliStatus.new("Cannot find object '#{@fname}'.", :not_found)
-              return false
-            end
-            @size = @file.content_length
-            @type = @file.content_type
-            @etag = @file.etag
-            @modified = @file.last_modified
-          end
-        rescue Excon::Errors::Forbidden => e
-          resp = ErrorResponse.new(e)
-          @cstatus  = CliStatus.new(resp.error_string, :permission_denied)
-          return false
-        rescue Fog::HP::Errors::Forbidden => error
-          @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
-          return false
-        rescue Exception => error
-          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
-          return false
+      def parse_container_headers(headers)
+        @size = headers['X-Container-Bytes-Used']
+        @size = 0 if @size.nil?
+        @count = headers['X-Container-Object-Count']
+        @synckey = headers['X-Container-Sync-Key']
+        @syncto = headers['X-Container-Sync-To']
+        #@timestamp = Time.at(headers['X-Timestamp'].to_f)
+        @writeacl = AclWriter.new(headers)
+        @readacl = AclReader.new(headers)
+        @public = @readacl.public
+        @readers = @readacl.users.join(",") unless @readacl.users.nil?
+        @writers = @writeacl.users.join(",") unless @writeacl.users.nil?
+        @versions = headers['X-Versions-Location']
+        if @path.nil? || @path.empty?
+          @public_url = "#{@storage.url}/#{@container}"
+        else
+          @public_url = "#{@storage.url}/#{@container}/#{@path}"
         end
+        @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
         return true
       end
 
       def container_head()
         begin
-          return nil if is_valid? == false
-
-          @head = @storage.directories.head(@container)
-          if @head.nil?
+          return true unless @size.nil?
+          @size = 0
+          data = @storage.head_container(@container)
+          if data.nil? || data.headers.nil?
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
-            return nil
+            return false
           end
+          @tainer_head = data.headers
+          return parse_container_headers(@tainer_head)
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
           @cstatus = CliStatus.new(resp.error_string, :permission_denied)
-          return nil
+          return false
+        rescue Fog::Storage::HP::NotFound => error
+          @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
+          return false
         rescue Fog::HP::Errors::Forbidden => error
           @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
-          return nil
+          return false
         rescue Exception => error
           @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
-          return nil
+          return false
         end
-        return @head
+      end
+
+      def parse_object_headers(headers)
+        @size = headers['Content-Length'].to_i
+        @size = 0 if @size.nil?
+        @modified = headers['Last-Modified']
+        @etag = headers['Etag']
+        @type = headers['Content-Type']
+        @public_url = "#{@storage.url}/#{@container}/#{@path}"
+        @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
+        return true
+      end
+
+      def object_head()
+        begin
+          return true unless @size.nil?
+          @size = 0
+          data = @storage.head_object(@container, @path)
+          if data.nil? || data.headers.nil?
+            @cstatus = CliStatus.new("Cannot find object ':#{@container}/#{@path}'.", :not_found)
+            return false
+          end
+          return parse_object_headers(data.headers)
+        rescue Fog::Storage::HP::NotFound => error
+          @cstatus = CliStatus.new("Cannot find object ':#{@container}/#{@path}'.", :not_found)
+          return false
+        rescue Excon::Errors::Forbidden => e
+          resp = ErrorResponse.new(e)
+          @cstatus = CliStatus.new(resp.error_string, :permission_denied)
+          return false
+        rescue Fog::HP::Errors::Forbidden => error
+          @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
+          return false
+        rescue Exception => error
+          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
+          return false
+        end
       end
 
       def open(output=false, siz=0)
-        return true
+        return object_head()
       end
 
       def read
@@ -172,47 +179,22 @@ module HP
         return true
       end
 
-      def read_header()
-        begin
-          return false if get_container == false
-          return false if get_files == false
-
-          @file_head = @directory.files.head(@path)
-          if @file_head.nil?
-             @cstatus = CliStatus.new("Cannot find object named '#{@fname}'.", :not_found)
-             return false
-          end
-          @public_url = @file_head.public_url
-          @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
-          @public = @directory.public? ? "yes" : "no"
-          @readers = @directory.list_users_with_read.join(",")
-          @writers = @directory.list_users_with_write.join(",")
-        rescue Exception => error
-          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
-          return false
-        end
-        return true
-      end
-
       def cdn_public_url
-          @directory.cdn_public_url
-          @cdn_public_url = @file_head.cdn_public_url
+          @cdn_public_url = @storage.directories.get(@container).files.get(@path).cdn_public_url
           @cdn_public_url = @cdn_public_url.gsub(/%2F/, '/') unless @cdn_public_url.nil?
       end
 
       def cdn_public_ssl_url
-          @cdn_public_ssl_url = @file_head.cdn_public_ssl_url
+          @cdn_public_ssl_url = @storage.directories.get(@container).files.get(@path).cdn_public_ssl_url
           @cdn_public_ssl_url = @cdn_public_ssl_url.gsub(/%2F/, '/') unless @cdn_public_ssl_url.nil?
       end
 
       def valid_source()
-        return valid_container()
+        return container_head()
       end
 
       def valid_destination(source)
-        if ! valid_container()
-          return false
-        end
+        return false unless container_head()
         if ((source.isMulti() == true) && (isDirectory() == false))
           @cstatus = CliStatus.new("Invalid target for directory/multi-file copy '#{@fname}'.", :incorrect_usage)
           return false
@@ -220,14 +202,8 @@ module HP
         return true
       end
 
-      def valid_container()
-        return get_container
-      end
-
       def set_destination(name)
-        if ! valid_container()
-          return false
-        end
+        return false unless container_head()
         if (@path.empty?)
           @destination = name
         else
@@ -251,12 +227,13 @@ module HP
             @@storage_max_size = config.get_i(:storage_max_size, DEFAULT_STORAGE_MAX_SIZE)
             @@storage_segment_size = config.get_i(:storage_segment_size, DEFAULT_STORAGE_SEGMENT_SIZE)
             @@storage_chunk_size = config.get_i(:storage_chunk_size, Excon::DEFAULT_CHUNK_SIZE)
+            @@storage_chunk_size = @@storage_segment_size if @@storage_segment_size < @@storage_chunk_size
           end
           @options = { 'Content-Type' => from.get_mime_type() }
           count = 0
           segment = i=10000000001
           total = from.get_size()
-          if total >= @@storage_max_size
+          if total > @@storage_max_size
             prefix = @destination + '.segment.'
             begin
               bytes_read = 0
@@ -275,14 +252,17 @@ module HP
               rescue
               end
               if already_exists
+                # skip the bytes
                 while bytes_to_read > 0 do
                   body = from.read(@@storage_chunk_size)
                   bytes_read += body.length
                   bytes_to_read -= body.length
                 end
               else
+                chunk_size = @@storage_chunk_size
                 @storage.put_object(@container, tmppath, nil, @options) {
-                  body = from.read(@@storage_chunk_size)
+                  chunk_size = bytes_to_read if bytes_to_read < chunk_size
+                  body = from.read(chunk_size)
                   bytes_read += body.length
                   bytes_to_read -= body.length
                   body
@@ -353,7 +333,6 @@ module HP
             unless name.end_with?('/')
               if ! name.match(regex).nil?
                 res = ResourceFactory.create(@storage, ':' + @container + '/' + name)
-                res.directory = @directory
                 res.etag = x['hash']
                 res.modified = x['last_modified']
                 res.size = x['bytes']
@@ -373,14 +352,11 @@ module HP
 
       def remove(force)
         begin
-          return false if get_container == false
-
-          file = @directory.files.head(@path)
-          if file.nil?
-             @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
-             return false
-          end
-          file.destroy
+          return false unless container_head()
+          @storage.delete_object(@container, @path)
+        rescue Fog::Storage::HP::NotFound => error
+          @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
+          return false
         rescue Excon::Errors::Forbidden => error
           @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
           return false
@@ -394,10 +370,9 @@ module HP
       def tempurl(period)
         begin
           period = 172800 if period.nil?
-          return nil if get_container == false
-          return nil if get_files == false
+          return nil unless object_head()
 
-          return @file.temp_signed_url(period, "GET")
+          return @storage.get_object_temp_url(@container, @path, period, "GET")
         rescue Excon::Errors::Forbidden => error
           @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
           return nil

@@ -37,8 +37,8 @@ describe "SharedResource" do
       to = ResourceFactory.create(@storage, @file_name1)
 
       to.valid_source().should be_true
-      to.valid_container().should be_true
-      to.get_container().should be_true
+      to.container_head().should be_true
+      to.object_head().should be_true
       to.get_size().should eq(111)
 
       to.cstatus.is_success?.should be_true

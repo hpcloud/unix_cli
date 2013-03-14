@@ -18,7 +18,7 @@ Examples:
             res = ContainerResource.new(Connection.instance.storage, name)
             name = res.container
             begin
-              if res.get_container()
+              if res.container_head()
                 response = Connection.instance.cdn.put_container(name)
                 @log.display "Added container '#{name}' to the CDN."
               else
