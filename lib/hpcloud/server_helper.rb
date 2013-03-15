@@ -129,9 +129,9 @@ module HP
         return true
       end
 
-      def set_userdata(filename)
+      def set_user_data(filename)
         return if filename.nil?
-        @userdata = Base64.encode64(File.new(filename).read)
+        @user_data = File.new(filename).read
       end
 
       def windows_password(retries=10)
@@ -181,9 +181,8 @@ module HP
              :key_name => @keyname,
              :security_groups => @security,
              :metadata => @meta.hsh}
-          unless @image.nil?
-            hsh[:image_id] = @image
-          end
+          hsh[:image_id] = @image unless @image.nil?
+          hsh['user_data'] = @user_data unless @user_data.nil?
           unless @volume.nil?
             hsh[:block_device_mapping] = [{
                      'volume_size' => '',

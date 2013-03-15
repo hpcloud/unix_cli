@@ -37,6 +37,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'ruby-progressbar', '~>1.0.1'
   s.add_development_dependency 'rspec', '~>2.4.0'
   s.add_runtime_dependency 'json', '~>1.7.5'
-  s.add_runtime_dependency 'excon', '0.16.10' # To avoid Fog/Excon issue
 
 end
