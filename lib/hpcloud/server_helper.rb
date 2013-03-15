@@ -1,4 +1,5 @@
 require 'hpcloud/metadata'
+require "base64"
 
 module HP
   module Cloud
@@ -126,6 +127,11 @@ module HP
           return false
         end
         return true
+      end
+
+      def set_userdata(filename)
+        return if filename.nil?
+        @userdata = Base64.encode64(File.new(filename).read)
       end
 
       def windows_password(retries=10)

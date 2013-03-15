@@ -31,6 +31,9 @@ Examples:
       method_option :metadata,
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'
+      method_option :userdata,
+                    :type => :string, :aliases => '-u',
+                    :desc => 'File which contains user data.'
       CLI.add_common_options
       define_method "servers:add" do |name, *flavor|
         cli_command(options) {
@@ -43,6 +46,7 @@ Examples:
           srv.set_security_groups(options[:security_group])
           srv.set_private_key(options[:private_key_file])
           srv.meta.set_metadata(options[:metadata])
+          srv.set_userdata(options[:userdata])
           if srv.save == true
             @log.display "Created server '#{name}' with id '#{srv.id}'."
             if srv.is_windows?
