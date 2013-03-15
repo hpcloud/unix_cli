@@ -66,7 +66,7 @@ if ! hpcloud containers | grep ${CONTAINER} >/dev/null
 then
   hpcloud containers:add :${CONTAINER}
 fi
-hpcloud copy -a deploy hpcloud-${VERSION}.gem $DEST/hpcloud-test.gem
+hpcloud copy -a deploy hpcloud-${VERSION}.gem ":${CONTAINER}/unixcli/hpcloud-test.gem"
 hpcloud copy -a deploy hpcloud-${VERSION}.gem $DEST
 hpcloud location -a deploy ${DEST}hpcloud-${VERSION}.gem
 
