@@ -1,6 +1,8 @@
 module HP
   module Cloud
     class SharedResource < RemoteResource
+      attr_accessor :count
+
       def parse()
         @container = nil
         @path = nil

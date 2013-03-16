@@ -43,7 +43,10 @@ module HP
         end
         ret += code + " " unless code.nil?
         ret += message unless message.nil?
-        ret += ": " + details unless details.nil?
+        unless details.nil?
+          ret += ": " unless ret.empty?
+          ret += details
+        end
         return ret
       end
 

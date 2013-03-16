@@ -28,7 +28,7 @@ describe "Acl class" do
       acl = AclReader.new(nil)
 
       acl.is_valid?.should be_true
-      acl.to_hash.should eq({})
+      acl.to_hash.should eq({"X-Container-Read"=>""})
       acl.cstatus.message.should be_nil
       acl.cstatus.error_code.should eq(:success)
     end
@@ -82,7 +82,7 @@ describe "Acl class" do
 
       acl.revoke(["ginny","percy"]).should be_false
 
-      acl.to_hash.should eq({})
+      acl.to_hash.should eq({"X-Container-Read"=>""})
       acl.is_valid?.should be_false
       acl.cstatus.message.should eq("Revoke failed invalid user: ginny,percy")
       acl.cstatus.error_code.should eq(:not_found)

@@ -68,7 +68,7 @@ module HP
             end
           }
         end
-        @users = nil if @users.empty?
+        @users = nil if @users.nil? || @users.empty?
         return true if not_found.empty?
         @cstatus = CliStatus.new("Revoke failed invalid user: #{not_found.join(',')}", :not_found)
         return false

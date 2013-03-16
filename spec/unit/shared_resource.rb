@@ -26,6 +26,8 @@ describe "SharedResource" do
     @files.stub(:each).and_yield(@file1).and_yield(@file2)
     @directory = double("directory")
     @directory.stub(:files).and_return(@files)
+    @directory.stub(:count).and_return("2")
+    @directory.stub(:bytes).and_return("23422")
     @directories = double("directories")
     @directories.stub(:get).and_return(@directory)
     @storage = double("storage")
@@ -39,7 +41,8 @@ describe "SharedResource" do
       to.valid_source().should be_true
       to.container_head().should be_true
       to.object_head().should be_true
-      to.get_size().should eq(111)
+      to.count.should eq(2)
+      to.get_size().should eq(23422)
 
       to.cstatus.is_success?.should be_true
     end
