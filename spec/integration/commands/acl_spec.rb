@@ -183,7 +183,7 @@ describe "Acl command (viewing acls)" do
         rsp = cptr("acl -d X :acl_container")
 
         rsp.stderr.should eq("")
-        rsp.stdout.should include("noXterrylhowe@gmail.comXfreshpow371@gmail.comXhttps://obje")
+        rsp.stdout.should match("noX#{@default_username}X#{@username}Xhttps://.*object.*/acl_container\n$")
         rsp.exit_status.should be_exit(:success)
       end
     end
