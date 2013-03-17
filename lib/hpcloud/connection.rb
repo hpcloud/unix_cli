@@ -113,7 +113,7 @@ module HP
           unless options[:connection_options].nil?
             options[:ssl_verify_peer] = options[:connection_options][:ssl_verify_peer]
           end
-          Fog::HP.authenticate_v2(options, options)
+          Fog::HP.authenticate_v2(options, options[:connection_options])
         else
           Fog::Storage.new(options).directories
           return true
