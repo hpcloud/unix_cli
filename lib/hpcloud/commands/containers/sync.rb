@@ -12,8 +12,13 @@ Examples:
   hpcloud containers:sync :atainer keyo https://region-b.geo-1.objects.hpcloudsvc.com:443/v1/96XXXXXX/btainer     # Create a two way synchronization betwee :atainer and :btainer
       DESC
       CLI.add_common_options
-      define_method "containers:sync" do |name, key, location = nil|
+      define_method "containers:sync" do |name, key, *location|
         cli_command(options) {
+          if location.empty?
+            location = nil
+          else
+            location = location[0]
+          end
           sub_command("syncing container") {
             res = ContainerResource.new(Connection.instance.storage, name)
             if res.sync(key, location)
