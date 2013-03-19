@@ -3,7 +3,7 @@ require 'hpcloud/remote_resource.rb'
 module HP
   module Cloud
     class ContainerResource < RemoteResource
-      attr_accessor :count, :synckey, :syncto
+      attr_accessor :count
 
       def parse
         unless @fname.index('/').nil?

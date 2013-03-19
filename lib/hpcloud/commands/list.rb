@@ -67,7 +67,7 @@ Aliases: ls
                 tableizer = Tableizer.new(opt, keys)
                 from.foreach { |file|
                   if options[:sync]
-                    file.container_head()
+                    file.container_head(true)
                   end
                   tableizer.add(file.to_hash)
                 }

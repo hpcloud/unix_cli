@@ -1,7 +1,7 @@
 module HP
   module Cloud
     class RemoteResource < Resource
-      attr_accessor :size, :type, :etag, :modified
+      attr_accessor :size, :type, :etag, :modified, :synckey, :syncto
 
       DEFAULT_STORAGE_MAX_SIZE = 5368709120
       DEFAULT_STORAGE_SEGMENT_SIZE = 1073741824
@@ -59,9 +59,11 @@ module HP
         return true
       end
 
-      def container_head()
+      def container_head(force=false)
         begin
-          return true unless @size.nil?
+          unless force
+            return true unless @size.nil?
+          end
           @size = 0
           data = @storage.head_container(@container)
           if data.nil? || data.headers.nil?

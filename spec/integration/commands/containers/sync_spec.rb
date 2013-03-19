@@ -27,6 +27,12 @@ describe "list command" do
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Container :syncfrom using key 'keyo' to #{location}\n")
       rsp.exit_status.should be_exit(:success)
+
+      rsp = cptr("list -c sname,synckey,syncto -d --sync")
+      rsp.stderr.should eq("")
+      rsp.stdout.should include("syncfrom,keyo,#{location}\n")
+      rsp.stdout.should include("syncto,keyo,\n")
+      rsp.exit_status.should be_exit(:success)
     end
   end
 
