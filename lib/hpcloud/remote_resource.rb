@@ -369,11 +369,12 @@ module HP
         return true
       end
 
-      def tempurl(period)
+      def tempurl(period, for_update=false)
         begin
           period = 172800 if period.nil?
           return nil unless object_head()
 
+          return @storage.get_object_temp_url(@container, @path, period, "PUT") if (for_update)
           return @storage.get_object_temp_url(@container, @path, period, "GET")
         rescue Excon::Errors::Forbidden => error
           @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)

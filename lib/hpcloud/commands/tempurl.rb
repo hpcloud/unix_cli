@@ -18,6 +18,9 @@ Aliases: tmpurl
       method_option :time_period,
                     :type => :string, :aliases => '-p',
                     :desc => 'time period to keep the url alive'
+      method_option :update,
+                    :type => :boolean, :aliases => '-u',
+                    :desc => 'Update an existing tempurl'
       CLI.add_common_options
       def tempurl(name, *names)
         cli_command(options) {

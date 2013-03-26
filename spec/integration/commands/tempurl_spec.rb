@@ -59,6 +59,17 @@ describe 'tempurl command' do
 
   context "with avl settings from config" do
     it "should return tempurl" do
+      rsp = cptr('tempurl --update :tempcontainer/foo.txt')
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should include("#{@hp_svc.url}")
+      rsp.stdout.should include("/tempcontainer/foo.txt")
+      rsp.exit_status.should be_exit(:success)
+    end
+  end
+
+  context "with avl settings from config" do
+    it "should return tempurl" do
       rsp = cptr('tempurl :tempcontainer/foo.txt')
 
       rsp.stderr.should eq("")

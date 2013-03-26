@@ -451,6 +451,15 @@ describe "temp url" do
     end
   end
 
+  context "tempurl put" do
+    it "return true" do
+      @storage.should_receive(:get_object_temp_url).and_return("http://woot.com/")
+      res = ResourceFactory.create_any(@storage, ":container/files/river.txt")
+
+      res.tempurl(3333, true).should eq("http://woot.com/")
+    end
+  end
+
   context "temp url file not found" do
     it "returns false and sets error" do
       @storage.stub(:head_object).and_return(nil)
