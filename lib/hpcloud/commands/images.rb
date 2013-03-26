@@ -23,18 +23,19 @@ Examples:
 
 Aliases: images:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       def images(*arguments)
         cli_command(options) {
           images = Images.new()
           if images.empty?
-            display "You currently have no images, use `#{selfname} images:add` to create one."
+            @log.display "You currently have no images, use `#{selfname} images:add` to create one."
           else
-            hsh = images.get_hash(arguments)
-            if hsh.empty?
-              display "There are no images that match the provided arguments"
+            ray = images.get_array(arguments)
+            if ray.empty?
+              @log.display "There are no images that match the provided arguments"
             else
-              Tableizer.new(options, ImageHelper.get_keys(), hsh).print
+              Tableizer.new(options, ImageHelper.get_keys(), ray).print
             end
           end
         }

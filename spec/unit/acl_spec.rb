@@ -1,147 +1,181 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "Acl construction" do
-  context "r and user" do
-    it "permissions and users are set correctly" do
-      acl = Acl.new("r", ["elliott@newmoon.com"])
+describe "Acl class" do
+  KEY = 'X-Container-Read'
+  WRITER_KEY = 'X-Container-Write'
+  BIG_ONE = {KEY=>'*:ginny,*:ron,*:fred,*:george,*:percy,*:charlie,*:bill'}
 
-      acl.is_valid?.should be_true
-      acl.is_public?.should be_false
-      acl.permissions.should eq("r")
-      acl.users.should eq(["elliott@newmoon.com"])
-      acl.to_s.should eq("r for elliott@newmoon.com")
-      acl.error_string.should be_nil
-      acl.error_code.should be_nil
+  context "parse acl" do
+    it "returns true and no error" do
+      acl = Acl.new(nil, nil)
+
+      acl.parse_acl("*:terry").should eq(["terry"])
+      acl.parse_acl("*:terry,*:bob,*:sue").should eq(["terry","bob","sue"])
+      acl.parse_acl(".r:*,.rlist").should eq([])
+      acl.parse_acl("*:,").should eq(nil)
+
+      acl.parse_public("*:terry").should eq("no")
+      acl.parse_public("*:terry,*:bob,*:sue").should eq("no")
+      acl.parse_public(".r:*,.rlist").should eq("yes")
+      acl.parse_public("*:,").should eq("no")
+
+      acl.cstatus.is_success?.should be_true
     end
   end
-  context "rw and user" do
+
+  context "construct nothing" do
     it "permissions and users are set correctly" do
-      acl = Acl.new("rw", ["elliott@newmoon.com"])
+      acl = AclReader.new(nil)
 
       acl.is_valid?.should be_true
-      acl.is_public?.should be_false
-      acl.permissions.should eq("rw")
-      acl.users.should eq(["elliott@newmoon.com"])
-      acl.to_s.should eq("rw for elliott@newmoon.com")
-      acl.error_string.should be_nil
-      acl.error_code.should be_nil
+      acl.to_hash.should eq({"X-Container-Read"=>""})
+      acl.cstatus.message.should be_nil
+      acl.cstatus.error_code.should eq(:success)
     end
   end
-  context "w and user" do
+
+  context "construct all" do
     it "permissions and users are set correctly" do
-      acl = Acl.new("w", ["elliott@newmoon.com"])
+      hsh = {KEY=>'.r:*,.rlistings'}
+
+      acl = AclReader.new(hsh)
 
       acl.is_valid?.should be_true
-      acl.is_public?.should be_false
-      acl.permissions.should eq("w")
-      acl.users.should eq(["elliott@newmoon.com"])
-      acl.to_s.should eq("w for elliott@newmoon.com")
-      acl.error_string.should be_nil
-      acl.error_code.should be_nil
+      acl.to_hash.should eq(hsh)
     end
   end
-  context "private and user" do
-    it "permissions and users are set correctly" do
-      acl = Acl.new("private", ["elliott@newmoon.com"])
 
+  context "construct one" do
+    it "permissions and users are set correctly" do
+      hsh = {KEY=>'*:bob'}
+
+      acl = AclReader.new(hsh)
+
+      acl.is_valid?.should be_true
+      acl.to_hash.should eq(hsh)
+    end
+  end
+
+  context "construct many" do
+    it "permissions and users are set correctly" do
+      acl = AclReader.new(BIG_ONE)
+
+      acl.is_valid?.should be_true
+      acl.to_hash.should eq(BIG_ONE)
+    end
+  end
+
+  context "revoke ginny and percy" do
+    it "permissions and users are set correctly" do
+      acl = AclReader.new(BIG_ONE)
+
+      acl.revoke(["ginny","percy"]).should be_true
+
+      acl.to_hash.should eq({KEY=>"*:ron,*:fred,*:george,*:charlie,*:bill"})
+      acl.is_valid?.should be_true
+    end
+  end
+
+  context "revoke from nothing" do
+    it "permissions and users are set correctly" do
+      acl = AclReader.new(nil)
+
+      acl.revoke(["ginny","percy"]).should be_false
+
+      acl.to_hash.should eq({"X-Container-Read"=>""})
       acl.is_valid?.should be_false
-      acl.is_public?.should be_false
-      acl.permissions.should eq("private")
-      acl.users.should eq(["elliott@newmoon.com"])
-      acl.to_s.should eq("private for elliott@newmoon.com")
-      acl.error_string.should eq("Use the acl:revoke command to revoke public read permissions")
-      acl.error_code.should eq(:incorrect_usage)
+      acl.cstatus.message.should eq("Revoke failed invalid user: ginny,percy")
+      acl.cstatus.error_code.should eq(:not_found)
     end
   end
-  context "public-read and user" do
+
+  context "revoke two of three" do
     it "permissions and users are set correctly" do
-      acl = Acl.new("public-read", ["elliott@newmoon.com"])
+      acl = AclReader.new(BIG_ONE)
 
-      acl.is_valid?.should be_true
-      acl.is_public?.should be_false
-      acl.permissions.should eq("r")
-      acl.users.should eq(["elliott@newmoon.com"])
-      acl.to_s.should eq("r for elliott@newmoon.com")
-      acl.error_string.should be_nil
-      acl.error_code.should be_nil
+      acl.revoke(["charlie","hagrid","fred"]).should be_false
+
+      acl.to_hash.should eq({KEY=>"*:ginny,*:ron,*:george,*:percy,*:bill"})
+      acl.is_valid?.should be_false
+      acl.cstatus.message.should eq("Revoke failed invalid user: hagrid")
+      acl.cstatus.error_code.should eq(:not_found)
     end
   end
-  context "RW and user" do
+
+  context "revoke empty" do
     it "permissions and users are set correctly" do
-      acl = Acl.new("RW", ["elliott@newmoon.com"])
+      acl = AclReader.new(BIG_ONE)
 
+      acl.revoke([]).should be_true
+
+      acl.to_hash.should eq(BIG_ONE)
       acl.is_valid?.should be_true
-      acl.is_public?.should be_false
-      acl.permissions.should eq("rw")
-      acl.users.should eq(["elliott@newmoon.com"])
-      acl.to_s.should eq("rw for elliott@newmoon.com")
-      acl.error_string.should be_nil
-      acl.error_code.should be_nil
     end
   end
-  context "bogus and user" do
-    it "error set" do
-      acl = Acl.new("bogus", ["elliott@newmoon.com","edward@sharpe.com"])
 
-      acl.is_valid?.should be_false
-      acl.is_public?.should be_false
-      acl.permissions.should eq("bogus")
-      acl.users.should eq(["elliott@newmoon.com","edward@sharpe.com"])
-      acl.to_s.should eq("bogus for elliott@newmoon.com,edward@sharpe.com")
-      acl.error_string.should eq("Your permissions 'bogus' are not valid.\nValid settings are: r, rw, w")
-      acl.error_code.should eq(:incorrect_usage)
-    end
-  end
-  context "r for public" do
-    it "error set" do
-      acl = Acl.new("r", nil)
+  context "grant from nothing" do
+    it "permissions and users are set correctly" do
+      acl = AclReader.new(nil)
 
+      acl.grant(["bob"]).should be_true
+
+      acl.to_hash.should eq({"X-Container-Read"=>"*:bob"})
       acl.is_valid?.should be_true
-      acl.is_public?.should be_true
-      acl.permissions.should eq("pr")
-      acl.users.should be_nil
-      acl.to_s.should eq("public-read")
-      acl.error_string.should be_nil
-      acl.error_code.should be_nil
     end
   end
-  context "r for public" do
-    it "error set" do
-      acl = Acl.new("r", [""])
 
+  context "grant empty" do
+    it "permissions and users are set correctly" do
+      acl = AclReader.new(BIG_ONE)
+
+      acl.grant([]).should be_true
+
+      acl.to_hash.should eq(BIG_ONE)
       acl.is_valid?.should be_true
-      acl.is_public?.should be_true
-      acl.permissions.should eq("pr")
-      acl.users.should be_nil
-      acl.to_s.should eq("public-read")
-      acl.error_string.should be_nil
-      acl.error_code.should be_nil
     end
   end
-  context "rw for public" do
-    it "error set" do
-      acl = Acl.new("rw", [""])
 
-      acl.is_valid?.should be_false
-      acl.is_public?.should be_true
-      acl.permissions.should eq("rw")
-      acl.users.should be_nil
-      acl.to_s.should eq("rw")
-      acl.error_string.should eq("You may not make an object writable by everyone")
-      acl.error_code.should eq(:not_supported)
+  context "grant one" do
+    it "permissions and users are set correctly" do
+      acl = AclReader.new({KEY=>"*:ginny,*:ron"})
+
+      acl.grant(["percy"]).should be_true
+
+      acl.to_hash.should eq({KEY=>"*:ginny,*:ron,*:percy"})
+      acl.is_valid?.should be_true
     end
   end
-  context "w for public" do
-    it "error set" do
-      acl = Acl.new("w", [""])
 
-      acl.is_valid?.should be_false
-      acl.is_public?.should be_true
-      acl.permissions.should eq("w")
-      acl.users.should be_nil
-      acl.to_s.should eq("w")
-      acl.error_string.should eq("You may not make an object writable by everyone")
-      acl.error_code.should eq(:not_supported)
+  context "grant many" do
+    it "permissions and users are set correctly" do
+      acl = AclReader.new({KEY=>"*:ginny,*:ron"})
+
+      acl.grant(["percy","charlie", "bill"]).should be_true
+
+      acl.to_hash.should eq({KEY=>"*:ginny,*:ron,*:percy,*:charlie,*:bill"})
+      acl.is_valid?.should be_true
+    end
+  end
+
+  context "grant dups" do
+    it "permissions and users are set correctly" do
+      acl = AclReader.new({KEY=>"*:ginny,*:ron"})
+
+      acl.grant(["percy","ron", "ginny"]).should be_true
+
+      acl.to_hash.should eq({KEY=>"*:ginny,*:ron,*:percy"})
+      acl.is_valid?.should be_true
+    end
+  end
+
+  context "writer grant dups" do
+    it "permissions and users are set correctly" do
+      acl = AclWriter.new({WRITER_KEY=>"*:ginny,*:ron"})
+
+      acl.grant(["percy","ron", "ginny"]).should be_true
+
+      acl.to_hash.should eq({WRITER_KEY=>"*:ginny,*:ron,*:percy"})
+      acl.is_valid?.should be_true
     end
   end
 end

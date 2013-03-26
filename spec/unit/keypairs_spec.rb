@@ -66,8 +66,8 @@ describe "Keypairs getter" do
       keypairs = Keypairs.new.get(["keyp3"], false)
 
       keypairs[0].is_valid?.should be_false
-      keypairs[0].error_code.should eq(:general_error)
-      keypairs[0].error_string.should eq("More than one keypair matches 'keyp3', use the id instead of name.")
+      keypairs[0].cstatus.error_code.should eq(:general_error)
+      keypairs[0].cstatus.message.should eq("More than one keypair matches 'keyp3', use the id instead of name.")
       keypairs.length.should eql(1)
     end
   end
@@ -77,8 +77,8 @@ describe "Keypairs getter" do
       keypairs = Keypairs.new.get(["bogus"])
 
       keypairs[0].is_valid?.should be_false
-      keypairs[0].error_code.should eq(:not_found)
-      keypairs[0].error_string.should eq("Cannot find a keypair matching 'bogus'.")
+      keypairs[0].cstatus.error_code.should eq(:not_found)
+      keypairs[0].cstatus.message.should eq("Cannot find a keypair matching 'bogus'.")
       keypairs.length.should eql(1)
     end
   end

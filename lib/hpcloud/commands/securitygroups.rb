@@ -19,18 +19,19 @@ Examples:
 
 Aliases: securitygroups:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       def securitygroups(*arguments)
         cli_command(options) {
           securitygroups = SecurityGroups.new
           if securitygroups.empty?
-            display "You currently have no security groups, , use `#{selfname} securitygroups:add <name>` to create one."
+            @log.display "You currently have no security groups, , use `#{selfname} securitygroups:add <name>` to create one."
           else
-            hsh = securitygroups.get_hash(arguments)
-            if hsh.empty?
-              display "There are no security groups that match the provided arguments"
+            ray = securitygroups.get_array(arguments)
+            if ray.empty?
+              @log.display "There are no security groups that match the provided arguments"
             else
-              Tableizer.new(options, SecurityGroupHelper.get_keys(), hsh).print
+              Tableizer.new(options, SecurityGroupHelper.get_keys(), ray).print
             end
           end
         }

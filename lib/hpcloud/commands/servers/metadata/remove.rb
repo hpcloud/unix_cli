@@ -18,13 +18,13 @@ Aliases: servers:metadata:rm
         cli_command(options) {
           server = Servers.new.get(name_or_id)
           if server.is_valid? == false
-            error server.error_string, server.error_code
+            @log.fatal server.cstatus
           else
             metadata.each { |key|
               if server.meta.remove_metadata(key)
-                display "Removed metadata '#{key}' from server '#{name_or_id}'."
+                @log.display "Removed metadata '#{key}' from server '#{name_or_id}'."
               else
-                error_message(server.meta.error_string, server.meta.error_code)
+                @log.error server.meta.cstatus
               end
             }
           end

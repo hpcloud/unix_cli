@@ -17,15 +17,16 @@ Examples:
 
 Aliases: volumes:metadata:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       define_method "volumes:metadata" do |name_or_id|
         cli_command(options) {
           volume = Volumes.new.get(name_or_id)
           if volume.is_valid?
-            hsh = volume.meta.to_hash()
+            hsh = volume.meta.to_array()
             Tableizer.new(options, Metadata.get_keys(), hsh).print
           else
-            error volume.error_string, volume.error_code
+            @log.fatal volume.cstatus
           end
         }
       end

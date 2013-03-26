@@ -72,6 +72,12 @@ describe "Image class" do
 
       img.meta.hsh['hp_image_license'] = '1003'
       img.is_windows?.should be_true
+      img.meta.hsh['owner'] = 'bob'
+      img.is_private?.should be_true
+      img.meta.hsh['owner'] = ''
+      img.is_private?.should be_false
+      img.meta.hsh['owner'] = nil
+      img.is_private?.should be_false
     end
   end
 
@@ -119,15 +125,14 @@ describe "Image class" do
       img.name = "bob"
       img.set_server("Hal")
       img.meta.set_metadata('luke=skywalker,han=solo')
-      @server.stub(:error_string).and_return('bogus server')
-      @server.stub(:error_code).and_return(:not_found)
+      @server.stub(:cstatus).and_return(CliStatus.new("bogus server", :not_found))
       @server.stub(:is_valid?).and_return(false)
 
       img.save.should be_false
 
       img.id.should be_nil
-      img.error_string.should eq("bogus server")
-      img.error_code.should eq(:not_found)
+      img.cstatus.message.should eq("bogus server")
+      img.cstatus.error_code.should eq(:not_found)
     end
   end
 
@@ -138,14 +143,13 @@ describe "Image class" do
       img.set_server("Hal")
       img.meta.set_metadata('luke=skywalker,han=solo')
       @server.should_receive(:create_image).with("bob", {"luke"=>"skywalker","han"=>"solo"}).and_return(nil)
-      @server.stub(:error_string).and_return("Error creating image 'bob'")
-      @server.stub(:error_code).and_return(:general_error)
+      @server.stub(:cstatus).and_return(CliStatus.new("Error creating image 'bob'", :general_error))
 
       img.save.should be_false
 
       img.id.should be_nil
-      img.error_string.should eq("Error creating image 'bob'")
-      img.error_code.should eq(:general_error)
+      img.cstatus.message.should eq("Error creating image 'bob'")
+      img.cstatus.error_code.should eq(:general_error)
     end
   end
 
@@ -159,8 +163,199 @@ describe "Image class" do
       img.save.should be_false
 
       img.id.should be_nil
-      img.error_string.should eq("Invalid metadata 'bogusmetadata' should be in the form 'k1=v1,k2=v2,...'")
-      img.error_code.should eq(:incorrect_usage)
+      img.cstatus.message.should eq("Invalid metadata 'bogusmetadata' should be in the form 'k1=v1,k2=v2,...'")
+      img.cstatus.error_code.should eq(:incorrect_usage)
+    end
+  end
+
+  context "when we check get OS" do
+    it "should return some guess" do
+      img = HP::Cloud::ImageHelper.new()
+
+      img.name ="ActiveState Stackato v2.6.6 - Partner Image"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="BitNami WebPack 1.4-0-linux-ubuntu-12.04 64-bit - Partner Image"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="BitNami Drupal 7.17-0-hp-linux-ubuntu-12.04 64-bit - Partner Image"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="BitNami DevPack 1.3-0-linux-ubuntu-12.04 64-bit - Partner Image"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Precise 12.04 LTS Server 64-bit 20121026 DEPLOY-1150"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Quantal 12.10 Server 64-bit 20121017 DEPLOY-1149"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="cli_test_img1"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="ActiveState Stackato v2.4.3 - Partner Image"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Windows Server 2008 Enterprise SP2 x86 Volume License 20121031 DEPLOY-1078"
+      img.os.should eq(:windows)
+      img.login.should eq('Administrator')
+
+      img.name ="Windows Server 2008 Enterprise SP2 x64 Volume License 20121031 DEPLOY-1077"
+      img.os.should eq(:windows)
+      img.login.should eq('Administrator')
+
+      img.name ="Windows Server 2008 R2 Enterprise SP1 x64 Volume License 20121005 DEPLOY-1049"
+      img.os.should eq(:windows)
+      img.login.should eq('Administrator')
+
+      img.name ="Ubuntu Precise 12.04 LTS Server 64-bit (VOLUME-BOOTABLE)"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Windows Server 2008 R2 Ent SP1 x64 20120829 + SSH (NO os_type)"
+      img.os.should eq(:windows)
+      img.login.should eq('Administrator')
+
+      img.name ="ActiveState Stackato v2.2.3 - Partner Image (deprecated)"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="ActiveState Stackato v2.2.2 - Partner Image (deprecated)"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="CentOS 5.8 Server 64-bit 20120828 DEPLOY-934"
+      img.os.should eq(:centos)
+      img.login.should eq('root')
+
+      img.name ="Fedora 16 Server 64-bit 20120518 DEPLOY-723"
+      img.os.should eq(:fedora)
+      img.login.should eq('root')
+
+      img.name ="Ubuntu Precise 12.04 LTS Server 64-bit 20120424 DEPLOY-629"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Fedora 16 Server 64-bit Test 2 w/ -ssh 20120404 DEPLOY-552"
+      img.os.should eq(:fedora)
+      img.login.should eq('root')
+
+      img.name ="Ubuntu Oneiric 11.10 Server 64-bit 20120311 DEPLOY-549"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Fedora 16 Server 64-bit 20120404 (deprecated) DEPLOY-552"
+      img.os.should eq(:fedora)
+      img.login.should eq('root')
+
+      img.name ="Debian Squeeze 6.0.3 Server 64-bit 20120123 DEPLOY-301.2"
+      img.os.should eq(:debian)
+      img.login.should eq('root')
+
+      img.name ="Debian Squeeze 6.0.3 Server 64-bit 20120123 (Ramdisk) DEPLOY-301.2"
+      img.os.should eq(:debian)
+      img.login.should eq('root')
+
+      img.name ="Debian Squeeze 6.0.3 Server 64-bit 20120123 (Kernel) DEPLOY-301.2"
+      img.os.should eq(:debian)
+      img.login.should eq('root')
+
+      img.name ="CentOS 6.2 Server 64-bit 20120125 DEPLOY-301.1"
+      img.os.should eq(:centos)
+      img.login.should eq('root')
+
+      img.name ="CentOS 6.2 Server 64-bit 20120125 (Ramdisk) DEPLOY-301.1"
+      img.os.should eq(:centos)
+      img.login.should eq('root')
+
+      img.name ="CentOS 6.2 Server 64-bit 20120125 (Kernel) DEPLOY-301.1"
+      img.os.should eq(:centos)
+      img.login.should eq('root')
+
+      img.name ="pub-Fri_Jan__6_15:38:51_UTC_2012"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Oneiric 11.10 Server 64-bit 20111212 (deprecated) DEPLOY-122-TEST"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Oneiric 11.10 Server 64-bit 20111212 (Kernel) (deprecated) DEPLOY-122-TEST"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Oneiric 11.10 Server 64-bit 20111212 (Kernel) (deprecated) DEPLOY-122-TEST"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="CentOS 5.6 Server 64-bit 20111207 (deprecated) DEPLOY-166 (deprecated)"
+      img.os.should eq(:centos)
+      img.login.should eq('root')
+
+      img.name ="CentOS 5.6 Server 64-bit 20111207 (Ramdisk) (deprecated) DEPLOY-166 (deprecated)"
+      img.os.should eq(:centos)
+      img.login.should eq('root')
+
+      img.name ="CentOS 5.6 Server 64-bit 20111207 (Kernel) (deprecated) DEPLOY-166 (deprecated)"
+      img.os.should eq(:centos)
+      img.login.should eq('root')
+
+      img.name ="Ubuntu Lucid 10.04 LTS Server 64-bit 20111212 DEPLOY-167"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Lucid 10.04 LTS Server 64-bit 20111212 (Kernel) DEPLOY-167"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Maverick 10.10 Server 64-bit 20111212 DEPLOY-168"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Maverick 10.10 Server 64-bit 20111212 (Kernel) DEPLOY-168"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Oneiric 11.10 Server 64-bit 20111212 (deprecated) DEPLOY-170               "
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Oneiric 11.10 Server 64-bit 20111212 (Kernel) (deprecated) DEPLOY-170"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Natty 11.04 Server 64-bit 20111212 DEPLOY-169"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="Ubuntu Natty 11.04 Server 64-bit 20111212 (Kernel) DEPLOY-169"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="natty-server-cloudimg-amd64.img-w-timeout-120-w-debugging"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="natty-server-cloudimg-amd64-vmlinuz-virtual-w-timeout-120-w-debugging"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="ubuntuTestDiskimage"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
+      img.name ="ubuntuTestKernel"
+      img.os.should eq(:ubuntu)
+      img.login.should eq('ubuntu')
+
     end
   end
 end

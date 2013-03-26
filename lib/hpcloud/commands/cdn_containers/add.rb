@@ -15,16 +15,17 @@ Examples:
         cli_command(options) {
           names = [name] + names
           names.each { |name|
-            name = Container.container_name_for_service(name)
+            res = ContainerResource.new(Connection.instance.storage, name)
+            name = res.container
             begin
-              if Connection.instance.storage.directories.get(name)
+              if res.container_head()
                 response = Connection.instance.cdn.put_container(name)
-                display "Added container '#{name}' to the CDN."
+                @log.display "Added container '#{name}' to the CDN."
               else
-                error_message "The container '#{name}' does not exist in your storage account. Please create the storage container first and then add it to the CDN.", :incorrect_usage
+                @log.error "The container '#{name}' does not exist in your storage account. Please create the storage container first and then add it to the CDN.", :incorrect_usage
               end
             rescue Fog::Storage::HP::NotFound
-              error_message "The container '#{name}' does not exist in your storage account. Please create the storage container first and then add it to the CDN.", :incorrect_usage
+              @log.error "The container '#{name}' does not exist in your storage account. Please create the storage container first and then add it to the CDN.", :incorrect_usage
             end
           }
         }

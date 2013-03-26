@@ -15,18 +15,19 @@ Examples:
 
 Aliases: flavors:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       def flavors(*arguments)
         cli_command(options) {
           flavors = Flavors.new
           if flavors.empty?
-            display "You currently have no flavors."
+            @log.display "You currently have no flavors."
           else
-            hsh = flavors.get_hash(arguments)
-            if hsh.empty?
-              display "There are no flavors that match the provided arguments"
+            ray = flavors.get_array(arguments)
+            if ray.empty?
+              @log.display "There are no flavors that match the provided arguments"
             else
-              Tableizer.new(options, FlavorHelper.get_keys(), hsh).print
+              Tableizer.new(options, FlavorHelper.get_keys(), ray).print
             end
           end
         }

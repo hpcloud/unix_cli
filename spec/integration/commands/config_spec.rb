@@ -12,8 +12,8 @@ describe "Config command" do
     contents.should include("compute_availability_zone: az-1.region-a.geo-1")
     contents.should include("cdn_availability_zone: region-a.geo-1")
     contents.should include("connect_timeout: 30")
-    contents.should include("read_timeout: 30")
-    contents.should include("write_timeout: 30")
+    contents.should include("read_timeout: 240")
+    contents.should include("write_timeout: 240")
     contents.should include("ssl_verify_peer: true")
   end
 

@@ -6,12 +6,6 @@ $LOAD_PATH.unshift(lib_dir) if File.directory?(lib_dir) && !$LOAD_PATH.include?(
 ENV['HPCLOUD_CLI_NAME'] = File.basename($0)
 
 require 'rubygems'
-#require 'bundler/setup'
 require 'hpcloud'
-
-# unless RUBY_VERSION >= '1.9.2'
-#   puts "Ruby version 1.9.2 or greater is required."
-#   exit
-# end
 
 HP::Cloud::CLI.start

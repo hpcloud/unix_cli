@@ -49,19 +49,6 @@ describe "Copy command" do
       end
     end
 
-    pending "when container is public-read but remote file cannot be overwritten" do
-      it "should exit with permission denied" do
-        @file_name='spec/fixtures/files/Matryoshka/Putin/Medvedev.txt'
-        cptr("container:add -a secondary public_read_container")
-        cptr("copy -a secondary #{file_name} :public_read_container")
-
-        rsp = cptr("copy #{file_name} :public_read_container")
-
-        rsp.stderr.should eq("Permission denied\n")
-        rsp.exit_status.should be_exit(:permission_denied)
-      end
-    end
-    
     context "when file and container exist" do
       it "should copy" do
         rsp = cptr("copy spec/fixtures/files/foo.txt :my_container")
@@ -249,7 +236,7 @@ describe "Copy command" do
         rsp.exit_status.should be_exit(:success)
         @get = @hp_svc.get_object('copy_inside_container', 'new/foo.txt')
         @get.status.should eql(200)
-        @get.headers['Content-Type'].should eql('application/json')
+        @get.headers['Content-Type'].should eql('text/plain')
         @get.body.should eql(read_file('foo.txt'))
       end
     end
@@ -280,11 +267,7 @@ describe "Copy command" do
       
     end
     
-    pending "when new object cannot be written" do  
-    end
-    
     after(:all) { purge_container('copy_inside_container') }
-    
   end
   
   context "copying a remote object to another container" do
@@ -360,7 +343,7 @@ describe "Copy command" do
         rsp.exit_status.should be_exit(:success)
         @get = @hp_svc.get_object('copy_between_two', 'new/foo.txt')
         @get.status.should eql(200)
-        @get.headers['Content-Type'].should eql('application/json')
+        @get.headers['Content-Type'].should eql('text/plain')
         @get.body.should eql(read_file('foo.txt'))
       end
     end

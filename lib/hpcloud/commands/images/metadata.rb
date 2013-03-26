@@ -15,15 +15,16 @@ Examples:
 
 Aliases: images:metadata:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       define_method "images:metadata" do |name_or_id|
         cli_command(options) {
           image = Images.new.get(name_or_id.to_s)
           if image.is_valid?
-            hsh = image.meta.to_hash()
-            Tableizer.new(options, Metadata.get_keys(), hsh).print
+            ray = image.meta.to_array()
+            Tableizer.new(options, Metadata.get_keys(), ray).print
           else
-            error(image.error_string, image.error_code)
+            @log.fatal image.cstatus
           end
         }
       end

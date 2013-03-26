@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.5.0}
 
-  s.files = Dir.glob("{bin,lib}/**/**/*") + %w(LICENSE README.rdoc CHANGELOG)
+  s.files = Dir.glob("{bin,lib,completion}/**/**/*") + %w(LICENSE README.rdoc CHANGELOG)
   s.extra_rdoc_files = [
     "LICENSE",
     "README.rdoc"
@@ -33,10 +33,9 @@ Gem::Specification.new do |s|
 
   # Dependencies, this syntax requires RubyGems > 1.2.0
   s.add_runtime_dependency 'thor', '~>0.16.0'
-# Comment in for delivery  s.add_runtime_dependency 'hpfog', '~>0.0.17'
+# Comment in for delivery  s.add_runtime_dependency 'hpfog', '~>0.0.20'
   s.add_runtime_dependency 'ruby-progressbar', '~>1.0.1'
   s.add_development_dependency 'rspec', '~>2.4.0'
-  s.add_runtime_dependency 'multi_json', '~>1.0.4'
   s.add_runtime_dependency 'json', '~>1.7.5'
 
 end

@@ -29,7 +29,7 @@ RSpec.configure do |config|
   RSpec::Matchers.define :be_exit do |expected|
     match do |actual|
       if expected.is_a?(Symbol)
-        actual == HP::Cloud::CLI::ERROR_TYPES[expected]
+        actual == HP::Cloud::CliStatus::TYPES[expected]
       else
         actual == expected
       end
@@ -37,12 +37,12 @@ RSpec.configure do |config|
 
     failure_message_for_should do |actual|
       message = "expected that exit status #{actual} would be #{expected}"
-      message = "#{message} (#{HP::Cloud::CLI::ERROR_TYPES[expected]})" if expected.is_a?(Symbol)
+      message = "#{message} (#{HP::Cloud::CliStatus::TYPES[expected]})" if expected.is_a?(Symbol)
       message
     end
     failure_message_for_should_not do |actual|
       message = "expected that exit status #{actual} would not be #{expected}"
-      message = "#{message} (#{HP::Cloud::CLI::ERROR_TYPES[expected]})" if expected.is_a?(Symbol)
+      message = "#{message} (#{HP::Cloud::CliStatus::TYPES[expected]})" if expected.is_a?(Symbol)
       message
     end
   end

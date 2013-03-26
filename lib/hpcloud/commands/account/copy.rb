@@ -15,7 +15,7 @@ Examples:
         cli_command(options) {
           accounts = HP::Cloud::Accounts.new()
           accounts.copy(src, dest)
-          display("Account '#{src}' copied to '#{dest}'")
+          @log.display("Account '#{src}' copied to '#{dest}'")
         }
       end
     end

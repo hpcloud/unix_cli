@@ -9,20 +9,45 @@ module HP
         if (error.respond_to?(:response))
           @error_string = parse_error(error.response)
         else
-          @error_string = error.message
+          begin
+            @error_string = error.message
+          rescue
+            @error_string = error.to_s
+          end
         end
       end
 
       # pull the error message out of an JSON response
       def parse_error(response)
-        begin
-          err_msg = MultiJson.decode(response.body)
-          # Error message:  {"badRequest": {"message": "Invalid IP protocol ttt.", "code": 400}}
-          err_msg.map {|_,v| v["message"] if v.has_key?("message")}
-        rescue MultiJson::DecodeError => error
-          # Error message: "400 Bad Request\n\nBlah blah"
-          response.body    #### the body is not in JSON format so just return it as it is
+        ret = ''
+        code = nil
+        message = nil
+        details = nil
+        if (response.respond_to?(:status))
+          code = response.status.to_s
         end
+        if (response.respond_to?(:body))
+          details = response.body.to_s
+          begin
+            err_msg = MultiJson.decode(response.body)
+            err_msg.map { |_,v|
+              code = v["code"].to_s if v.has_key?("code")
+              message = v["message"] if v.has_key?("message")
+              details = nil
+              details = v["details"] if v.has_key?("details")
+            }
+          rescue MultiJson::DecodeError => error
+          end
+        else
+          message = "Unknown error response: " + response.to_s
+        end
+        ret += code + " " unless code.nil?
+        ret += message unless message.nil?
+        unless details.nil?
+          ret += ": " unless ret.empty?
+          ret += details
+        end
+        return ret
       end
 
       # check to see if an error includes a particular text fragment
@@ -31,6 +56,9 @@ module HP
         error_message.include?(text)
       end
 
+      def to_s
+        @error_string
+      end
     end
   end
 end

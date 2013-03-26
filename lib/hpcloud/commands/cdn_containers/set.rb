@@ -22,17 +22,18 @@ Examples:
       define_method "cdn:containers:set" do |name, attribute, value|
         cli_command(options) {
           begin
+            name = name[1..-1] if name.start_with?(":")
             Connection.instance.cdn.head_container(name)
             allowed_attributes = ['X-Ttl', 'X-Cdn-Uri', 'X-Cdn-Enabled', 'X-Log-Retention']
             if attribute && value && allowed_attributes.include?(attribute)
               options = {"#{attribute}" => "#{value}"}
               Connection.instance.cdn.post_container(name, options)
-              display "The attribute '#{attribute}' with value '#{value}' was set on CDN container '#{name}'."
+              @log.display "The attribute '#{attribute}' with value '#{value}' was set on CDN container '#{name}'."
             else
-              error "The attribute '#{attribute}' cannot be set. The allowed attributes are '#{allowed_attributes.join(', ')}'.", :incorrect_usage
+              @log.fatal "The attribute '#{attribute}' cannot be set. The allowed attributes are '#{allowed_attributes.join(', ')}'.", :incorrect_usage
             end
           rescue Fog::CDN::HP::NotFound => err
-            error "You don't have a container named '#{name}' on the CDN.", :not_found
+            @log.fatal "You don't have a container named '#{name}' on the CDN.", :not_found
           end
         }
       end

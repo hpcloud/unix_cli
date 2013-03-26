@@ -14,6 +14,7 @@ Examples:
   hpcloud acl :my_container                     # Display the ACL for the container 'my_container':
   hpcloud acl :my_container -z region-a.geo-1  # Display the ACL for the container 'my_container' for availability zone `region-a.geo-1`:
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       def acl(name, *names)
         cli_command(options) {
@@ -22,15 +23,15 @@ Examples:
           ray = []
           names.each { |name|
             resource = ResourceFactory.create(Connection.instance.storage, name)
-            if resource.read_header
+            if resource.container_head
               ray << resource.to_hash()
             else
-              error_message resource.error_string, resource.error_code
+              @log.error resource.cstatus
             end
           }
           keys =  [ "public", "readers", "writers", "public_url"]
           if ray.empty?
-            display "There are no resources that match the provided arguments"
+            @log.display "There are no resources that match the provided arguments"
           else
             Tableizer.new(options, keys, ray).print
           end

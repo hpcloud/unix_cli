@@ -1,5 +1,4 @@
 require 'fog/hp'
-require 'fog/block_storage'
 
 module HP
   module Cloud
@@ -52,21 +51,22 @@ module HP
         reset_connections()
       end
 
-      def storage
-        account = get_account()
+      def storage(account_name=nil)
+        account = get_account(account_name)
         return @storage_connection[account] unless @storage_connection[account].nil?
-        opts = create_options(:storage_availability_zone)
+        opts = create_options(account, :storage_availability_zone)
         begin
           @storage_connection[account] = Fog::Storage.new(opts)
         rescue Exception => e
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n Exception: #{e}"
+          respo = ErrorResponse.new(e).to_s
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n Exception: #{respo}"
         end
       end
 
       def compute
         account = get_account()
         return @compute_connection[account] unless @compute_connection[account].nil?
-        opts = create_options(:compute_availability_zone)
+        opts = create_options(account, :compute_availability_zone)
         begin
           @compute_connection[account] = Fog::Compute.new(opts)
         rescue Exception => e
@@ -77,9 +77,10 @@ module HP
       def block
         account = get_account()
         return @block_connection[account] unless @block_connection[account].nil?
-        opts = create_options(:block_availability_zone)
+        opts = create_options(account, :block_availability_zone)
+        opts.delete(:provider)
         begin
-          @block_connection[account] = Fog::BlockStorage.new(opts)
+          @block_connection[account] = Fog::HP::BlockStorage.new(opts)
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
@@ -88,7 +89,7 @@ module HP
       def cdn
         account = get_account()
         return @cdn_connection[account] unless @cdn_connection[account].nil?
-        opts = create_options(:cdn_availability_zone)
+        opts = create_options(account, :cdn_availability_zone)
         begin
           @cdn_connection[account] = Fog::CDN.new(opts)
         rescue Exception => e
@@ -96,35 +97,27 @@ module HP
         end
       end
 
-      def get_account
-        return @options[:account_name] || Config.new.get(:default_account) || 'default'
+      def get_account(account_name = nil)
+        return account_name unless account_name.nil?
+        return @options[:account_name] || Config.new.get(:default_account) || 'hp'
       end
 
-      def create_options(zone)
-        creds, zones, options = Accounts.new.creds_zones_options(get_account())
-        avl_zone = @options[:availability_zone] || zones[zone]
-        return { :provider => 'HP',
-                 :connection_options => options,
-                 :hp_account_id   => creds[:account_id],
-                 :hp_secret_key   => creds[:secret_key],
-                 :hp_auth_uri     => creds[:auth_uri],
-                 :hp_tenant_id    => creds[:tenant_id],
-                 :hp_avl_zone     => avl_zone,
-                 :user_agent => "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
-               }
+      def create_options(account_name, zone)
+        return Accounts.new.create_options(account_name, zone, @options[:availability_zone])
       end
 
-      def validate_account(account_credentials)
-        options = Config.default_options.clone
-        options[:hp_account_id] = account_credentials[:account_id]
-        options[:hp_secret_key] = account_credentials[:secret_key]
-        options[:hp_auth_uri] = account_credentials[:auth_uri]
-        options[:hp_tenant_id] = account_credentials[:tenant_id]
-        options[:user_agent] = "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
-        if options[:hp_auth_uri].match(/hpcloud.net/)
-          options[:ssl_verify_peer] = false
+      def validate_account(account_name)
+        options = create_options(account_name, nil)
+        case options[:provider]
+        when "hp"
+          unless options[:connection_options].nil?
+            options[:ssl_verify_peer] = options[:connection_options][:ssl_verify_peer]
+          end
+          Fog::HP.authenticate_v2(options, options[:connection_options])
+        else
+          Fog::Storage.new(options).directories
+          return true
         end
-        Fog::HP.authenticate_v2(options, options)
       end
     end
   end

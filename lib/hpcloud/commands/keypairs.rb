@@ -1,5 +1,6 @@
 require 'hpcloud/commands/keypairs/import'
 require 'hpcloud/commands/keypairs/add'
+require 'hpcloud/commands/keypairs/private'
 require 'hpcloud/commands/keypairs/public_key'
 require 'hpcloud/commands/keypairs/remove'
 
@@ -20,18 +21,19 @@ Examples:
 
 Aliases: keypairs:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       def keypairs(*arguments)
         cli_command(options) {
           keypairs = Keypairs.new
           if keypairs.empty?
-            display "You currently have no keypairs, use `#{selfname} keypairs:add <name>` to create one."
+            @log.display "You currently have no keypairs, use `#{selfname} keypairs:add <name>` to create one."
           else
-            hsh = keypairs.get_hash(arguments)
-            if hsh.empty?
-              display "There are no keypairs that match the provided arguments"
+            ray = keypairs.get_array(arguments)
+            if ray.empty?
+              @log.display "There are no keypairs that match the provided arguments"
             else
-              Tableizer.new(options, KeypairHelper.get_keys(), hsh).print
+              Tableizer.new(options, KeypairHelper.get_keys(), ray).print
             end
           end
         }

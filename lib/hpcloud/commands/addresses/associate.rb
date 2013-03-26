@@ -17,23 +17,23 @@ Examples:
         cli_command(options) {
           server = Servers.new.get(server_name_or_id)
           if server.is_valid? == false
-            error server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
 
           address = Addresses.new.get(ip_or_id)
           if address.is_valid? == false
-            error address.error_string, address.error_code
+            @log.fatal address.cstatus
           end
 
           if address.instance_id.nil? == false
             if address.instance_id == server.id
-              display "The IP address '#{ip_or_id}' is already associated with '#{server_name_or_id}'."
+              @log.display "The IP address '#{ip_or_id}' is already associated with '#{server_name_or_id}'."
             else
-              error "The IP address '#{ip_or_id}' is in use by another server '#{address.instance_id}'.", :conflicted
+              @log.fatal "The IP address '#{ip_or_id}' is in use by another server '#{address.instance_id}'.", :conflicted
             end
           else
             address.fog.server = server.fog
-            display "Associated address '#{ip_or_id}' to server '#{server_name_or_id}'."
+            @log.display "Associated address '#{ip_or_id}' to server '#{server_name_or_id}'."
           end
         }
       end

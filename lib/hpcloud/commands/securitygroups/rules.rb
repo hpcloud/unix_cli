@@ -17,15 +17,16 @@ Examples:
 
 Aliases: securitygroups:rules:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       define_method "securitygroups:rules" do |sec_group_name|
         cli_command(options) {
           rules = Rules.new(sec_group_name)
           if rules.empty?
-            display "You currently have no rules for the security group '#{sec_group_name}'."
+            @log.display "You currently have no rules for the security group '#{sec_group_name}'."
           else
-            hsh = rules.get_hash
-            Tableizer.new(options, RuleHelper.get_keys(), hsh).print
+            ray = rules.get_array
+            Tableizer.new(options, RuleHelper.get_keys(), ray).print
           end
         }
       end

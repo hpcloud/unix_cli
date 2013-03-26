@@ -54,8 +54,8 @@ describe "Volume methods" do
       disk.status.should eql("available")
       disk.description.should eq("My cool disk")
       disk.servers.should eq('srv1,srv2')
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -70,8 +70,8 @@ describe "Volume methods" do
       disk.created.should be_nil
       disk.status.should be_nil
       disk.description.should be_nil
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -127,8 +127,8 @@ describe "Volume methods" do
       vol.save.should be_false
 
       vol.id.should be_nil
-      vol.error_string.should eq("Error creating volume 'lion'")
-      vol.error_code.should eq(:general_error)
+      vol.cstatus.message.should eq("Error creating volume 'lion'")
+      vol.cstatus.error_code.should eq(:general_error)
     end
   end
 
@@ -156,8 +156,8 @@ describe "Volume methods" do
 
       vol.attach(@server, @device).should be_false
 
-      vol.error_string.should eq("Error attaching 'MyDisk' on server 'zoidberg' to device '/dev/asdf'.")
-      vol.error_code.should eq(:general_error)
+      vol.cstatus.message.should eq("Error attaching 'MyDisk' on server 'zoidberg' to device '/dev/asdf'.")
+      vol.cstatus.error_code.should eq(:general_error)
     end
   end
 
@@ -177,8 +177,47 @@ describe "Volume methods" do
 
       vol.detach().should be_false
 
-      vol.error_string.should eq("Error detaching 'MyDisk' from 'srv1,srv2'.")
-      vol.error_code.should eq(:general_error)
+      vol.cstatus.message.should eq("Error detaching 'MyDisk' from 'srv1,srv2'.")
+      vol.cstatus.error_code.should eq(:general_error)
+    end
+  end
+
+  context "map_device" do
+    it "maps" do
+      vol = HP::Cloud::VolumeHelper.new(double("connection"), @fog_volume)
+
+      vol.map_device("-1").should eq("-1")
+      vol.map_device("0").should eq("/dev/vda")
+      vol.map_device("1").should eq("/dev/vda")
+      vol.map_device("2").should eq("/dev/vdb")
+      vol.map_device("3").should eq("/dev/vdc")
+      vol.map_device("4").should eq("/dev/vdd")
+      vol.map_device("5").should eq("/dev/vde")
+      vol.map_device("6").should eq("/dev/vdf")
+      vol.map_device("7").should eq("/dev/vdg")
+      vol.map_device("8").should eq("/dev/vdh")
+      vol.map_device("9").should eq("/dev/vdi")
+      vol.map_device("10").should eq("/dev/vdj")
+      vol.map_device("11").should eq("/dev/vdk")
+      vol.map_device("12").should eq("/dev/vdl")
+      vol.map_device("13").should eq("/dev/vdm")
+      vol.map_device("14").should eq("/dev/vdn")
+      vol.map_device("15").should eq("/dev/vdo")
+      vol.map_device("16").should eq("/dev/vdp")
+      vol.map_device("17").should eq("/dev/vdq")
+      vol.map_device("18").should eq("/dev/vdr")
+      vol.map_device("19").should eq("/dev/vds")
+      vol.map_device("20").should eq("/dev/vdt")
+      vol.map_device("21").should eq("/dev/vdu")
+      vol.map_device("22").should eq("/dev/vdv")
+      vol.map_device("23").should eq("/dev/vdw")
+      vol.map_device("24").should eq("/dev/vdx")
+      vol.map_device("25").should eq("/dev/vdy")
+      vol.map_device("26").should eq("/dev/vdz")
+      vol.map_device("27").should eq("27")
+      vol.map_device("/dev/vda").should eq("/dev/vda")
+      vol.map_device("/dev/vdb").should eq("/dev/vdb")
+      vol.map_device("/dev/vdc").should eq("/dev/vdc")
     end
   end
 end

@@ -26,12 +26,12 @@ describe "Config reading" do
       config.settings[:compute_availability_zone].should eq('az-1.region-a.geo-1')
       config.settings[:storage_availability_zone].should eq('region-a.geo-1')
       config.settings[:connect_timeout].should eq(30)
-      config.settings[:read_timeout].should eq(30)
-      config.settings[:write_timeout].should eq(30)
+      config.settings[:read_timeout].should eq(240)
+      config.settings[:write_timeout].should eq(240)
       config.settings[:ssl_verify_peer].should be_true
       config.settings[:ssl_ca_path].should be_nil
       config.settings[:ssl_ca_file].should be_nil
-      config.settings[:default_account].should eq('default')
+      config.settings[:default_account].should eq('hp')
       config.settings[:checker_url].should eq('https://region-a.geo-1.objects.hpcloudsvc.com:443/v1/89388614989714/documentation-downloads/unixcli/latest')
       config.settings[:checker_deferment].should eq(604800) # one week
     end

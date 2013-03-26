@@ -4,9 +4,33 @@ describe "servers:add command" do
   before(:all) do
     @hp_svc = compute_connection
     @sg_name = 'cli_test_sg1'
-    @keypair_name = 'cli_test_keypair1'
+    @keypair_name = 'cli_test_key1'
     SecurityGroupTestHelper.create(@sg_name)
     KeypairTestHelper.create(@keypair_name)
+  end
+
+  context "when creating server with name nearly nothing" do
+    it "should show success message" do
+      @server_name = resource_name("add0")
+
+      rsp = cptr("servers:add #{@server_name} -k #{@keypair_name}")
+
+      rsp.stderr.should eq("")
+      @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
+      rsp.stdout.should eq("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
+      rsp.exit_status.should be_exit(:success)
+      server = Servers.new.get(@server_name)
+      server.is_valid?.should be_true
+      server.flavor.should eq("#{AccountsHelper.get_flavor_id()}")
+      server.image.should eq("#{AccountsHelper.get_image_id()}")
+      @keyfile =KeypairHelper.private_filename("#{@new_server_id}")
+      File.exists?(@keyfile).should be_true
+    end
+
+    after(:each) do
+      cptr("servers:remove #{@server_name}")
+      FileUtils.rm_f(@keyfile) unless @keyfile.nil?
+    end
   end
 
   context "when creating server with name, image and flavor (no security group)" do
@@ -79,11 +103,37 @@ describe "servers:add command" do
   context "when creating windows image server" do
     it "should show success message" do
       @server_name = resource_name("add5")
-      @pem_file = ENV['HOME'] + "/.ssh/id_rsa"
+      @pem_file = ENV['HOME'] + "/.hpcloud/keypairs/cli_test_key1.pem"
 
       rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_win_image_id()} -k #{@keypair_name} -p #{@pem_file}")
 
-      rsp.stderr.should eq("\n")
+      rsp.stderr.should eq("")
+      @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
+      rsp.stdout.should include("Created server '#{@server_name}' with id '#{@new_server_id}'.\nRetrieving password, this may take several minutes...\nWindows password: ")
+      # If this fails at this point, the password did not decode.
+      # Try to remove the keypair, the keypair probably does not match
+      rsp.exit_status.should be_exit(:success)
+      servers = @hp_svc.servers.map {|s| s.id}
+      servers.should include(@new_server_id.to_i)
+      servers = @hp_svc.servers.map {|s| s.name}
+      servers.should include(@server_name)
+      @keyfile =KeypairHelper.private_filename("#{@new_server_id}")
+      File.exists?(@keyfile).should be_true
+    end
+
+    after(:each) do
+      cptr("servers:remove #{@server_name}")
+      FileUtils.rm_f(@keyfile) unless @keyfile.nil?
+    end
+  end
+
+  context "when creating windows image server without -p option" do
+    it "should show success message" do
+      @server_name = resource_name("add5")
+
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_win_image_id()} -k #{@keypair_name}")
+
+      rsp.stderr.should eq("")
       @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
       rsp.stdout.should include("Created server '#{@server_name}' with id '#{@new_server_id}'.\nRetrieving password, this may take several minutes...\nWindows password: ")
       # If this fails at this point, the password did not decode.
@@ -103,9 +153,8 @@ describe "servers:add command" do
   context "when creating windows image server with bogus pem" do
     it "should show failure message" do
       @server_name = resource_name("add5")
-      @pem_file = "bogus.pem"
 
-      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_win_image_id()} -k #{@keypair_name} -p #{@pem_file}")
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_win_image_id()} -k #{@keypair_name} -p bogus.pem")
 
       path = File.expand_path(File.dirname(__FILE__) + '/../../../..')
       rsp.stderr.should eq("Error reading private key file 'bogus.pem': No such file or directory - #{path}/bogus.pem\n")
@@ -117,9 +166,10 @@ describe "servers:add command" do
   context "when creating windows image server with no pem" do
     it "should show failure message" do
       @server_name = resource_name("add5")
-      @pem_file = "bogus.pem"
+      filename = KeypairHelper.private_filename("cli_test_key2")
+      FileUtils.rm_f(filename)
 
-      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_win_image_id()} -k #{@keypair_name}")
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_win_image_id()} -k cli_test_key2")
 
       rsp.stderr.should eq("You must specify the private key file if you want to create a windows instance.\n")
       rsp.stdout.should eq("")

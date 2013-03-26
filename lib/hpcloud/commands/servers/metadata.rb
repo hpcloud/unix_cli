@@ -17,15 +17,16 @@ Examples:
 
 Aliases: servers:metadata:list
       DESC
+      CLI.add_report_options
       CLI.add_common_options
       define_method "servers:metadata" do |name_or_id|
         cli_command(options) {
           server = Servers.new.get(name_or_id)
           if server.is_valid?
-            hsh = server.meta.to_hash()
-            Tableizer.new(options, Metadata.get_keys(), hsh).print
+            ray = server.meta.to_array()
+            Tableizer.new(options, Metadata.get_keys(), ray).print
           else
-            error server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

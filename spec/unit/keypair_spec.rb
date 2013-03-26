@@ -31,8 +31,8 @@ describe "Keypair methods" do
       disk.public_key.should eq("bones")
       disk.private_key.should eq("cartilage")
       disk.fingerprint.should eq("exoskeleton")
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -45,8 +45,8 @@ describe "Keypair methods" do
       disk.public_key.should be_nil
       disk.private_key.should be_nil
       disk.fingerprint.should be_nil
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -78,8 +78,8 @@ describe "Keypair methods" do
 
       keyp.save.should be_true
 
-      keyp.error_string.should be_nil
-      keyp.error_code.should be_nil
+      keyp.cstatus.message.should be_nil
+      keyp.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -96,8 +96,8 @@ describe "Keypair methods" do
 
       keyp.save.should be_true
 
-      keyp.error_string.should be_nil
-      keyp.error_code.should be_nil
+      keyp.cstatus.message.should be_nil
+      keyp.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -113,8 +113,27 @@ describe "Keypair methods" do
 
       keyp.save.should be_false
 
-      keyp.error_string.should eq("Error creating keypair")
-      keyp.error_code.should eq(:general_error)
+      keyp.cstatus.message.should eq("Error creating keypair")
+      keyp.cstatus.error_code.should eq(:general_error)
+    end
+  end
+
+  context "private key add" do
+    it "saves it" do
+      @keypair = double("keypair")
+      @keypair.stub(:name).and_return("cults")
+      @keypair.stub(:fingerprint).and_return("fingerprint")
+      @keypair.stub(:public_key).and_return("public")
+      @keypair.stub(:private_key).and_return("private")
+      @keypair.stub(:write).and_return(true)
+      @compute = double("compute")
+      @compute.stub(:key_pairs).and_return(@keypairs)
+      @connection = double("connection")
+      @connection.stub(:compute).and_return(@compute)
+      FileUtils.stub(:chmod).and_return(true)
+      keyp = HP::Cloud::KeypairHelper.new(@connection, @keypair)
+
+      keyp.private_add.should eq("#{ENV['HOME']}/.hpcloud/keypairs/cults.pem")
     end
   end
 end

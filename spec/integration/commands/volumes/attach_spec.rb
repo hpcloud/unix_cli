@@ -22,10 +22,10 @@ describe "volumes:attach command" do
 
   context "when attaching volume with name" do
     it "should succeed" do
-      rsp = cptr("volumes:attach #{@vol1.name} #{@server.name} /dev/sdf")
+      rsp = cptr("volumes:attach #{@vol1.name} #{@server.name} /dev/vdf")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Attached volume '#{@vol1.name}' to '#{@server.name}' on '/dev/sdf'.\n")
+      rsp.stdout.should eq("Attached volume '#{@vol1.name}' to '#{@server.name}' on '/dev/vdf'.\n")
       rsp.exit_status.should be_exit(:success)
     end
 
@@ -36,9 +36,9 @@ describe "volumes:attach command" do
 
   context "when attaching in-use volume" do
     it "should fail" do
-      rsp = cptr("volumes:attach #{@vol1.name} #{@server.name} /dev/sdk")
+      rsp = cptr("volumes:attach #{@vol1.name} #{@server.name} /dev/vdk")
 
-      rsp = cptr("volumes:attach #{@vol1.name} #{@server.name} /dev/sdl")
+      rsp = cptr("volumes:attach #{@vol1.name} #{@server.name} /dev/vdl")
 
       rsp.stderr.should eq("Error attaching volume already in use '#{@vol1.name}'\n")
       rsp.stdout.should eq("")
@@ -52,10 +52,10 @@ describe "volumes:attach command" do
 
   context "volumes:attach with valid avl" do
     it "should be successful" do
-      rsp = cptr("volumes:attach #{@vol2.name} -z az-1.region-a.geo-1 #{@server.name} /dev/sdg")
+      rsp = cptr("volumes:attach #{@vol2.name} -z az-1.region-a.geo-1 #{@server.name} /dev/vdg")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Attached volume '#{@vol2.name}' to '#{@server.name}' on '/dev/sdg'.\n")
+      rsp.stdout.should eq("Attached volume '#{@vol2.name}' to '#{@server.name}' on '/dev/vdg'.\n")
       rsp.exit_status.should be_exit(:success)
     end
 
@@ -66,7 +66,7 @@ describe "volumes:attach command" do
 
   context "volumes:attach with invalid avl" do
     it "should report error" do
-      rsp = cptr("volumes:attach #{@vol3.name} #{@server.name} /dev/sdh -z blah")
+      rsp = cptr("volumes:attach #{@vol3.name} #{@server.name} /dev/vdh -z blah")
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
@@ -77,7 +77,7 @@ describe "volumes:attach command" do
 
   context "volumes:attach with invalid volume" do
     it "should report error" do
-      rsp = cptr("volumes:attach bogus #{@server.name} /dev/sdi")
+      rsp = cptr("volumes:attach bogus #{@server.name} /dev/vdi")
 
       rsp.stderr.should include("Cannot find a volume matching 'bogus'.\n")
       rsp.stdout.should eq("")
@@ -89,7 +89,7 @@ describe "volumes:attach command" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("volumes:attach bogus #{@server.name} /dev/sdj -a bogus")
+      rsp = cptr("volumes:attach bogus #{@server.name} /dev/vdj -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")

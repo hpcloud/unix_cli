@@ -23,7 +23,7 @@ describe "VolumeAttachment methods" do
     it "get all the expected values" do
       va = HP::Cloud::VolumeAttachment.new(@fog_hash)
 
-      va.device.should eql("/dev/sd2")
+      va.device.should eql("/dev/vd2")
       va.serverId.should eql("12")
       va.id.should eql("2")
       va.volumeId.should eql("22")
@@ -36,7 +36,7 @@ describe "VolumeAttachment methods" do
     it "get all the expected values" do
       hash = HP::Cloud::VolumeAttachment.new(@fog_hash).to_hash()
 
-      hash["device"].should eql("/dev/sd2")
+      hash["device"].should eql("/dev/vd2")
       hash["serverId"].should eql("12")
       hash["id"].should eql("2")
       hash["volumeId"].should eql("22")

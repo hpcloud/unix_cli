@@ -19,27 +19,26 @@ Examples:
         cli_command(options) {
           names = [name] + names
           names.each { |name|
-            begin
-              name = Container.container_name_for_service(name)
-              if Connection.instance.storage.directories.get(name)
-                error "Container '#{name}' already exists.", :conflicted
+            sub_command("adding container") {
+              res = ContainerResource.new(Connection.instance.storage, name)
+              name = res.container
+              if res.container_head()
+                @log.fatal "Container '#{name}' already exists.", :conflicted
               else
-                if acceptable_name?(name, options)
+                if acceptable_name?(res, options)
                   Connection.instance.storage.directories.create(:key => name)
-                  display "Created container '#{name}'."
+                  @log.display "Created container '#{name}'."
                 end
               end
-            rescue Fog::Storage::HP::NotFound => error
-              error 'The container name specified is invalid. Please see API documentation for valid naming guidelines.', :permission_denied
-            end
+            }
           }
         }
       end
       
       private
       
-      def acceptable_name?(name, options)
-        Container.valid_virtualhost?(name) or options[:force] or yes?('Specified container name is not a valid virtualhost, continue anyway? [y/n]')
+      def acceptable_name?(res, options)
+        res.valid_virtualhost? or options[:force] or yes?('Specified container name is not a valid virtualhost, continue anyway? [y/n]')
       end
     
     end

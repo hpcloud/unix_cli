@@ -4,7 +4,7 @@ module HP
 
       desc "servers:rebuild name_or_id [image_name_or_id]", "Rebuild a server (specified by server name or ID)."
       long_desc <<-DESC
-  Rebuild an existing server specified name or ID. Optionally, the server may be rebuilt with a new image.  Rebuilding a server may take some time so it might be necessary to check the status of the server by issuing the command 'hpcloud servers'. Optionally, you can specify an availability zone.
+  Rebuild an existing server specified by name or ID. Optionally, you may rebuild the server with a new image.  Rebuilding a server may take some time so it might be necessary to check the status of the server by issuing the command 'hpcloud servers'. Optionally, you can specify an availability zone.
 
 Examples:
   hpcloud servers:rebuild Hal9000    # Rebuild server 'Hal9000':
@@ -23,14 +23,14 @@ Examples:
                 if image.is_valid?
                   image_id = image.id
                 else
-                  error image.error_string, image.error_code
+                  @log.fatal image.cstatus
                 end
               end
             end
             server.fog.rebuild(image_id, nil)
-            display "Server '#{server.name}' being rebuilt."
+            @log.display "Server '#{server.name}' being rebuilt."
           else
-            error server.error_string, server.error_code
+            @log.fatal server.cstatus
           end
         }
       end

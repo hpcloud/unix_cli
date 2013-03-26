@@ -16,21 +16,21 @@ Aliases: cdn:containers:loc
       DESC
       method_option :ssl, :default => false,
                     :type => :boolean, :aliases => '-s',
-                    :desc => 'Print the ssl version of the url.'
+                    :desc => 'Print the SSL version of the URL.'
       CLI.add_common_options
       define_method "cdn:containers:location" do |name, *names|
         cli_command(options) {
           names = [name] + names
           names.each { |name|
             resource = ResourceFactory.create(Connection.instance.storage, name)
-            if resource.read_header
+            if resource.container_head
               if options.ssl
-                display resource.cdn_public_ssl_url
+                @log.display resource.cdn_public_ssl_url
               else
-                display resource.cdn_public_url
+                @log.display resource.cdn_public_url
               end
             else
-              error_message resource.error_string, resource.error_code
+              @log.error resource.cstatus
             end
           }
         }

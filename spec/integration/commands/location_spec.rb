@@ -60,7 +60,7 @@ describe 'location command' do
 
       rsp = cptr("location :someoneelses/#{@file_name}")
 
-      rsp.stderr.should eq("Cannot find container ':someoneelses'.\n")
+      rsp.stderr.should eq("Cannot find object ':someoneelses/#{@file_name}'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end

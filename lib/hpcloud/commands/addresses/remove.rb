@@ -23,11 +23,11 @@ Aliases: addresses:rm, addresses:delete, addresses:release, addresses:del
           ips.each { |ip_or_id|
             address = addresses.get(ip_or_id)
             if address.is_valid? == false
-              error_message address.error_string, address.error_code
+              @log.error address.cstatus
             else
               address.fog.server = nil unless address.instance_id.nil?
               address.destroy
-              display "Removed address '#{ip_or_id}'."
+              @log.display "Removed address '#{ip_or_id}'."
             end
           }
         }

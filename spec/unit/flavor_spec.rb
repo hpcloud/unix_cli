@@ -33,8 +33,8 @@ describe "Flavor methods" do
       disk.fullname.should eq("standard.xsmall")
       disk.ram.should eq(1024)
       disk.disk.should eq(30)
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -47,8 +47,8 @@ describe "Flavor methods" do
       disk.fullname.should be_nil
       disk.ram.should be_nil
       disk.disk.should be_nil
-      disk.error_string.should be_nil
-      disk.error_code.should be_nil
+      disk.cstatus.message.should be_nil
+      disk.cstatus.error_code.should eq(:success)
     end
   end
 
@@ -73,8 +73,8 @@ describe "Flavor methods" do
 
       flav.save.should be_false
 
-      flav.error_string.should eq("Save of flavors not supported at this time")
-      flav.error_code.should eq(:general_error)
+      flav.cstatus.message.should eq("Save of flavors not supported at this time")
+      flav.cstatus.error_code.should eq(:general_error)
     end
   end
 end

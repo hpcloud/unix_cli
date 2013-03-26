@@ -20,18 +20,19 @@ Examples:
       CLI.add_common_options
       define_method "cdn:containers:get" do |name, attribute|
         cli_command(options) {
-          name = Container.container_name_for_service(name)
+          res = ContainerResource.new(Connection.instance.cdn, name)
+          name = res.container
           # check to see cdn container exists
           begin
             response = Connection.instance.cdn.head_container(name)
             allowed_attributes = ['X-Ttl', 'X-Cdn-Uri', 'X-Cdn-Enabled', 'X-Log-Retention']
             if attribute && allowed_attributes.include?(attribute)
-              display response.headers["#{attribute}"]
+              @log.display response.headers["#{attribute}"]
             else
-              error "The value of the attribute '#{attribute}' cannot be retrieved. The allowed attributes are '#{allowed_attributes.join(', ')}'.", :incorrect_usage
+              @log.fatal "The value of the attribute '#{attribute}' cannot be retrieved. The allowed attributes are '#{allowed_attributes.join(', ')}'.", :incorrect_usage
             end
           rescue Fog::CDN::HP::NotFound => error
-            error "You don't have a container named '#{name}' on the CDN.", :not_found
+            @log.fatal "You don't have a container named '#{name}' on the CDN.", :not_found
           end
         }
       end

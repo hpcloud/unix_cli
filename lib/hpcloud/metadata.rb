@@ -3,15 +3,14 @@ require 'csv'
 module HP
   module Cloud
     class Metadata
-      attr_reader :error_string, :error_code, :hsh
+      attr_reader :cstatus, :hsh
     
       def self.get_keys()
         return [ "key", "value" ]
       end
 
       def initialize(mta = nil)
-        @error_string = nil
-        @error_code = nil
+        @cstatus = CliStatus.new
         @fog_metadata = mta
         @hsh = {}
         if mta.nil?
@@ -20,7 +19,7 @@ module HP
         mta.map { |m| @hsh["#{m.key}"] = "#{m.value}" }
       end
 
-      def to_hash()
+      def to_array()
         ray = []
         @hsh.each { |k,v| ray << {"key"=>k,"value"=>v} }
         ray.sort!{|a, b| a["key"] <=> b["key"]}
@@ -58,8 +57,7 @@ module HP
         rescue SyntaxError => se
         rescue NameError => ne
         end
-        @error_string = "Invalid metadata '#{value}' should be in the form 'k1=v1,k2=v2,...'"
-        @error_code = :incorrect_usage
+        @cstatus = CliStatus.new("Invalid metadata '#{value}' should be in the form 'k1=v1,k2=v2,...'", :incorrect_usage)
         return false
       end
 
@@ -69,17 +67,15 @@ module HP
           pair = @fog_metadata.get(key)
         end
         if pair.nil?
-          @error_string = "Metadata key '#{key}' not found"
-          @error_code = :not_found
+          @cstatus = CliStatus.new("Metadata key '#{key}' not found", :not_found)
         else
           begin
             pair.destroy
           rescue Exception => e
-            @error_string = "Error deleting metadata '#{key}': " + e.message  
-            @error_code = :general_error
+            @cstatus = CliStatus.new("Error deleting metadata '#{key}': " + e.message)
           end
         end
-        if @error_string.nil?
+        if @cstatus.is_success?
           return true
         end
         return false
@@ -88,7 +84,7 @@ module HP
       def to_s
         found=false
         metadata=""
-        ray = to_hash()
+        ray = to_array()
         ray.each { |val|
           metadata << "," unless found == false
           metadata << val["key"].to_s + "=" + val["value"].to_s

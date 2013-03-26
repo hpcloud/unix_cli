@@ -36,43 +36,49 @@ namespace :spec do
 
 end
 
-# RSpec::Core::RakeTask.new(:rcov) do |spec|
-#   spec.pattern = 'spec/**/*_spec.rb'
-#   spec.rcov = true
-# end
-
 desc "Run specs with reports output for Jenkins"
 namespace :jenkins do
-  task :spec => ['jenkins:setup:rspec'] do
-    #puts "SPEC_OPTS => #{ENV['SPEC_OPTS']}"
-    ENV['SPEC_OPTS'] = ''
-    Rake::Task['jenkins:spec:unit'].invoke
-  end
   
-  namespace :setup do
-    task :rspec => [:pre_ci, 'ci:setup:rspec']
-    task :pre_ci do
-      ENV['SPEC_CODE_COVERAGE'] = 'true'
-      ENV['CI_REPORTS'] = 'jenkins/reports/rspec'
-      gem 'ci_reporter'
-      require 'ci/reporter/rake/rspec'
-      rm_rf 'jenkins/reports/html/index.html'
-      rm_rf 'coverage'
+#  namespace :setup do
+#    task :rspec => [:pre_ci, 'ci:setup:rspec']
+#    task :pre_ci do
+#      ENV['SPEC_CODE_COVERAGE'] = 'true'
+#      ENV['CI_REPORTS'] = 'jenkins/reports/rspec'
+#      gem 'ci_reporter'
+#      require 'ci/reporter/rake/rspec'
+#      rm_rf 'jenkins/reports/html/index.html'
+#      rm_rf 'coverage'
+#    end
+#  end
+
+  files = FileList['spec/integration/commands/**/*rb']
+  files.shuffle.each do |test|
+    prerequisite = "pre #{test}"
+    task prerequisite do
+      puts "==== #{test} ===="
+    end
+    rspectest = "rspec #{test}"
+    task = RSpec::Core::RakeTask.new(rspectest) do |t|
+      t.pattern = test
+      t.fail_on_error = false
+      t.rspec_opts = %Q{--color --require "#{File.dirname(__FILE__)}/jenkins/triple_formatter.rb"}
+    end
+    if test != "spec/integration/commands/servers/add_spec.rb"
+      if test.include?("spec/integration/commands/addresses") ||
+         test.include?("spec/integration/commands/servers/metadata") ||
+         test.include?("spec/integration/commands/images/metadata") ||
+         test.include?("spec/integration/commands/securitygroups")
+        task test => [ prerequisite, rspectest ] do
+          sleep 40
+        end
+      else
+        task test => [ prerequisite, rspectest ]
+      end
     end
   end
-  
-  # Hijack RSpec options with our own triple formatter.
-  desc 'jenkins:spec:unit'
-  RSpec::Core::RakeTask.new('spec:unit') do |t|
-    t.pattern = 'spec/unit'
-    t.rspec_opts = %Q{--color --require "#{File.dirname(__FILE__)}/jenkins/triple_formatter.rb"}
-  end
 
-  desc 'jenkins:spec:integration'
-  RSpec::Core::RakeTask.new('spec:integration') do |t|
-    t.pattern = 'spec/integration/**/*rb'
-    t.rspec_opts = %Q{--color --require "#{File.dirname(__FILE__)}/jenkins/triple_formatter.rb"}
-  end
+  task :spec => files
+  
 end
 
 require 'yard'

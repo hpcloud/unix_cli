@@ -1,175 +1,211 @@
 module HP
   module Cloud
     class RemoteResource < Resource
+      attr_accessor :size, :type, :etag, :modified, :synckey, :syncto
+
+      DEFAULT_STORAGE_MAX_SIZE = 5368709120
+      DEFAULT_STORAGE_SEGMENT_SIZE = 1073741824
+      DEFAULT_STORAGE_PAGE_LENGTH = 10000
+
+      @@storage_max_size = nil
+      @@storage_segment_size = nil
+      @@storage_chunk_size = nil
+
+      def parse
+        super
+        
+        unless @fname.index('<').nil?
+          raise Exception.new("Valid object names do not contain the '<' character: #{@fname}")
+        end
+        unless @fname.index('>').nil?
+          raise Exception.new("Valid object names do not contain the '>' character: #{@fname}")
+        end
+        unless @fname.index('"').nil?
+          raise Exception.new("Valid object names do not contain the '\"' character: #{@fname}")
+        end
+        @lname = @fname
+        @sname = @path
+      end
 
       def get_size()
-        begin
-          head = @storage.head_object(@container, @path)
-          return 0 if head.nil?
-          return 0 if head.headers["Content-Length"].nil?
-          return head.headers["Content-Length"].to_i
-        rescue
-          return 0
-        end
+        @size = nil if @size == 0 # manifest file
+        return 0 unless object_head()
+        return @size
       end
 
-      def get_container
-        begin
-          return false if is_valid? == nil
+      def head
+        return object_head()
+      end
 
-          @directory = @storage.directories.get(@container)
-          if @directory.nil?
-            @error_string = "Cannot find container ':#{@container}'."
-            @error_code = :not_found
+      def parse_container_headers(headers)
+        @size = headers['X-Container-Bytes-Used']
+        @size = 0 if @size.nil?
+        @count = headers['X-Container-Object-Count']
+        @synckey = headers['X-Container-Sync-Key']
+        @syncto = headers['X-Container-Sync-To']
+        #@timestamp = Time.at(headers['X-Timestamp'].to_f)
+        @writeacl = AclWriter.new(headers)
+        @readacl = AclReader.new(headers)
+        @public = @readacl.public
+        @readers = @readacl.users.join(",") unless @readacl.users.nil?
+        @writers = @writeacl.users.join(",") unless @writeacl.users.nil?
+        @versions = headers['X-Versions-Location']
+        if @path.nil? || @path.empty?
+          @public_url = "#{@storage.url}/#{@container}"
+        else
+          @public_url = "#{@storage.url}/#{@container}/#{@path}"
+        end
+        @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
+        return true
+      end
+
+      def container_head(force=false)
+        begin
+          unless force
+            return true unless @size.nil?
+          end
+          @size = 0
+          data = @storage.head_container(@container)
+          if data.nil? || data.headers.nil?
+            @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return false
           end
+          @tainer_head = data.headers
+          return parse_container_headers(@tainer_head)
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
-          @error_string  = resp.error_string
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new(resp.error_string, :permission_denied)
+          return false
+        rescue Fog::Storage::HP::NotFound => error
+          @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
           return false
         rescue Fog::HP::Errors::Forbidden => error
-          @error_string  = "Permission denied trying to access '#{@fname}'."
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
           return false
         rescue Exception => error
-          @error_string = "Error reading '#{@fname}': " + error.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return false
         end
+      end
+
+      def parse_object_headers(headers)
+        @size = headers['Content-Length'].to_i
+        @size = 0 if @size.nil?
+        @modified = headers['Last-Modified']
+        @etag = headers['Etag']
+        @type = headers['Content-Type']
+        @public_url = "#{@storage.url}/#{@container}/#{@path}"
+        @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
         return true
       end
 
-      def get_files
+      def object_head()
         begin
-          return false if is_valid? == nil
-
-          unless @path.empty?
-            @file = @directory.files.get(@path)
-            if @file.nil?
-              @error_string = "Cannot find object '#{@fname}'."
-              @error_code = :not_found
-              return false
-            end
+          return true unless @size.nil?
+          @size = 0
+          data = @storage.head_object(@container, @path)
+          if data.nil? || data.headers.nil?
+            @cstatus = CliStatus.new("Cannot find object ':#{@container}/#{@path}'.", :not_found)
+            return false
           end
+          return parse_object_headers(data.headers)
+        rescue Fog::Storage::HP::NotFound => error
+          @cstatus = CliStatus.new("Cannot find object ':#{@container}/#{@path}'.", :not_found)
+          return false
         rescue Excon::Errors::Forbidden => e
           resp = ErrorResponse.new(e)
-          @error_string  = resp.error_string
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new(resp.error_string, :permission_denied)
           return false
         rescue Fog::HP::Errors::Forbidden => error
-          @error_string  = "Permission denied trying to access '#{@fname}'."
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
           return false
         rescue Exception => error
-          @error_string = "Error reading '#{@fname}': " + error.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return false
         end
-        return true
       end
 
-      def container_head()
-        begin
-          return nil if is_valid? == false
-
-          @head = @storage.directories.head(@container)
-          if @head.nil?
-            @error_string = "Cannot find container ':#{@container}'."
-            @error_code = :not_found
-            return nil
-          end
-        rescue Excon::Errors::Forbidden => e
-          resp = ErrorResponse.new(e)
-          @error_string  = resp.error_string
-          @error_code = :permission_denied
-          return nil
-        rescue Fog::HP::Errors::Forbidden => error
-          @error_string  = "Permission denied trying to access '#{@fname}'."
-          @error_code = :permission_denied
-          return nil
-        rescue Exception => error
-          @error_string = "Error reading '#{@fname}': " + error.to_s
-          @error_code = :general_error
-          return nil
-        end
-        return @head
+      def open(output=false, siz=0)
+        return object_head()
       end
 
       def read
         begin
+          yielded_something = false
           @storage.get_object(@container, @path) { |chunk, remain, tot|
             yield chunk
+            yielded_something = true
           }
+          yield '' unless yielded_something
         rescue Fog::Storage::HP::NotFound => e
-          @error_string = "The specified object does not exist."
-          @error_code = :not_found
+          @cstatus = CliStatus.new("The specified object does not exist.", :not_found)
           result = false
         end
       end
 
-      def close
-        return true
-      end
-
-      def read_header()
-        begin
-          return false if get_container == false
-          return false if get_files == false
-
-          if is_container?
-            @public_url = @directory.public_url
-            @cdn_public_url = @directory.cdn_public_url
-            @cdn_public_ssl_url = @directory.cdn_public_ssl_url
-            @public = @directory.public? ? "yes" : "no"
-            @readers = @directory.list_users_with_read.join(",")
-            @writers = @directory.list_users_with_write.join(",")
-          else
-            file = @directory.files.head(@path)
-            if file.nil?
-               @error_string = "Cannot find object named '#{@fname}'."
-               @error_code = :not_found
-               return false
-            end
-            @public_url = file.public_url
-            @cdn_public_url = file.cdn_public_url
-            @cdn_public_ssl_url = file.cdn_public_ssl_url
-            @public = @directory.public? ? "yes" : "no"
-            @readers = @directory.list_users_with_read.join(",")
-            @writers = @directory.list_users_with_write.join(",")
+      def write(chunk)
+        if @write_io.nil?
+          begin
+            @read_io, @write_io = IO.pipe
+            @write_thread = Thread.new {
+              @storage.put_object(@container, @destination, {}, @options) {
+                @read_io.read
+              }
+            }
+          rescue Exception => e
+            @cstatus = CliStatus.new("Error writing object creating thread.")
+            return false
           end
-        rescue Exception => error
-          @error_string = "Error reading '#{@fname}': " + error.to_s
-          @error_code = :general_error
+        end
+        begin
+          @write_io.write(chunk)
+        rescue Exception => e
+          @cstatus = CliStatus.new("Error writing object.")
           return false
         end
         return true
+      end
+
+      def close
+        @write_io.close unless @write_io.nil?
+        @write_io = nil
+        @write_thread.join unless @write_thread.nil?
+        @write_thread = nil
+        @read_io.close unless @read_io.nil?
+        @read_io = nil
+        @pbar.increment(@lastread) unless @pbar.nil?
+        @pbar.finish unless @pbar.nil?
+        @lastread = 0
+        @pbar = nil
+
+        return true
+      end
+
+      def cdn_public_url
+          @cdn_public_url = @storage.directories.get(@container).files.get(@path).cdn_public_url
+          @cdn_public_url = @cdn_public_url.gsub(/%2F/, '/') unless @cdn_public_url.nil?
+      end
+
+      def cdn_public_ssl_url
+          @cdn_public_ssl_url = @storage.directories.get(@container).files.get(@path).cdn_public_ssl_url
+          @cdn_public_ssl_url = @cdn_public_ssl_url.gsub(/%2F/, '/') unless @cdn_public_ssl_url.nil?
       end
 
       def valid_source()
-        return valid_container()
+        return container_head()
       end
 
       def valid_destination(source)
-        if ! valid_container()
-          return false
-        end
+        return false unless container_head()
         if ((source.isMulti() == true) && (isDirectory() == false))
-          @error_string = "Invalid target for directory/multi-file copy '#{@fname}'."
-          @error_code = :incorrect_usage
+          @cstatus = CliStatus.new("Invalid target for directory/multi-file copy '#{@fname}'.", :incorrect_usage)
           return false
         end
         return true
       end
 
-      def valid_container()
-        return get_container
-      end
-
       def set_destination(name)
-        if ! valid_container()
-          return false
-        end
+        return false unless container_head()
         if (@path.empty?)
           @destination = name
         else
@@ -186,28 +222,94 @@ module HP
 
       def copy_file(from)
         result = true
+        return false if (from.open() == false)
         if from.isLocal()
-          if (from.open() == false) then return false end
-          options = { 'Content-Type' => from.get_mime_type() }
-          @storage.put_object(@container, @destination, {}, options) {
-            from.read().to_s
-          }
-          result = false if ! from.close()
+          if @@storage_segment_size.nil?
+            config = Config.new
+            @@storage_max_size = config.get_i(:storage_max_size, DEFAULT_STORAGE_MAX_SIZE)
+            @@storage_segment_size = config.get_i(:storage_segment_size, DEFAULT_STORAGE_SEGMENT_SIZE)
+            @@storage_chunk_size = config.get_i(:storage_chunk_size, Excon::DEFAULT_CHUNK_SIZE)
+            @@storage_chunk_size = @@storage_segment_size if @@storage_segment_size < @@storage_chunk_size
+          end
+          @options = { 'Content-Type' => from.get_mime_type() }
+          count = 0
+          segment = i=10000000001
+          total = from.get_size()
+          if total > @@storage_max_size
+            prefix = @destination + '.segment.'
+            begin
+              bytes_read = 0
+              bytes_to_read = total - count
+              bytes_to_read = @@storage_segment_size if bytes_to_read > @@storage_segment_size
+              tmppath = prefix + segment.to_s[1..10]
+              already_exists = false
+              begin
+                if @restart == true
+                  response = @storage.head_object(@container, tmppath)
+                  segsiz = response.headers['Content-Length'].to_i
+                  if segsiz == bytes_to_read
+                    already_exists = true
+                  end
+                end
+              rescue
+              end
+              if already_exists
+                # skip the bytes
+                while bytes_to_read > 0 do
+                  body = from.read(@@storage_chunk_size)
+                  bytes_read += body.length
+                  bytes_to_read -= body.length
+                end
+              else
+                chunk_size = @@storage_chunk_size
+                @storage.put_object(@container, tmppath, nil, @options) {
+                  chunk_size = bytes_to_read if bytes_to_read < chunk_size
+                  body = from.read(chunk_size)
+                  bytes_read += body.length
+                  bytes_to_read -= body.length
+                  body
+                }
+              end
+              count = count + bytes_read
+              segment = segment + 1
+            end until count >= total
+            manifest = @destination
+            @options['x-object-manifest'] = @container + '/' + prefix
+            @storage.put_object(@container, manifest, nil, @options)
+          else
+            @storage.put_object(@container, @destination, nil, @options) {
+              from.read(@@storage_chunk_size)
+            }
+          end
         else
           begin
-            @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
+            if from.has_same_account(@storage)
+              @storage.put_object(@container, @destination, nil, {'X-Copy-From' => "/#{from.container}/#{from.path}" })
+            else
+              @lastread = 0
+              siz = from.get_size()
+              @pbar = Progress.new(@destination, from.get_size())
+              @options = { 'Content-Type' => from.get_mime_type() }
+              from.read() { |chunk|
+                if ! write(chunk)
+                  result = false
+                  break
+                end
+                @pbar.increment(@lastread) unless @pbar.nil?
+                @lastread = chunk.length
+              }
+            end
           rescue Fog::Storage::HP::NotFound => e
-            @error_string = "The specified object does not exist."
-            @error_code = :not_found
+            @cstatus = CliStatus.new("The specified object does not exist.", :not_found)
             result = false
           end
         end
+        result = false if ! from.close()
+        result = false unless close()
         return result
       end
 
       def foreach(&block)
-        return false if get_container == false
-        return if @directory.nil?
         case @ftype
         when :container_directory
           regex = "^" + path + ".*"
@@ -216,12 +318,34 @@ module HP
         else
           regex = "^" + path + '$'
         end
-        @directory.files.each { |x|
-          name = x.key.to_s
-          if ! name.match(regex).nil?
-            yield ResourceFactory.create(@storage, ':' + container + '/' + name)
-          end
-        }
+        if @@limit.nil?
+          @@limit = Config.new.get_i(:storage_page_length, DEFAULT_STORAGE_PAGE_LENGTH)
+        end
+        total = 0
+        count = 0
+        marker = nil
+        begin
+          options = { :limit => @@limit, :marker => marker }
+          result = @storage.get_container(@container, options)
+          total = result.headers['X-Container-Object-Count'].to_i
+          lode = result.body.length
+          count += lode
+          result.body.each { |x|
+            name = x['name']
+            unless name.end_with?('/')
+              if ! name.match(regex).nil?
+                res = ResourceFactory.create(@storage, ':' + @container + '/' + name)
+                res.etag = x['hash']
+                res.modified = x['last_modified']
+                res.size = x['bytes']
+                res.type = x['content_type']
+                yield res
+                marker = name
+              end
+            end
+          }
+          break if lode < @@limit
+        end until count >= total
       end
 
       def get_destination()
@@ -230,37 +354,16 @@ module HP
 
       def remove(force)
         begin
-          return false if get_container == false
-
-          # container should be a class
-          if is_container?
-            if force == true
-              @directory.files.each { |file| file.destroy }
-            end
-            begin
-              @directory.destroy
-            rescue Excon::Errors::Conflict
-              @error_string = "The container '#{@fname}' is not empty. Please use -f option to force deleting a container with objects in it."
-              @error_code = :conflicted
-              return false
-            end
-          else
-            file = @directory.files.head(@path)
-            if file.nil?
-               @error_string = "You don't have an object named '#{@fname}'."
-               @error_code = :not_found
-               return false
-            end
-            file.destroy
-          end
-
+          return false unless container_head()
+          @storage.delete_object(@container, @path)
+        rescue Fog::Storage::HP::NotFound => error
+          @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
+          return false
         rescue Excon::Errors::Forbidden => error
-          @error_string = "Permission denied for '#{@fname}."
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
           return false
         rescue Exception => e
-          @error_string = "Exception removing '#{@fname}': " + e.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Exception removing '#{@fname}': " + e.to_s, :general_error)
           return false
         end
         return true
@@ -269,78 +372,32 @@ module HP
       def tempurl(period, for_update=false)
         begin
           period = 172800 if period.nil?
-          @head = container_head()
-          return nil if @head.nil?
+          return nil unless object_head()
 
-          # container should be a class
-          if is_container?
-             @error_string = "Temporary URLs not supported on containers ':#{@container}'."
-             @error_code = :incorrect_usage
-             return nil
-          end
-
-          file = @head.files.get(@path)
-          if file.nil?
-             @error_string = "Cannot find object named '#{@fname}'."
-             @error_code = :not_found
-             return nil
-          end
-          return file.temp_signed_url(period, "PUT") if (for_update)
-          return file.temp_signed_url(period, "GET")
+          return @storage.get_object_temp_url(@container, @path, period, "PUT") if (for_update)
+          return @storage.get_object_temp_url(@container, @path, period, "GET")
         rescue Excon::Errors::Forbidden => error
-          @error_string = "Permission denied for '#{@fname}."
-          @error_code = :permission_denied
+          @cstatus = CliStatus.new("Permission denied for '#{@fname}.", :permission_denied)
           return nil
         rescue Exception => e
-          @error_string = "Exception getting temporary URL for '#{@fname}': " + e.to_s
-          @error_code = :general_error
+          @cstatus = CliStatus.new("Exception getting temporary URL for '#{@fname}': " + e.to_s, :general_error)
           return nil
         end
         return nil
       end
 
       def grant(acl)
-        begin
-          return false if is_valid? == false
-          return false if get_container == false
-          return false if get_files == false
-
-          unless is_container?
-            @error_string = "ACLs are only supported on containers (e.g. :container)."
-            @error_code = :not_supported
-            return false
-          end
-
-          @directory.grant(acl.permissions, acl.users)
-          @directory.save
-          return true
-        rescue Exception => e
-          @error_string = "Exception granting permissions for '#{@fname}': " + e.to_s
-          @error_code = :general_error
-          return false
-        end
+        @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
+        return false
       end
 
       def revoke(acl)
-        begin
-          return false if is_valid? == false
-          return false if get_container == false
-          return false if get_files == false
+        @cstatus = CliStatus.new("ACLs are only supported on containers (e.g. :container).", :not_supported)
+        return false
+      end
 
-          unless is_container?
-            @error_string = "ACLs are only supported on containers (e.g. :container)."
-            @error_code = :not_supported
-            return false
-          end
-
-          @directory.revoke(acl.permissions, acl.users)
-          @directory.save
-          return true
-        rescue Exception => e
-          @error_string = "Exception revoking permissions for '#{@fname}': " + e.to_s
-          @error_code = :general_error
-          return false
-        end
+      def has_same_account(storage)
+        return storage == @storage
       end
     end
   end

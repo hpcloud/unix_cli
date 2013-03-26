@@ -21,16 +21,14 @@ Aliases: images:rm, images:delete, images:del
           name_or_ids = [name_or_id] + name_or_ids
           images = Images.new.get(name_or_ids, false)
           images.each { |image|
-            begin
+            sub_command("removing image") {
               if image.is_valid?
                 image.fog.destroy
-                display "Removed image '#{image.name}'."
+                @log.display "Removed image '#{image.name}'."
               else
-                error_message(image.error_string, image.error_code)
+                @log.error image.cstatus
               end
-            rescue Exception => e
-              error_message("Error removing image: " + e.to_s, :general_error)
-            end
+            }
           }
         }
       end

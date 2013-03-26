@@ -8,13 +8,13 @@ describe "keypairs:remove command" do
   before(:all) do
     @hp_svc = compute_connection
     # delete keypairs if they existed
-    del_keypair(@hp_svc, 'fog-del-200')
-    del_keypair(@hp_svc, 'fog-del-201')
+    del_keypair(@hp_svc, 'cli-del-200')
+    del_keypair(@hp_svc, 'cli-del-201')
   end
 
   context "when deleting a keypair" do
     it "should show success message" do
-      @key_name = 'fog-del-200'
+      @key_name = 'cli-del-200'
       @keypair = @hp_svc.key_pairs.create(:name => @key_name)
 
       rsp = cptr("keypairs:remove #{@key_name}")
@@ -31,7 +31,7 @@ describe "keypairs:remove command" do
 
   context "keypairs:remove with valid avl" do
     it "should report success" do
-      @key_name = 'fog-del-201'
+      @key_name = 'cli-del-201'
       @keypair = @hp_svc.key_pairs.create(:name => @key_name)
 
       rsp = cptr("keypairs:remove #{@key_name} -z az-1.region-a.geo-1")
@@ -44,7 +44,7 @@ describe "keypairs:remove command" do
 
   context "keypairs:remove with invalid avl" do
     it "should report error" do
-      @key_name = 'fog-del-201'
+      @key_name = 'cli-del-201'
 
       rsp = cptr("keypairs:remove #{@key_name} -z blah")
 

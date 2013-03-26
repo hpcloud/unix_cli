@@ -31,8 +31,7 @@ module HP
                 if found.length == 0
                   found << item
                 else
-                  found[0].error_string = "More than one #{@name} matches '#{arg}', use the id instead of name."
-                  found[0].error_code = :general_error
+                  found[0].set_error("More than one #{@name} matches '#{arg}', use the id instead of name.")
                 end
               end
             end
@@ -40,8 +39,7 @@ module HP
           if found.length == 0
             item = create()
             item.name = arg
-            item.error_string = "Cannot find #{@article} #{@name} matching '#{arg}'."
-            item.error_code = :not_found
+            item.set_error("Cannot find #{@article} #{@name} matching '#{arg}'.", :not_found)
             retray << item
           else
             retray += found
@@ -57,7 +55,7 @@ module HP
         return filter([arguments], false).first
       end
 
-      def get_hash(arguments = [])
+      def get_array(arguments = [])
         ray = []
         get(arguments, true).each { |x|
           if x.is_valid?

@@ -3,8 +3,8 @@ require 'hpcloud/commands/account/copy'
 require 'hpcloud/commands/account/edit'
 require 'hpcloud/commands/account/remove'
 require 'hpcloud/commands/account/setup'
-require 'hpcloud/commands/account/update'
 require 'hpcloud/commands/account/use'
+require 'hpcloud/commands/account/verify'
 
 module HP
   module Cloud
@@ -30,14 +30,12 @@ Aliases: account:list
             config = Config.new(true)
             name = config.get(:default_account)
             listo = accounts.list
-            display listo.gsub(/^(#{name})$/, '\1 <= default')
+            @log.display listo.gsub(/^(#{name})$/, '\1 <= default')
           else
-            begin
+            sub_command {
               acct = accounts.read(name)
-              display acct.to_yaml.gsub(/---\n/,'').gsub(/^:/,'').gsub(/^[ ]*:/,'  ')
-            rescue Exception => e
-              error_message(e.to_s, :general_error)
-            end
+              @log.display acct.to_yaml.gsub(/---\n/,'').gsub(/^:/,'').gsub(/^[ ]*:/,'  ')
+            }
           end
         }
       end

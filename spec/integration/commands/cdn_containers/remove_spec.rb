@@ -5,11 +5,6 @@ describe "cdn:containers:remove command" do
   before(:all) do
     @hp_svc = storage_connection
     @hp_cdn = cdn_connection
-    begin
-      purge_containers(@hp_svc)
-    rescue
-      # ignore errors
-    end
   end
 
   context "removing an existing CDN container" do
@@ -18,6 +13,23 @@ describe "cdn:containers:remove command" do
       @hp_cdn.put_container('my-added-container')
 
       rsp = cptr('cdn:containers:remove my-added-container')
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Removed container 'my-added-container' from the CDN.\n")
+      rsp.exit_status.should be_exit(:success)
+    end
+
+    after(:all) do
+      @hp_svc.delete_container('my-added-container')
+    end
+  end
+
+  context "removing an existing CDN :container" do
+    it "should show success message" do
+      @hp_svc.put_container('my-added-container')
+      @hp_cdn.put_container('my-added-container')
+
+      rsp = cptr('cdn:containers:remove :my-added-container')
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed container 'my-added-container' from the CDN.\n")

@@ -21,13 +21,13 @@ Examples:
           ip_or_ids.each { |ip_or_id|
             address = addresses.get(ip_or_id)
             if address.is_valid? == false
-              error_message address.error_string, address.error_code
+              @log.error address.cstatus
             else
               if address.instance_id.nil?
-                display "You don't have any server associated with address '#{ip_or_id}'."
+                @log.display "You don't have any server associated with address '#{ip_or_id}'."
               else
                 address.fog.server = nil
-                display "Disassociated address '#{ip_or_id}' from any server instance."
+                @log.display "Disassociated address '#{ip_or_id}' from any server instance."
               end
             end
           }

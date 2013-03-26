@@ -167,7 +167,7 @@ describe "Acl command (viewing acls)" do
 
   describe "when viewing the ACL for a public" do
     before(:all) do
-      @default_username = AccountsHelper.get_username('default')
+      @default_username = AccountsHelper.get_username()
       @username = AccountsHelper.get_username('secondary')
       @dir = @hp_svc.directories.get('acl_container')
       @dir.public = false
@@ -180,11 +180,10 @@ describe "Acl command (viewing acls)" do
 
     context "container" do
       it "should have 'public' permissions" do
-        rsp = cptr('acl :acl_container')
+        rsp = cptr("acl -d X :acl_container")
 
         rsp.stderr.should eq("")
-        rsp.stdout.should match("public.*readers.*writers.*public_url")
-        rsp.stdout.should match("no.*#{@default_username}.*#{@username}.*https.*acl_container")
+        rsp.stdout.should match("noX#{@default_username}X#{@username}Xhttps://.*object.*/acl_container\n$")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -205,6 +204,6 @@ describe "Acl command (viewing acls)" do
   end
 
   after(:all) do
-     purge_container('acl_container')
+    purge_container('acl_container')
   end
 end

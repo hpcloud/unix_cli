@@ -9,16 +9,12 @@ describe "cdn:containers:add command" do
   before(:all) do
     @hp_svc = storage_connection
     @hp_cdn = cdn_connection
-    begin
-      purge_containers(@hp_svc)
-    rescue
-      # ignore errors
-    end
   end
 
   context "putting an existing storage container on the CDN" do
     it "should show success message" do
-      @hp_svc.put_container('my-added-container')
+      cptr('containers:remove -f my-added-container')
+      cptr('containers:add my-added-container')
 
       rsp = cptr('cdn:containers:add my-added-container')
 
@@ -38,6 +34,10 @@ describe "cdn:containers:add command" do
     it "should show success message" do
       @hp_svc.put_container('tainer1')
       @hp_svc.put_container('tainer2')
+      cptr('containers:remove -f tainer1')
+      cptr('containers:add tainer1')
+      cptr('containers:remove -f tainer2')
+      cptr('containers:add tainer2')
 
       rsp = cptr('cdn:containers:add tainer1 tainer2')
 
@@ -69,6 +69,8 @@ describe "cdn:containers:add command" do
   context "cdn:containers:add with valid avl" do
     it "should report success" do
       @hp_svc.put_container('my-added-container2')
+      cptr('containers:remove -f my-added-container2')
+      cptr('containers:add my-added-container2')
       rsp = cptr('cdn:containers:add my-added-container2')
       rsp.stderr.should eq("")
 

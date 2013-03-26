@@ -12,8 +12,8 @@ class KeypairTestHelper
     end
     keypair = keypairs.create()
     keypair.name = name
-    keypair.public_key = File.read(ENV['HOME'] + '/.ssh/id_rsa.pub')
     keypair.save
+    keypair.private_add
     @@keypair_cache[name] = keypair
     return keypair
   end

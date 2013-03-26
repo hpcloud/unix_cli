@@ -23,7 +23,8 @@ Examples:
 Aliases: volumes:list
       DESC
       method_option :bootable, :type => :boolean, :aliases => '-b',
-                    :default => false, :desc => 'List the bootable volumes.'
+                    :default => false, :desc => 'List only the bootable volumes.'
+      CLI.add_report_options
       CLI.add_common_options
       def volumes(*arguments)
         cli_command(options) {
@@ -33,13 +34,13 @@ Aliases: volumes:list
             if options[:bootable]
               bootable = "bootable "
             end
-            display "You currently have no #{bootable}block volume devices, use `#{selfname} volumes:add <name>` to create one."
+            @log.display "You currently have no #{bootable}block volume devices, use `#{selfname} volumes:add <name>` to create one."
           else
-            hsh = volumes.get_hash(arguments)
-            if hsh.empty?
-              display "There are no volumes that match the provided arguments"
+            ray = volumes.get_array(arguments)
+            if ray.empty?
+              @log.display "There are no volumes that match the provided arguments"
             else
-              Tableizer.new(options, VolumeHelper.get_keys(), hsh).print
+              Tableizer.new(options, VolumeHelper.get_keys(), ray).print
             end
           end
         }

@@ -21,16 +21,14 @@ Aliases: keypairs:rm, keypairs:delete, keypairs:del
           names = [name] + names
           keypairs = Keypairs.new.get(names, false)
           keypairs.each { |keypair|
-            begin
+            sub_command("removing keypair") {
               if keypair.is_valid?
                 keypair.destroy
-                display "Removed key pair '#{keypair.name}'."
+                @log.display "Removed key pair '#{keypair.name}'."
               else
-                error_message(keypair.error_string, keypair.error_code)
+                @log.error keypair.cstatus
               end
-            rescue Exception => e
-              error_message("Error removing keypair: " + e.to_s, :general_error)
-            end
+            }
           }
         }
       end
