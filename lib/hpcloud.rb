@@ -22,6 +22,7 @@ require 'hpcloud/snapshot_helper'
 require 'hpcloud/volume_helper'
 
 require 'hpcloud/accounts'
+require 'hpcloud/auth_cache'
 require 'hpcloud/acl'
 require 'hpcloud/acl_cmd'
 require 'hpcloud/addresses'
