@@ -62,6 +62,7 @@ module HP
           @storage_connection[account] = Fog::Storage.new(opts)
           @authcache.set_storage(account, @storage_connection[account].credentials)
         rescue Exception => e
+          @authcache.remove(account)
           respo = ErrorResponse.new(e).to_s
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n Exception: #{respo}"
         end
@@ -77,6 +78,7 @@ module HP
           @compute_connection[account] = Fog::Compute.new(opts)
           @authcache.set_compute(account, @compute_connection[account].credentials)
         rescue Exception => e
+          @authcache.remove(account)
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
         return @compute_connection[account]
@@ -92,6 +94,7 @@ module HP
           @block_connection[account] = Fog::HP::BlockStorage.new(opts)
           @authcache.set_block(account, @block_connection[account].credentials)
         rescue Exception => e
+          @authcache.remove(account)
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
         return @block_connection[account]
@@ -106,6 +109,7 @@ module HP
           @cdn_connection[account] = Fog::CDN.new(opts)
           @authcache.set_cdn(account, @cdn_connection[account].credentials)
         rescue Exception => e
+          @authcache.remove(account)
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
         return @cdn_connection[account]

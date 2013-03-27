@@ -22,14 +22,32 @@ module HP
         "#{@directory}#{account.to_s.downcase.gsub(' ', '_')}"
       end
 
-      def remove(account)
-        begin
+      def remove(account = nil)
+        if account.nil?
+          begin
+            dir = Dir.new(get_file_name("."))
+            dir.entries.each { |x|
+              file_name = get_file_name(x)
+              begin
+                unless (x == "." || x == "..")
+                  File.delete(file_name)
+                end
+              rescue
+                warn "Error deleting cache file: #{file_name}"
+              end
+            }
+          rescue
+          end
+        else
           file_name = get_file_name(account)
-          File.delete(file_name)
-          return true
-        rescue
+          begin
+            File.delete(file_name)
+          rescue
+            warn "Error deleting cache file: #{file_name}"
+            return false
+          end
         end
-        return false
+        return true
       end
 
       def read(account)
