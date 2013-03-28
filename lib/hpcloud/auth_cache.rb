@@ -60,43 +60,15 @@ module HP
             raise Exception.new('Error reading cache file: ' + file_name)
           end
         end
-        @aucas[account] = {} if @aucas[account].nil?
         return @aucas[account]
       end
 
-      def get_block(account)
-        return read(account)[:block]
+      def get(account)
+        return read(account)
       end
 
-      def get_cdn(account)
-        return read(account)[:cdn]
-      end
-
-      def get_compute(account)
-        return read(account)[:compute]
-      end
-
-      def get_storage(account)
-        return read(account)[:storage]
-      end
-
-      def set_block(account, creds)
-        read(account)[:block] = creds
-        write(account)
-      end
-
-      def set_cdn(account, creds)
-        read(account)[:cdn] = creds
-        write(account)
-      end
-
-      def set_compute(account, creds)
-        read(account)[:compute] = creds
-        write(account)
-      end
-
-      def set_storage(account, creds)
-        read(account)[:storage] = creds
+      def set(account, creds)
+        @aucas[account] = creds;
         write(account)
       end
 

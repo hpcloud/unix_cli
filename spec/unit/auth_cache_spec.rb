@@ -19,10 +19,7 @@ describe "AuthCaches getting credentials" do
   context "when nothing exists" do
     it "should provide have nothing" do
       authcaches = AuthCache.new()
-      authcaches.get_block('nothing').should be_nil
-      authcaches.get_cdn('nothing').should be_nil
-      authcaches.get_compute('nothing').should be_nil
-      authcaches.get_storage('nothing').should be_nil
+      authcaches.get('nothing').should be_nil
     end
   end
 
@@ -30,59 +27,52 @@ describe "AuthCaches getting credentials" do
     it "should provide credentials" do
       authcaches = AuthCache.new()
       creds = { :a => 'a', :b => 'b' }
-      authcaches.set_storage('something', creds)
+      authcaches.set('something', creds)
 
-      authcaches.get_block('something').should be_nil
-      authcaches.get_cdn('something').should be_nil
-      authcaches.get_compute('something').should be_nil
-      authcaches.get_storage('something').should eq(creds)
+      authcaches.get('something').should eq(creds)
+      authcaches = AuthCache.new()
+      authcaches.get('something').should eq(creds)
     end
   end
 
   context "when something else" do
     it "should provide credentials" do
       authcaches = AuthCache.new()
-      authcaches.set_block('something', {:a => 'block'})
-      authcaches.set_cdn('something', {:a => 'cdn'})
-      authcaches.set_compute('something', {:a => 'compute'})
-      authcaches.set_storage('something', {:a => 'storage'})
+      authcaches.set('something', {:a => 'block'})
 
-      authcaches.get_block('something')[:a].should eq('block')
-      authcaches.get_cdn('something')[:a].should eq('cdn')
-      authcaches.get_compute('something')[:a].should eq('compute')
-      authcaches.get_storage('something')[:a].should eq('storage')
+      authcaches.get('something')[:a].should eq('block')
     end
   end
 
   context "when removing" do
     it "should remove credentials" do
       authcaches = AuthCache.new()
-      authcaches.set_block('something', {:a => 'block'})
-      authcaches.set_cdn('another', {:a => 'cdn'})
-      authcaches.set_compute('onemore', {:a => 'compute'})
-      authcaches.set_storage('yetanother', {:a => 'storage'})
+      authcaches.set('something', {:a => 'block'})
+      authcaches.set('another', {:a => 'cdn'})
+      authcaches.set('onemore', {:a => 'compute'})
+      authcaches.set('yetanother', {:a => 'storage'})
 
       authcaches = AuthCache.new()
-      authcaches.get_block('something')[:a].should eq('block')
-      authcaches.get_cdn('another')[:a].should eq('cdn')
-      authcaches.get_compute('onemore')[:a].should eq('compute')
-      authcaches.get_storage('yetanother')[:a].should eq('storage')
+      authcaches.get('something')[:a].should eq('block')
+      authcaches.get('another')[:a].should eq('cdn')
+      authcaches.get('onemore')[:a].should eq('compute')
+      authcaches.get('yetanother')[:a].should eq('storage')
 
       authcaches.remove('yetanother')
 
       authcaches = AuthCache.new()
-      authcaches.get_block('something')[:a].should eq('block')
-      authcaches.get_cdn('another')[:a].should eq('cdn')
-      authcaches.get_compute('onemore')[:a].should eq('compute')
-      authcaches.get_storage('yetanother').should be_nil
+      authcaches.get('something')[:a].should eq('block')
+      authcaches.get('another')[:a].should eq('cdn')
+      authcaches.get('onemore')[:a].should eq('compute')
+      authcaches.get('yetanother').should be_nil
 
       authcaches.remove
 
       authcaches = AuthCache.new()
-      authcaches.get_block('something').should be_nil
-      authcaches.get_cdn('another').should be_nil
-      authcaches.get_compute('onemore').should be_nil
-      authcaches.get_storage('yetanother').should be_nil
+      authcaches.get('something').should be_nil
+      authcaches.get('another').should be_nil
+      authcaches.get('onemore').should be_nil
+      authcaches.get('yetanother').should be_nil
     end
   end
 
