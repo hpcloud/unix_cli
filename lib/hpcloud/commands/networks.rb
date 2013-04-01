@@ -1,5 +1,5 @@
 require 'hpcloud/commands/networks/add.rb'
-#require 'hpcloud/commands/networks/remove.rb'
+require 'hpcloud/commands/networks/remove.rb'
 require 'hpcloud/networks'
 
 module HP

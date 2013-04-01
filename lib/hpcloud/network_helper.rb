@@ -45,6 +45,10 @@ module HP
           raise "Update not implemented"
         end
       end
+
+      def destroy
+        @connection.network.delete_network(@id)
+      end
     end
   end
 end

@@ -13,7 +13,7 @@ describe "Networks command" do
 
   context "networks" do
     it "should report success" do
-      rsp = cptr("networks -d, #{@network1.name} #{@network2.name}")
+      rsp = cptr("networks -d , #{@network1.name} #{@network2.name}")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -23,7 +23,7 @@ describe "Networks command" do
 
   context "networks:list" do
     it "should report success" do
-      rsp = cptr("networks:list -d, #{@network1.name} #{@network2.name}")
+      rsp = cptr("networks:list -d , #{@network1.name} #{@network2.name}")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -33,7 +33,7 @@ describe "Networks command" do
 
   context "networks with valid avl" do
     it "should report success" do
-      rsp = cptr("networks -d, #{@network1.name} #{@network2.name} -z az-1.region-a.geo-1")
+      rsp = cptr("networks -d , #{@network1.name} #{@network2.name} -z region-a.geo-1")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -45,7 +45,7 @@ describe "Networks command" do
     it "should report error" do
       rsp = cptr('networks -z blah')
 
-      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n")
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end

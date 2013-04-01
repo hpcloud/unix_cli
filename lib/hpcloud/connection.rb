@@ -107,7 +107,6 @@ module HP
           opts.delete(:provider)
           @network_connection[account] = Fog::HP::Network.new(opts)
         rescue Exception => e
-puts e.backtrace
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
       end
