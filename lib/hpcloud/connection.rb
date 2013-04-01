@@ -9,6 +9,7 @@ module HP
         @compute_connection = {}
         @block_connection = {}
         @cdn_connection = {}
+        @network_connection = {}
         @options = {}
       end
       @@instance = Connection.new
@@ -33,6 +34,7 @@ module HP
         @compute_connection = {}
         @block_connection = {}
         @cdn_connection = {}
+        @network_connection = {}
       end
 
       def set_options(options)
@@ -94,6 +96,19 @@ module HP
           @cdn_connection[account] = Fog::CDN.new(opts)
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n Exception: #{e}"
+        end
+      end
+
+      def network
+        account = get_account()
+        return @network_connection[account] unless @network_connection[account].nil?
+        opts = create_options(account, :network_availability_zone)
+        begin
+          opts.delete(:provider)
+          @network_connection[account] = Fog::HP::Network.new(opts)
+        rescue Exception => e
+puts e.backtrace
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
       end
 

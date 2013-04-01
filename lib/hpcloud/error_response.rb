@@ -31,6 +31,10 @@ module HP
           begin
             err_msg = MultiJson.decode(response.body)
             err_msg.map { |_,v|
+              if ! v.kind_of? Hash
+                message = v.to_s
+                next
+              end
               code = v["code"].to_s if v.has_key?("code")
               message = v["message"] if v.has_key?("message")
               details = nil
