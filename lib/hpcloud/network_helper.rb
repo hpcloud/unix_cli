@@ -27,11 +27,11 @@ module HP
 
       def save
         return false if is_valid? == false
+        hsh = {:name => @name,
+           :tenant_id => @tenant_id,
+           :shared => @shared.to_s,
+           :admin_state_up => @admin_state_up.to_s}
         if @fog.nil?
-          hsh = {:name => @name,
-             :tenant_id => @tenant_id,
-             :shared => @shared.to_s,
-             :admin_state_up => @admin_state_up.to_s}
           response = @connection.network.create_network(hsh)
           if response.nil?
             set_error("Error creating network '#{@name}'")
@@ -40,10 +40,14 @@ module HP
           @id = response.body["network"]["id"]
           @status = response.body["network"]["status"]
           @foggy = response.body["network"]
-          return true
         else
-          raise "Update not implemented"
+          response = @connection.network.update_network(@id, hsh)
+          if response.nil?
+            set_error("Error creating network '#{@name}'")
+            return false
+          end
         end
+        return true
       end
 
       def destroy
