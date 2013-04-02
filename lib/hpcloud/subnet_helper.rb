@@ -27,14 +27,39 @@ module HP
         @enable_dhcp = foggy.enable_dhcp
       end
 
+      def set_cidr(value)
+        require 'ipaddr'
+        @cidr = value
+        begin
+          ipaddr = IPAddr.new(@cidr)
+          @ip_version = 6 if ipaddr.ipv6?
+          @ip_version = 4 if ipaddr.ipv4?
+        rescue Exception => e
+          set_error("Invalid CIDR value #{@cidr}", :incorrect_usage)
+          return false
+        end
+        return true
+      end
+
+      def set_ip_version(value)
+        value = value.to_s
+        if value != "4" && value != "6"
+          set_error("Invalid IP version '#{value}'", :incorrect_usage)
+          return false
+        end
+        @ip_version = value
+        return true
+      end
+
+      def set_gateway_ip(value)
+        @gateway_ip = value
+      end
+
       def save
         return false if is_valid? == false
         hsh = {
             :name => @name,
             :tenant_id => @tenant_id,
-            :network_id => @network_id,
-            :cidr => @cidr,
-            :ip_version => @ip_version,
             :dns_nameservers => @dns_nameservers,
             :allocation_pools => @allocation_pools,
             :host_routes => @host_routes,
@@ -42,7 +67,7 @@ module HP
             :enable_dhcp => @enable_dhcp.to_s
           }
         if @fog.nil?
-          response = @connection.network.create_subnet(hsh)
+          response = @connection.network.create_subnet(@network_id, @cidr, @ip_version, hsh)
           if response.nil?
             set_error("Error creating subnet '#{@name}'")
             return false

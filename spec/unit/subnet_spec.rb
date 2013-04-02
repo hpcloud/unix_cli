@@ -76,6 +76,30 @@ describe "Subnet methods" do
     end
   end
 
+  context "Subnet set_cidr" do
+    it "get all the expected values" do
+      connection = double("connection")
+      sn = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
+      sn.set_cidr("127.0.0.1").should be_true
+      sn.set_cidr("127.0.0.1/24").should be_true
+      sn.set_cidr("127.0.0.1/x").should be_false
+      sn.cstatus.to_s.should eq("Invalid CIDR value 127.0.0.1/x")
+      sn.set_cidr("127.0.0.999/24").should be_false
+      sn.cstatus.to_s.should eq("Invalid CIDR value 127.0.0.999/24")
+    end
+  end
+
+  context "Subnet set_ip_version" do
+    it "get all the expected values" do
+      connection = double("connection")
+      sn = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
+      sn.set_ip_version("4").should be_true
+      sn.set_ip_version("6").should be_true
+      sn.set_ip_version(6).should be_true
+      sn.set_ip_version("5").should be_false
+      sn.cstatus.to_s.should eq("Invalid IP version '5'")
+    end
+  end
   context "when we convert to hash" do
     it "get all the expected values" do
       hash = HP::Cloud::SubnetHelper.new(double("connection"), @fog_subnet).to_hash()
