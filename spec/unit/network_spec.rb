@@ -25,7 +25,7 @@ describe "Network methods" do
     @fog_network.stub(:tenant_id).and_return(234)
     @fog_network.stub(:shared).and_return(false)
     @fog_network.stub(:admin_state_up).and_return("up")
-    @fog_network.stub(:subnets).and_return(4)
+    @fog_network.stub(:subnets).and_return([4])
   end
 
   context "when given fog object" do
@@ -37,7 +37,7 @@ describe "Network methods" do
       ns.status.should eql("available")
       ns.shared.should eql(false)
       ns.admin_state_up.should eq("up")
-      ns.subnets.should eq(4)
+      ns.subnets.should eq("4")
       ns.cstatus.message.should be_nil
       ns.cstatus.error_code.should eq(:success)
     end
@@ -52,8 +52,8 @@ describe "Network methods" do
       ns.tenant_id.should be_nil
       ns.status.should be_nil
       ns.subnets.should be_nil
-      ns.shared.should be_nil
-      ns.admin_state_up.should be_nil
+      ns.shared.should be_false
+      ns.admin_state_up.should be_true
       ns.cstatus.message.should be_nil
       ns.cstatus.error_code.should eq(:success)
     end
@@ -67,7 +67,7 @@ describe "Network methods" do
       hash["name"].should eql("MyNetwork")
       hash["tenant_id"].should eql(234)
       hash["status"].should eql("available")
-      hash["subnets"].should eq(4)
+      hash["subnets"].should eq("4")
       hash["shared"].should be_false
       hash["admin_state_up"].should eq("up")
     end
@@ -76,11 +76,11 @@ describe "Network methods" do
   context "when we save successfully" do
     it "it is true and we get id" do
       @new_network = double("new_network")
-      @new_network.stub(:id).and_return(909)
-      @networks = double("networks")
-      @networks.stub(:create).and_return(@new_network)
+      @new_network.stub(:body).and_return({"network"=>{"id"=>909,"status"=>"ACTIVE"}})
+      @network = double("networks")
+      @network.stub(:create_network).and_return(@new_network)
       @connection = double("connection")
-      @connection.stub(:network).and_return(@networks)
+      @connection.stub(:network).and_return(@network)
       ns = HP::Cloud::NetworkHelper.new(@connection)
       ns.name = 'quantum'
       ns.tenant_id = 100
@@ -97,10 +97,10 @@ describe "Network methods" do
 
   context "when save fails" do
     it "it is false and we get errors" do
-      @networks = double("networks")
-      @networks.stub(:create).and_return(nil)
+      @network = double("networks")
+      @network.stub(:create_network).and_return(nil)
       @connection = double("connection")
-      @connection.stub(:network).and_return(@networks)
+      @connection.stub(:network).and_return(@network)
       ns = HP::Cloud::NetworkHelper.new(@connection)
       ns.name = 'quantum'
       ns.tenant_id = 100

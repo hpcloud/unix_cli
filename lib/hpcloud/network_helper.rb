@@ -13,7 +13,6 @@ module HP
         @shared = false
         @admin_state_up = true
         if foggy.nil?
-          @meta = HP::Cloud::Metadata.new(nil)
           return
         end
         @id = foggy.id

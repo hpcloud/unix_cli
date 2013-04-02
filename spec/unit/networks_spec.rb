@@ -1,102 +1,106 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "Dnss getter" do
-  def mock_dns(name)
-    fog_dns = double(name)
+describe "Networks getter" do
+  def mock_network(name)
+    fog_network = double(name)
     @id = 1 if @id.nil?
-    fog_dns.stub(:id).and_return(@id.to_s)
+    fog_network.stub(:id).and_return(@id.to_s)
     @id += 1
-    fog_dns.stub(:name).and_return(name)
-    fog_dns.stub(:size).and_return(0)
-    fog_dns.stub(:type).and_return(nil)
-    fog_dns.stub(:status).and_return("available")
-    fog_dns.stub(:metadata).and_return(nil)
-    return fog_dns
+    fog_network.stub(:name).and_return(name)
+    fog_network.stub(:size).and_return(0)
+    fog_network.stub(:tenant_id).and_return("1231231")
+    fog_network.stub(:status).and_return("ACTIVE")
+    fog_network.stub(:shared).and_return(nil)
+    fog_network.stub(:admin_state_up).and_return(true)
+    fog_network.stub(:subnets).and_return(nil)
+    return fog_network
   end
 
   before(:each) do
-    @dnss = [ mock_dns("ds1"), mock_dns("ds2"), mock_dns("ds3"), mock_dns("ds3") ]
+    @networks = [ mock_network("nw1"), mock_network("nw2"), mock_network("nw3"), mock_network("nw3") ]
+    @network = double("network")
+    @network.stub(:networks).and_return(@networks)
     @connection = double("connection")
-    @connection.stub(:dnss).and_return(@dnss)
+    @connection.stub(:network).and_return(@network)
     Connection.stub(:instance).and_return(@connection)
   end
 
   context "when we get with no arguments" do
     it "should return them all" do
-      dnss = Dnss.new.get()
+      networks = Networks.new.get()
 
-      dnss[0].name.should eql("ds1")
-      dnss[1].name.should eql("ds2")
-      dnss[2].name.should eql("ds3")
-      dnss[3].name.should eql("ds3")
-      dnss.length.should eql(4)
+      networks[0].name.should eql("nw1")
+      networks[1].name.should eql("nw2")
+      networks[2].name.should eql("nw3")
+      networks[3].name.should eql("nw3")
+      networks.length.should eql(4)
     end
   end
 
   context "when we specify id" do
     it "should return them all" do
-      dnss = Dnss.new.get(["3"])
+      networks = Networks.new.get(["3"])
 
-      dnss[0].name.should eql("ds3")
-      dnss[0].id.to_s.should eql("3")
-      dnss.length.should eql(1)
+      networks[0].name.should eql("nw3")
+      networks[0].id.to_s.should eql("3")
+      networks.length.should eql(1)
     end
   end
 
   context "when we specify name" do
     it "should return them all" do
-      dnss = Dnss.new.get(["ds2"])
+      networks = Networks.new.get(["nw2"])
 
-      dnss[0].name.should eql("ds2")
-      dnss.length.should eql(1)
+      networks[0].name.should eql("nw2")
+      networks.length.should eql(1)
     end
   end
 
   context "when we specify a couple" do
     it "should return them all" do
-      dnss = Dnss.new.get(["1", "ds2"])
+      networks = Networks.new.get(["1", "nw2"])
 
-      dnss[0].name.should eql("ds1")
-      dnss[1].name.should eql("ds2")
-      dnss.length.should eql(2)
+      networks[0].name.should eql("nw1")
+      networks[1].name.should eql("nw2")
+      networks.length.should eql(2)
     end
   end
 
   context "when we match multiple" do
     it "should return both" do
-      dnss = Dnss.new.get(["ds3"])
+      networks = Networks.new.get(["nw3"])
 
-      dnss[0].name.should eql("ds3")
-      dnss[1].name.should eql("ds3")
-      dnss.length.should eql(2)
+      networks[0].name.should eql("nw3")
+      networks[1].name.should eql("nw3")
+      networks.length.should eql(2)
     end
   end
 
   context "when we match multiple" do
     it "should return error" do
-      dnss = Dnss.new.get(["ds3"], false)
+      networks = Networks.new.get(["nw3"], false)
 
-      dnss[0].is_valid?.should be_false
-      dnss[0].cstatus.error_code.should eq(:general_error)
-      dnss[0].cstatus.message.should eq("More than one dns matches 'ds3', use the id instead of name.")
-      dnss.length.should eql(1)
+      networks[0].is_valid?.should be_false
+      networks[0].cstatus.error_code.should eq(:general_error)
+      networks[0].cstatus.message.should eq("More than one network matches 'nw3', use the id instead of name.")
+      networks.length.should eql(1)
     end
   end
 
   context "when we fail to match" do
     it "should return error" do
-      dnss = Dnss.new.get(["bogus"])
+      networks = Networks.new.get(["bogus"])
 
-      dnss[0].is_valid?.should be_false
-      dnss[0].cstatus.error_code.should eq(:not_found)
-      dnss[0].cstatus.message.should eq("Cannot find a dns matching 'bogus'.")
-      dnss.length.should eql(1)
+      networks[0].is_valid?.should be_false
+      networks[0].cstatus.error_code.should eq(:not_found)
+      networks[0].cstatus.message.should eq("Cannot find a network matching 'bogus'.")
+      networks.length.should eql(1)
     end
   end
 
   context "when check empty" do
     it "should return false" do
-      Dnss.new.empty?.should be_false
+      Networks.new.empty?.should be_false
     end
   end
 end
