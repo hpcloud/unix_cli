@@ -100,6 +100,7 @@ describe "Subnet methods" do
       sn.cstatus.to_s.should eq("Invalid IP version '5'")
     end
   end
+
   context "when we convert to hash" do
     it "get all the expected values" do
       hash = HP::Cloud::SubnetHelper.new(double("connection"), @fog_subnet).to_hash()

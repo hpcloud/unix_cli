@@ -2,7 +2,8 @@
 class NetworkTestHelper
   @@network_cache = {}
 
-  def self.create(name)
+  def self.create(name, force = false)
+    @@network_cache[name] = nil if force
     return @@network_cache[name] unless @@network_cache[name].nil?
     networks = HP::Cloud::Networks.new
     network = networks.get(name)

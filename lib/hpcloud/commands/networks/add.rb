@@ -4,7 +4,7 @@ module HP
 
       desc "networks:add <name>", "Add a network."
       long_desc <<-DESC
-  Add a new network in your account with the specified name.  Optionally, you can specify administrative state, or shared.
+  Add a new network in your account with the specified name.  Optionally, you can specify administrative state or shared.
 
 Examples:
   hpcloud networks:add netty        # Create a new network named 'netty':

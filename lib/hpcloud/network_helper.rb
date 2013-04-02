@@ -21,7 +21,7 @@ module HP
         @status = foggy.status
         @shared = foggy.shared
         @admin_state_up = foggy.admin_state_up
-        @subnets = foggy.subnets.join(",") unless foggy.subnets.nil?
+        @subnets = foggy.subnets
       end
 
       def save

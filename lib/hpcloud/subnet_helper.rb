@@ -42,6 +42,7 @@ module HP
       end
 
       def set_ip_version(value)
+        return true if value.nil?
         value = value.to_s
         if value != "4" && value != "6"
           set_error("Invalid IP version '#{value}'", :incorrect_usage)

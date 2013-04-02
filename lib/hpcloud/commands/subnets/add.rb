@@ -2,16 +2,15 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "subnets:add <name>", "Add a subnet."
+      desc "subnets:add <name> <network_id_or_name> <cidr>", "Add a subnet."
       long_desc <<-DESC
-  Add a new subnet in your account with the specified name.  Optionally, you can specify administrative state, or shared.
+  Add a new subnet to your network with the specified name and CIDR.  Optionally, you can specify IP version, gateway, and DHCP.  The add command will do its best to guess the IP version from the CIDR, but you may override it.
 
 Examples:
-  hpcloud subnets:add netty        # Create a new subnet named 'netty':
-  hpcloud subnets:add netty -u -h  # Create a new subnet named 'netty' up and shared:
-  hpcloud subnets:add netty --no-adminstateup  # Create a new subnet named 'netty' admin state down:
+  hpcloud subnets:add subwoofer netty 127.0.0.0/24        # Create a new subnet named 'subwoofer':
+  hpcloud subnets:add subwoofer netty 127.0.0.0/24 -g 127.0.0.1 -d # Create a new subnet named 'subwoofer' with gateway and DHCP:
       DESC
-      method_option :ipversion, :default => '6',
+      method_option :ipversion,
                     :type => :string, :aliases => '-i',
                     :desc => 'IP version.'
       method_option :gateway,
