@@ -8,7 +8,7 @@ module HP
 
       map 'networks:list' => 'networks'
     
-      desc 'networks [name_or_id ...]', "List the available block devices."
+      desc 'networks [name_or_id ...]', "List the available networks."
       long_desc <<-DESC
   Lists all the networks that are associated with the account. The list begins with identifier and contains name, status, shared, admin state, and subnets.  Optionally, you can filter the list by specifying name or ID.
 

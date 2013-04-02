@@ -4,14 +4,14 @@ module HP
 
       map %w(networks:rm networks:delete networks:del) => 'networks:remove'
 
-      desc "networks:remove name_or_id [name_or_id ...]", "Remove a network settings (specified by name or ID)."
+      desc "networks:remove name_or_id [name_or_id ...]", "Remove a network (specified by name or ID)."
       long_desc <<-DESC
-  Remove network settings by specifying their names or ID. You may specify more than one network name or ID on a command line.  Optionally, you can specify an availability zone.
+  Remove network by specifying their names or ID. You may specify more than one network name or ID on a command line.
 
 Examples:
-  hpcloud networks:remove tome treatise   # Delete the network 'tome' and 'treatise':
-  hpcloud networks:remove 998             # Delete the network with ID 998:
-  hpcloud networks:remove my-network -z az-2.region-a.geo-1  # Delete the network `my-network` for availability zone `az-2.region-a.geo-1`:
+  hpcloud networks:remove arpa darpa   # Delete the network 'arpa' and 'darpa':
+  hpcloud networks:remove 998          # Delete the network with ID 998:
+  hpcloud networks:remove netty -z region-a.geo-1  # Delete the network `netty` for availability zone `region-a.geo-1`:
 
 Aliases: networks:rm, networks:delete, networks:del
       DESC

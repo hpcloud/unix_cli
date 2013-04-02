@@ -30,8 +30,8 @@ module HP
         if @fog.nil?
           hsh = {:name => @name,
              :tenant_id => @tenant_id,
-             :shared => @shared,
-             :admin_state_up => @admin_state_up}
+             :shared => @shared.to_s,
+             :admin_state_up => @admin_state_up.to_s}
           response = @connection.network.create_network(hsh)
           if response.nil?
             set_error("Error creating network '#{@name}'")
