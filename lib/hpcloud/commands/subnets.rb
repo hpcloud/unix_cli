@@ -1,6 +1,6 @@
 require 'hpcloud/commands/subnets/add.rb'
 require 'hpcloud/commands/subnets/remove.rb'
-#require 'hpcloud/commands/subnets/update.rb'
+require 'hpcloud/commands/subnets/update.rb'
 require 'hpcloud/subnets'
 
 module HP
