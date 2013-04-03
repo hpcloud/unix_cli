@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "subnets:add" do
   before(:each) do
     @network1 = NetworkTestHelper.create("cli_test_network1", true)
-    @network1.subnets.each {|x|
+    @network1.subnets_array.each {|x|
       cptr("subnets:remove #{x}")
     }
   end

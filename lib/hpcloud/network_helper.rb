@@ -2,10 +2,11 @@ module HP
   module Cloud
     class NetworkHelper < BaseHelper
       attr_accessor :id, :name, :tenant_id, :status, :subnets
-      attr_accessor :shared, :admin_state_up
+      attr_accessor :shared, :admin_state_up, :router_external
+      attr_accessor :admin_state
     
       def self.get_keys()
-        return [ "id", "name", "status", "shared", "admin_state_up", "subnets" ]
+        return [ "id", "name", "status", "shared", "admin_state", "subnets" ]
       end
 
       def initialize(connection, foggy = nil)
@@ -21,7 +22,10 @@ module HP
         @status = foggy.status
         @shared = foggy.shared
         @admin_state_up = foggy.admin_state_up
-        @subnets = foggy.subnets
+        @admin_state = foggy.admin_state_up ? "up" : "down"
+        @subnets_array = foggy.subnets
+        @subnets = foggy.subnets.join(",") unless foggy.subnets.nil?
+        @router_external = foggy.router_external
       end
 
       def save
