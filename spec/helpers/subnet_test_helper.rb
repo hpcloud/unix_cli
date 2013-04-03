@@ -15,8 +15,8 @@ class SubnetTestHelper
     subnet.name = name
     subnet.network_id = network1.id
     subnet.set_cidr(name + "/32")
-    subnet.set_gateway_ip("127.0.0.1")
-    subnet.enable_dhcp = true
+    subnet.set_gateway("127.0.0.1")
+    subnet.dhcp = true
     subnet.save
     @@subnet_cache[name] = subnet
     return subnet

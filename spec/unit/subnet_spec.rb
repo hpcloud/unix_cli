@@ -9,13 +9,11 @@ describe "Subnet keys" do
       keys[1].should eql("name")
       keys[2].should eql("network_id")
       keys[3].should eql("cidr")
-      keys[4].should eql("ip_version")
-      keys[5].should eql("dns_nameservers")
-      keys[6].should eql("allocation_pools")
-      keys[7].should eql("host_routes")
-      keys[8].should eql("gateway_ip")
-      keys[9].should eql("enable_dhcp")
-      keys.length.should eql(10)
+      keys[4].should eql("nameservers")
+      keys[5].should eql("routes")
+      keys[6].should eql("gateway")
+      keys[7].should eql("dhcp")
+      keys.length.should eql(8)
     end
   end
 end
@@ -49,8 +47,8 @@ describe "Subnet methods" do
       ns.dns_nameservers.should eql(222323)
       ns.allocation_pools.should eql([])
       ns.host_routes.should eql([])
-      ns.gateway_ip.should eql("127.0.0.1")
-      ns.enable_dhcp.should eql(true)
+      ns.gateway.should eql("127.0.0.1")
+      ns.dhcp.should eql(true)
       ns.cstatus.message.should be_nil
       ns.cstatus.error_code.should eq(:success)
     end
@@ -69,8 +67,8 @@ describe "Subnet methods" do
       ns.dns_nameservers.should be_nil
       ns.allocation_pools.should be_nil
       ns.host_routes.should be_nil
-      ns.gateway_ip.should be_nil
-      ns.enable_dhcp.should be_nil
+      ns.gateway.should be_nil
+      ns.dhcp.should be_nil
       ns.cstatus.message.should be_nil
       ns.cstatus.error_code.should eq(:success)
     end
@@ -101,6 +99,34 @@ describe "Subnet methods" do
     end
   end
 
+  context "Subnet set_dns_nameservers" do
+    it "get all the expected values" do
+      connection = double("connection")
+      sn = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
+      sn.set_dns_nameservers("10.1.1.1,10.2.2.2").should be_true
+      sn.dns_nameservers.should eq(["10.1.1.1","10.2.2.2"])
+      sn.set_dns_nameservers("10.1.1.1").should be_true
+      sn.dns_nameservers.should eq(["10.1.1.1"])
+      sn.set_dns_nameservers("10.1.1").should be_false
+      sn.cstatus.to_s.should eq("Invalid DNS nameserver '10.1.1' must be comma separated list of IPs")
+    end
+  end
+
+  context "Subnet set_host_routes" do
+    it "get all the expected values" do
+      connection = double("connection")
+      sn = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
+      sn.set_host_routes("10.1.1.1,100.1.1.1;10.2.2.2,100.2.2.2").should be_true
+      sn.host_routes.should eq([{"destination"=>"10.1.1.1", "nexthop"=>"100.1.1.1"}, {"destination"=>"10.2.2.2", "nexthop"=>"100.2.2.2"}])
+      sn.set_host_routes("10.1.1.1,100.1.1.1").should be_true
+      sn.host_routes.should eq([{"destination"=>"10.1.1.1", "nexthop"=>"100.1.1.1"}])
+      sn.set_host_routes("10.1.1.1;10.2.2.2").should be_false
+      sn.cstatus.to_s.should eq("Invalid host routes '10.1.1.1;10.2.2.2' must be semicolon separated list of destination,nexthop")
+      sn.set_host_routes("10.1.1.1").should be_false
+      sn.cstatus.to_s.should eq("Invalid host routes '10.1.1.1' must be semicolon separated list of destination,nexthop")
+    end
+  end
+
   context "when we convert to hash" do
     it "get all the expected values" do
       hash = HP::Cloud::SubnetHelper.new(double("connection"), @fog_subnet).to_hash()
@@ -114,8 +140,8 @@ describe "Subnet methods" do
       hash["dns_nameservers"].should eq(222323)
       hash["allocation_pools"].should eq([])
       hash["host_routes"].should eq([])
-      hash["gateway_ip"].should eq("127.0.0.1")
-      hash["enable_dhcp"].should be_true
+      hash["gateway"].should eq("127.0.0.1")
+      hash["dhcp"].should be_true
     end
   end
 
@@ -137,8 +163,8 @@ describe "Subnet methods" do
       ns.dns_nameservers = 2222
       ns.allocation_pools = [123,333]
       ns.host_routes = [123,333]
-      ns.gateway_ip = "127.0.0.2"
-      ns.enable_dhcp = true
+      ns.gateway = "127.0.0.2"
+      ns.dhcp = true
 
       ns.save.should be_true
 

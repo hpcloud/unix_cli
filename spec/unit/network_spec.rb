@@ -37,7 +37,7 @@ describe "Network methods" do
       ns.status.should eql("available")
       ns.shared.should eql(false)
       ns.admin_state_up.should eq("up")
-      ns.subnets.should eq("4")
+      ns.subnets.should eq([4])
       ns.cstatus.message.should be_nil
       ns.cstatus.error_code.should eq(:success)
     end
@@ -67,7 +67,7 @@ describe "Network methods" do
       hash["name"].should eql("MyNetwork")
       hash["tenant_id"].should eql(234)
       hash["status"].should eql("available")
-      hash["subnets"].should eq("4")
+      hash["subnets"].should eq([4])
       hash["shared"].should be_false
       hash["admin_state_up"].should eq("up")
     end

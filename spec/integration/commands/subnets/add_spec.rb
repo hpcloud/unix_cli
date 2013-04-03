@@ -26,6 +26,24 @@ describe "subnets:add" do
     end
   end
 
+  context "subnet:add with all the options" do
+    it "should show success message" do
+      @subnets_name = resource_name("add2")
+
+      rsp = cptr("subnets:add #{@subnets_name} #{@network1.name} 127.0.1.0/32 -i 4 -g 127.1.1.1 -d -n 10.0.0.1,10.0.0.2 -h 127.0.1.0/32,10.2.2.2")
+
+      rsp.stderr.should eq("")
+      @new_subnets_id = rsp.stdout.scan(/'([^']+)/)[2][0]
+      rsp.stdout.should eq("Created subnet '#{@subnets_name}' with id '#{@new_subnets_id}'.\n")
+      rsp.exit_status.should be_exit(:success)
+    end
+
+    after(:each) do
+      rsp = cptr("subnets:remove #{@subnets_name}")
+      rsp.stderr.should eq("")
+    end
+  end
+
   context "when creating subnets with a name that already exists" do
     it "should fail" do
       @sn1 = SubnetTestHelper.create("127.0.0.1")
