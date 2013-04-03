@@ -12,7 +12,7 @@ describe "subnets:add" do
     it "should show success message" do
       @subnets_name = resource_name("add1")
 
-      rsp = cptr("subnets:add #{@subnets_name} #{@network1.name} 127.0.0.0/24")
+      rsp = cptr("subnets:add #{@subnets_name} #{@network1.name} 127.0.1.0/32")
 
       rsp.stderr.should eq("")
       @new_subnets_id = rsp.stdout.scan(/'([^']+)/)[2][0]
@@ -28,9 +28,9 @@ describe "subnets:add" do
 
   context "when creating subnets with a name that already exists" do
     it "should fail" do
-      @sn1 = SubnetTestHelper.create("cli_test_sn1")
+      @sn1 = SubnetTestHelper.create("127.0.0.1")
 
-      rsp = cptr("subnets:add #{@sn1.name} #{@network1.name} 127.0.0.0/24")
+      rsp = cptr("subnets:add #{@sn1.name} #{@network1.name} 127.0.0.1/32")
 
       rsp.stderr.should eq("Subnet with the name '#{@sn1.name}' already exists\n")
       rsp.stdout.should eq("")
@@ -42,7 +42,7 @@ describe "subnets:add" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("subnets:add snler #{@network1.name} 127.0.0.0/24 -a bogus")
+      rsp = cptr("subnets:add snler #{@network1.name} 127.0.0.1/32 -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")

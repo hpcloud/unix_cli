@@ -7,8 +7,8 @@ describe "Subnets command" do
   end
 
   before(:all) do
-    @subnet1 = SubnetTestHelper.create("cli_test_subnet1")
-    @subnet2= SubnetTestHelper.create("cli_test_subnet2")
+    @subnet1 = SubnetTestHelper.create("127.0.0.1")
+    @subnet2 = SubnetTestHelper.create("127.0.0.2")
   end
 
   context "subnets" do
@@ -45,7 +45,7 @@ describe "Subnets command" do
     it "should report error" do
       rsp = cptr('subnets -z blah')
 
-      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Subnet' service is activated for the appropriate availability zone.\n")
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end

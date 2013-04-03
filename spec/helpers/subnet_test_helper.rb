@@ -14,7 +14,7 @@ class SubnetTestHelper
     subnet = HP::Cloud::SubnetHelper.new(Connection.instance)
     subnet.name = name
     subnet.network_id = network1.id
-    subnet.set_cidr("127.0.0.0/24")
+    subnet.set_cidr(name + "/32")
     subnet.set_gateway_ip("127.0.0.1")
     subnet.enable_dhcp = true
     subnet.save

@@ -4,9 +4,10 @@ module HP
       attr_accessor :id, :name, :tenant_id
       attr_accessor :network_id, :cidr, :ip_version, :dns_nameservers
       attr_accessor :allocation_pools, :host_routes, :gateway_ip, :enable_dhcp
+      attr_accessor :allocation
     
       def self.get_keys()
-        return [ "id", "name", "network_id", "cidr", "ip_version", "dns_nameservers", "allocation_pools", "host_routes", "gateway_ip", "enable_dhcp" ]
+        return [ "id", "name", "network_id", "cidr", "dns_nameservers", "host_routes", "gateway_ip", "enable_dhcp" ]
       end
 
       def initialize(connection, foggy = nil)
@@ -20,9 +21,24 @@ module HP
         @network_id = foggy.network_id
         @cidr = foggy.cidr
         @ip_version = foggy.ip_version
-        @dns_nameservers = foggy.dns_nameservers
+        @dns_nameservers = ""
+        if foggy.dns_nameservers.kind_of? Array
+          @dns_nameservers = foggy.dns_nameservers.join(",")
+        end
+        @allocation = ""
+        if foggy.allocation_pools.kind_of? Array
+          foggy.allocation_pools.each { |hsh|
+            if hsh.kind_of? Hash
+              @allocation += "," unless @allocation.empty?
+              @allocation += "#{hsh['start']}-#{hsh['end']}"
+            end
+          }
+        end
         @allocation_pools = foggy.allocation_pools
-        @host_routes = foggy.host_routes
+        @host_routes = ""
+        if foggy.host_routes.kind_of? Array
+          @host_routes = foggy.host_routes.join(",")
+        end
         @gateway_ip = foggy.gateway_ip
         @enable_dhcp = foggy.enable_dhcp
       end

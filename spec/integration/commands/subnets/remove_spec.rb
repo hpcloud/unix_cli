@@ -15,7 +15,7 @@ describe "subnets:remove command" do
 
   context "when deleting subnet with name" do
     it "should succeed" do
-      @subnet = SubnetTestHelper.create(resource_name("del1"))
+      @subnet = SubnetTestHelper.create("127.0.1.1")
 
       rsp = cptr("subnets:remove #{@subnet.name}")
 
@@ -28,7 +28,7 @@ describe "subnets:remove command" do
 
   context "subnets:remove with valid avl" do
     it "should be successful" do
-      @subnet = SubnetTestHelper.create(resource_name("del2"))
+      @subnet = SubnetTestHelper.create("127.0.2.1")
 
       rsp = cptr("subnets:remove #{@subnet.id} -z region-a.geo-1")
 
@@ -43,7 +43,7 @@ describe "subnets:remove command" do
     it "should report error" do
       rsp = cptr("subnets:remove subnet_name -z blah")
 
-      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Subnet' service is activated for the appropriate availability zone.\n")
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
