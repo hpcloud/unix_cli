@@ -134,7 +134,7 @@ module HP
         else
           response = @connection.network.update_subnet(@id, hsh)
           if response.nil?
-            set_error("Error creating subnet '#{@name}'")
+            set_error("Error updating subnet '#{@name}'")
             return false
           end
         end

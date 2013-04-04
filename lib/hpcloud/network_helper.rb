@@ -46,7 +46,7 @@ module HP
         else
           response = @connection.network.update_network(@id, hsh)
           if response.nil?
-            set_error("Error creating network '#{@name}'")
+            set_error("Error updating network '#{@name}'")
             return false
           end
         end
