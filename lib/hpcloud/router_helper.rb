@@ -19,10 +19,12 @@ module HP
         @tenant_id = foggy.tenant_id
         @external_gateway_info = foggy.external_gateway_info
         @gateway = ""
-        foggy.external_gateway_info.each { |k,v|
-          @gateway += "," unless @gateway.empty?
-          @gateway += v
-        }
+        unless foggy.external_gateway_info.nil?
+          foggy.external_gateway_info.each { |k,v|
+            @gateway += "," unless @gateway.empty?
+            @gateway += v
+          }
+        end
         @admin_state_up = foggy.admin_state_up
         @admin_state = foggy.admin_state_up ? "up" : "down"
         @status = foggy.status
@@ -50,14 +52,11 @@ module HP
             :admin_state_up => @admin_state_up
           }
         if @fog.nil?
-          response = @connection.network.create_router(@network_id, @cidr, @ip_version, hsh)
+          response = @connection.network.create_router(hsh)
           if response.nil?
             set_error("Error creating router '#{@name}'")
             return false
           end
-puts '==========================================='
-p response.body
-puts '==========================================='
           @id = response.body["router"]["id"]
           @status = response.body["router"]["status"]
           @foggy = response.body["router"]
