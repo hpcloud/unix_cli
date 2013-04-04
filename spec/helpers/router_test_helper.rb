@@ -2,8 +2,10 @@
 class RouterTestHelper
   @@router_cache = {}
 
-  def self.create(name)
-    return @@router_cache[name] unless @@router_cache[name].nil?
+  def self.create(name, cache=true)
+    if cache
+      return @@router_cache[name] unless @@router_cache[name].nil?
+    end
     routers = HP::Cloud::Routers.new
     router = routers.get(name)
     if router.is_valid?
