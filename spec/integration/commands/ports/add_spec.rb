@@ -25,7 +25,7 @@ describe "ports:add" do
 
   context "when creating ports with a name that already exists" do
     it "should fail" do
-      @sot1 = PortTestHelper.create("cli_test_ports1")
+      @sot1 = PortTestHelper.create("cli_test_port1")
 
       rsp = cptr("ports:add #{@sot1.name} #{@network1.name}")
 
