@@ -9,7 +9,7 @@ describe "Network keys" do
       keys[1].should eql("name")
       keys[2].should eql("status")
       keys[3].should eql("shared")
-      keys[4].should eql("admin_state_up")
+      keys[4].should eql("admin_state")
       keys[5].should eql("subnets")
       keys.length.should eql(6)
     end
@@ -26,6 +26,7 @@ describe "Network methods" do
     @fog_network.stub(:shared).and_return(false)
     @fog_network.stub(:admin_state_up).and_return("up")
     @fog_network.stub(:subnets).and_return([4])
+    @fog_network.stub(:router_external).and_return(false)
   end
 
   context "when given fog object" do
@@ -37,7 +38,7 @@ describe "Network methods" do
       ns.status.should eql("available")
       ns.shared.should eql(false)
       ns.admin_state_up.should eq("up")
-      ns.subnets.should eq([4])
+      ns.subnets.should eq("4")
       ns.cstatus.message.should be_nil
       ns.cstatus.error_code.should eq(:success)
     end
@@ -67,7 +68,7 @@ describe "Network methods" do
       hash["name"].should eql("MyNetwork")
       hash["tenant_id"].should eql(234)
       hash["status"].should eql("available")
-      hash["subnets"].should eq([4])
+      hash["subnets"].should eq("4")
       hash["shared"].should be_false
       hash["admin_state_up"].should eq("up")
     end

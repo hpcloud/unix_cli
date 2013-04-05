@@ -13,6 +13,7 @@ describe "Networks getter" do
     fog_network.stub(:shared).and_return(nil)
     fog_network.stub(:admin_state_up).and_return(true)
     fog_network.stub(:subnets).and_return(nil)
+    fog_network.stub(:router_external).and_return(false)
     return fog_network
   end
 
