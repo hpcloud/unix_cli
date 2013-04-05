@@ -7,8 +7,8 @@ module HP
   Add a new port to your network with the specified name.  Optionally, you can specify fixed IPs, MAC address, administrative state, device identifier, device owner, and security groups.
 
 Examples:
-  hpcloud ports:add porto netty 127.0.0.0/24        # Create a new port named 'porto':
-  hpcloud ports:add porto netty 127.0.0.0/24 -g groupo -u # Create a new port named 'porto' in 'groupo' administratively up:
+  hpcloud ports:add porto netty        # Create a new port named 'porto':
+  hpcloud ports:add porto netty -d devvy -o ohnur -u # Create a new port named 'porto' associated with 'devvy' and 'ohnur' administratively up:
       DESC
       method_option :fixedips,
                     :type => :string, :aliases => '-f',
