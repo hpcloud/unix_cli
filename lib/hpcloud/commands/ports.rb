@@ -11,7 +11,7 @@ module HP
     
       desc 'ports [name_or_id ...]', "List the available ports."
       long_desc <<-DESC
-  Lists all the ports that are associated with the account. The list begins with identifier and contains name, status, shared, admin state, and subnets.  Optionally, you can filter the list by specifying name or ID.
+  Lists all the ports that are associated with the account. The list begins with identifier and contains name, network identifier, fixed IPs, MAC address, status, admin state, device identifier, and device owner.  Optionally, you can filter the list by specifying name or ID.
 
 Examples:
   hpcloud ports       # List all ports:
