@@ -17,6 +17,7 @@ require 'hpcloud'
 
 require 'helpers/fixtures'
 require 'helpers/accounts_helper'
+require 'helpers/auth_cache_helper'
 require 'helpers/checker_helper'
 require 'helpers/config_helper'
 require 'helpers/connections'
@@ -54,6 +55,7 @@ RSpec.configure do |config|
 
   def reset_all
     AccountsHelper.reset()
+    AuthCacheHelper.reset()
     ConfigHelper.reset()
     HP::Cloud::Connection.instance.clear_options()
   end

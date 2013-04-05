@@ -54,10 +54,8 @@ Aliases: account:add, account:setup, account:update
           if args.empty?
             begin
               acct = accounts.read(name)
-              actionstring = "edited"
             rescue Exception => e
               acct = accounts.create(name)
-              actionstring = "set up"
             end
             acct[:provider] ||= 'hp'
             unless options[:provider].nil?
@@ -132,7 +130,7 @@ Aliases: account:add, account:setup, account:update
               end
             end
 
-            @log.display "Account credentials for #{service_name} have been #{actionstring}."
+            @log.display "Account credentials for #{service_name} have been saved."
             unless acct[:provider] == "hp"
               @log.display "Accounts for providers other than HP are only supported for migration"
             end
