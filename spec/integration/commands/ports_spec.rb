@@ -1,19 +1,19 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe "Subnets command" do
+describe "Ports command" do
   def then_expected_table(response)
-    response.should match("#{@subnet1.name},")
-    response.should match("#{@subnet2.name},")
+    response.should match("#{@port1.name},")
+    response.should match("#{@port2.name},")
   end
 
   before(:all) do
-    @subnet1 = SubnetTestHelper.create("127.1.0.0")
-    @subnet2 = SubnetTestHelper.create("127.2.0.0")
+    @port1 = PortTestHelper.create("cli_test_port1")
+    @port2 = PortTestHelper.create("cli_test_port2")
   end
 
-  context "subnets" do
+  context "ports" do
     it "should report success" do
-      rsp = cptr("subnets -d , #{@subnet1.name} #{@subnet2.name}")
+      rsp = cptr("ports -d , #{@port1.name} #{@port2.name}")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -21,9 +21,9 @@ describe "Subnets command" do
     end
   end
 
-  context "subnets:list" do
+  context "ports:list" do
     it "should report success" do
-      rsp = cptr("subnets:list -d , #{@subnet1.name} #{@subnet2.name}")
+      rsp = cptr("ports:list -d , #{@port1.name} #{@port2.name}")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -31,9 +31,9 @@ describe "Subnets command" do
     end
   end
 
-  context "subnets with valid avl" do
+  context "ports with valid avl" do
     it "should report success" do
-      rsp = cptr("subnets -d , #{@subnet1.name} #{@subnet2.name} -z region-a.geo-1")
+      rsp = cptr("ports -d , #{@port1.name} #{@port2.name} -z region-a.geo-1")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -41,9 +41,9 @@ describe "Subnets command" do
     end
   end
 
-  context "subnets with invalid avl" do
+  context "ports with invalid avl" do
     it "should report error" do
-      rsp = cptr('subnets -z blah')
+      rsp = cptr('ports -z blah')
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
@@ -56,7 +56,7 @@ describe "Subnets command" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("subnets -a bogus")
+      rsp = cptr("ports -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")

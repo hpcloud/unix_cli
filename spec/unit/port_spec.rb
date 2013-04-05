@@ -43,7 +43,7 @@ describe "Port methods" do
       sot.name.should eql("MyPort")
       sot.tenant_id.should eql("234")
       sot.network_id.should eql("999999")
-      sot.fixed_ips.should eql([{'subnet_id'=>"4",'ip_address'=>"127.0.0.1"}])
+      sot.fixed_ips.should eql("4,127.0.0.1")
       sot.mac_address.should eql("12.12.12.12.12.12")
       sot.status.should eql("ACTIVE")
       sot.admin_state_up.should eql(true)
@@ -90,6 +90,19 @@ describe "Port methods" do
     end
   end
 
+  context "Port set_security_groups" do
+    it "get all the expected values" do
+      connection = double("connection")
+      sn = HP::Cloud::PortHelper.new(connection, @fog_port)
+      sn.set_security_groups("one,two").should be_true
+      sn.set_security_groups("uno").should be_true
+      sn.set_security_groups("").should be_true
+      sn.set_security_groups(nil).should be_true
+      #sn.set_security_groups(",,").should be_false
+      #sn.cstatus.to_s.should eq("Invalid security groups '' must be comma separated list of groups")
+    end
+  end
+
   context "when we convert to hash" do
     it "get all the expected values" do
       hash = HP::Cloud::PortHelper.new(double("connection"), @fog_port).to_hash()
@@ -98,7 +111,7 @@ describe "Port methods" do
       hash["name"].should eql("MyPort")
       hash["tenant_id"].should eql("234")
       hash["network_id"].should eq("999999")
-      hash["fixed_ips"].should eq([{'subnet_id'=>"4",'ip_address'=>"127.0.0.1"}])
+      hash["fixed_ips"].should eq("4,127.0.0.1")
       hash["mac_address"].should eq("12.12.12.12.12.12")
       hash["status"].should eq("ACTIVE")
       hash["admin_state_up"].should eq(true)

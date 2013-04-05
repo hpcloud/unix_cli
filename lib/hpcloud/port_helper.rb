@@ -19,7 +19,14 @@ module HP
         @name = foggy.name
         @tenant_id = foggy.tenant_id
         @network_id = foggy.network_id
-        @fixed_ips = foggy.fixed_ips
+        @fixed = foggy.fixed_ips
+        @fixed_ips = ""
+        if foggy.fixed_ips.kind_of? Array
+          foggy.fixed_ips.each{ |pair|
+            @fixed_ips += ";" unless @fixed_ips.empty?
+            @fixed_ips += "#{pair['subnet_id']},#{pair['ip_address']}"
+          }
+        end
         @mac_address = foggy.mac_address
         @status = foggy.status
         @admin_state_up = foggy.admin_state_up
@@ -35,16 +42,49 @@ module HP
 
       def set_fixed_ips(value)
         return true if value.nil?
-        @ips = value
+        @fixed_ips = value
         begin
-          @fixed_ips = []
+          @fixed = []
           value.split(';').each{ |subnet|
             ray = subnet.split(',')
             raise Exception.new("not subnet_id,ip_address") if ray.length != 2
-            @fixed_ips << { "subnet_id" => ray[0], "ip_address" => ray[1] }
+            @fixed << { "subnet_id" => ray[0], "ip_address" => ray[1] }
           }
         rescue Exception => e
           set_error("Invalid fixed IPs '#{value}' must be semicolon separated list of subnet_id,ip_address", :incorrect_usage)
+          return false
+        end
+        return true
+      end
+
+      def set_mac_address(value)
+        return true if value.nil?
+        @mac_address = value
+      end
+
+      def set_admin_state(value)
+        return true if value.nil?
+        @admin_state = value ? "up" : "down"
+        @admin_state_up = value
+      end
+
+      def set_device_id(value)
+        return true if value.nil?
+        @device_id = value
+      end
+
+      def set_device_owner(value)
+        return true if value.nil?
+        @device_owner = value
+      end
+
+      def set_security_groups(value)
+        return true if value.nil?
+        @groups = value
+        begin
+          @security_groups = value.split(',')
+        rescue Exception => e
+          set_error("Invalid security groups '#{value}' must be comma separated list of groups", :incorrect_usage)
           return false
         end
         return true
@@ -56,7 +96,7 @@ module HP
             :name => @name,
             :tenant_id => @tenant_id,
             :network_id => @network_id,
-            :fixed_ips => @fixed_ips,
+            :fixed_ips => @fixed,
             :mac_address => @mac_address,
             :admin_state_up => @admin_state_up,
             :device_id => @device_id,

@@ -1,6 +1,6 @@
-#require 'hpcloud/commands/ports/add.rb'
-#require 'hpcloud/commands/ports/remove.rb'
-#require 'hpcloud/commands/ports/update.rb'
+require 'hpcloud/commands/ports/add.rb'
+require 'hpcloud/commands/ports/remove.rb'
+require 'hpcloud/commands/ports/update.rb'
 require 'hpcloud/ports'
 
 module HP

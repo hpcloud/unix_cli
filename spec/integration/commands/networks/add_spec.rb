@@ -21,11 +21,11 @@ describe "networks:add" do
 
   context "when creating networks with a name that already exists" do
     it "should fail" do
-      @ds1 = NetworkTestHelper.create("cli_test_ds1")
+      @sot1 = NetworkTestHelper.create("cli_test_network1")
 
-      rsp = cptr("networks:add #{@ds1.name}")
+      rsp = cptr("networks:add #{@sot1.name}")
 
-      rsp.stderr.should eq("Network with the name '#{@ds1.name}' already exists\n")
+      rsp.stderr.should eq("Network with the name '#{@sot1.name}' already exists\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
@@ -35,7 +35,7 @@ describe "networks:add" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("networks:add dsler -a bogus")
+      rsp = cptr("networks:add sotler -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
