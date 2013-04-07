@@ -36,94 +36,94 @@ describe "Subnet methods" do
 
   context "when given fog object" do
     it "should have expected values" do
-      ns = HP::Cloud::SubnetHelper.new(double("connection"), @fog_subnet)
+      sot = HP::Cloud::SubnetHelper.new(double("connection"), @fog_subnet)
 
-      ns.id.should eql(1)
-      ns.name.should eql("MySubnet")
-      ns.tenant_id.should eql("234")
-      ns.network_id.should eql(222)
-      ns.cidr.should eql("127.0.0.1/1")
-      ns.ip_version.should eql(4)
-      ns.dns_nameservers.should eql(222323)
-      ns.allocation_pools.should eql([])
-      ns.host_routes.should eql([])
-      ns.gateway.should eql("127.0.0.1")
-      ns.dhcp.should eql(true)
-      ns.cstatus.message.should be_nil
-      ns.cstatus.error_code.should eq(:success)
+      sot.id.should eql(1)
+      sot.name.should eql("MySubnet")
+      sot.tenant_id.should eql("234")
+      sot.network_id.should eql(222)
+      sot.cidr.should eql("127.0.0.1/1")
+      sot.ip_version.should eql(4)
+      sot.dns_nameservers.should eql(222323)
+      sot.allocation_pools.should eql([])
+      sot.host_routes.should eql([])
+      sot.gateway.should eql("127.0.0.1")
+      sot.dhcp.should eql(true)
+      sot.cstatus.message.should be_nil
+      sot.cstatus.error_code.should eq(:success)
     end
   end
 
   context "when given nothing" do
     it "should have expected values" do
-      ns = HP::Cloud::SubnetHelper.new(double("connection"))
+      sot = HP::Cloud::SubnetHelper.new(double("connection"))
 
-      ns.id.should be_nil
-      ns.name.should be_nil
-      ns.tenant_id.should be_nil
-      ns.network_id.should be_nil
-      ns.cidr.should be_nil
-      ns.ip_version.should be_nil
-      ns.dns_nameservers.should be_nil
-      ns.allocation_pools.should be_nil
-      ns.host_routes.should be_nil
-      ns.gateway.should be_nil
-      ns.dhcp.should be_nil
-      ns.cstatus.message.should be_nil
-      ns.cstatus.error_code.should eq(:success)
+      sot.id.should be_nil
+      sot.name.should be_nil
+      sot.tenant_id.should be_nil
+      sot.network_id.should be_nil
+      sot.cidr.should be_nil
+      sot.ip_version.should be_nil
+      sot.dns_nameservers.should be_nil
+      sot.allocation_pools.should be_nil
+      sot.host_routes.should be_nil
+      sot.gateway.should be_nil
+      sot.dhcp.should be_nil
+      sot.cstatus.message.should be_nil
+      sot.cstatus.error_code.should eq(:success)
     end
   end
 
   context "Subnet set_cidr" do
     it "get all the expected values" do
       connection = double("connection")
-      sn = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
-      sn.set_cidr("127.0.0.1").should be_true
-      sn.set_cidr("127.0.0.1/24").should be_true
-      sn.set_cidr("127.0.0.1/x").should be_false
-      sn.cstatus.to_s.should eq("Invalid CIDR value 127.0.0.1/x")
-      sn.set_cidr("127.0.0.999/24").should be_false
-      sn.cstatus.to_s.should eq("Invalid CIDR value 127.0.0.999/24")
+      sot = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
+      sot.set_cidr("127.0.0.1").should be_true
+      sot.set_cidr("127.0.0.1/24").should be_true
+      sot.set_cidr("127.0.0.1/x").should be_false
+      sot.cstatus.to_s.should eq("Invalid CIDR value 127.0.0.1/x")
+      sot.set_cidr("127.0.0.999/24").should be_false
+      sot.cstatus.to_s.should eq("Invalid CIDR value 127.0.0.999/24")
     end
   end
 
   context "Subnet set_ip_version" do
     it "get all the expected values" do
       connection = double("connection")
-      sn = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
-      sn.set_ip_version("4").should be_true
-      sn.set_ip_version("6").should be_true
-      sn.set_ip_version(6).should be_true
-      sn.set_ip_version("5").should be_false
-      sn.cstatus.to_s.should eq("Invalid IP version '5'")
+      sot = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
+      sot.set_ip_version("4").should be_true
+      sot.set_ip_version("6").should be_true
+      sot.set_ip_version(6).should be_true
+      sot.set_ip_version("5").should be_false
+      sot.cstatus.to_s.should eq("Invalid IP version '5'")
     end
   end
 
   context "Subnet set_dns_nameservers" do
     it "get all the expected values" do
       connection = double("connection")
-      sn = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
-      sn.set_dns_nameservers("10.1.1.1,10.2.2.2").should be_true
-      sn.dns_nameservers.should eq(["10.1.1.1","10.2.2.2"])
-      sn.set_dns_nameservers("10.1.1.1").should be_true
-      sn.dns_nameservers.should eq(["10.1.1.1"])
-      sn.set_dns_nameservers("10.1.1").should be_false
-      sn.cstatus.to_s.should eq("Invalid DNS nameserver '10.1.1' must be comma separated list of IPs")
+      sot = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
+      sot.set_dns_nameservers("10.1.1.1,10.2.2.2").should be_true
+      sot.dns_nameservers.should eq(["10.1.1.1","10.2.2.2"])
+      sot.set_dns_nameservers("10.1.1.1").should be_true
+      sot.dns_nameservers.should eq(["10.1.1.1"])
+      sot.set_dns_nameservers("10.1.1").should be_false
+      sot.cstatus.to_s.should eq("Invalid DNS nameserver '10.1.1' must be comma separated list of IPs")
     end
   end
 
   context "Subnet set_host_routes" do
     it "get all the expected values" do
       connection = double("connection")
-      sn = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
-      sn.set_host_routes("10.1.1.1,100.1.1.1;10.2.2.2,100.2.2.2").should be_true
-      sn.host_routes.should eq([{"destination"=>"10.1.1.1", "nexthop"=>"100.1.1.1"}, {"destination"=>"10.2.2.2", "nexthop"=>"100.2.2.2"}])
-      sn.set_host_routes("10.1.1.1,100.1.1.1").should be_true
-      sn.host_routes.should eq([{"destination"=>"10.1.1.1", "nexthop"=>"100.1.1.1"}])
-      sn.set_host_routes("10.1.1.1;10.2.2.2").should be_false
-      sn.cstatus.to_s.should eq("Invalid host routes '10.1.1.1;10.2.2.2' must be semicolon separated list of destination,nexthop")
-      sn.set_host_routes("10.1.1.1").should be_false
-      sn.cstatus.to_s.should eq("Invalid host routes '10.1.1.1' must be semicolon separated list of destination,nexthop")
+      sot = HP::Cloud::SubnetHelper.new(connection, @fog_subnet)
+      sot.set_host_routes("10.1.1.1,100.1.1.1;10.2.2.2,100.2.2.2").should be_true
+      sot.host_routes.should eq([{"destination"=>"10.1.1.1", "nexthop"=>"100.1.1.1"}, {"destination"=>"10.2.2.2", "nexthop"=>"100.2.2.2"}])
+      sot.set_host_routes("10.1.1.1,100.1.1.1").should be_true
+      sot.host_routes.should eq([{"destination"=>"10.1.1.1", "nexthop"=>"100.1.1.1"}])
+      sot.set_host_routes("10.1.1.1;10.2.2.2").should be_false
+      sot.cstatus.to_s.should eq("Invalid host routes '10.1.1.1;10.2.2.2' must be semicolon separated list of destination,nexthop")
+      sot.set_host_routes("10.1.1.1").should be_false
+      sot.cstatus.to_s.should eq("Invalid host routes '10.1.1.1' must be semicolon separated list of destination,nexthop")
     end
   end
 
@@ -148,27 +148,27 @@ describe "Subnet methods" do
   context "when we save successfully" do
     it "it is true and we get id" do
       @new_subnet = {"subnet"=>{"id"=>909}}
-      @response = double("response")
-      @response.stub(:body).and_return(@new_subnet)
+      @resposote = double("resposote")
+      @resposote.stub(:body).and_return(@new_subnet)
       @network = double("network")
-      @network.stub(:create_subnet).and_return(@response)
+      @network.stub(:create_subnet).and_return(@resposote)
       @connection = double("connection")
       @connection.stub(:network).and_return(@network)
-      ns = HP::Cloud::SubnetHelper.new(@connection)
-      ns.name = 'quantum'
-      ns.tenant_id = 100
-      ns.network_id = 2222323
-      ns.cidr = "127.0.0.1"
-      ns.ip_version = 6
-      ns.dns_nameservers = 2222
-      ns.allocation_pools = [123,333]
-      ns.host_routes = [123,333]
-      ns.gateway = "127.0.0.2"
-      ns.dhcp = true
+      sot = HP::Cloud::SubnetHelper.new(@connection)
+      sot.name = 'quantum'
+      sot.tenant_id = 100
+      sot.network_id = 2222323
+      sot.cidr = "127.0.0.1"
+      sot.ip_version = 6
+      sot.dns_nameservers = 2222
+      sot.allocation_pools = [123,333]
+      sot.host_routes = [123,333]
+      sot.gateway = "127.0.0.2"
+      sot.dhcp = true
 
-      ns.save.should be_true
+      sot.save.should be_true
 
-      ns.id.should eq(909)
+      sot.id.should eq(909)
     end
   end
 
@@ -178,15 +178,15 @@ describe "Subnet methods" do
       @network.stub(:create_subnet).and_return(nil)
       @connection = double("connection")
       @connection.stub(:network).and_return(@network)
-      ns = HP::Cloud::SubnetHelper.new(@connection)
-      ns.name = 'quantum'
-      ns.tenant_id = 100
+      sot = HP::Cloud::SubnetHelper.new(@connection)
+      sot.name = 'quantum'
+      sot.tenant_id = 100
 
-      ns.save.should be_false
+      sot.save.should be_false
 
-      ns.id.should be_nil
-      ns.cstatus.message.should eq("Error creating subnet 'quantum'")
-      ns.cstatus.error_code.should eq(:general_error)
+      sot.id.should be_nil
+      sot.cstatus.message.should eq("Error creating subnet 'quantum'")
+      sot.cstatus.error_code.should eq(:general_error)
     end
   end
 end
