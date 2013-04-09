@@ -18,6 +18,12 @@ Aliases: rm, delete, destroy, del
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
                     :desc => 'Do not confirm removal, remove non-empty containers.'
+      method_option :at,
+                    :type => :string,
+                    :desc => 'Delete the object at the specified Unix epoch time.'
+      method_option :after,
+                    :type => :string,
+                    :desc => 'Delete the object after the specified number of seconds.'
       CLI.add_common_options
       def remove(name, *names)
         cli_command(options) {
@@ -34,8 +40,16 @@ Aliases: rm, delete, destroy, del
                 forceit = true
               end
             end
-            if resource.remove(forceit)
-              @log.display "Removed '#{name}'."
+            if resource.remove(forceit, options[:at], options[:after])
+              if options[:at].nil?
+                if options[:after].nil?
+                  @log.display "Removed '#{name}'."
+                else
+                  @log.display "Removing '#{name}' after #{options[:after]} seconds."
+                end
+              else
+                @log.display "Removing '#{name}' at #{options[:at]} seconds of the epoch."
+              end
             else
               @log.error resource.cstatus
             end

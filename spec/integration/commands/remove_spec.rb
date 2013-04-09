@@ -44,7 +44,7 @@ describe "Remove command" do
 
         rsp = cptr("rm :notmycontainer/#{@file_name}")
 
-        rsp.stderr.should eq("You don't have an object named ':notmycontainer/spec/fixtures/files/Matryoshka/Putin/Medvedev.txt'.\n")
+        rsp.stderr.should eq("Cannot find container ':notmycontainer'.\n")
         rsp.stdout.should eq("")
         rsp.exit_status.should be_exit(:not_found)
       end
@@ -67,6 +67,33 @@ describe "Remove command" do
 
         rsp.stderr.should eql("")
         rsp.stdout.should eql("Removed ':my_container/foo.txt'.\n")
+        rsp.exit_status.should be_exit(:success)
+      end
+    end
+
+    context "remove --after" do
+      it "should report success" do
+        cptr("containers:add :aftertest")
+        cptr("copy spec/fixtures/files/foo.txt :aftertest/after.txt")
+
+        rsp = cptr("remove --after 1 :aftertest/after.txt")
+
+        rsp.stderr.should eql("")
+        rsp.stdout.should eql("Removing ':aftertest/after.txt' after 1 seconds.\n")
+        rsp.exit_status.should be_exit(:success)
+      end
+    end
+
+    context "remove --at" do
+      it "should report success" do
+        cptr("containers:add :attest")
+        cptr("copy spec/fixtures/files/foo.txt :attest/at.txt")
+        etime = Time.new.to_i + 30
+
+        rsp = cptr("remove --at #{etime} :attest/at.txt")
+
+        rsp.stderr.should eql("")
+        rsp.stdout.should eql("Removing ':attest/at.txt' at #{etime} seconds of the epoch.\n")
         rsp.exit_status.should be_exit(:success)
       end
     end

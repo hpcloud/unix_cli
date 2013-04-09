@@ -117,7 +117,16 @@ p self
         return result
       end
 
-      def remove(force)
+      def remove(force, at=nil, after=nil)
+        unless at.nil?
+          @cstatus = CliStatus.new("The at option is only supported for objects.", :incorrect_usage)
+          return false
+        end
+        unless after.nil?
+          @cstatus = CliStatus.new("The after option is only supported for objects.", :incorrect_usage)
+          return false
+        end
+
         if @path.empty?
           @cstatus = CliStatus.new("Removal of shared containers is not supported.", :not_supported)
           return false
