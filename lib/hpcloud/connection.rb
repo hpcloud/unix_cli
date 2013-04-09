@@ -60,7 +60,9 @@ module HP
         opts[:credentials] = @authcache.get(account)
         begin
           @storage_connection[account] = Fog::Storage.new(opts)
-          @authcache.set(account, @storage_connection[account].credentials)
+          if @storage_connection[account].respond_to? :credentials
+            @authcache.set(account, @storage_connection[account].credentials)
+          end
         rescue Exception => e
           @authcache.remove(account)
           respo = ErrorResponse.new(e).to_s
@@ -76,7 +78,9 @@ module HP
         opts[:credentials] = @authcache.get(account)
         begin
           @compute_connection[account] = Fog::Compute.new(opts)
-          @authcache.set(account, @compute_connection[account].credentials)
+          if @compute_connection[account].respond_to? :credentials
+            @authcache.set(account, @compute_connection[account].credentials)
+          end
         rescue Exception => e
           @authcache.remove(account)
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n Exception: #{e}"
@@ -92,7 +96,9 @@ module HP
         opts[:credentials] = @authcache.get(account)
         begin
           @block_connection[account] = Fog::HP::BlockStorage.new(opts)
-          @authcache.set(account, @block_connection[account].credentials)
+          if @block_connection[account].respond_to? :credentials
+            @authcache.set(account, @block_connection[account].credentials)
+          end
         rescue Exception => e
           @authcache.remove(account)
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n Exception: #{e}"
@@ -107,7 +113,9 @@ module HP
         opts[:credentials] = @authcache.get(account)
         begin
           @cdn_connection[account] = Fog::CDN.new(opts)
-          @authcache.set(account, @cdn_connection[account].credentials)
+          if @cdn_connection[account].respond_to? :credentials
+            @authcache.set(account, @cdn_connection[account].credentials)
+          end
         rescue Exception => e
           @authcache.remove(account)
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n Exception: #{e}"
