@@ -51,6 +51,15 @@ module HP
         @floating_ip
       end
 
+      def associate
+        @connection.network.associate_floating_ip(@id, @port)
+      end
+
+      def disassociate
+        return if @port.nil?
+        @connection.network.disassociate_floating_ip(@id)
+      end
+
       def save
         return false if is_valid? == false
         hsh = {

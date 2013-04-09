@@ -4,12 +4,12 @@ module HP
 
       map 'addresses:detach' => 'addresses:disassociate'
 
-      desc "addresses:disassociate ip_or_id [ip_or_id ...]", "Disassociate any server instance associated to the public IP address."
+      desc "addresses:disassociate ip_or_id [ip_or_id ...]", "Disassociate any port associated to the public IP address."
       long_desc <<-DESC
-  Disassociate any server instance associated to the public IP address. The public IP address is not removed or released to the pool. Optionally, you can specify an availability zone.
+  Disassociate any port associated to the public IP address. The public IP address is not removed or released to the pool. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud addresses:disassociate 111.111.111.111 127.0.0.1 # Disassociate IP addresses `111.111.111.111` and `127.0.0.1` from the default server:
+  hpcloud addresses:disassociate 111.111.111.111 127.0.0.1 # Disassociate IP addresses `111.111.111.111` and `127.0.0.1` from their ports:
   hpcloud addresses:disassociate 9709 # Disassociate the address with the ID  '9709':
   hpcloud addresses:disassociate 111.111.111.111 -z az-2.region-a.geo-1  # Disassociate the address `111.111.111.111` for availability zone `az-2.region-a.geo-1`:
       DESC
@@ -23,11 +23,11 @@ Examples:
             if address.is_valid? == false
               @log.error address.cstatus
             else
-              if address.instance_id.nil?
-                @log.display "You don't have any server associated with address '#{ip_or_id}'."
+              if address.port.nil?
+                @log.display "You don't have any port associated with address '#{ip_or_id}'."
               else
-                address.fog.server = nil
-                @log.display "Disassociated address '#{ip_or_id}' from any server instance."
+                address.port = nil
+                @log.display "Disassociated address '#{ip_or_id}' from any port."
               end
             end
           }

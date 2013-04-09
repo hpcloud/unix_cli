@@ -15,7 +15,6 @@ module HP
 
       def external
         ray = @items.keep_if{|v| v.router_external == true}
-p ray
         create(ray.first)
       end
     end

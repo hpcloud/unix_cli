@@ -4,20 +4,20 @@ module HP
 
       map 'addresses:attach' => 'addresses:associate'
 
-      desc "addresses:associate <ip_or_id> <server_name_or_id>", "Associate a public IP address to a server instance."
+      desc "addresses:associate <ip_or_id> <port_name_or_id>", "Associate a public IP address to a port."
       long_desc <<-DESC
-  Associate an existing and unassigned public IP address, to the specified server instance.  Optionally, you can specify an availability.
+  Associate an existing and unassigned public IP address, to the specified port.  Optionally, you can specify an availability.
 
 Examples:
-  hpcloud addresses:associate 111.111.111.111 myserver  # Associate the address `111.111.111.111` to server `myserver`:
-  hpcloud addresses:associate 111.111.111.111 myserver -z az-2.region-a.geo-1  # Associate the address `111.111.111.111` to server `myserver` in availability zone `az-2.region-a.geo-1`:
+  hpcloud addresses:associate 111.111.111.111 myport  # Associate the address `111.111.111.111` to port `myport`:
+  hpcloud addresses:associate 111.111.111.111 myport -z az-2.region-a.geo-1  # Associate the address `111.111.111.111` to port `myport` in availability zone `az-2.region-a.geo-1`:
       DESC
       CLI.add_common_options
-      define_method "addresses:associate" do |ip_or_id, server_name_or_id|
+      define_method "addresses:associate" do |ip_or_id, port_name_or_id|
         cli_command(options) {
-          server = Servers.new.get(server_name_or_id)
-          if server.is_valid? == false
-            @log.fatal server.cstatus
+          port = Servers.new.get(port_name_or_id)
+          if port.is_valid? == false
+            @log.fatal port.cstatus
           end
 
           address = FloatingIps.new.get(ip_or_id)
@@ -25,15 +25,16 @@ Examples:
             @log.fatal address.cstatus
           end
 
-          if address.instance_id.nil? == false
-            if address.instance_id == server.id
-              @log.display "The IP address '#{ip_or_id}' is already associated with '#{server_name_or_id}'."
+          if address.port.nil? == false
+            if address.port == port.id
+              @log.display "The IP address '#{ip_or_id}' is already associated with '#{port_name_or_id}'."
             else
-              @log.fatal "The IP address '#{ip_or_id}' is in use by another server '#{address.instance_id}'.", :conflicted
+              @log.fatal "The IP address '#{ip_or_id}' is in use by another port '#{address.port}'.", :conflicted
             end
           else
-            address.fog.server = server.fog
-            @log.display "Associated address '#{ip_or_id}' to server '#{server_name_or_id}'."
+            address.port = port.id
+            address.associate
+            @log.display "Associated address '#{ip_or_id}' to port '#{port_name_or_id}'."
           end
         }
       end

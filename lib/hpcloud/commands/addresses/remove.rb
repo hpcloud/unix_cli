@@ -25,7 +25,7 @@ Aliases: addresses:rm, addresses:delete, addresses:release, addresses:del
             if address.is_valid? == false
               @log.error address.cstatus
             else
-              #address.fog.server = nil unless address.instance_id.nil?
+              address.disassociate
               address.destroy
               @log.display "Removed address '#{ip_or_id}'."
             end
