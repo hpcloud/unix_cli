@@ -16,7 +16,7 @@ Examples:
       CLI.add_common_options
       define_method "addresses:disassociate" do |ip_or_id, *ip_or_ids|
         cli_command(options) {
-          addresses = Addresses.new
+          addresses = FloatingIps.new
           ip_or_ids = [ip_or_id] + ip_or_ids
           ip_or_ids.each { |ip_or_id|
             address = addresses.get(ip_or_id)

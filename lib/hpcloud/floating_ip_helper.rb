@@ -23,21 +23,32 @@ module HP
         @floating_ip = foggy.floating_ip_address
       end
 
-      def set_fixed_ips(value)
-        return true if value.nil?
-        @fixed_ips = value
-        begin
-          @fixed = []
-          value.split(';').each{ |subnet|
-            ray = subnet.split(',')
-            raise Exception.new("not subnet_id,ip_address") if ray.length != 2
-            @fixed << { "subnet_id" => ray[0], "ip_address" => ray[1] }
-          }
-        rescue Exception => e
-          set_error("Invalid fixed IPs '#{value}' must be semicolon separated list of subnet_id,ip_address", :incorrect_usage)
-          return false
+      def set_network(value)
+        if value.nil?
+          netty = Networks.new.external
+          if netty.nil?
+            set_error("Cannot find an external network")
+            return false
+          end
+        else
+          netty = Networks.new.get(value)
         end
-        return true
+        unless netty.is_valid?
+          set_error netty.cstatus
+        end
+        @network_id = netty.id
+      end
+
+      def set_port(value)
+        porty = Ports.new.get(value)
+        unless porty.is_valid?
+          set_error porty.cstatus
+        end
+        @port = porty.id
+      end
+
+      def ip
+        @floating_ip
       end
 
       def save
@@ -55,7 +66,8 @@ module HP
             set_error("Error creating floating IP")
             return false
           end
-          @id = response.body["floating_ip"]["id"]
+          @id = response.body["floatingip"]["id"]
+          @floating_ip = response.body["floatingip"]["floating_ip_address"]
           @foggy = response.body["floating_ip"]
         else
           set_error("Floating IP update is not supported")

@@ -20,7 +20,7 @@ Examples:
             @log.fatal server.cstatus
           end
 
-          address = Addresses.new.get(ip_or_id)
+          address = FloatingIps.new.get(ip_or_id)
           if address.is_valid? == false
             @log.fatal address.cstatus
           end
