@@ -1,5 +1,11 @@
 #HP Cloud Services UNIX CLI Release Notes
 
+##Release 1.8.0 Features##
+
+The 1.8.0 release is available for download from https://docs.hpcloud.com/file/hpcloud-1.8.0.gem.  This release was made available on 4/8/2013 and contains the following new features:
+
+* Support for the after and at options for remove
+
 ##Release 1.7.0 Features##
 
 The 1.7.0 release is available for download from https://docs.hpcloud.com/file/hpcloud-1.7.0.gem.  This release was made available on 3/1/2013 and contains the following new features:

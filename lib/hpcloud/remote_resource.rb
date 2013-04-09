@@ -352,10 +352,28 @@ module HP
         return ':' + @container.to_s + '/' + @destination.to_s
       end
 
-      def remove(force)
+      def remove(force, at=nil, after=nil)
         begin
           return false unless container_head()
-          @storage.delete_object(@container, @path)
+          if at.nil?
+            if after.nil?
+              @storage.delete_object(@container, @path)
+            else
+              hsh = { 'X-Delete-After' => after}
+              @storage.request(
+                :expects => 202,
+                :headers => hsh,
+                :method => 'POST',
+                :path => "#{Fog::HP.escape(@container)}/#{Fog::HP.escape(@path)}")
+            end
+          else
+            hsh = { 'X-Delete-At' => at}
+            @storage.request(
+              :expects => 202,
+              :headers => hsh,
+              :method => 'POST',
+              :path => "#{Fog::HP.escape(@container)}/#{Fog::HP.escape(@path)}")
+          end
         rescue Fog::Storage::HP::NotFound => error
           @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
           return false

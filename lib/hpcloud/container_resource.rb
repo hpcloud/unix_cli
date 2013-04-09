@@ -39,9 +39,17 @@ module HP
         @storage.directories.head(@container).cdn_public_ssl_url
       end
 
-      def remove(force)
+      def remove(force, at=nil, after=nil)
         begin
           return false unless container_head()
+          unless at.nil?
+            @cstatus = CliStatus.new("The at option is only supported for objects.", :incorrect_usage)
+            return false
+          end
+          unless after.nil?
+            @cstatus = CliStatus.new("The after option is only supported for objects.", :incorrect_usage)
+            return false
+          end
 
           if force == true
             foreach { |x| x.remove(force) }

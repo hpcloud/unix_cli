@@ -214,7 +214,7 @@ module HP
         return @destination.to_s
       end
 
-      def remove(force)
+      def remove(force, at=nil, after=nil)
         @cstatus = CliStatus.new("Removal of local objects is not supported: #{@fname}", :incorrect_usage)
         return false
       end
