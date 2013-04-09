@@ -57,7 +57,7 @@ module HP
         account = get_account(account_name)
         return @storage_connection[account] unless @storage_connection[account].nil?
         opts = create_options(account, :storage_availability_zone)
-        opts[:credentials] = @authcache.get(account)
+        #opts[:credentials] = @authcache.get(account)
         begin
           @storage_connection[account] = Fog::Storage.new(opts)
           if @storage_connection[account].respond_to? :credentials
@@ -75,7 +75,7 @@ module HP
         account = get_account()
         return @compute_connection[account] unless @compute_connection[account].nil?
         opts = create_options(account, :compute_availability_zone)
-        opts[:credentials] = @authcache.get(account)
+        #opts[:credentials] = @authcache.get(account)
         begin
           @compute_connection[account] = Fog::Compute.new(opts)
           if @compute_connection[account].respond_to? :credentials
@@ -93,7 +93,7 @@ module HP
         return @block_connection[account] unless @block_connection[account].nil?
         opts = create_options(account, :block_availability_zone)
         opts.delete(:provider)
-        opts[:credentials] = @authcache.get(account)
+        #opts[:credentials] = @authcache.get(account)
         begin
           @block_connection[account] = Fog::HP::BlockStorage.new(opts)
           if @block_connection[account].respond_to? :credentials
@@ -110,7 +110,7 @@ module HP
         account = get_account()
         return @cdn_connection[account] unless @cdn_connection[account].nil?
         opts = create_options(account, :cdn_availability_zone)
-        opts[:credentials] = @authcache.get(account)
+        #opts[:credentials] = @authcache.get(account)
         begin
           @cdn_connection[account] = Fog::CDN.new(opts)
           if @cdn_connection[account].respond_to? :credentials
