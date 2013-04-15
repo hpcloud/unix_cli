@@ -1,3 +1,4 @@
+require 'yaml'
 require 'hpcloud/accounts'
 
 module HP
@@ -15,12 +16,11 @@ Examples:
                     :desc => 'Debug logging 1,2,3,...'
       define_method "account:catalog" do |name|
         cli_command(options) {
+          @log.display "Service catalog '#{name}':"
           HP::Cloud::Accounts.new().read(name)
-          @log.display "Verifying '#{name}' account..."
           begin
             rsp = Connection.instance.validate_account(name)
-            @log.display "Service catalog '#{name}':"
-            @log.display rsp.to_s
+            @log.display rsp[:service_catalog].to_yaml
           rescue Exception => e
             unless options[:debug].nil?
               puts e.backtrace

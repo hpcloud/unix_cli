@@ -1,4 +1,5 @@
 require 'hpcloud/accounts'
+require 'hpcloud/commands/account/catalog'
 require 'hpcloud/commands/account/copy'
 require 'hpcloud/commands/account/edit'
 require 'hpcloud/commands/account/remove'
