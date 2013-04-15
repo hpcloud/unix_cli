@@ -129,9 +129,13 @@ module HP
         account = get_account()
         return @network_connection[account] unless @network_connection[account].nil?
         opts = create_options(account, :network_availability_zone)
+        #opts[:credentials] = @authcache.get(account)
         begin
           opts.delete(:provider)
           @network_connection[account] = Fog::HP::Network.new(opts)
+          if @network_connection[account].respond_to? :credentials
+            @authcache.set(account, @network_connection[account].credentials)
+          end
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
