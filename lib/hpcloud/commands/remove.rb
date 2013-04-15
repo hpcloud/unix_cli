@@ -9,18 +9,18 @@ module HP
   Remove objects or containers. Optionally, you can specify an availability zone.
         
 Examples:
-  hpcloud remove :tainer/my.txt :tainer/other.txt # Delete objects 'my.txt' and 'other.txt' from container `tainer`:
-  hpcloud remove :my_container                    # Delete container 'my_container':
-  hpcloud remove :my_container -z region-a.geo-1  # Delete container 'my_container' in availability zone `region-a.geo-1`:
+  hpcloud remove :tainer/my.txt :tainer/other.txt # Delete objects `my.txt` and `other.txt` from container `tainer`:
+  hpcloud remove :my_container                    # Delete container `my_container`:
+  hpcloud remove :my_container -z region-a.geo-1  # Delete container `my_container` in availability zone `region-a.geo-1`:
 
 Aliases: rm, delete, destroy, del
       DESC
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
-                    :desc => 'Do not confirm removal, remove non-empty containers.'
+                    :desc => 'Do not confirm removal; remove non-empty containers.'
       method_option :at,
                     :type => :string,
-                    :desc => 'Delete the object at the specified Unix epoch time.'
+                    :desc => 'Delete the object at the specified UNIX epoch time.'
       method_option :after,
                     :type => :string,
                     :desc => 'Delete the object after the specified number of seconds.'
