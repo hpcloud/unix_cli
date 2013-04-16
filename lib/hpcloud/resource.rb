@@ -5,7 +5,8 @@ require 'ruby-progressbar'
 module HP
   module Cloud
     class Resource
-      attr_reader :fname, :ftype, :container, :path
+      attr_accessor :path
+      attr_reader :fname, :ftype, :container
       attr_reader :public_url, :readers, :writers, :public
       attr_reader :destination, :cstatus
       attr_reader :restart

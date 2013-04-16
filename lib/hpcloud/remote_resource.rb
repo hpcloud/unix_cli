@@ -332,16 +332,15 @@ module HP
           count += lode
           result.body.each { |x|
             name = x['name']
-            unless name.end_with?('/')
-              if ! name.match(regex).nil?
-                res = ResourceFactory.create(@storage, ':' + @container + '/' + name)
-                res.etag = x['hash']
-                res.modified = x['last_modified']
-                res.size = x['bytes']
-                res.type = x['content_type']
-                yield res
-                marker = name
-              end
+            if ! name.match(regex).nil?
+              res = ResourceFactory.create(@storage, ':' + @container + '/' + name)
+              res.path = name
+              res.etag = x['hash']
+              res.modified = x['last_modified']
+              res.size = x['bytes']
+              res.type = x['content_type']
+              yield res
+              marker = name
             end
           }
           break if lode < @@limit
