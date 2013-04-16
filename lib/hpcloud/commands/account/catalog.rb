@@ -14,7 +14,7 @@ Examples:
       DESC
       method_option :debug, :type => :string, :alias => '-x',
                     :desc => 'Debug logging 1,2,3,...'
-      define_method "account:catalog" do |name|
+      define_method "account:catalog" do |name, *service|
         cli_command(options) {
           @log.display "Service catalog '#{name}':"
           HP::Cloud::Accounts.new().read(name)
