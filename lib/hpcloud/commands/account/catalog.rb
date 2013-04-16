@@ -5,12 +5,13 @@ module HP
   module Cloud
     class CLI < Thor
     
-      desc 'account:catalog <account_to_catalog>', "Print the service catalog of the specified account."
+      desc 'account:catalog <account_to_catalog> [service]', "Print the service catalog of the specified account."
       long_desc <<-DESC
-  Print the service catalog of the specified account.
+  Print the service catalog of the specified account.  Optionally, you may specify a particular service to print such as "Compute".
   
 Examples:
   hpcloud account:catalog useast # Print the service catalog of `useast`:
+  hpcloud account:catalog useast Compute # Print the compute catalog of `useast`:
       DESC
       method_option :debug, :type => :string, :alias => '-x',
                     :desc => 'Debug logging 1,2,3,...'
@@ -20,7 +21,15 @@ Examples:
           HP::Cloud::Accounts.new().read(name)
           begin
             rsp = Connection.instance.validate_account(name)
-            cata = rsp[:service_catalog].to_yaml.gsub(/--- \n/,'').gsub(/{}/,'').gsub(/\n\n/, "\n")
+            cata = rsp[:service_catalog]
+            unless service.empty?
+              hsh = {}
+              service.each{ |x|
+                hsh[x.to_sym] = cata[x.to_sym]
+              }
+              cata = hsh
+            end
+            cata = cata.to_yaml.gsub(/--- \n/,'').gsub(/{}/,'').gsub(/\n\n/, "\n")
             @log.display cata
           rescue Exception => e
             unless options[:debug].nil?
