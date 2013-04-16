@@ -20,7 +20,8 @@ Examples:
           HP::Cloud::Accounts.new().read(name)
           begin
             rsp = Connection.instance.validate_account(name)
-            @log.display rsp[:service_catalog].to_yaml
+            cata = rsp[:service_catalog].to_yaml.gsub(/--- \n/,'').gsub(/{}/,'').gsub(/\n\n/, "\n")
+            @log.display cata
           rescue Exception => e
             unless options[:debug].nil?
               puts e.backtrace
