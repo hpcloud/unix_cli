@@ -10,7 +10,8 @@ REFERENCE=reference.txt
 #function courierizer { echo "$1" | sed -e "s,<\([^>]*\)>,<i>\1</i>,g" -e "s,'\([^']*\)',<font face='courier'>\1</font>,g"; }
 function courierizer { echo "$1" | sed -e "s,'\([^']*\)',\`\1\`,g"; }
 function dtizer {
-  echo $1 | sed -e "s,\(-[^#]*\) # \(.*\)$,<dt><b>\1</b></dt><dd>\2</dd>,"
+  echo $1 | sed -e "s,\(-[^#]*\) # \(.*\)$,<dt><b>\1</b></dt><dd>\2</dd>," |
+    sed -e 's/\[//g' -e 's/]//g'
 }
 
 echo 'Below you can find a full reference of supported UNIX command-line interface (CLI) commands. The commands are alphabetized.  You can also use the <font face="Courier">hpcloud help [<em>command</em>]</font> tool (where <em>command</em> is the name of the command on which you want help, for example <font face="Courier">account:setup</font>) to display usage, description, and option information from the command line.' >${REFERENCE}
