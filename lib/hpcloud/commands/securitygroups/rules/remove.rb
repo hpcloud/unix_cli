@@ -15,15 +15,14 @@ Examples:
 Aliases: securitygroups:rules:rm, securitygroups:rules:revoke, securitygroups:rules:delete, securitygroups:rules:del
       DESC
       CLI.add_common_options
-      define_method "securitygroups:rules:remove" do |sec_group_name, rule_id|
+      define_method "securitygroups:rules:remove" do |*rule_ids|
         cli_command(options) {
-          security_group = SecurityGroups.new.get(sec_group_name)
-          if security_group.is_valid? == false
-            @log.fatal "You don't have a security group '#{sec_group_name}'.", :not_found
-          end
-
-          security_group.fog.delete_rule(rule_id)
-          @log.display "Removed rule '#{rule_id}' for security group '#{sec_group_name}'."
+          rule_ids.each { |rule_id|
+            sub_command("removing security group rule") {
+              Connection.instance.network.delete_security_group_rule(rule_id)
+              @log.display "Removed rule '#{rule_id}'."
+            }
+          }
         }
       end
     end

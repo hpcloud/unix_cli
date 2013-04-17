@@ -5,7 +5,7 @@ module HP
     class SecurityGroups < FogCollection
       def initialize()
         super("security group")
-        @items = @connection.compute.security_groups
+        @items = @connection.network.security_groups
       end
 
       def create(item = nil)
