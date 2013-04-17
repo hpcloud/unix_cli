@@ -139,6 +139,7 @@ module HP
         rescue Exception => e
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
+        return @network_connection[account]
       end
 
       def get_account(account_name = nil)
