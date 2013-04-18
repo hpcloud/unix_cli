@@ -19,7 +19,7 @@ describe "routers:remove command" do
 
   context "when deleting router with name" do
     it "should succeed" do
-      @router = RouterTestHelper.create(@router_name, false)
+      @router = RouterTestHelper.create(@router_name)
 
       rsp = cptr("routers:remove #{@router_name}")
 
@@ -32,7 +32,7 @@ describe "routers:remove command" do
 
   context "routers:remove with valid avl" do
     it "should be successful" do
-      @router = RouterTestHelper.create(@router_name, false)
+      @router = RouterTestHelper.create(@router_name)
 
       rsp = cptr("routers:remove #{@router.id} -z region-a.geo-1")
 

@@ -30,7 +30,7 @@ Aliases: securitygroups:rules:authorize
                     :type => :string, :default => 'egress',
                     :desc => 'Direction egress or ingress.'
       method_option :ethertype,
-                    :type => :string, :default => 'IPv6',
+                    :type => :string, :default => 'IPv4',
                     :desc => 'Ether type must be IPv6 or IPv4.'
       CLI.add_common_options
       define_method "securitygroups:rules:add" do |sec_group_name, ip_protocol|

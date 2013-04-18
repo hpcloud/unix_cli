@@ -6,7 +6,7 @@ describe "Routers command" do
   end
 
   before(:all) do
-    @router1 = RouterTestHelper.create("routerone", false)
+    @router1 = RouterTestHelper.create("routerone")
     @network = NetworkTestHelper.create("Ext-Net")
   end
 

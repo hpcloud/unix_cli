@@ -1,6 +1,8 @@
 require 'hpcloud/commands/routers/add.rb'
 require 'hpcloud/commands/routers/remove.rb'
 require 'hpcloud/commands/routers/update.rb'
+require 'hpcloud/commands/routers/interface/add.rb'
+require 'hpcloud/commands/routers/interface/remove.rb'
 require 'hpcloud/routers'
 
 module HP
