@@ -19,10 +19,10 @@ Aliases: rm, delete, destroy, del
       DESC
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',
-                    :desc => 'Do not confirm removal, remove non-empty containers.'
+                    :desc => 'Do not confirm removal; remove non-empty containers.'
       method_option :at,
                     :type => :string,
-                    :desc => 'Delete the object at the specified Unix epoch time.'
+                    :desc => 'Delete the object at the specified UNIX epoch time.'
       method_option :after,
                     :type => :string,
                     :desc => 'Delete the object after the specified number of seconds.'

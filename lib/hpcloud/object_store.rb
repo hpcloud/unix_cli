@@ -14,7 +14,14 @@ module HP
         marker = nil
         begin
           options = { :limit => @@limit, :marker => marker}
-          result = @storage.get_containers(options)
+          begin
+            result = @storage.get_containers(options)
+          rescue NoMethodError => e
+            result = @storage.directories.each { |container|
+              yield ResourceFactory.create(@storage, ':' + container.key)
+            }
+            return
+          end
           total = result.headers['X-Account-Container-Count'].to_i
 	  lode = result.body.length
 	  count += lode

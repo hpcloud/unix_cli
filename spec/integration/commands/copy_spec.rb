@@ -8,7 +8,7 @@ describe "Copy command" do
   
   context "copying local file to container" do
     before(:all) do
-      #purge_container('my_container')
+      purge_container('my_container')
       @hp_svc.put_container('my_container')
     end
     
