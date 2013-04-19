@@ -33,6 +33,12 @@ module HP
       def comparo(latest)
         lmajor, lminor, lbuild = Checker.split(latest)
         major, minor, build = Checker.split(HP::Cloud::VERSION)
+        lmajor = lmajor.to_i
+        lminor = lminor.to_i
+        lbuild = lbuild.to_i
+        major = major.to_i
+        minor = minor.to_i
+        build = build.to_i
         return true if lmajor > major
         return false if lmajor < major
         return true if lminor > minor
