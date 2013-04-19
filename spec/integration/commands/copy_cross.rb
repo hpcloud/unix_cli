@@ -28,7 +28,7 @@ describe "Copy across" do
       rsp.stdout.should eq("Yeltsin/Boris.txt\nYeltsin/Gorbachev/Andropov.txt\nYeltsin/Gorbachev/Chernenko.txt\nYeltsin/Gorbachev/Mikhail.txt\n")
     end
   end
-    
+
   context "when migrate" do
     it "should copy files" do
       rsp = cptr('migrate secondary :cross :migrate')
@@ -39,6 +39,19 @@ describe "Copy across" do
       rsp = cptr('list :migrate')
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Yeltsin/Boris.txt\nYeltsin/Gorbachev/Andropov.txt\nYeltsin/Gorbachev/Chernenko.txt\nYeltsin/Gorbachev/Mikhail.txt\n")
+    end
+  end
+
+  context "when migrate" do
+    it "should copy files" do
+      rsp = cptr('migrate aws :terryhowe.wordpress.com :migrate')
+
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("Migrated :terryhowe.wordpress.com => :migrate\n")
+      rsp.exit_status.should be_exit(:success)
+      rsp = cptr('list :migrate')
+      rsp.stderr.should eq("")
+      rsp.stdout.should eq("WGI_0069.JPG\nfolder/WGI_0028.JPG\n")
     end
   end
 end
