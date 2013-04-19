@@ -377,19 +377,11 @@ module HP
               @storage.delete_object(@container, @path)
             else
               hsh = { 'X-Delete-After' => after}
-              @storage.request(
-                :expects => 202,
-                :headers => hsh,
-                :method => 'POST',
-                :path => "#{Fog::HP.escape(@container)}/#{Fog::HP.escape(@path)}")
+              @storage.post_object(@container, @path, hsh)
             end
           else
             hsh = { 'X-Delete-At' => at}
-            @storage.request(
-              :expects => 202,
-              :headers => hsh,
-              :method => 'POST',
-              :path => "#{Fog::HP.escape(@container)}/#{Fog::HP.escape(@path)}")
+            @storage.post_object(@container, @path, hsh)
           end
         rescue Fog::Storage::HP::NotFound => error
           @cstatus = CliStatus.new("You don't have an object named '#{@fname}'.", :not_found)
