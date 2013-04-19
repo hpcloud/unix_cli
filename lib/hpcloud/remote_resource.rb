@@ -65,7 +65,13 @@ module HP
             return true unless @size.nil?
           end
           @size = 0
-          data = @storage.head_container(@container)
+          begin
+            data = @storage.head_container(@container)
+          rescue NoMethodError => e
+            data = @storage.directories.get(@container)
+            @count = data.files.size.to_s
+            return true
+          end
           if data.nil? || data.headers.nil?
             @cstatus = CliStatus.new("Cannot find container ':#{@container}'.", :not_found)
             return false
@@ -83,7 +89,7 @@ module HP
           @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
           return false
         rescue Exception => error
-          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
+          @cstatus = CliStatus.new("Error ch reading '#{@fname}': " + error.to_s, :general_error)
           return false
         end
       end
@@ -94,8 +100,12 @@ module HP
         @modified = headers['Last-Modified']
         @etag = headers['Etag']
         @type = headers['Content-Type']
-        @public_url = "#{@storage.url}/#{@container}/#{@path}"
-        @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
+        @public_url = ""
+        begin
+          @public_url = "#{@storage.url}/#{@container}/#{@path}"
+          @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
+        rescue
+        end
         return true
       end
 
@@ -120,7 +130,7 @@ module HP
           @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
           return false
         rescue Exception => error
-          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
+          @cstatus = CliStatus.new("Error oh reading '#{@fname}': " + error.to_s, :general_error)
           return false
         end
       end
@@ -222,6 +232,7 @@ module HP
 
       def copy_file(from)
         result = true
+        return true if from.fname.end_with?("/") # application/directory
         return false if (from.open() == false)
         if from.isLocal()
           if @@storage_segment_size.nil?
@@ -326,7 +337,14 @@ module HP
         marker = nil
         begin
           options = { :limit => @@limit, :marker => marker }
-          result = @storage.get_container(@container, options)
+          begin
+            result = @storage.get_container(@container, options)
+          rescue NoMethodError => e
+            @storage.directories.get(@container).files.each { |file|
+              yield ResourceFactory.create(@storage, ':' + @container + '/' + file.key)
+            }
+            return
+          end
           total = result.headers['X-Container-Object-Count'].to_i
           lode = result.body.length
           count += lode
