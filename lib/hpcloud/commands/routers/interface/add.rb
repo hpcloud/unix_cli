@@ -33,7 +33,7 @@ Examples:
           end
 
           Connection.instance.network.add_router_interface(router.id, subnet_id, port_id)
-          @log.display "Created router interface '#{name}' to '#{newinterface}'."
+          @log.display "Created router interface '#{name}' to '#{subnet_or_port}'."
         }
       end
     end

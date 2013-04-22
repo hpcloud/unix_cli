@@ -35,6 +35,12 @@ module HP
         @gateway = value
         @external_gateway_info = {}
         begin
+          network = Networks.new.get(@gateway)
+          unless network.is_valid?
+            set_error("Invalid gateway value '#{value}' must be a valid external network", :incorrect_usage)
+            return false
+          end
+          @gateway = network.id
           @external_gateway_info = { 'network_id' => @gateway }
         rescue Exception => e
           set_error("Invalid gateway value #{value}", :incorrect_usage)

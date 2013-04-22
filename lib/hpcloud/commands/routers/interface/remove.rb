@@ -40,7 +40,7 @@ Aliases: routers:interface:rm, routers:interface:delete, routers:interface:del
           end
 
           Connection.instance.network.remove_router_interface(router.id, subnet_id, port_id)
-          @log.display "Removed #{word} interface '#{oldinterface}' from '#{name}'."
+          @log.display "Removed #{word} interface '#{subnet_or_port}' from '#{name}'."
         }
       end
     end
