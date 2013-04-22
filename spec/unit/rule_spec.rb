@@ -7,10 +7,12 @@ describe "Rule keys" do
 
       keys[0].should eq("id")
       keys[1].should eq("source")
-      keys[2].should eq("protocol")
-      keys[3].should eq("from")
-      keys[4].should eq("to")
-      keys.length.should eq(5)
+      keys[2].should eq("type")
+      keys[3].should eq("protocol")
+      keys[4].should eq("direction")
+      keys[5].should eq("from")
+      keys[6].should eq("to")
+      keys.length.should eq(7)
     end
   end
 end

@@ -23,10 +23,10 @@ describe "Rules getter" do
     @security_group.stub(:name).and_return(@groupo)
     @security_group.stub(:description).and_return("description")
     @security_group.stub(:rules).and_return(@rules)
-    @compute = double("compute")
-    @compute.stub(:security_groups).and_return([@security_group])
+    @network = double("network")
+    @network.stub(:security_groups).and_return([@security_group])
     @connection = double("connection")
-    @connection.stub(:compute).and_return(@compute)
+    @connection.stub(:network).and_return(@network)
     Connection.stub(:instance).and_return(@connection)
   end
 
