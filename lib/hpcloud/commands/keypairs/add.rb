@@ -20,7 +20,7 @@ Examples:
       method_option :private_key,
                     :type => :string, :aliases => '-p',
                     :desc => 'Specify private key data to be used.'
-      method_option :output, :default => false,
+      method_option :output, :default => true,
                     :type => :boolean, :aliases => '-o',
                     :desc => 'Save key pair in the ~/.hpcloud/keypairs folder.'
       CLI.add_common_options

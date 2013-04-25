@@ -15,7 +15,7 @@ Examples:
       CLI.add_common_options
       define_method "addresses:associate" do |ip_or_id, port_name_or_id|
         cli_command(options) {
-          port = Servers.new.get(port_name_or_id)
+          port = Ports.new.get(port_name_or_id)
           if port.is_valid? == false
             @log.fatal port.cstatus
           end
