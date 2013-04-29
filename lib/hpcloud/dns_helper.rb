@@ -36,13 +36,26 @@ module HP
           @id = hash[:id]
           @fog = dns
           return true
-        else
-          raise "Update not implemented"
         end
+        hsh = {:ttl => @ttl.to_i,
+               :email => @email}
+        @connection.dns.update_domain(@id, hsh)
+        return true
       end
 
       def destroy
         @connection.dns.delete_domain(@id)
+      end
+
+      def server_keys
+        ["id", "name", "created_at"]
+      end
+
+      def servers
+        rsp = @connection.dns.get_servers_hosting_domain(@id)
+        hash = rsp.body
+        hash = Hash[hash.map{ |k, v| [k.to_sym, v] }]
+        hash[:servers]
       end
     end
   end

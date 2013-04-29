@@ -14,7 +14,7 @@ module Fog
           request(
               :expects => [200, 203],
               :method  => 'GET',
-              :path    => "domains/#{instance_id}/servers.json"
+              :path    => "domains/#{instance_id}/servers"
           )
         end
 
