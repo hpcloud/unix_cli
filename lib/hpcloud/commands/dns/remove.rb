@@ -4,9 +4,9 @@ module HP
 
       map %w(dns:rm dns:delete dns:del) => 'dns:remove'
 
-      desc "dns:remove name_or_id [name_or_id ...]", "Remove a dns settings (specified by name or ID)."
+      desc "dns:remove name_or_id [name_or_id ...]", "Remove dns domains (specified by name or ID)."
       long_desc <<-DESC
-  Remove dns settings by specifying their names or ID. You may specify more than one dns name or ID on a command line.  Optionally, you can specify an availability zone.
+  Remove dns domains by specifying their names or ID. You may specify more than one dns name or ID on a command line.  Optionally, you can specify an availability zone.
 
 Examples:
   hpcloud dns:remove tome treatise   # Delete the dns 'tome' and 'treatise':

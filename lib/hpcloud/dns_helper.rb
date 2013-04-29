@@ -1,48 +1,48 @@
 module HP
   module Cloud
     class DnsHelper < BaseHelper
-      attr_accessor :id, :name, :size, :type, :status
-      attr_accessor :meta
+      attr_accessor :id, :name, :ttl, :serial, :email, :created_at
+      attr_accessor :updated_at
     
       def self.get_keys()
-        return [ "id", "name", "size", "type", "status" ]
+        return [ "id", "name", "ttl", "serial", "email", "created_at" ]
       end
 
       def initialize(connection, foggy = nil)
         super(connection, foggy)
-        if foggy.nil?
-          @meta = HP::Cloud::Metadata.new(nil)
-          return
-        end
-        @id = foggy.id
-        @name = foggy.name
-        @size = foggy.size
-        @type = foggy.type
-        @status = foggy.status
-        @meta = HP::Cloud::Metadata.new(foggy.metadata)
+        return if foggy.nil?
+        foggy = Hash[foggy.map{ |k, v| [k.to_sym, v] }]
+        @id = foggy[:id]
+        @name = foggy[:name]
+        @ttl = foggy[:ttl]
+        @serial = foggy[:serial]
+        @email = foggy[:email]
+        @created_at = foggy[:created_at]
+        @updated_at = foggy[:updated_at]
       end
 
       def save
-        if is_valid?
-          set_error(@meta.cstatus)
-        end
         return false if is_valid? == false
         if @fog.nil?
-          hsh = {:name => @name,
-             :description => @description,
-             :size => @size,
-             :metadata => @meta.hsh}
-          dns = @connection.dns.create(hsh)
+          hsh = {:ttl => @ttl.to_i,
+                 :email => @email}
+          dns = @connection.dns.create_domain(name, hsh)
           if dns.nil?
             set_error("Error creating dns '#{@name}'")
             return false
           end
-          @id = dns.id
+          hash = dns.body
+          hash = Hash[hash.map{ |k, v| [k.to_sym, v] }]
+          @id = hash[:id]
           @fog = dns
           return true
         else
           raise "Update not implemented"
         end
+      end
+
+      def destroy
+        @connection.dns.delete_domain(@id)
       end
     end
   end

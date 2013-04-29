@@ -2,22 +2,28 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Dnss getter" do
   def mock_dns(name)
-    fog_dns = double(name)
+    fog_dns = {}
     @id = 1 if @id.nil?
-    fog_dns.stub(:id).and_return(@id.to_s)
+    fog_dns[:id] = @id.to_s
     @id += 1
-    fog_dns.stub(:name).and_return(name)
-    fog_dns.stub(:size).and_return(0)
-    fog_dns.stub(:type).and_return(nil)
-    fog_dns.stub(:status).and_return("available")
-    fog_dns.stub(:metadata).and_return(nil)
+    fog_dns[:name] = name
+    fog_dns[:ttl] = 888
+    fog_dns[:serial] = "123123"
+    fog_dns[:email] = "asdf@example.com"
+    fog_dns[:created_at] = "today"
+    fog_dns[:updated_at] = "now"
     return fog_dns
   end
 
   before(:each) do
-    @dnss = [ mock_dns("ds1"), mock_dns("ds2"), mock_dns("ds3"), mock_dns("ds3") ]
+    @dnss = [ mock_dns("sot1"), mock_dns("sot2"), mock_dns("sot3"), mock_dns("sot3") ]
+    @body = { "domains" => @dnss }
+    @response = double("response")
+    @response.stub(:body).and_return(@body)
+    @dns = double("dns")
+    @dns.stub(:list_domains).and_return(@response)
     @connection = double("connection")
-    @connection.stub(:dnss).and_return(@dnss)
+    @connection.stub(:dns).and_return(@dns)
     Connection.stub(:instance).and_return(@connection)
   end
 
@@ -25,10 +31,10 @@ describe "Dnss getter" do
     it "should return them all" do
       dnss = Dnss.new.get()
 
-      dnss[0].name.should eql("ds1")
-      dnss[1].name.should eql("ds2")
-      dnss[2].name.should eql("ds3")
-      dnss[3].name.should eql("ds3")
+      dnss[0].name.should eql("sot1")
+      dnss[1].name.should eql("sot2")
+      dnss[2].name.should eql("sot3")
+      dnss[3].name.should eql("sot3")
       dnss.length.should eql(4)
     end
   end
@@ -37,7 +43,7 @@ describe "Dnss getter" do
     it "should return them all" do
       dnss = Dnss.new.get(["3"])
 
-      dnss[0].name.should eql("ds3")
+      dnss[0].name.should eql("sot3")
       dnss[0].id.to_s.should eql("3")
       dnss.length.should eql(1)
     end
@@ -45,40 +51,40 @@ describe "Dnss getter" do
 
   context "when we specify name" do
     it "should return them all" do
-      dnss = Dnss.new.get(["ds2"])
+      dnss = Dnss.new.get(["sot2"])
 
-      dnss[0].name.should eql("ds2")
+      dnss[0].name.should eql("sot2")
       dnss.length.should eql(1)
     end
   end
 
   context "when we specify a couple" do
     it "should return them all" do
-      dnss = Dnss.new.get(["1", "ds2"])
+      dnss = Dnss.new.get(["1", "sot2"])
 
-      dnss[0].name.should eql("ds1")
-      dnss[1].name.should eql("ds2")
+      dnss[0].name.should eql("sot1")
+      dnss[1].name.should eql("sot2")
       dnss.length.should eql(2)
     end
   end
 
   context "when we match multiple" do
     it "should return both" do
-      dnss = Dnss.new.get(["ds3"])
+      dnss = Dnss.new.get(["sot3"])
 
-      dnss[0].name.should eql("ds3")
-      dnss[1].name.should eql("ds3")
+      dnss[0].name.should eql("sot3")
+      dnss[1].name.should eql("sot3")
       dnss.length.should eql(2)
     end
   end
 
   context "when we match multiple" do
     it "should return error" do
-      dnss = Dnss.new.get(["ds3"], false)
+      dnss = Dnss.new.get(["sot3"], false)
 
       dnss[0].is_valid?.should be_false
       dnss[0].cstatus.error_code.should eq(:general_error)
-      dnss[0].cstatus.message.should eq("More than one dns matches 'ds3', use the id instead of name.")
+      dnss[0].cstatus.message.should eq("More than one dns matches 'sot3', use the id instead of name.")
       dnss.length.should eql(1)
     end
   end

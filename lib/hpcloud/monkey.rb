@@ -1,1 +1,2 @@
-require 'hpcloud/monkey/post_object.rb'
+require 'fog/hp/dns'
+require 'fog/hp/requests/storage/post_object'

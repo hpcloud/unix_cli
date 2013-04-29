@@ -11,6 +11,7 @@ module HP
         @block_connection = {}
         @cdn_connection = {}
         @network_connection = {}
+        @dns_connection = {}
         @authcache = HP::Cloud::AuthCache.new
         @options = {}
       end
@@ -37,6 +38,7 @@ module HP
         @block_connection = {}
         @cdn_connection = {}
         @network_connection = {}
+        @dns_connection = {}
       end
 
       def set_options(options)
@@ -140,6 +142,23 @@ module HP
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n Exception: #{e}"
         end
         return @network_connection[account]
+      end
+
+      def dns
+        account = get_account()
+        return @dns_connection[account] unless @dns_connection[account].nil?
+        opts = create_options(account, :dns_availability_zone)
+        #opts[:credentials] = @authcache.get(account)
+        begin
+          opts.delete(:provider)
+          @dns_connection[account] = Fog::HP::DNS.new(opts)
+          if @dns_connection[account].respond_to? :credentials
+            @authcache.set(account, @dns_connection[account].credentials)
+          end
+        rescue Exception => e
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'DNS' service is activated for the appropriate availability zone.\n Exception: #{e}"
+        end
+        return @dns_connection[account]
       end
 
       def get_account(account_name = nil)

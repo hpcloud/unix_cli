@@ -7,17 +7,14 @@ class DnsTestHelper
     dnss = HP::Cloud::Dnss.new
     dns = dnss.get(name)
     if dns.is_valid?
-      if dns.meta.nil?
-        dns.meta = HP::Cloud::Metadata.new(nil)
-      end
       @@dns_cache[name] = dns
       return dns
     end
     dns = dnss.create()
     dns.name = name
-    dns.size = 1
+    dns.ttl = 7200
+    dns.email = "clitest@example.com"
     dns.save
-    dns.fog.wait_for { ready? }
     @@dns_cache[name] = dns
     return dns
   end
