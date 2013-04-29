@@ -3,7 +3,11 @@ module Fog
     class DNS
       class Real
         def list_records_in_a_domain(domain_id)
-
+          request(
+              :expects => [200],
+              :method  => 'GET',
+              :path    => "domains/#{domain_id}/records"
+          )
         end
 
       end

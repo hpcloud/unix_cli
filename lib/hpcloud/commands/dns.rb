@@ -1,5 +1,6 @@
 require 'hpcloud/commands/dns/add'
 require 'hpcloud/commands/dns/remove'
+require 'hpcloud/commands/dns/records'
 require 'hpcloud/commands/dns/servers'
 require 'hpcloud/commands/dns/update'
 require 'hpcloud/dnss'

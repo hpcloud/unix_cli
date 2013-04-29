@@ -57,6 +57,17 @@ module HP
         hash = Hash[hash.map{ |k, v| [k.to_sym, v] }]
         hash[:servers]
       end
+
+      def record_keys
+        ["id", "name", "type", "data", "created_at"]
+      end
+
+      def records
+        rsp = @connection.dns.list_records_in_a_domain(@id)
+        hash = rsp.body
+        hash = Hash[hash.map{ |k, v| [k.to_sym, v] }]
+        hash[:records]
+      end
     end
   end
 end
