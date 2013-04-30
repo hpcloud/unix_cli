@@ -75,6 +75,22 @@ module HP
         hash = Hash[hash.map{ |k, v| [k.to_sym, v] }]
         return hash
       end
+
+      def get_record(name)
+        rsp = @connection.dns.list_records_in_a_domain(@id)
+        ray = rsp.body['records']
+        hash = ray.select { |x| x['name'] == name }.first
+        Hash[hash.map{ |k, v| [k.to_sym, v] }]
+      end
+
+      def update_record(name, type, data)
+        record = get_record(name)
+        options = { :name => name, :type => type, :data => data}
+        rsp = @connection.dns.update_record(@id, record[:id], options)
+        hash = rsp.body
+        hash = Hash[hash.map{ |k, v| [k.to_sym, v] }]
+        return hash
+      end
     end
   end
 end
