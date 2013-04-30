@@ -1,6 +1,4 @@
-require 'hpcloud/commands/dns/add.rb'
-require 'hpcloud/commands/dns/remove.rb'
-require 'hpcloud/commands/dns/update.rb'
+require 'hpcloud/commands/dns/records/add.rb'
 require 'hpcloud/dnss'
 
 module HP

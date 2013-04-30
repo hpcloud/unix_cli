@@ -68,6 +68,13 @@ module HP
         hash = Hash[hash.map{ |k, v| [k.to_sym, v] }]
         hash[:records]
       end
+
+      def create_record(name, type, data)
+        rsp = @connection.dns.create_record(@id, name, type, data)
+        hash = rsp.body
+        hash = Hash[hash.map{ |k, v| [k.to_sym, v] }]
+        return hash
+      end
     end
   end
 end
