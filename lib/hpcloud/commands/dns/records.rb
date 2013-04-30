@@ -1,4 +1,5 @@
 require 'hpcloud/commands/dns/records/add.rb'
+require 'hpcloud/commands/dns/records/remove.rb'
 require 'hpcloud/commands/dns/records/update.rb'
 require 'hpcloud/dnss'
 

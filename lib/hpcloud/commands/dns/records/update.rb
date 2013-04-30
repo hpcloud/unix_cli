@@ -17,10 +17,11 @@ Examples:
             @log.fatal dns.cstatus
           end
           record = dns.update_record(name, type, data)
-          if record.nil?
-            @log.fatal dns.cstatus
+          unless record.nil?
+            @log.display "Updated DNS record '#{name}' with id '#{record[:id]}'."
+          else
+            @log.error "Cannot find DNS record '#{name}'."
           end
-          @log.display "Updated DNS record '#{name}' with id '#{record[:id]}'."
         }
       end
     end
