@@ -20,17 +20,7 @@ Examples:
           @log.display "Service catalog '#{name}':"
           HP::Cloud::Accounts.new().read(name)
           begin
-            rsp = Connection.instance.validate_account(name)
-            cata = rsp[:service_catalog]
-            unless service.empty?
-              hsh = {}
-              service.each{ |x|
-                hsh[x.to_sym] = cata[x.to_sym]
-              }
-              cata = hsh
-            end
-            cata = cata.to_yaml.gsub(/--- \n/,'').gsub(/{}/,'').gsub(/\n\n/, "\n")
-            @log.display cata
+            @log.display Connection.instance.catalog(name, service)
           rescue Exception => e
             unless options[:debug].nil?
               puts e.backtrace

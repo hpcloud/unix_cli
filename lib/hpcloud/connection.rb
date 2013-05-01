@@ -172,6 +172,23 @@ module HP
         return Accounts.new.create_options(account_name, zone, @options[:availability_zone])
       end
 
+      def catalog(name, service)
+        begin
+          rsp = validate_account(name)
+          cata = rsp[:service_catalog]
+          unless service.empty?
+            hsh = {}
+            service.each{ |x|
+              hsh[x.to_sym] = cata[x.to_sym]
+            }
+            cata = hsh
+          end
+          return cata.to_yaml.gsub(/--- \n/,'').gsub(/{}/,'').gsub(/\n\n/, "\n")
+        rescue
+        end
+        return ""
+      end
+
       def validate_account(account_name)
         options = create_options(account_name, nil)
         case options[:provider]
