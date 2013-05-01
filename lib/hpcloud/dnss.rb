@@ -6,7 +6,7 @@ module HP
     class Dnss < FogCollection
       def initialize
         super("dns")
-        @items = @connection.dnss
+        @items = @connection.dns.list_domains.body["domains"]
       end
 
       def create(item = nil)

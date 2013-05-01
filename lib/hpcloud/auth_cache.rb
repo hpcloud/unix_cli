@@ -63,11 +63,7 @@ module HP
         return @aucas[account]
       end
 
-      def get(account)
-        return read(account)
-      end
-
-      def set(account, creds)
+      def write(account, creds)
         @aucas[account] = creds;
         write(account)
       end
@@ -75,7 +71,8 @@ module HP
       def write(account)
         config = @aucas[account]
         if config.nil?
-          raise Exception.new("Cannot find cache information for #{account}")
+          remove(account)
+          return
         end
         file_name = get_file_name(account)
         begin
