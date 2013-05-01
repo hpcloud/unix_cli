@@ -80,7 +80,7 @@ module HP
         rescue Exception => e
           @authcache.remove(account)
           respo = ErrorResponse.new(e).to_s
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n Exception: #{respo}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Storage' service is activated for the appropriate availability zone.\n Exception: #{respo}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @storage_connection[account]
       end
@@ -95,7 +95,7 @@ module HP
           write_creds(account, @compute_connection[account])
         rescue Exception => e
           @authcache.remove(account)
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n Exception: #{e}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @compute_connection[account]
       end
@@ -111,7 +111,7 @@ module HP
           write_creds(account, @block_connection[account])
         rescue Exception => e
           @authcache.remove(account)
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n Exception: #{e}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @block_connection[account]
       end
@@ -126,7 +126,7 @@ module HP
           write_creds(account, @cdn_connection[account])
         rescue Exception => e
           @authcache.remove(account)
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n Exception: #{e}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @cdn_connection[account]
       end
@@ -142,7 +142,7 @@ module HP
           write_creds(account, @network_connection[account])
         rescue Exception => e
           @authcache.remove(account)
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n Exception: #{e}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @network_connection[account]
       end
@@ -158,7 +158,7 @@ module HP
           write_creds(account, @dns_connection[account])
         rescue Exception => e
           @authcache.remove(account)
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'DNS' service is activated for the appropriate availability zone.\n Exception: #{e}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'DNS' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @dns_connection[account]
       end
