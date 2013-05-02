@@ -89,11 +89,12 @@ describe "FloatingIp methods" do
 
   context "when we save successfully" do
     it "it is true and we get id" do
-      @new_floating_ip = {"floating_ip"=>{"id"=>909}}
-      @resposote = double("resposote")
-      @resposote.stub(:body).and_return(@new_floating_ip)
+      @new_floating_ip = {"id"=>909, "floating_ip_address"=>"100.0.1.2"}
+      @body = {"floatingip"=>@new_floating_ip}
+      @response = double("response")
+      @response.stub(:body).and_return(@body)
       @network = double("network")
-      @network.stub(:create_floating_ip).and_return(@resposote)
+      @network.stub(:create_floating_ip).and_return(@response)
       @connection = double("connection")
       @connection.stub(:network).and_return(@network)
       sot = HP::Cloud::FloatingIpHelper.new(@connection)

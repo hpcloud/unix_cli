@@ -1,7 +1,16 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "SecurityGroup keys" do
-  context "when we get" do
+describe "SecurityGroup" do
+  before(:each) do
+    @fog_security_group = double("fog_security_group")
+    @fog_security_group.stub(:id).and_return(2)
+    @fog_security_group.stub(:name).and_return("cave")
+    @fog_security_group.stub(:tenant_id).and_return("89399393")
+    @fog_security_group.stub(:description).and_return("allegory")
+    @connection = double("connection")
+  end
+
+  context "get_keys" do
     it "should have expected values" do
       keys = HP::Cloud::SecurityGroupHelper.get_keys()
 
@@ -10,16 +19,6 @@ describe "SecurityGroup keys" do
       keys[2].should eq("description")
       keys.length.should eq(3)
     end
-  end
-end
-
-describe "SecurityGroup methods" do
-  before(:each) do
-    @fog_security_group = double("fog_security_group")
-    @fog_security_group.stub(:id).and_return(2)
-    @fog_security_group.stub(:name).and_return("cave")
-    @fog_security_group.stub(:description).and_return("allegory")
-    @connection = double("connection")
   end
 
   context "when given fog object" do
@@ -63,10 +62,10 @@ describe "SecurityGroup methods" do
       @new_security_group.stub(:save).and_return(true)
       @security_groups = double("security_groups")
       @security_groups.stub(:new).and_return(@new_security_group)
-      @compute = double("compute")
-      @compute.stub(:security_groups).and_return(@security_groups)
+      @network = double("network")
+      @network.stub(:security_groups).and_return(@security_groups)
       @connection = double("connection")
-      @connection.stub(:compute).and_return(@compute)
+      @connection.stub(:network).and_return(@network)
       secg = HP::Cloud::SecurityGroupHelper.new(@connection)
       secg.name = "sun"
       secg.description = "metaphor"
@@ -83,10 +82,10 @@ describe "SecurityGroup methods" do
     it "it is false and we get errors" do
       @security_groups = double("security_groups")
       @security_groups.stub(:new).and_return(nil)
-      @compute = double("compute")
-      @compute.stub(:security_groups).and_return(@security_groups)
+      @network = double("network")
+      @network.stub(:security_groups).and_return(@security_groups)
       @connection = double("connection")
-      @connection.stub(:compute).and_return(@compute)
+      @connection.stub(:network).and_return(@network)
       secg = HP::Cloud::SecurityGroupHelper.new(@connection)
       secg.name = "sun"
       secg.description = "metaphor"

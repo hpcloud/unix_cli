@@ -8,6 +8,7 @@ describe "SecurityGroups getter" do
     @id += 1
     fog_security_group.stub(:name).and_return(secg)
     fog_security_group.stub(:description).and_return("description:" + secg)
+    fog_security_group.stub(:tenant_id).and_return("4444")
     return fog_security_group
   end
 

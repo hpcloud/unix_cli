@@ -60,15 +60,6 @@ describe "Router methods" do
     end
   end
 
-  context "Router set_gateway" do
-    it "get all the expected values" do
-      connection = double("connection")
-      sot = HP::Cloud::RouterHelper.new(connection, @fog_router)
-      sot.set_gateway("127.0.0.1").should be_true
-      sot.cstatus.to_s.should eq("")
-    end
-  end
-
   context "when we convert to hash" do
     it "get all the expected values" do
       hash = HP::Cloud::RouterHelper.new(double("connection"), @fog_router).to_hash()
@@ -94,7 +85,6 @@ describe "Router methods" do
       sot = HP::Cloud::RouterHelper.new(@connection)
       sot.name = 'quantum'
       sot.tenant_id = 100
-      sot.set_gateway("2222323")
       sot.admin_state_up = true
 
       sot.save.should be_true

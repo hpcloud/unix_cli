@@ -1,7 +1,16 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "Rule keys" do
-  context "when we get" do
+describe "Rule methods" do
+  before(:all) do
+    @fog_rule = RuleTestHelper.mock('fang')
+  end
+
+  before(:each) do
+    @connection = double("connection")
+    @security_group = double("security_group")
+  end
+
+  context "get_keys" do
     it "should have expected values" do
       keys = HP::Cloud::RuleHelper.get_keys()
 
@@ -15,50 +24,19 @@ describe "Rule keys" do
       keys.length.should eq(7)
     end
   end
-end
-
-describe "Rule methods" do
-  before(:each) do
-    @fog_rule = { 'id' => 2,
-                  'group' => {'name' => 'fang'},
-                  'ip_protocol' => 'tcp',
-                  'from_port' => 3389,
-                  'to_port' => 3390
-                }
-    @connection = double("connection")
-    @security_group = double("security_group")
-  end
 
   context "when given fog object" do
     it "should have expected values" do
       item = HP::Cloud::RuleHelper.new(@connection, @security_group, @fog_rule)
 
-      item.id.should eq(2)
+      item.id.should eq(1)
       item.source.should eq("fang")
-      item.protocol.should eq("tcp")
-      item.from.should eq(3389)
-      item.to.should eq(3390)
-      item.cstatus.message.should be_nil
-      item.cstatus.error_code.should eq(:success)
-    end
-  end
-
-  context "when given fog object" do
-    it "should have expected values" do
-      @fog_rule = { 'id' => 2,
-                    'group' => {},
-                    'ip_range' => {'cidr' => '0.0.0.0/0'},
-                    'ip_protocol' => 'tcp',
-                    'from_port' => 3389,
-                    'to_port' => 3390
-                  }
-      item = HP::Cloud::RuleHelper.new(@connection, @security_group, @fog_rule)
-
-      item.id.should eq(2)
-      item.source.should eq("0.0.0.0/0")
-      item.protocol.should eq("tcp")
-      item.from.should eq(3389)
-      item.to.should eq(3390)
+      item.name.should eq("fang")
+      item.protocol.should eq("icmp")
+      item.direction.should eq("egress")
+      item.type.should eq("IPv4")
+      item.from.should eq(2222)
+      item.to.should eq(3333)
       item.cstatus.message.should be_nil
       item.cstatus.error_code.should eq(:success)
     end
@@ -82,11 +60,15 @@ describe "Rule methods" do
     it "get all the expected values" do
       hash = HP::Cloud::RuleHelper.new(@connection, @security_group, @fog_rule).to_hash()
 
-      hash["id"].should eq(2)
+      hash["id"].should eq(1)
+      hash["name"].should eq("fang")
       hash["source"].should eq("fang")
-      hash["protocol"].should eq("tcp")
-      hash["from"].should eq(3389)
-      hash["to"].should eq(3390)
+      hash["direction"].should eq("egress")
+      hash["protocol"].should eq("icmp")
+      hash["type"].should eq("IPv4")
+      hash["tenant_id"].should eq('2134234234')
+      hash["to"].should eq(3333)
+      hash["from"].should eq(2222)
     end
   end
 

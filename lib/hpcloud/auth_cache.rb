@@ -65,10 +65,6 @@ module HP
 
       def write(account, creds)
         @aucas[account] = creds;
-        write(account)
-      end
-
-      def write(account)
         config = @aucas[account]
         if config.nil?
           remove(account)
