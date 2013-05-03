@@ -59,6 +59,10 @@ describe "Copy large" do
     cptr('containers:add :largetest')
   end
 
+  after(:each) do
+    cptr('remove -f :largetest')
+  end
+
   context "Large file copy one under" do
     it "should copy file" do
       filename = 'oneunder'
