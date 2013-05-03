@@ -1,5 +1,12 @@
 #HP Cloud Services UNIX CLI Release Notes
 
+##Release 1.9.0 Features##
+
+The 1.9.0 release is available for download from https://docs.hpcloud.com/file/hpcloud-1.9.0.gem.  This release was made available on 5/15/2013 and contains the following new features:
+
+* Support for DNSaaS
+* Various minor fixes
+
 ##Release 1.8.0 Features##
 
 The 1.8.0 release is available for download from https://docs.hpcloud.com/file/hpcloud-1.8.0.gem.  This release was made available on 4/15/2013 and contains the following new features:
