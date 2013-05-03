@@ -2,9 +2,9 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "dns:update <name> <email>", "Add a dns."
+      desc "dns:update <name>", "Add a dns."
       long_desc <<-DESC
-  Update a DNS domain with the specified name and email address.  Optionally, you can specify a TTL (time to live) to adjust DNS caching of your entry.  The default TTL is 3600 (one hour).
+  Update a DNS domain with the specified name.  Optionally, you can specify an email or a TTL (time to live) to adjust DNS caching of your entry.  The default TTL is 3600 (one hour).
 
 Examples:
   hpcloud dns:update mydomain.com. email@example.com        # Create a new dns domain named 'mydomain.com.' with email 'email@example.com':
