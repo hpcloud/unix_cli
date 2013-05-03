@@ -8,6 +8,8 @@ describe "Copy across" do
     rsp = cptr("containers:add :duplicate")
     rsp = cptr("containers:remove -f :migrate")
     rsp = cptr("containers:add :migrate")
+    rsp = cptr("containers:remove -f :aws")
+    rsp = cptr("containers:add :aws")
     rsp.stderr.should eq("")
     rsp = cptr("containers:remove -f -a secondary :cross")
     rsp = cptr("containers:add -a secondary :cross")
@@ -29,7 +31,7 @@ describe "Copy across" do
     end
   end
 
-  context "when migrate" do
+  context "when migrate secondary" do
     it "should copy files" do
       rsp = cptr('migrate secondary :cross :migrate')
 
@@ -42,14 +44,14 @@ describe "Copy across" do
     end
   end
 
-  context "when migrate" do
+  context "when migrate aws" do
     it "should copy files" do
-      rsp = cptr('migrate aws :terryhowe.wordpress.com :migrate')
+      rsp = cptr('migrate aws :terryhowe.wordpress.com :aws')
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Migrated :terryhowe.wordpress.com => :migrate\n")
+      rsp.stdout.should eq("Migrated :terryhowe.wordpress.com => :aws\n")
       rsp.exit_status.should be_exit(:success)
-      rsp = cptr('list :migrate')
+      rsp = cptr('list :aws')
       rsp.stderr.should eq("")
       rsp.stdout.should eq("WGI_0069.JPG\nfolder/WGI_0028.JPG\n")
     end
