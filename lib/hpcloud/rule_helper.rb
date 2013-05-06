@@ -2,10 +2,10 @@ module HP
   module Cloud
     class RuleHelper < BaseHelper
       attr_accessor :id, :source, :protocol, :from, :to, :name
-      attr_accessor :tenant_id, :type, :direction, :remote_ip_prefix
+      attr_accessor :tenant_id, :type, :direction, :cidr
 
       def self.get_keys()
-        return [ "id", "source", "type", "protocol", "direction", "remote_ip_prefix", "from", "to" ]
+        return [ "id", "source", "type", "protocol", "direction", "cidr", "from", "to" ]
       end
 
       def initialize(connection, security_group, foggy = nil)
@@ -17,7 +17,7 @@ module HP
         @source = @name
         @protocol = foggy['protocol']
         @direction = foggy['direction']
-        @remote_ip_prefix = foggy['remote_ip_prefix']
+        @cidr = foggy['remote_ip_prefix']
         @tenant_id = foggy['tenant_id']
         @type = foggy['ethertype']
         @from = foggy['port_range_min']
