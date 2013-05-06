@@ -2,13 +2,13 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "dns:add <name> <email>", "Add a dns."
+      desc "dns:add <name> <email>", "Add a DNS domain."
       long_desc <<-DESC
-  Add a DNS domain with the specified name and email address.  Optionally, you can specify a TTL (time to live) to adjust DNS caching of your entry.  The default TTL is 3600 (one hour).
+  Add a DNS domain with the specified name and email address.  Optionally, you can specify a TTL (time to live) to adjust DNS caching of your entry.  The default time to live (TTL) is 3600 (one hour).
 
 Examples:
-  hpcloud dns:add mydomain.com. email@example.com        # Create a new dns domain named 'mydomain.com.' with email 'email@example.com':
-  hpcloud dns:add mydomain.com. email@xample.com -t 7200 # Create a new dns domain named 'mydomain.com.' with email 'email@example.com' and time to live 7200:
+  hpcloud dns:add mydomain.com. email@example.com        # Create a new DNS domain `mydomain.com` with email address `email@example.com`:
+  hpcloud dns:add mydomain.com. email@xample.com -t 7200 # Create a new DNS domain `mydomain.com` with email address `email@example.com` and time to live 7200:
       DESC
       method_option :ttl, :default => 3600,
                     :type => :string, :aliases => '-t',
