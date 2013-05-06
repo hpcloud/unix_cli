@@ -18,6 +18,11 @@ The 1.9.0 release is available for download from [https://docs.hpcloud.com/file/
 
 * Support for domain name service (DNS)
 
+###Known Issues###
+
+* None for this release.
+
+
 ##Release 1.8.0 Features##
 
 The 1.8.0 release is available for download from [https://docs.hpcloud.com/file/hpcloud-1.8.0.gem](https://docs.hpcloud.com/file/hpcloud-1.8.0.gem).  This release was made available on 4/15/2013 and contains the following new features:
@@ -28,6 +33,10 @@ The 1.8.0 release is available for download from [https://docs.hpcloud.com/file/
 
 * None for this release.
 
+<<<<<<< .merge_file_sBpHgf
+=======
+
+>>>>>>> .merge_file_m10MLe
 ##Release 1.7.0 Features##
 
 The 1.7.0 release is available for download from https://docs.hpcloud.com/file/hpcloud-1.7.0.gem.  This release was made available on 3/1/2013 and contains the following new features:
