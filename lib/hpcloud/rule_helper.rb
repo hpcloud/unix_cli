@@ -5,7 +5,7 @@ module HP
       attr_accessor :tenant_id, :type, :direction, :remote_ip_prefix
 
       def self.get_keys()
-        return [ "id", "source", "type", "protocol", "direction", "from", "to" ]
+        return [ "id", "source", "type", "protocol", "direction", "remote_ip_prefix", "from", "to" ]
       end
 
       def initialize(connection, security_group, foggy = nil)
