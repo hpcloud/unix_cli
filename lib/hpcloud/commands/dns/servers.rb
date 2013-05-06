@@ -9,11 +9,11 @@ module HP
 
       desc 'dns:servers <name_or_id>', "List the servers associated with the DNS domain."
       long_desc <<-DESC
-  Lists servers associated with the DNS domain specified by name or id.
+  Lists servers associated with the DNS domain specified by name or ID.
 
 Examples:
-  hpcloud dns:servers 421e8cbf   # List servers for dns domain with id `421e8cbf`:
-  hpcloud dns:servers test.com.  # List servers for dns domain `test.com.`:
+  hpcloud dns:servers 421e8cbf   # List servers for the DNS domain with ID `421e8cbf`:
+  hpcloud dns:servers test.com.  # List servers for the DNS domain `test.com.`:
       DESC
       CLI.add_report_options
       CLI.add_common_options
