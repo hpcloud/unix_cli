@@ -1,44 +1,38 @@
 require 'fog/hp'
+require 'fog/cdn'
 
 module Fog
-  module HP
-    class DNS < Fog::Service
+  module CDN
+    class HP < Fog::Service
 
-      requires   :hp_secret_key, :hp_tenant_id, :hp_avl_zone
-      recognizes :hp_auth_uri, :credentials
-      recognizes :persistent, :connection_options
-      recognizes :hp_use_upass_auth_style, :hp_auth_version, :user_agent
-      recognizes :hp_access_key, :hp_account_id # :hp_account_id is deprecated use hp_access_key instead
+      requires    :hp_secret_key, :hp_tenant_id, :hp_avl_zone
+      recognizes  :hp_auth_uri, :hp_cdn_uri, :credentials
+      recognizes  :hp_use_upass_auth_style, :hp_auth_version, :user_agent
+      recognizes  :persistent, :connection_options
+      recognizes  :hp_access_key, :hp_account_id  # :hp_account_id is deprecated use hp_access_key instead
 
-      secrets :hp_secret_key
+      secrets     :hp_secret_key
 
-#      model_path 'fog/hp/models/dns'
-#      model      :domain
-#      collection :domains
-#      model      :record
-#      collection :records
-#      model      :server
+      model_path   'fog/hp/models/cdn'
 
+      request_path 'fog/hp/requests/cdn'
+      request :get_containers
+      request :head_container
+      request :post_container
+      request :put_container
+      request :delete_container
 
-      request_path 'fog/hp/requests/dns'
-      request :create_domain
-      request :create_record
-      request :delete_domain
-      request :delete_record
-      request :get_domain
-      request :get_record
-      request :get_servers_hosting_domain
-      request :list_domains
-      request :list_records_in_a_domain
-      request :update_domain
-      request :update_record
+      module Utils
+
+      end
 
       class Mock
+        include Utils
 
         def self.data
           @data ||= Hash.new do |hash, key|
             hash[key] = {
-
+              :cdn_containers => {}
             }
           end
         end
@@ -70,6 +64,7 @@ module Fog
       end
 
       class Real
+        include Utils
         attr_reader :credentials
 
         def initialize(options={})
@@ -82,63 +77,72 @@ module Fog
           unless @hp_access_key
             raise ArgumentError.new("Missing required arguments: hp_access_key. :hp_account_id is deprecated, please use :hp_access_key instead.")
           end
-          @hp_secret_key      = options[:hp_secret_key]
-          @hp_auth_uri        = options[:hp_auth_uri]
+          @hp_secret_key = options[:hp_secret_key]
           @connection_options = options[:connection_options] || {}
           ### Set an option to use the style of authentication desired; :v1 or :v2 (default)
-          auth_version        = options[:hp_auth_version] || :v2
+          auth_version = options[:hp_auth_version] || :v2
           ### Pass the service name for object storage to the authentication call
-          options[:hp_service_type] = "DNS"
-          @hp_tenant_id       = options[:hp_tenant_id]
-          @hp_avl_zone        = options[:hp_avl_zone]
+          options[:hp_service_type] = "CDN"
+          @hp_tenant_id = options[:hp_tenant_id]
 
           ### Make the authentication call
           if (auth_version == :v2)
             # Call the control services authentication
             credentials = Fog::HP.authenticate_v2(options, @connection_options)
-            # the CS service catalog returns the block storage endpoint
-            @hp_block_uri = credentials[:endpoint_url]
+            ### When using the v2 CS authentication, the CDN Mgmt comes from the service catalog
+            @hp_cdn_uri = credentials[:endpoint_url]
+            cdn_mgmt_url = @hp_cdn_uri
             @credentials = credentials
           else
             # Call the legacy v1.0/v1.1 authentication
             credentials = Fog::HP.authenticate_v1(options, @connection_options)
-            # the user sends in the block storage endpoint
-            @hp_block_uri = options[:hp_auth_uri]
+            # In case of legacy authentication systems, the user can pass the CDN Mgmt Uri
+            @hp_cdn_uri = options[:hp_cdn_uri] || "https://region-a.geo-1.cdnmgmt.hpcloudsvc.com/v1.0"
+            # In case of legacy authentication systems, the :cdn_endpoint_url will carry the cdn storage url
+            cdn_mgmt_url = "#{@hp_cdn_uri}#{URI.parse(credentials[:cdn_endpoint_url]).path}"
           end
 
           @auth_token = credentials[:auth_token]
+          @enabled = false
           @persistent = options[:persistent] || false
 
-          uri     = URI.parse(@hp_block_uri)
-          @host   = uri.host
-          @path   = uri.path
-          @port   = uri.port
-          @scheme = uri.scheme
+          if cdn_mgmt_url
+            uri = URI.parse(cdn_mgmt_url)
+            @host   = uri.host
+            @path   = uri.path.chomp("/")
+            @port   = uri.port
+            @scheme = uri.scheme
+            @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}", @persistent, @connection_options)
+            @enabled = true
+          end
+        end
 
-          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}", @persistent, @connection_options)
+        def enabled?
+          @enabled
         end
 
         def reload
-          @connection.reset
+          @cdn_connection.reset
         end
 
         def request(params, parse_json = true, &block)
           begin
             response = @connection.request(params.merge!({
-                                                             :headers => {
-                                                                 'Content-Type' => 'application/json',
-                                                                 'X-Auth-Token' => @auth_token
-                                                             }.merge!(params[:headers] || {}),
-                                                             :host    => @host,
-                                                             :path    => "#{@path}/#{params[:path]}",
-                                                         }), &block)
+              :headers  => {
+                'Content-Type' => 'application/json',
+                'Accept'       => 'application/json',
+                'X-Auth-Token' => @auth_token
+              }.merge!(params[:headers] || {}),
+              :host     => @host,
+              :path     => "#{@path}/#{params[:path]}",
+            }), &block)
           rescue Excon::Errors::HTTPStatusError => error
             raise case error
-                    when Excon::Errors::NotFound
-                      Fog::HP::BlockStorage::NotFound.slurp(error)
-                    else
-                      error
-                  end
+            when Excon::Errors::NotFound
+              Fog::CDN::HP::NotFound.slurp(error)
+            else
+              error
+            end
           end
           if !response.body.empty? && parse_json && response.headers['Content-Type'] =~ %r{application/json}
             response.body = Fog::JSON.decode(response.body)
@@ -147,7 +151,6 @@ module Fog
         end
 
       end
-
     end
   end
 end

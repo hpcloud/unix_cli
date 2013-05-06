@@ -183,7 +183,7 @@ module HP
             }
             cata = hsh
           end
-          return cata.to_yaml.gsub(/--- \n/,'').gsub(/{}/,'').gsub(/\n\n/, "\n")
+          return cata.to_yaml.gsub(/--- \n/,'').gsub(/\{\}/,'').gsub(/\n\n/, "\n")
         rescue
         end
         return ""

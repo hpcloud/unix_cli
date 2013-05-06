@@ -4,10 +4,10 @@ module HP
 
       desc "dns:records:remove <domain> <name ...>", "Remove a DNS record."
       long_desc <<-DESC
-  Remove a DNS record to the specified domain.  Records may be specified by name or id.
+  Remove a DNS record to the specified domain.  Records may be specified by name or ID.
 
 Examples:
-  hpcloud dns:records:remove mydomain.com. www.mydomain.com # Remove 'www.mydomain.com' record from the domain 'mydomain.com.'
+  hpcloud dns:records:remove mydomain.com. www.mydomain.com # Remove record `www.mydomain.com` from the domain `mydomain.com`.
       DESC
       CLI.add_common_options
       define_method "dns:records:remove" do |domain, *names|

@@ -3,7 +3,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe "Dnss command" do
   before(:all) do
     @dns1 = DnsTestHelper.create("clitest1.com.")
+    cptr("dns:update clitest1.com. -e clitest@example.com -t 7200")
     @dns2= DnsTestHelper.create("clitest2.com.")
+    cptr("dns:update clitest2.com. -e clitest@example.com -t 7200")
   end
 
   context "dns" do
