@@ -2,9 +2,9 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "dns:records:update <domain> <name> <type> <data>", "Add a DNS record."
+      desc "dns:records:update <domain> <name> <type> <data>", "Update a DNS record."
       long_desc <<-DESC
-  Add a DNS record to the specified domain with the given name, type and data.
+  Update a DNS record to the specified domain with the given name, type and data.
 
 Examples:
   hpcloud dns:records:update mydomain.com. www.mydomain.com A 10.0.0.1 # Create a DNS record for domain `mydomain.com` and record `A` for `www.mydomain.com` pointing to address 10.0.0.1:
