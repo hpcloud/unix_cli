@@ -2,9 +2,9 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "subnets:update <name> <network_id_or_name> <cidr>", "Add a subnet."
+      desc "subnets:update <name>", "Update a subnet."
       long_desc <<-DESC
-  Add a new subnet to your network with the specified name and CIDR.  Optionally, you can specify IP version, gateway, DHCP, DNS name servers, or host routes.  The update command will do its best to guess the IP version from the CIDR, but you may override it.  The DNS name servers should be a command seperated list e.g.: 10.1.1.1,10.2.2.2.  The host routes should be a semicolon separated list of destination and nexthop pairs e.g.: 127.0.0.1/32,10.1.1.1;100.1.1.1/32,10.2.2.2
+  Update a subnet IP version, gateway, DHCP, DNS name servers, or host routes.  The update command will do its best to guess the IP version from the CIDR, but you may override it.  The DNS name servers should be a command seperated list e.g.: 10.1.1.1,10.2.2.2.  The host routes should be a semicolon separated list of destination and nexthop pairs e.g.: 127.0.0.1/32,10.1.1.1;100.1.1.1/32,10.2.2.2
 
 Examples:
   hpcloud subnets:update subwoofer -g 10.0.0.1     # Update 'subwoofer' gateway:
