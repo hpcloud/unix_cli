@@ -10,7 +10,7 @@ REFERENCE=reference.txt
 #function courierizer { echo "$1" | sed -e "s,<\([^>]*\)>,<i>\1</i>,g" -e "s,'\([^']*\)',<font face='courier'>\1</font>,g"; }
 function courierizer { echo "$1" | sed -e "s,'\([^']*\)',\`\1\`,g"; }
 function dtizer {
-  echo $1 | sed -e "s,\(-[^#]*\) # \(.*\)$,<dt><b>\1</b></dt><dd>\2</dd>," |
+  echo $1 | sed -e "s,\(-[^#]*\) # \(.*\)$,*\1*\n: \2," |
     sed -e 's/\[//g' -e 's/]//g'
 }
 
