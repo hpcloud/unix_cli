@@ -43,7 +43,6 @@ module HP
           begin
             File.delete(file_name)
           rescue
-            warn "Error deleting cache file: #{file_name}"
             return false
           end
         end
