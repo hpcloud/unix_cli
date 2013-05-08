@@ -1,3 +1,4 @@
+require 'fog/hp'
 require 'fog/hp/cdn'
 require 'fog/hp/compute'
 require 'fog/hp/dns'
