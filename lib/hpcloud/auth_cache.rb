@@ -79,6 +79,13 @@ module HP
           raise Exception.new("Error writing file #{file_name}")
         end
       end
+
+      def default_zone(account, service)
+        catalog = read(account)
+        return nil if catalog.nil?
+        return nil if catalog[service.to_sym].nil?
+        return catalog[service.to_sym].keys.sort.first.to_s
+      end
     end
   end
 end
