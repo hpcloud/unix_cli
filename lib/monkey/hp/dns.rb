@@ -20,7 +20,7 @@ module Fog
 #      model      :server
 
 
-      request_path 'fog/hp/requests/dns'
+      request_path 'monkey/hp/requests/dns'
       request :create_domain
       request :create_record
       request :delete_domain
