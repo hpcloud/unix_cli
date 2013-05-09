@@ -57,9 +57,17 @@ module HP
         reset_connections()
       end
 
-      def read_creds(account, opts)
+      def read_creds(account, opts, service)
         creds = @authcache.read(account)
-        return if creds.nil?
+        if creds.nil?
+          return unless opts[:provider] == "hp"
+          creds = validate_account(account)
+          return if creds.nil?
+          @authcache.write(account, creds)
+        end
+        if opts[:hp_avl_zone].nil?
+          opts[:hp_avl_zone] = @authcache.default_zone(account, service)
+        end
         opts[:credentials] = creds
       end
 
@@ -73,7 +81,7 @@ module HP
         account = get_account(account_name)
         return @storage_connection[account] unless @storage_connection[account].nil?
         opts = create_options(account, :storage_availability_zone)
-        read_creds(account, opts)
+        read_creds(account, opts, 'Object Storage')
         begin
           @storage_connection[account] = Fog::Storage.new(opts)
           write_creds(account, @storage_connection[account])
@@ -89,7 +97,7 @@ module HP
         account = get_account()
         return @compute_connection[account] unless @compute_connection[account].nil?
         opts = create_options(account, :compute_availability_zone)
-        read_creds(account, opts)
+        read_creds(account, opts, 'Compute')
         begin
           @compute_connection[account] = Fog::Compute.new(opts)
           write_creds(account, @compute_connection[account])
@@ -105,7 +113,7 @@ module HP
         return @block_connection[account] unless @block_connection[account].nil?
         opts = create_options(account, :block_availability_zone)
         opts.delete(:provider)
-        read_creds(account, opts)
+        read_creds(account, opts, 'Block Storage')
         begin
           @block_connection[account] = Fog::HP::BlockStorage.new(opts)
           write_creds(account, @block_connection[account])
@@ -120,7 +128,7 @@ module HP
         account = get_account()
         return @cdn_connection[account] unless @cdn_connection[account].nil?
         opts = create_options(account, :cdn_availability_zone)
-        read_creds(account, opts)
+        read_creds(account, opts, 'CDN')
         begin
           @cdn_connection[account] = Fog::CDN.new(opts)
           write_creds(account, @cdn_connection[account])
@@ -135,7 +143,7 @@ module HP
         account = get_account()
         return @network_connection[account] unless @network_connection[account].nil?
         opts = create_options(account, :network_availability_zone)
-        read_creds(account, opts)
+        read_creds(account, opts, 'Networking')
         begin
           opts.delete(:provider)
           @network_connection[account] = Fog::HP::Network.new(opts)
@@ -151,7 +159,7 @@ module HP
         account = get_account()
         return @dns_connection[account] unless @dns_connection[account].nil?
         opts = create_options(account, :dns_availability_zone)
-        read_creds(account, opts)
+        read_creds(account, opts, 'DNS')
         begin
           opts.delete(:provider)
           @dns_connection[account] = Fog::HP::DNS.new(opts)

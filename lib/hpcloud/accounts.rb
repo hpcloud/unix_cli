@@ -16,6 +16,7 @@ module HP
                :storage_availability_zone,
                :cdn_availability_zone,
                :dns_availability_zone,
+               :network_availability_zone,
                :block_availability_zone]
       OPTIONS = [:connect_timeout,
                  :read_timeout,

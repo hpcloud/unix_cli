@@ -81,7 +81,9 @@ module HP
       end
 
       def default_zone(account, service)
-        catalog = read(account)
+        creds = read(account)
+        return nil if creds.nil?
+        catalog = creds[:service_catalog]
         return nil if catalog.nil?
         return nil if catalog[service.to_sym].nil?
         return catalog[service.to_sym].keys.sort.first.to_s
