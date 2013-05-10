@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe "Lbaass command" do
+describe "Lbs command" do
   def then_expected_table(response)
     response.should match("| .*id.*|.*name.*|.*size.*|.*type.*|.*created.*|.*status.*|.*description.*|.*servers.*|\n")
     response.should match("| #{@lbs1.name} *| 1 *| *|")
@@ -8,13 +8,13 @@ describe "Lbaass command" do
   end
 
   before(:all) do
-    @lbs1 = LbaasTestHelper.create("cli_test_lbs1")
-    @lbs2= LbaasTestHelper.create("cli_test_lbs2")
+    @lbs1 = LbTestHelper.create("cli_test_lbs1")
+    @lbs2= LbTestHelper.create("cli_test_lbs2")
   end
 
-  context "lbaass" do
+  context "lbs" do
     it "should report success" do
-      rsp = cptr("lbaass #{@lbs1.name} #{@lbs2.name}")
+      rsp = cptr("lbs #{@lbs1.name} #{@lbs2.name}")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -22,9 +22,9 @@ describe "Lbaass command" do
     end
   end
 
-  context "lbaass:list" do
+  context "lbs:list" do
     it "should report success" do
-      rsp = cptr("lbaass:list #{@lbs1.name} #{@lbs2.name}")
+      rsp = cptr("lbs:list #{@lbs1.name} #{@lbs2.name}")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -32,9 +32,9 @@ describe "Lbaass command" do
     end
   end
 
-  context "lbaass --bootable" do
+  context "lbs --bootable" do
     it "should report success" do
-      rsp = cptr("lbaass --bootable")
+      rsp = cptr("lbs --bootable")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -42,9 +42,9 @@ describe "Lbaass command" do
     end
   end
 
-  context "lbaass with valid avl" do
+  context "lbs with valid avl" do
     it "should report success" do
-      rsp = cptr("lbaass #{@lbs1.name} #{@lbs2.name} -z az-1.region-a.geo-1")
+      rsp = cptr("lbs #{@lbs1.name} #{@lbs2.name} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -52,9 +52,9 @@ describe "Lbaass command" do
     end
   end
 
-  context "lbaass with invalid avl" do
+  context "lbs with invalid avl" do
     it "should report error" do
-      rsp = cptr('lbaass -z blah')
+      rsp = cptr('lbs -z blah')
 
       rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
@@ -67,7 +67,7 @@ describe "Lbaass command" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("lbaass -a bogus")
+      rsp = cptr("lbs -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")
