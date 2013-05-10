@@ -138,9 +138,15 @@ module HP
         hsh = @accts[account]
         hsh[:zones] = zones
         set_default_zones(hsh)
-        hsh[:zones].delete(:compute_availability_zone) if zones[:compute_availability_zone].empty?
-        hsh[:zones].delete(:storage_availability_zone) if zones[:storage_availability_zone].empty?
-        hsh[:zones].delete(:block_availability_zone) if zones[:block_availability_zone].empty?
+        if zones[:compute_availability_zone].nil? || zones[:compute_availability_zone].empty?
+          hsh[:zones].delete(:compute_availability_zone)
+        end
+        if zones[:storage_availability_zone].nil? || zones[:storage_availability_zone].empty?
+          hsh[:zones].delete(:storage_availability_zone)
+        end
+        if zones[:block_availability_zone].nil? || zones[:block_availability_zone].empty?
+          hsh[:zones].delete(:block_availability_zone)
+        end
       end
 
       def set(account, key, value)
