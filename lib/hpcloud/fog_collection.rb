@@ -58,9 +58,8 @@ module HP
       def get_array(arguments = [])
         ray = []
         get(arguments, true).each { |x|
-          if x.is_valid?
-            ray << x.to_hash()
-          end
+          hsh = x.to_hash()
+          ray << hsh unless hsh.nil?
         }
         return ray
       end

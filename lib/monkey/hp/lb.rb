@@ -12,9 +12,9 @@ module Fog
 
       secrets :hp_secret_key
 
-      #model_path 'fog/hp/models/lb'
-      #model       :algorithm
-      #collection  :algorithms
+      model_path 'monkey/hp/models/lb'
+      model       :algorithm
+      collection  :algorithms
       #model       :limit
       #collection  :limits
       #model       :load_balancer

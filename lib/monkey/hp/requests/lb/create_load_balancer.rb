@@ -30,7 +30,7 @@ module Fog
             :body    => Fog::JSON.encode(data),
             :expects => 200,
             :method  => 'POST',
-            :path    => "loadbalancers/#{load_balancer_id}"
+            :path    => "loadbalancers"
           )
           response
 
