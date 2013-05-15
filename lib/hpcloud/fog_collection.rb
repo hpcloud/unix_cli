@@ -4,6 +4,7 @@ require 'hpcloud/exceptions/not_found'
 module HP
   module Cloud
     class FogCollection
+      attr_reader :name, :items
     
       def initialize(name, article='a')
         @name = name
