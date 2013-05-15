@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "LbAlgorithms getter" do
+describe "FogCollection" do
   def mock_lb_algorithm(name)
     fog_lb_algorithm = double(name)
     fog_lb_algorithm.stub(:name).and_return(name)
