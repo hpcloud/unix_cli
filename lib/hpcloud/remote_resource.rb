@@ -50,10 +50,14 @@ module HP
         @readers = @readacl.users.join(",") unless @readacl.users.nil?
         @writers = @writeacl.users.join(",") unless @writeacl.users.nil?
         @versions = headers['X-Versions-Location']
-        if @path.nil? || @path.empty?
-          @public_url = "#{@storage.url}/#{@container}"
-        else
-          @public_url = "#{@storage.url}/#{@container}/#{@path}"
+        @public_url = ""
+        begin
+          if @path.nil? || @path.empty?
+            @public_url = "#{@storage.url}/#{@container}"
+          else
+            @public_url = "#{@storage.url}/#{@container}/#{@path}"
+          end
+        rescue
         end
         @public_url = @public_url.gsub(/%2F/, '/') unless @public_url.nil?
         return true

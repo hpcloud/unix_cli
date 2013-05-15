@@ -79,5 +79,18 @@ describe "AuthCaches getting credentials" do
     end
   end
 
+  context "when something else" do
+    it "should provide credentials" do
+      authcaches = AuthCache.new()
+      authcaches.write('something', {:service_catalog => {:DNS =>
+        {:"region-a.geo-1" => "https://region-a.geo-1.dns.hpcloudsvc.com/v1/",
+         :"region-b.geo-1" => "https://region-b.geo-1.dns.hpcloudsvc.com/v1/"}}})
+
+      authcaches.default_zone('something', 'DNS').should eq('region-a.geo-1')
+      authcaches.default_zone('bogus', 'DNS').should be_nil
+      authcaches.default_zone('something', 'bogus').should be_nil
+    end
+  end
+
   after(:all) {reset_all()}
 end

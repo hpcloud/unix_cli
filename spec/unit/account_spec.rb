@@ -143,7 +143,7 @@ describe "Account write" do
       acct[:credentials][:tenant_id].should eq('328')
       acct[:zones][:compute_availability_zone].should eq('az-1.region-a.geo-1')
       acct[:zones][:storage_availability_zone].should eq('region-b.geo-1')
-      acct[:zones][:cdn_availability_zone].should eq('region-a.geo-1')
+      acct[:zones][:cdn_availability_zone].should be_nil
       acct[:zones][:block_availability_zone].should eq('az-1.region-d.geo-1')
     end
   end
@@ -197,10 +197,10 @@ describe "Account get" do
       acct[:credentials][:secret_key].should eq('bar')
       acct[:credentials][:auth_uri].should eq('http://192.168.1.1:8888/v2.0')
       acct[:credentials][:tenant_id].should eq('111111')
-      acct[:zones][:compute_availability_zone].should eq('az-1.region-a.geo-1')
-      acct[:zones][:storage_availability_zone].should eq('region-a.geo-1')
-      acct[:zones][:cdn_availability_zone].should eq('region-a.geo-1')
-      acct[:zones][:block_availability_zone].should eq('az-1.region-a.geo-1')
+      acct[:zones][:compute_availability_zone].should be_nil
+      acct[:zones][:storage_availability_zone].should be_nil
+      acct[:zones][:cdn_availability_zone].should be_nil
+      acct[:zones][:block_availability_zone].should be_nil
       acct[:options][:connect_timeout].should eq(30)
       acct[:options][:read_timeout].should eq(240)
       acct[:options][:write_timeout].should eq(240)
@@ -224,7 +224,7 @@ describe "Accounts create" do
       uri = HP::Cloud::Config.new.get(:default_auth_uri)
 
       acct[:credentials].should eq({:auth_uri=>uri})
-      zones = {:compute_availability_zone=>"az-1.region-a.geo-1", :storage_availability_zone=>"region-a.geo-1", :cdn_availability_zone=>"region-a.geo-1", :block_availability_zone=>"az-1.region-a.geo-1"}
+      zones = {:compute_availability_zone=>nil, :storage_availability_zone=>nil, :cdn_availability_zone=>nil, :block_availability_zone=>nil}
       acct[:zones].should eq(zones)
       acct[:options].should eq({})
     end
@@ -398,7 +398,7 @@ describe "Connection options" do
       options[:hp_secret_key].should eq('bar')
       options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
       options[:hp_tenant_id].should eq('111111')
-      options[:hp_avl_zone].should eq('az-1.region-a.geo-1')
+      options[:hp_avl_zone].should be_nil
       options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
     end
 
@@ -411,7 +411,7 @@ describe "Connection options" do
       options[:hp_secret_key].should eq('bar')
       options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
       options[:hp_tenant_id].should eq('111111')
-      options[:hp_avl_zone].should eq('region-a.geo-1')
+      options[:hp_avl_zone].should be_nil
       options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
     end
 
@@ -424,7 +424,7 @@ describe "Connection options" do
       options[:hp_secret_key].should eq('bar')
       options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
       options[:hp_tenant_id].should eq('111111')
-      options[:hp_avl_zone].should eq('region-a.geo-1')
+      options[:hp_avl_zone].should be_nil
       options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
     end
 
@@ -437,7 +437,7 @@ describe "Connection options" do
       options[:hp_secret_key].should eq('bar')
       options[:hp_auth_uri].should eq('http://192.168.1.1:8888/v2.0')
       options[:hp_tenant_id].should eq('111111')
-      options[:hp_avl_zone].should eq('az-1.region-a.geo-1')
+      options[:hp_avl_zone].should be_nil
       options[:user_agent].should eq("HPCloud-UnixCLI/#{HP::Cloud::VERSION}")
     end
 

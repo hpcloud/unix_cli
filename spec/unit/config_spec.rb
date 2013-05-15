@@ -21,10 +21,10 @@ describe "Config reading" do
     it "should have settings" do
       config = HP::Cloud::Config.new
       config.settings[:default_auth_uri].should eq('https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/')
-      config.settings[:block_availability_zone].should eq('az-1.region-a.geo-1')
-      config.settings[:cdn_availability_zone].should eq('region-a.geo-1')
-      config.settings[:compute_availability_zone].should eq('az-1.region-a.geo-1')
-      config.settings[:storage_availability_zone].should eq('region-a.geo-1')
+      config.settings[:block_availability_zone].should be_nil
+      config.settings[:cdn_availability_zone].should be_nil
+      config.settings[:compute_availability_zone].should be_nil
+      config.settings[:storage_availability_zone].should be_nil
       config.settings[:connect_timeout].should eq(30)
       config.settings[:read_timeout].should eq(240)
       config.settings[:write_timeout].should eq(240)

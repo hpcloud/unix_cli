@@ -15,6 +15,8 @@ module HP
       ZONES = [:compute_availability_zone,
                :storage_availability_zone,
                :cdn_availability_zone,
+               :dns_availability_zone,
+               :network_availability_zone,
                :block_availability_zone]
       OPTIONS = [:connect_timeout,
                  :read_timeout,
@@ -136,9 +138,15 @@ module HP
         hsh = @accts[account]
         hsh[:zones] = zones
         set_default_zones(hsh)
-        hsh[:zones].delete(:compute_availability_zone) if zones[:compute_availability_zone].empty?
-        hsh[:zones].delete(:storage_availability_zone) if zones[:storage_availability_zone].empty?
-        hsh[:zones].delete(:block_availability_zone) if zones[:block_availability_zone].empty?
+        if zones[:compute_availability_zone].nil? || zones[:compute_availability_zone].empty?
+          hsh[:zones].delete(:compute_availability_zone)
+        end
+        if zones[:storage_availability_zone].nil? || zones[:storage_availability_zone].empty?
+          hsh[:zones].delete(:storage_availability_zone)
+        end
+        if zones[:block_availability_zone].nil? || zones[:block_availability_zone].empty?
+          hsh[:zones].delete(:block_availability_zone)
+        end
       end
 
       def set(account, key, value)

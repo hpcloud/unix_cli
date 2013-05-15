@@ -14,18 +14,19 @@ The 1.10.0 release is available for download from https://docs.hpcloud.com/file/
 
 ##Release 1.9.0 Features##
 
-The 1.9.0 release is available for download from [https://docs.hpcloud.com/file/hpcloud-1.9.0.gem](https://docs.hpcloud.com/file/hpcloud-1.9.0.gem).  This release was made available on 5/15/2013 and contains the following new features:
+The 1.9.0 release is available for download from [https://docs.hpcloud.com/file/hpcloud-1.9.0.gem](/file/hpcloud-1.9.0.gem).  This release was made available on 5/15/2013 and contains the following new features:
 
 * Support for domain name service (DNS)
+* New account:catalog command dumps the service catalog for the given account
+* Default availability zone is now the alphabetically first zone in the service catalog.
 
 ###Known Issues###
 
-* None for this release.
-
+* Support for availability zones in the config.yml file is deprecated.  Support for that future will be removed in the future.  There are no long hard coded default zones in the configuration.
 
 ##Release 1.8.0 Features##
 
-The 1.8.0 release is available for download from [https://docs.hpcloud.com/file/hpcloud-1.8.0.gem](https://docs.hpcloud.com/file/hpcloud-1.8.0.gem).  This release was made available on 4/15/2013 and contains the following new features:
+The 1.8.0 release is available for download from [https://docs.hpcloud.com/file/hpcloud-1.8.0.gem](/file/hpcloud-1.8.0.gem).  This release was made available on 4/15/2013 and contains the following new features:
 
 * Support for the `after` and `at` options for the `remove` command added
 
