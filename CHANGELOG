@@ -1,17 +1,5 @@
 #HP Cloud Services UNIX CLI Release Notes
 
-##Release 1.10.0 Features##
-
-The 1.10.0 release is available for download from https://docs.hpcloud.com/file/hpcloud-1.10.0.gem.  This release was made available on 5/15/2013 and contains the following new features:
-
-* Support for 1.1 Cloud
-* Support for multiple rule deletes `securitygroups:rules:remove`
-* Added `direction` and `ethertype` options to `securitygroups:rules:add`
-
-###Known Issues###
-
-* The `securitygroups:rules:remove` command no long takes a security group name.
-
 ##Release 1.9.0 Features##
 
 The 1.9.0 release is available for download from [https://docs.hpcloud.com/file/hpcloud-1.9.0.gem](/file/hpcloud-1.9.0.gem).  This release was made available on 5/15/2013 and contains the following new features:
@@ -34,6 +22,10 @@ The 1.8.0 release is available for download from [https://docs.hpcloud.com/file/
 
 * None for this release.
 
+<<<<<<< .merge_file_BV6ZvU
+=======
+
+>>>>>>> .merge_file_i76OXT
 ##Release 1.7.0 Features##
 
 The 1.7.0 release is available for download from https://docs.hpcloud.com/file/hpcloud-1.7.0.gem.  This release was made available on 3/1/2013 and contains the following new features:
