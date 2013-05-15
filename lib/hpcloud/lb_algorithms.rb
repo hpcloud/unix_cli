@@ -5,12 +5,12 @@ module HP
   module Cloud
     class LbAlgorithms < FogCollection
       def initialize
-        super("lb algorithms")
+        super("load balancer algorithm")
         @items = @connection.lb.algorithms
       end
 
-      def create(item = nil)
-        return item
+      def matches(arg, item)
+        return (arg == item.name.to_s)
       end
     end
   end

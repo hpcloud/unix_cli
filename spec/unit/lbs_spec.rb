@@ -17,7 +17,7 @@ describe "Lbs getter" do
 
   before(:each) do
     @lbs = [ mock_lb("sot1"), mock_lb("sot2"), mock_lb("sot3"), mock_lb("sot3") ]
-    @body = { "domains" => @lbs }
+    @body = { "loadBalancers" => @lbs }
     @response = double("response")
     @response.stub(:body).and_return(@body)
     @lb = double("lb")
