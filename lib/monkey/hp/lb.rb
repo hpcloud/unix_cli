@@ -15,8 +15,8 @@ module Fog
       model_path 'monkey/hp/models/lb'
       model       :algorithm
       collection  :algorithms
-      #model       :limit
-      #collection  :limits
+      model       :limit
+      collection  :limits
       #model       :load_balancer
       #collection  :load_balancers
       #model       :node

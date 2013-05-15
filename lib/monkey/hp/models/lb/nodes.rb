@@ -8,12 +8,12 @@ module Fog
         model Fog::HP::LB::Node
 
         def all
-          data = connection.list_nodes.body['nodes']
+          data = service.list_nodes.body['nodes']
           load(data)
         end
 
         def get(record_id)
-          record = connection.get_node_details(record_id).body['node']
+          record = service.get_node_details(record_id).body['node']
           new(record)
         rescue Fog::HP::LB::NotFound
           nil

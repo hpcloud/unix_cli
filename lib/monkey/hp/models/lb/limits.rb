@@ -1,5 +1,5 @@
 require 'fog/core/collection'
-require 'fog/hp/models/lb/limit'
+require 'monkey/hp/models/lb/limit'
 
 module Fog
   module HP
@@ -20,12 +20,9 @@ module Fog
         #}
         #}
         def all
-          data = connection.list_load_limits.body['limits']['absolute']['values']
-          load(data)
+          data = service.list_limits.body['limits']['absolute']['values']
+          load([data])
         end
-
-
-
       end
     end
   end
