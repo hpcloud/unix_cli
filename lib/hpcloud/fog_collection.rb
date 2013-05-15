@@ -58,7 +58,11 @@ module HP
       def get_array(arguments = [])
         ray = []
         get(arguments, true).each { |x|
-          hsh = x.to_hash()
+          if x.respond_to?(:to_hash)
+            hsh = x.to_hash()
+          else
+            hsh = Hash[x.attributes.map{ |k, v| [k.to_s, v] }]
+          end
           ray << hsh unless hsh.nil?
         }
         return ray

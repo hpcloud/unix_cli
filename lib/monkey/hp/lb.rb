@@ -21,8 +21,8 @@ module Fog
       #collection  :load_balancers
       #model       :node
       #collection  :nodes
-      #model       :protocol
-      #collection  :protocols
+      model       :protocol
+      collection  :protocols
       #model       :version
       #model       :versions
       #model       :virtual_ip

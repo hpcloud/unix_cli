@@ -1,5 +1,4 @@
 require 'hpcloud/lb_algorithms'
-require 'hpcloud/lb_algorithms_helper'
 
 module HP
   module Cloud
@@ -9,7 +8,7 @@ module HP
   Lists all the available load balancers algorithms.
 
 Examples:
-  hpcloud lb:algorithm          # List all algorithms:
+  hpcloud lb:algorithms          # List all algorithms:
 
 Aliases: lb:list
       DESC
@@ -25,7 +24,7 @@ Aliases: lb:list
           else
             ray = algo.get_array(arguments)
             if ray.empty?
-              @log.display "There are no load balancers that match the provided arguments"
+              @log.display "There are no algorithms that match the provided arguments"
             else
               Tableizer.new(options, DEFAULT_KEYS, ray).print
             end

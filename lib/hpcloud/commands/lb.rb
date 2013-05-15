@@ -1,5 +1,6 @@
 require 'hpcloud/commands/lb/add.rb'
 require 'hpcloud/commands/lb/algorithms.rb'
+require 'hpcloud/commands/lb/protocols.rb'
 #require 'hpcloud/commands/lb/remove.rb'
 require 'hpcloud/lbs'
 

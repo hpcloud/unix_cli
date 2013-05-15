@@ -1,5 +1,5 @@
 require 'fog/core/collection'
-require 'fog/hp/models/lb/protocol'
+require 'monkey/hp/models/lb/protocol'
 
 module Fog
   module HP
