@@ -4,12 +4,8 @@ module HP
   module Cloud
     class LbLimits < FogCollection
       def initialize
-        super("lb limits")
+        super("load balancer limit")
         @items = @connection.lb.limits
-      end
-
-      def create(item = nil)
-        return item
       end
     end
   end
