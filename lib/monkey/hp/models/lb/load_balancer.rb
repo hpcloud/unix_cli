@@ -18,7 +18,7 @@ module Fog
 
         def destroy
           requires :id
-          service.delete_network(id)
+          service.delete_load_balancer(id)
           true
         end
 
