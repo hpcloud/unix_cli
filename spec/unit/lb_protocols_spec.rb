@@ -21,4 +21,17 @@ describe "LbProtocols" do
       sot.items.should eq(@items)
     end
   end
+
+  context "matches" do
+    it "should return name" do
+      item = double("connection")
+      item.stub(:name).and_return("nameo")
+      item.stub(:id).and_return("ido")
+      sot = LbProtocols.new
+
+      sot.matches("nameo", item).should be_true
+      sot.matches("ido", item).should be_false
+      sot.matches("bogus", item).should be_false
+    end
+  end
 end

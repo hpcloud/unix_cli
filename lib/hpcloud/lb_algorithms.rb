@@ -1,5 +1,4 @@
 require 'hpcloud/fog_collection'
-require 'hpcloud/lb_helper'
 
 module HP
   module Cloud

@@ -71,7 +71,7 @@ module HP
         error_status = nil
         begin
           yield
-        rescue HP::Cloud::Exception::Base => error
+        rescue HP::Cloud::Exceptions::Base => error
           @@error = error.to_s
           error_status = error.status
         rescue Excon::Errors::BadRequest => error

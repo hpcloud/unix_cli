@@ -17,8 +17,8 @@ module Fog
       collection  :algorithms
       model       :limit
       collection  :limits
-      #model       :load_balancer
-      #collection  :load_balancers
+      model       :load_balancer
+      collection  :load_balancers
       #model       :node
       #collection  :nodes
       model       :protocol

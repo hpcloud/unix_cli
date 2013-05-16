@@ -7,6 +7,10 @@ module HP
         super("load balancer protocol")
         @items = @connection.lb.protocols
       end
+
+      def matches(arg, item)
+        return (arg == item.name.to_s)
+      end
     end
   end
 end

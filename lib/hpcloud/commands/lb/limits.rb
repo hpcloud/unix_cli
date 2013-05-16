@@ -14,19 +14,19 @@ Aliases: lb:list
       DESC
       CLI.add_report_options
       CLI.add_common_options
-      define_method "lb:limits" do |*arguments|
-        DEFAULT_KEYS = [ "max_load_balancer_name_length", "max_load_balancers", "max_nodes_per_load_balancer", "max_vips_per_load_balancer" ]
+      define_method "lb:limits" do
+        columns = [ "max_load_balancer_name_length", "max_load_balancers", "max_nodes_per_load_balancer", "max_vips_per_load_balancer" ]
 
         cli_command(options) {
           filter = LbLimits.new
           if filter.empty?
             @log.display "There don't seem to be any supported limits at the moment"
           else
-            ray = filter.get_array(arguments)
+            ray = filter.get_array
             if ray.empty?
-              @log.display "There are no limits that match the provided arguments"
+              @log.display "No limits were found"
             else
-              Tableizer.new(options, DEFAULT_KEYS, ray).print
+              Tableizer.new(options, columns, ray).print
             end
           end
         }

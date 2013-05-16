@@ -1,16 +1,11 @@
 require 'hpcloud/fog_collection'
-require 'hpcloud/lb_helper'
 
 module HP
   module Cloud
     class Lbs < FogCollection
       def initialize
-        super("lb")
-        @items = @connection.lb.list_load_balancers.body["loadBalancers"]
-      end
-
-      def create(item = nil)
-        return LbHelper.new(@connection, item)
+        super("load balancer")
+        @items = @connection.lb.load_balancers
       end
     end
   end

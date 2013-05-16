@@ -1,5 +1,5 @@
 require 'fog/core/collection'
-require 'fog/hp/models/lb/load_balancer'
+require 'monkey/hp/models/lb/load_balancer'
 
 module Fog
   module HP
@@ -8,7 +8,7 @@ module Fog
         model Fog::HP::LB::LoadBalancer
 
         def all
-          data = service.list_load_balancers.body['load_balancers']
+          data = service.list_load_balancers.body['loadBalancers']
           load(data)
         end
 

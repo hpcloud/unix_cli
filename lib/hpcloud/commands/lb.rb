@@ -25,6 +25,7 @@ Aliases: lb:list
       CLI.add_report_options
       CLI.add_common_options
       def lb(*arguments)
+        columns = [ "id", "name", "algorithm", "protocol", "port", "status" ]
         cli_command(options) {
           lb = Lbs.new
           if lb.empty?
@@ -34,7 +35,7 @@ Aliases: lb:list
             if ray.empty?
               @log.display "There are no load balancers that match the provided arguments"
             else
-              Tableizer.new(options, LbHelper.get_keys(), ray).print
+              Tableizer.new(options, columns, ray).print
             end
           end
         }

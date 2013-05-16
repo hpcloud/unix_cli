@@ -7,6 +7,10 @@ module HP
         super("load balancer limit")
         @items = @connection.lb.limits
       end
+
+      def matches(arg, item)
+        return true
+      end
     end
   end
 end

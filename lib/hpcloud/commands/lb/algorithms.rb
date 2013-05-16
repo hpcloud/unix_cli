@@ -15,7 +15,7 @@ Aliases: lb:list
       CLI.add_report_options
       CLI.add_common_options
       define_method "lb:algorithms" do |*arguments|
-        DEFAULT_KEYS = [ "name" ]
+        columns = [ "name" ]
 
         cli_command(options) {
           algo = LbAlgorithms.new
@@ -26,7 +26,7 @@ Aliases: lb:list
             if ray.empty?
               @log.display "There are no algorithms that match the provided arguments"
             else
-              Tableizer.new(options, DEFAULT_KEYS, ray).print
+              Tableizer.new(options, columns, ray).print
             end
           end
         }
