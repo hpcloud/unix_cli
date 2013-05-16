@@ -3,22 +3,12 @@ module Fog
     class LB
       class Real
         def create_load_balancer(name, nodes, options={})
-          #required
-          # name
-          #at least one node
           data = {
             "name"  => name,
             "nodes" => nodes
           }
-
-          if options['port']
-            data['port'] = options['port']
-          end
-
-          if options['protocol']
-            data['protocol'] = options['protocol']
-          end
-
+          data['port'] = options['port'] if options['port']
+          data['protocol'] = options['protocol'] if options['protocol']
           if options['virtualIps']
             data['virtualIps'] = []
             for vip in options['virtualIps']
@@ -28,7 +18,7 @@ module Fog
 
           response = request(
             :body    => Fog::JSON.encode(data),
-            :expects => 200,
+            :expects => 202,
             :method  => 'POST',
             :path    => "loadbalancers"
           )

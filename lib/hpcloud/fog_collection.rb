@@ -87,6 +87,14 @@ module HP
       def create(item = nil)
         return item
       end
+
+      def unique(name)
+        begin
+          get(name)
+          raise HP::Cloud::Exceptions::General.new("A #{@name} with the name '#{name}' already exists")
+        rescue HP::Cloud::Exceptions::NotFound => e
+        end
+      end
     end
   end
 end
