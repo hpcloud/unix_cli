@@ -1,62 +1,47 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe "Lbs command" do
-  def then_expected_table(response)
-    response.should match("| .*id.*|.*name.*|.*size.*|.*type.*|.*created.*|.*status.*|.*description.*|.*servers.*|\n")
-    response.should match("| #{@lbs1.name} *| 1 *| *|")
-    response.should match("| #{@lbs2.name} *| 1 *| *|")
-  end
-
+describe "lb" do
   before(:all) do
-    @lbs1 = LbTestHelper.create("cli_test_lbs1")
-    @lbs2= LbTestHelper.create("cli_test_lbs2")
+    rsp = cptr("lb:add cli_test_lb1 ROUND_ROBIN HTTP 80 -n 10.3.2.1,81")
+    rsp = cptr("lb:add cli_test_lb2 LEAST_CONNECTIONS TCP 443 -n 10.3.2.2,444")
   end
 
-  context "lbs" do
+  context "lb" do
     it "should report success" do
-      rsp = cptr("lbs #{@lbs1.name} #{@lbs2.name}")
+      rsp = cptr("lb -c name,algorithm,protocol,port -d X cli_test_lb1 cli_test_lb2")
 
       rsp.stderr.should eq("")
-      then_expected_table(rsp.stdout)
+      #  At this point, it only creates round robin, HTTP, port 80
+      rsp.stdout.should eq("cli_test_lb1XROUND_ROBINXHTTPX80\ncli_test_lb2XROUND_ROBINXHTTPX80\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
 
-  context "lbs:list" do
+  context "lb:list" do
     it "should report success" do
-      rsp = cptr("lbs:list #{@lbs1.name} #{@lbs2.name}")
+      rsp = cptr("lb:list -c name,algorithm,protocol,port -d X cli_test_lb1 cli_test_lb2")
 
       rsp.stderr.should eq("")
-      then_expected_table(rsp.stdout)
+      rsp.stdout.should eq("cli_test_lb1XROUND_ROBINXHTTPX80\ncli_test_lb2XROUND_ROBINXHTTPX80\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
 
-  context "lbs --bootable" do
+  context "lb with valid avl" do
     it "should report success" do
-      rsp = cptr("lbs --bootable")
+      rsp = cptr("lb -c name,algorithm,protocol,port -d X cli_test_lb1 cli_test_lb2 -z region-a.geo-1")
 
       rsp.stderr.should eq("")
-      then_expected_table(rsp.stdout)
+      rsp.stdout.should eq("cli_test_lb1XROUND_ROBINXHTTPX80\ncli_test_lb2XROUND_ROBINXHTTPX80\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
 
-  context "lbs with valid avl" do
-    it "should report success" do
-      rsp = cptr("lbs #{@lbs1.name} #{@lbs2.name} -z az-1.region-a.geo-1")
-
-      rsp.stderr.should eq("")
-      then_expected_table(rsp.stdout)
-      rsp.exit_status.should be_exit(:success)
-    end
-  end
-
-  context "lbs with invalid avl" do
+  context "lb with invalid avl" do
     it "should report error" do
-      rsp = cptr('lbs -z blah')
+      rsp = cptr('lb -z blah')
 
-      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n")
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Load Balancer' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
@@ -67,7 +52,7 @@ describe "Lbs command" do
     it "should report error" do
       AccountsHelper.use_tmp()
 
-      rsp = cptr("lbs -a bogus")
+      rsp = cptr("lb -a bogus")
 
       tmpdir = AccountsHelper.tmp_dir()
       rsp.stderr.should eq("Could not find account file: #{tmpdir}/.hpcloud/accounts/bogus\n")

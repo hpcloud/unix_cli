@@ -12,7 +12,6 @@ module Fog
         attribute :status
 
       end
-
     end
   end
 end

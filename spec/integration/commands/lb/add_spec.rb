@@ -6,7 +6,7 @@ describe "lb:add" do
       @lb_name = resource_name("cliadd1")
       cptr("lb:remove #{@lb_name}")
 
-      rsp = cptr("lb:add #{@lb_name} ROUND_ROBIN HTTP 80 -n '10.2.2.2,80'")
+      rsp = cptr("lb:add #{@lb_name} ROUND_ROBIN HTTP 80 -n 10.2.2.2,80")
 
       rsp.stderr.should eq("")
       @new_lb_id = rsp.stdout.scan(/'([^']+)/)[2][0]
@@ -24,11 +24,11 @@ describe "lb:add" do
   context "when creating lb with a name that already exists" do
     it "should fail" do
       @lb_name = "cliadd2"
-      cptr("lb:add #{@lb_name} ROUND_ROBIN HTTP 80 -n '10.2.2.2,80'")
+      cptr("lb:add #{@lb_name} ROUND_ROBIN HTTP 80 -n 10.2.2.2,80")
 
-      rsp = cptr("lb:add #{@lb_name} ROUND_ROBIN HTTP 80 -n '10.2.2.2,80'")
+      rsp = cptr("lb:add #{@lb_name} ROUND_ROBIN HTTP 80 -n 10.2.2.2,80")
 
-      rsp.stderr.should eq("A load Balancer with the name '#{@lb_name}' already exists\n")
+      rsp.stderr.should eq("A load balancer with the name '#{@lb_name}' already exists\n")
       rsp.exit_status.should be_exit(:general_error)
     end
   end

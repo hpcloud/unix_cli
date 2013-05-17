@@ -1,5 +1,5 @@
 require 'fog/core/collection'
-require 'fog/hp/models/lb/node'
+require 'monkey/hp/models/lb/node'
 
 module Fog
   module HP
@@ -8,12 +8,12 @@ module Fog
         model Fog::HP::LB::Node
 
         def all
-          data = service.list_nodes.body['nodes']
+          data = service.list_load_balancer_nodes(@parent.id).body['nodes']
           load(data)
         end
 
         def get(record_id)
-          record = service.get_node_details(record_id).body['node']
+          record = service.get_load_balancer_node(record_id).body['node']
           new(record)
         rescue Fog::HP::LB::NotFound
           nil

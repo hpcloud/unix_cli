@@ -19,8 +19,8 @@ module Fog
       collection  :limits
       model       :load_balancer
       collection  :load_balancers
-      #model       :node
-      #collection  :nodes
+      model       :node
+      collection  :nodes
       model       :protocol
       collection  :protocols
       #model       :version
