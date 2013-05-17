@@ -21,8 +21,7 @@ Aliases: lb:nodes:list
         columns = [ "id", "address", "port", "condition", "status" ]
         cli_command(options) {
           lb = Lbs.new.get(name_or_id)
-          nodes = LbNodes.new(lb.id).get
-          ray = nodes.get_array
+          ray = LbNodes.new(lb.id).get_array
           if ray.empty?
             @log.display "There are no load balancers that match the provided arguments"
           else

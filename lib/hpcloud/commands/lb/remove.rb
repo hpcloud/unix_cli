@@ -19,9 +19,10 @@ Aliases: lb:rm, lb:delete, lb:del
       define_method "lb:remove" do |name_or_id, *name_or_ids|
         cli_command(options) {
           name_or_ids = [name_or_id] + name_or_ids
-          lbs = Lbs.new.get(name_or_ids, false)
-          lbs.each { |lb|
+          name_or_ids.each{ |name|
+            lbs = Lbs.new
             sub_command("removing lb") {
+              lb = lbs.get(name, false)
               lb.destroy
               @log.display "Removed load balancer '#{lb.name}'."
             }

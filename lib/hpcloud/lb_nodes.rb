@@ -3,9 +3,9 @@ require 'hpcloud/fog_collection'
 module HP
   module Cloud
     class LbNodes < FogCollection
-      def initialize(id)
+      def initialize(parent_id)
         super("load balancer node")
-        @items = @connection.lb.nodes.get(id)
+        @items = @connection.lb.nodes({:parent_id => parent_id})
       end
 
       def unique(name)

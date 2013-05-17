@@ -8,12 +8,12 @@ module Fog
         model Fog::HP::LB::Node
 
         def all
-          data = service.list_load_balancer_nodes(@parent.id).body['nodes']
+          data = service.list_load_balancer_nodes(@attributes[:parent_id]).body['nodes']
           load(data)
         end
 
         def get(record_id)
-          record = service.get_load_balancer_node(record_id).body['node']
+          record = service.get_load_balancer_node(@attributes[:parent_id], record_id).body['node']
           new(record)
         rescue Fog::HP::LB::NotFound
           nil
