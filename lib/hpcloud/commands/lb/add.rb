@@ -29,7 +29,7 @@ Examples:
           lb.nodes = parse_nodes(options[:nodes])
           lb.virtualIps = parse_virtual_ips(options[:ips])
           if lb.save == true
-            @log.display "Created lb '#{name}' with id '#{lb.id}'."
+            @log.display "Created load balancer '#{name}' with id '#{lb.id}'."
           else
             @log.fatal lb.cstatus
           end

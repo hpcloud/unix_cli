@@ -8,13 +8,15 @@ module Fog
           if options['nodes']
             data['nodes'] = []
             for node in options['nodes']
-              data['nodes'] << node
+              hsh = node.dup
+              hsh.delete(:load_balancer_id)
+              data['nodes'] << hsh
             end
           end
 
           response = request(
             :body    => Fog::JSON.encode(data),
-            :expects => 202,
+            :expects => 200,
             :method  => 'POST',
             :path    => "loadbalancers/#{load_balancer_id}/nodes"
           )

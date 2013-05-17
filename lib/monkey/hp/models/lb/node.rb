@@ -14,6 +14,7 @@ module Fog
 
         def destroy
           requires :id
+          requires :load_balancer_id
           service.delete_load_balancer_node(load_balancer_id, id)
           true
         end
@@ -29,12 +30,14 @@ module Fog
         private
 
         def create
+          requires :load_balancer_id
           merge_attributes(service.create_load_balancer_node(load_balancer_id, {'nodes' => [attributes]}).body)
           true
         end
 
         def update
           requires :id
+          requires :load_balancer_id
           merge_attributes(service.update_load_balancer_node(load_balancer_id, id, attributes).body)
           true
         end
