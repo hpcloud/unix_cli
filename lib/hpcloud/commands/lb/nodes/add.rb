@@ -17,11 +17,8 @@ Examples:
           node = Fog::HP::LB::Node.new({:service => Connection.instance.lb, :load_balancer_id => lb.id})
           node.address = address
           node.port = port
-          if node.save == true
-            @log.display "Created node '#{address}:#{port}' with id '#{node.id}'."
-          else
-            @log.fatal lb.cstatus
-          end
+          node.save
+          @log.display "Created node '#{address}:#{port}' with id '#{node.id}'."
         }
       end
     end

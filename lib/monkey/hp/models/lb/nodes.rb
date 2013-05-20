@@ -10,6 +10,7 @@ module Fog
         def all
           data = service.list_load_balancer_nodes(@attributes[:load_balancer_id]).body['nodes']
           load(data)
+          self.each{ |x| x.load_balancer_id = @attributes[:load_balancer_id] }
         end
 
         def get(record_id)

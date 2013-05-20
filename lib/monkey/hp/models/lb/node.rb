@@ -38,7 +38,7 @@ module Fog
         def update
           requires :id
           requires :load_balancer_id
-          merge_attributes(service.update_load_balancer_node(load_balancer_id, id, attributes).body)
+          service.update_load_balancer_node(load_balancer_id, id, attributes[:condition])
           true
         end
 

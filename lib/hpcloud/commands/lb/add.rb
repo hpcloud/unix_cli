@@ -28,11 +28,8 @@ Examples:
           lb.port = port
           lb.nodes = parse_nodes(options[:nodes])
           lb.virtualIps = parse_virtual_ips(options[:ips])
-          if lb.save == true
-            @log.display "Created load balancer '#{name}' with id '#{lb.id}'."
-          else
-            @log.fatal lb.cstatus
-          end
+          lb.save
+          @log.display "Created load balancer '#{name}' with id '#{lb.id}'."
         }
       end
 
