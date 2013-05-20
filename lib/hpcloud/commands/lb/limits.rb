@@ -9,8 +9,6 @@ module HP
 
 Examples:
   hpcloud lb:limits          # List all limits:
-
-Aliases: lb:list
       DESC
       CLI.add_report_options
       CLI.add_common_options

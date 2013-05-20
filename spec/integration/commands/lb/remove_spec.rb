@@ -18,7 +18,7 @@ describe "lb:remove" do
   context "when deleting lb with name" do
     it "should succeed" do
       @lb_name = "clidel1"
-      cptr("lb:add #{@lb_name} ROUND_ROBIN HTTP 80 -n 10.10.2.1,80")
+      cptr("lb:add #{@lb_name} ROUND_ROBIN HTTP 80 -n 100.10.2.1:80")
 
       rsp = cptr("lb:remove #{@lb_name}")
 
@@ -32,7 +32,7 @@ describe "lb:remove" do
   context "lb:remove with valid avl" do
     it "should be successful" do
       @lb_name = "clidel2"
-      cptr("lb:add #{@lb_name} ROUND_ROBIN HTTP 80 -n 10.10.2.2,80")
+      cptr("lb:add #{@lb_name} ROUND_ROBIN HTTP 80 -n 10.10.2.2:80")
 
       rsp = cptr("lb:remove #{@lb_name} -z region-a.geo-1")
 
@@ -65,7 +65,7 @@ describe "lb:remove" do
     it "should report error" do
       rsp = cptr("lb:remove bogus")
 
-      rsp.stderr.should eq("Cannot find a load balancer matching 'bogus'.\n")
+      rsp.stderr.should eq("Error removing load balancer: Cannot find a load balancer matching 'bogus'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end

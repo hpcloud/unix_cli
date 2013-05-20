@@ -6,12 +6,11 @@ module HP
 
       desc "lb:remove name_or_id [name_or_id ...]", "Remove DNS domains (specified by name or ID)."
       long_desc <<-DESC
-  Remove DNS domains by specifying their names or ID. You may specify more than one DNS name or ID on a command line.  Optionally, you can specify an availability zone.
+  Remove load balancers by specifying their names or ID. You may specify more than one load balacner name or ID on a command line.
 
 Examples:
-  hpcloud lb:remove tome treatise   # Delete the DNS domains `tome` and `treatise`:
-  hpcloud lb:remove 998             # Delete the DNS domain with ID 998:
-  hpcloud lb:remove my-lb -z az-2.region-a.geo-1  # Delete the DNS domain `my-lb` for availability zone `az-2.region-a.geo-1`:
+  hpcloud lb:remove thing1 thing2   # Delete the load balancers `thing1` and `thing2`:
+  hpcloud lb:remove 998             # Delete the load balancer with ID 998:
 
 Aliases: lb:rm, lb:delete, lb:del
       DESC

@@ -9,8 +9,6 @@ module HP
 
 Examples:
   hpcloud lb:algorithms          # List all algorithms:
-
-Aliases: lb:list
       DESC
       CLI.add_report_options
       CLI.add_common_options

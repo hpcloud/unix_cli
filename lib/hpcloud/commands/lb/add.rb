@@ -8,11 +8,11 @@ module HP
   Add a load balancer with the specified name, algorithm, protocol and port.  You must specify a node and may specify a virtual IP id to create a load balancer.
 
 Examples:
-  hpcloud lb:add loady ROUND_ROBIN HTTP 80 -n '10.1.1.1,80;10.1.1.2,81' -v '123;39393'        # Create a new load balancer 'loady'
+  hpcloud lb:add loady ROUND_ROBIN HTTP 80 -n '10.1.1.1:80;10.1.1.2:81' -v '123;39393'        # Create a new load balancer 'loady'
       DESC
       method_option :nodes,
                     :type => :string, :aliases => '-n', :required => true,
-                    :desc => 'Nodes to associate with the load balancer. Semicolon separated list of comma separated IP and port pairs'
+                    :desc => 'Nodes to associate with the load balancer. Semicolon separated list of colon separated IP and port pairs'
       method_option :ips,
                     :type => :string, :aliases => '-v',
                     :desc => 'Semicolon separated list of of virtual IPs Ids to associate with the load balancer.'
@@ -44,7 +44,7 @@ Examples:
         begin
           value.split(';').each{ |x|
             hsh = {}
-            nod = x.split(',')
+            nod = x.split(':')
             raise "Error" if nod.length != 2
             hsh["address"] = nod[0]
             hsh["port"] = nod[1]

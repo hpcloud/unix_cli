@@ -12,6 +12,10 @@ module HP
         super(name)
         Fog::HP::LB::Node.new({:service => Connection.instance.lb})
       end
+
+      def matches(arg, item)
+        return ((arg == item.id.to_s) || (arg == "#{item.address}:#{item.port}"))
+      end
     end
   end
 end
