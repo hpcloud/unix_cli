@@ -147,6 +147,39 @@ _hpcloud()
     keypairs:remove)
       opts="--availability-zone --debug --account-name "
       ;;
+    lb)
+      opts="--columns --separator --availability-zone --debug --account-name "
+      ;;
+    lb:add)
+      opts="--nodes --ips --availability-zone --debug --account-name "
+      ;;
+    lb:algorithms)
+      opts="--columns --separator --availability-zone --debug --account-name "
+      ;;
+    lb:limits)
+      opts="--columns --separator --availability-zone --debug --account-name "
+      ;;
+    lb:nodes)
+      opts="--columns --separator --availability-zone --debug --account-name "
+      ;;
+    lb:nodes:add)
+      opts="--availability-zone --debug --account-name "
+      ;;
+    lb:nodes:remove)
+      opts="--availability-zone --debug --account-name "
+      ;;
+    lb:nodes:update)
+      opts="--availability-zone --debug --account-name "
+      ;;
+    lb:protocols)
+      opts="--columns --separator --availability-zone --debug --account-name "
+      ;;
+    lb:remove)
+      opts="--availability-zone --debug --account-name "
+      ;;
+    lb:update)
+      opts="--availability-zone --debug --account-name "
+      ;;
     list)
       opts="--long --sync --columns --separator --availability-zone --debug --account-name "
       ;;
@@ -249,7 +282,7 @@ _hpcloud()
   fi
   if [ "${prev}" == "hpcloud" ]
   then
-    cmds="account account:catalog account:copy account:edit account:remove account:setup account:use account:verify acl acl:grant acl:revoke addresses addresses:add addresses:associate addresses:disassociate addresses:remove cdn:containers cdn:containers:add cdn:containers:get cdn:containers:location cdn:containers:remove cdn:containers:set complete config config:set containers:add containers:remove containers:sync copy dns dns:add dns:records dns:records:add dns:records:remove dns:records:update dns:remove dns:servers dns:update flavors get help images images:add images:metadata images:metadata:add images:metadata:remove images:remove info keypairs keypairs:add keypairs:import keypairs:private keypairs:private:add keypairs:private:location keypairs:private:remove keypairs:public_key keypairs:remove list location migrate move remove securitygroups securitygroups:add securitygroups:remove securitygroups:rules securitygroups:rules:add securitygroups:rules:remove servers servers:add servers:console servers:metadata servers:metadata:add servers:metadata:remove servers:password servers:reboot servers:rebuild servers:remove servers:ssh snapshots snapshots:add snapshots:remove tempurl volumes volumes:add volumes:attach volumes:detach volumes:remove volumes:server"
+    cmds="account account:catalog account:copy account:edit account:remove account:setup account:use account:verify acl acl:grant acl:revoke addresses addresses:add addresses:associate addresses:disassociate addresses:remove cdn:containers cdn:containers:add cdn:containers:get cdn:containers:location cdn:containers:remove cdn:containers:set complete config config:set containers:add containers:remove containers:sync copy dns dns:add dns:records dns:records:add dns:records:remove dns:records:update dns:remove dns:servers dns:update flavors get help images images:add images:metadata images:metadata:add images:metadata:remove images:remove info keypairs keypairs:add keypairs:import keypairs:private keypairs:private:add keypairs:private:location keypairs:private:remove keypairs:public_key keypairs:remove lb lb:add lb:algorithms lb:limits lb:nodes lb:nodes:add lb:nodes:remove lb:nodes:update lb:protocols lb:remove lb:update list location migrate move remove securitygroups securitygroups:add securitygroups:remove securitygroups:rules securitygroups:rules:add securitygroups:rules:remove servers servers:add servers:console servers:metadata servers:metadata:add servers:metadata:remove servers:password servers:reboot servers:rebuild servers:remove servers:ssh snapshots snapshots:add snapshots:remove tempurl volumes volumes:add volumes:attach volumes:detach volumes:remove volumes:server"
     COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
     __ltrim_colon_completions "$cur"
     return 0
