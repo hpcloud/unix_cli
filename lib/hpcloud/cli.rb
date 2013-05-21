@@ -1,6 +1,7 @@
 require 'thor'
 require 'thor/group'
 require 'hpcloud/thor_ext/thor'
+require 'hpcloud/exceptions/base'
 
 module HP
   module Cloud
@@ -70,6 +71,9 @@ module HP
         error_status = nil
         begin
           yield
+        rescue HP::Cloud::Exceptions::Base => error
+          @@error = error.to_s
+          error_status = error.status
         rescue Excon::Errors::BadRequest => error
           @@error = ErrorResponse.new(error).to_s
           error_status = :incorrect_usage

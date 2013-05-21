@@ -1,6 +1,10 @@
+require 'hpcloud/exceptions/general'
+require 'hpcloud/exceptions/not_found'
+
 module HP
   module Cloud
     class FogCollection
+      attr_reader :name, :items
     
       def initialize(name, article='a')
         @name = name
@@ -31,13 +35,20 @@ module HP
                 if found.length == 0
                   found << item
                 else
-                  found[0].set_error("More than one #{@name} matches '#{arg}', use the id instead of name.")
+                  if found[0].respond_to?(:set_error)
+                    found[0].set_error("More than one #{@name} matches '#{arg}', use the id instead of name.")
+                  else
+                    raise HP::Cloud::Exceptions::General.new("More than one #{@name} matches '#{arg}', use the id instead of name.")
+                  end
                 end
               end
             end
           }
           if found.length == 0
             item = create()
+            if item.nil?
+              raise HP::Cloud::Exceptions::NotFound.new("Cannot find #{@article} #{@name} matching '#{arg}'.")
+            end
             item.name = arg
             item.set_error("Cannot find #{@article} #{@name} matching '#{arg}'.", :not_found)
             retray << item
@@ -58,9 +69,12 @@ module HP
       def get_array(arguments = [])
         ray = []
         get(arguments, true).each { |x|
-          if x.is_valid?
-            ray << x.to_hash()
+          if x.respond_to?(:to_hash)
+            hsh = x.to_hash()
+          else
+            hsh = Hash[x.attributes.map{ |k, v| [k.to_s, v] }]
           end
+          ray << hsh unless hsh.nil?
         }
         return ray
       end
@@ -68,6 +82,18 @@ module HP
       def empty?
         return true if @items.nil?
         return @items.empty?
+      end
+
+      def create(item = nil)
+        return item
+      end
+
+      def unique(name)
+        begin
+          get(name)
+          raise HP::Cloud::Exceptions::General.new("A #{@name} with the name '#{name}' already exists")
+        rescue HP::Cloud::Exceptions::NotFound => e
+        end
       end
     end
   end

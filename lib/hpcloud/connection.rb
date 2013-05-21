@@ -12,6 +12,7 @@ module HP
         @cdn_connection = {}
         @network_connection = {}
         @dns_connection = {}
+        @lb_connection = {}
         @authcache = HP::Cloud::AuthCache.new
         @options = {}
       end
@@ -39,6 +40,7 @@ module HP
         @cdn_connection = {}
         @network_connection = {}
         @dns_connection = {}
+        @lb_connection = {}
       end
 
       def set_options(options)
@@ -169,6 +171,22 @@ module HP
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'DNS' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @dns_connection[account]
+      end
+
+      def lb
+        account = get_account()
+        return @lb_connection[account] unless @lb_connection[account].nil?
+        opts = create_options(account, :lb_availability_zone)
+        read_creds(account, opts, 'Load Balancer')
+        begin
+          opts.delete(:provider)
+          @lb_connection[account] = Fog::HP::LB.new(opts)
+          write_creds(account, @lb_connection[account])
+        rescue Exception => e
+          @authcache.remove(account)
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Load Balancer' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
+        end
+        return @lb_connection[account]
       end
 
       def get_account(account_name = nil)

@@ -16,9 +16,9 @@ describe "account:edit" do
         "Secret Key: [] " +
         "Auth Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] " +
         "Tenant Id: [] " +
-        "Compute zone: [az-1.region-a.geo-1] " +
-        "Storage zone: [region-a.geo-1] " +
-        "Block zone: [az-1.region-a.geo-1] " +
+        "Compute zone: [] " +
+        "Storage zone: [] " +
+        "Block zone: [] " +
         "Account credentials for HP Cloud Services have been saved.\n")
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
