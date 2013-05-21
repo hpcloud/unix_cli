@@ -72,4 +72,15 @@ describe "FogCollection" do
       LbAlgorithms.new.empty?.should be_false
     end
   end
+
+  context "when check empty" do
+    it "should return false" do
+      lambda {
+        LbAlgorithms.new.unique("sot1")
+      }.should raise_error(HP::Cloud::Exceptions::General) {|e|
+        e.to_s.should eq("A load balancer algorithm with the name 'sot1' already exists")
+      }
+      LbAlgorithms.new.unique("noob").should be_nil
+    end
+  end
 end
