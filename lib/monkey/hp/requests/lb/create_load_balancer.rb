@@ -7,13 +7,16 @@ module Fog
             "name"  => name,
             "nodes" => nodes
           }
+          options = Hash[options.map{ |k, v| [k.to_s, v] }]
           data['port'] = options['port'] if options['port']
           data['protocol'] = options['protocol'] if options['protocol']
-          data['algorithms'] = options['algorithms'] if options['algorithms']
-          if options['virtualIps']
-            data['virtualIps'] = []
-            for vip in options['virtualIps']
-              data['virtualIps'] << vip
+          data['algorithm'] = options['algorithm'] if options['algorithm']
+          unless options['virtualIps'].nil?
+            unless options['virtualIps'].empty?
+              data['virtualIps'] = []
+              for vip in options['virtualIps']
+                data['virtualIps'] << vip
+              end
             end
           end
 
