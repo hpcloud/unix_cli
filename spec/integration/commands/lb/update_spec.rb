@@ -9,7 +9,7 @@ describe "lb:update" do
       rsp = cptr("lb:update #{@lb_name} ROUND_ROBIN")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Updated load balancer '#{@lb_name}'.\n")
+      rsp.stdout.should eq("Updated load balancer '#{@lb_name}' to 'ROUND_ROBIN'.\n")
       rsp.exit_status.should be_exit(:success)
       rsp = cptr("lb -c algorithm -d X #{@lb_name}")
       rsp.stdout.should eq("ROUND_ROBIN\n")
@@ -17,7 +17,7 @@ describe "lb:update" do
       rsp = cptr("lb:update #{@lb_name} LEAST_CONNECTIONS")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Updated load balancer '#{@lb_name}'.\n")
+      rsp.stdout.should eq("Updated load balancer '#{@lb_name}' to 'LEAST_CONNECTIONS'.\n")
       rsp.exit_status.should be_exit(:success)
       rsp = cptr("lb -c algorithm -d X #{@lb_name}")
       rsp.stdout.should eq("LEAST_CONNECTIONS\n")

@@ -9,6 +9,7 @@ module Fog
           }
           data['port'] = options['port'] if options['port']
           data['protocol'] = options['protocol'] if options['protocol']
+          data['algorithms'] = options['algorithms'] if options['algorithms']
           if options['virtualIps']
             data['virtualIps'] = []
             for vip in options['virtualIps']
