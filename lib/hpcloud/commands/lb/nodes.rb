@@ -23,7 +23,7 @@ Aliases: lb:nodes:list
           lb = Lbs.new.get(name_or_id)
           ray = LbNodes.new(lb.id).get_array
           if ray.empty?
-            @log.display "There are no load balancers that match the provided arguments"
+            @log.display "There are no nodes for the given load balancer."
           else
             Tableizer.new(options, columns, ray).print
           end
