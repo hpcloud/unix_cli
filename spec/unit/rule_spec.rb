@@ -19,7 +19,7 @@ describe "Rule methods" do
       keys[2].should eq("type")
       keys[3].should eq("protocol")
       keys[4].should eq("direction")
-      keys[5].should eq("remote_ip_prefix")
+      keys[5].should eq("cidr")
       keys[6].should eq("from")
       keys[7].should eq("to")
       keys.length.should eq(8)
