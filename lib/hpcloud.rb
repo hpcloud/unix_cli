@@ -39,11 +39,8 @@ require 'hpcloud/flavors'
 require 'hpcloud/floating_ips'
 require 'hpcloud/fog_collection'
 require 'hpcloud/keypairs'
-<<<<<<< .merge_file_psJ9Zh
 require 'hpcloud/networks'
 require 'hpcloud/ports'
-=======
->>>>>>> .merge_file_1EZ2Qj
 require 'hpcloud/lbs'
 require 'hpcloud/images'
 require 'hpcloud/metadata'
