@@ -27,6 +27,8 @@ require 'helpers/dns_test_helper'
 require 'helpers/keypair_test_helper'
 require 'helpers/network_test_helper'
 require 'helpers/port_test_helper'
+require 'helpers/test_response'
+require 'helpers/io'
 require 'helpers/containers'
 require 'helpers/container_helper'
 require 'helpers/keypairs'
@@ -41,9 +43,6 @@ require 'helpers/server_test_helper'
 require 'helpers/snapshot_test_helper'
 require 'helpers/volume_test_helper'
 require 'helpers/volume_attachment_helper'
-
-require 'helpers/test_response'
-require 'helpers/io'
 
 RSpec.configure do |config|
   
