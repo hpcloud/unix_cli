@@ -23,10 +23,10 @@ module Fog
       collection  :nodes
       model       :protocol
       collection  :protocols
-      #model       :version
-      #model       :versions
-      #model       :virtual_ip
-      #model       :virtual_ips
+      model       :version
+      collection  :versions
+      model       :virtual_ip
+      collection  :virtual_ips
 
       request_path 'monkey/hp/requests/lb'
       request       :create_load_balancer

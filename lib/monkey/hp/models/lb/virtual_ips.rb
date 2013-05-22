@@ -1,5 +1,5 @@
 require 'fog/core/collection'
-require 'fog/hp/models/lb/virtual_ip'
+require 'monkey/hp/models/lb/virtual_ip'
 
 module Fog
   module HP
