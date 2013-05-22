@@ -7,10 +7,6 @@ describe "Config command" do
 
   def default_config(contents)
     contents.should include("default_auth_uri: https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/")
-    contents.should include("block_availability_zone: az-1.region-a.geo-1")
-    contents.should include("storage_availability_zone: region-a.geo-1")
-    contents.should include("compute_availability_zone: az-1.region-a.geo-1")
-    contents.should include("cdn_availability_zone: region-a.geo-1")
     contents.should include("connect_timeout: 30")
     contents.should include("read_timeout: 240")
     contents.should include("write_timeout: 240")
