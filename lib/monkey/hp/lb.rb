@@ -43,6 +43,7 @@ module Fog
       request       :list_load_balancers
       request       :list_protocols
       request       :list_versions
+      request       :list_load_balancer_virtual_ips
       request       :update_load_balancer
       request       :update_load_balancer_node
 

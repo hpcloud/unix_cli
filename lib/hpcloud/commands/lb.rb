@@ -9,6 +9,7 @@ require 'hpcloud/commands/lb/protocols.rb'
 require 'hpcloud/commands/lb/remove.rb'
 require 'hpcloud/commands/lb/update.rb'
 require 'hpcloud/commands/lb/versions.rb'
+require 'hpcloud/commands/lb/virtualips.rb'
 require 'hpcloud/lbs'
 
 module HP
