@@ -18,14 +18,14 @@ Aliases: addresses:rm, addresses:delete, addresses:release, addresses:del
       CLI.add_common_options
       define_method "addresses:remove" do |ip, *ips|
         cli_command(options) {
-          addresses = Addresses.new
+          addresses = FloatingIps.new
           ips = [ip] + ips
           ips.each { |ip_or_id|
             address = addresses.get(ip_or_id)
             if address.is_valid? == false
               @log.error address.cstatus
             else
-              address.fog.server = nil unless address.instance_id.nil?
+              address.disassociate
               address.destroy
               @log.display "Removed address '#{ip_or_id}'."
             end

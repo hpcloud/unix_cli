@@ -13,13 +13,14 @@ module HP
         @id = foggy.id
         @name = foggy.name
         @description = foggy.description
+        @tenant_id = foggy.tenant_id
       end
 
       def save
         return false if is_valid? == false
         if @fog.nil?
           hsh = {:name => @name, :description => @description}
-          security_group = @connection.compute.security_groups.new(hsh)
+          security_group = @connection.network.security_groups.new(hsh)
           if security_group.nil?
             set_error("Error creating security group")
             return false

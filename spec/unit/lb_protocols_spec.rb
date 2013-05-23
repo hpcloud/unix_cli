@@ -1,6 +1,15 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "LbProtocols" do
+  before(:each) do
+    @items = [ "1", "2", "3" ]
+    @service = double("service")
+    @connection = double("connection")
+    @service.stub(:protocols).and_return(@items)
+    @connection.stub(:lb).and_return(@service)
+    Connection.stub(:instance).and_return(@connection)
+  end
+
   context "name" do
     it "should return name" do
       LbProtocols.new.name.should eq("load balancer protocol")
@@ -24,7 +33,7 @@ describe "LbProtocols" do
 
   context "matches" do
     it "should return name" do
-      item = double("connection")
+      item = double("item")
       item.stub(:name).and_return("nameo")
       item.stub(:id).and_return("ido")
       sot = LbProtocols.new

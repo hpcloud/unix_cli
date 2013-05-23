@@ -8,16 +8,17 @@ describe "SecurityGroups getter" do
     @id += 1
     fog_security_group.stub(:name).and_return(secg)
     fog_security_group.stub(:description).and_return("description:" + secg)
+    fog_security_group.stub(:tenant_id).and_return("4444")
     return fog_security_group
   end
 
   before(:each) do
     @security_groups = [ mock_security_group("secg1"), mock_security_group("secg2"), mock_security_group("secg3"), mock_security_group("secg3") ]
 
-    @compute = double("compute")
-    @compute.stub(:security_groups).and_return(@security_groups)
+    @network = double("network")
+    @network.stub(:security_groups).and_return(@security_groups)
     @connection = double("connection")
-    @connection.stub(:compute).and_return(@compute)
+    @connection.stub(:network).and_return(@network)
     Connection.stub(:instance).and_return(@connection)
   end
 

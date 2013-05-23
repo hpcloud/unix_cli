@@ -2,16 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Rules getter" do
   def mock_rule(rulo)
-    @id = 1 if @id.nil?
-    fog_rule = { 'id' => @id,
-                 'source' => rulo,
-                 'protocol' => "tcp",
-                 'group' => {'name' => rulo},
-                 'from' => 1111,
-                 'to' => 2222,
-               }
-    @id += 1
-    return fog_rule
+    RuleTestHelper.mock(rulo)
   end
 
   before(:each) do
@@ -22,11 +13,12 @@ describe "Rules getter" do
     @security_group.stub(:id).and_return(1047)
     @security_group.stub(:name).and_return(@groupo)
     @security_group.stub(:description).and_return("description")
-    @security_group.stub(:rules).and_return(@rules)
-    @compute = double("compute")
-    @compute.stub(:security_groups).and_return([@security_group])
+    @security_group.stub(:tenant_id).and_return("2222")
+    @security_group.stub(:security_group_rules).and_return(@rules)
+    @network = double("network")
+    @network.stub(:security_groups).and_return([@security_group])
     @connection = double("connection")
-    @connection.stub(:compute).and_return(@compute)
+    @connection.stub(:network).and_return(@network)
     Connection.stub(:instance).and_return(@connection)
   end
 

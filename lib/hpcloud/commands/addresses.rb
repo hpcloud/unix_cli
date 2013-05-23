@@ -24,7 +24,7 @@ Aliases: addresses:list
       CLI.add_common_options
       def addresses(*arguments)
         cli_command(options) {
-          addresses = Addresses.new
+          addresses = FloatingIps.new
           if addresses.empty?
             @log.display "You currently have no public IP addresses, use `#{selfname} addresses:add` to create one."
           else
@@ -32,7 +32,7 @@ Aliases: addresses:list
             if ray.empty?
               @log.display "There are no IP addresses that match the provided arguments"
             else
-              Tableizer.new(options, AddressHelper.get_keys(), ray).print
+              Tableizer.new(options, FloatingIpHelper.get_keys(), ray).print
             end
           end
         }

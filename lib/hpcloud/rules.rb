@@ -9,7 +9,7 @@ module HP
         if @security_group.is_valid? == false
           raise Exception.new(@security_group.cstatus.to_s)
         end
-        @items = @security_group.fog.rules
+        @items = @security_group.fog.security_group_rules
       end
 
       def create(item = nil)
