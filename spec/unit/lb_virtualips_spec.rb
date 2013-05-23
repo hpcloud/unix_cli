@@ -18,13 +18,6 @@ describe "lbVirtualIps" do
 
   context "items" do
     it "should return them all" do
-      @items = [ "1", "2", "3" ]
-      @service = double("service")
-      @connection = double("connection")
-      @service.stub(:virtual_ips).and_return(@items)
-      @connection.stub(:lb).and_return(@service)
-      Connection.stub(:instance).and_return(@connection)
-
       sot = LbVirtualIps.new("1")
 
       sot.items.should eq(@items)

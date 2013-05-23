@@ -1,5 +1,4 @@
 require 'hpcloud/fog_collection'
-require 'hpcloud/router_helper'
 
 module HP
   module Cloud
@@ -9,9 +8,12 @@ module HP
         @items = @connection.network.routers
       end
 
-      def create(item = nil)
-        return RouterHelper.new(@connection, item)
+      def unique(name)
+        super(name)
+        Fog::HP::Network::Router.new({:service => Connection.instance.network})
       end
+
+
     end
   end
 end

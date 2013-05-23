@@ -38,7 +38,7 @@ describe "routers:add" do
 
       rsp = cptr("routers:add #{@routers_name} -g #{@network.name}")
 
-      rsp.stderr.should eq("Router with the name '#{@routers_name}' already exists\n")
+      rsp.stderr.should eq("A router with the name '#{@routers_name}' already exists\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end

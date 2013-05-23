@@ -5,10 +5,12 @@ describe "routers:remove command" do
     @router_name = "routerone"
   end
 
-  def wait_for_gone(id)
+  def wait_for_gone(name)
       gone = false
       (0..15).each do |i|
-        if HP::Cloud::Routers.new.get(id.to_s).is_valid? == false
+        begin
+          HP::Cloud::Routers.new.get(name.to_s)
+        rescue HP::Cloud::Exceptions::NotFound => e
           gone = true
           break
         end
@@ -19,27 +21,27 @@ describe "routers:remove command" do
 
   context "when deleting router with name" do
     it "should succeed" do
-      @router = RouterTestHelper.create(@router_name)
+      cptr("routers:add #{@router_name}")
 
       rsp = cptr("routers:remove #{@router_name}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed router '#{@router_name}'.\n")
       rsp.exit_status.should be_exit(:success)
-      wait_for_gone(@router.id)
+      wait_for_gone(@router_name)
     end
   end
 
   context "routers:remove with valid avl" do
     it "should be successful" do
-      @router = RouterTestHelper.create(@router_name)
+      cptr("routers:add #{@router_name} -z region-a.geo-1")
 
-      rsp = cptr("routers:remove #{@router.id} -z region-a.geo-1")
+      rsp = cptr("routers:remove #{@router_name} -z region-a.geo-1")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Removed router '#{@router.name}'.\n")
+      rsp.stdout.should eq("Removed router '#{@router_name}'.\n")
       rsp.exit_status.should be_exit(:success)
-      wait_for_gone(@router.id)
+      wait_for_gone(@router_name)
     end
   end
 
@@ -57,7 +59,7 @@ describe "routers:remove command" do
     it "should report error" do
       rsp = cptr("routers:remove bogus")
 
-      rsp.stderr.should eq("Cannot find a router matching 'bogus'.\n")
+      rsp.stderr.should eq("Error removing router: Cannot find a router matching 'bogus'.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:not_found)
     end

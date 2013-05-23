@@ -4,36 +4,45 @@ module HP
 
       desc "routers:add <name>", "Add a router."
       long_desc <<-DESC
-  Add a new router to your network with the specified name and CIDR.  Optionally, you can specify IP version, gateway, DHCP, DNS name servers, or host routes.  The add command will do its best to guess the IP version from the CIDR, but you may override it.  The DNS name servers should be a command seperated list e.g.: 10.1.1.1,10.2.2.2.  The host routes should be a semicolon separated list of destination and nexthop pairs e.g.: 127.0.0.1/32,10.1.1.1;100.1.1.1/32,10.2.2.2
+  Add a new router to your network with the specified name.  If a gateway is not specified, the first network that has router_external set to true is used (typically 'Ext-Net'.
 
 Examples:
-  hpcloud routers:add subwoofer netty 127.0.0.0/24        # Create a new router named 'subwoofer':
-  hpcloud routers:add subwoofer netty 127.0.0.0/24 -g 127.0.0.1 -d # Create a new router named 'subwoofer' with gateway and DHCP:
+  hpcloud routers:add routerone   # Create a new router named 'routerone'
+  hpcloud routers:add routertwo -g Ext-Net   # Create a new router named 'routertwo' with the specified network as a gateway:
       DESC
       method_option :gateway,
                     :type => :string, :aliases => '-g',
-                    :desc => 'Gateway IP address.'
+                    :desc => 'Network to use as external router.'
       method_option :adminstateup, :default => true,
                     :type => :boolean, :aliases => '-u',
                     :desc => 'Administrative state.'
       CLI.add_common_options
       define_method "routers:add" do |name|
         cli_command(options) {
-          if Routers.new.get(name).is_valid? == true
-            @log.fatal "Router with the name '#{name}' already exists"
-          end
-
-          router = HP::Cloud::RouterHelper.new(Connection.instance)
+          router = Routers.new.unique(name)
           router.name = name
-          router.set_gateway(options[:gateway])
+          router.external_gateway_info = parse_gateway(options[:gateway])
           router.admin_state_up = options[:adminstateup]
-          if router.save == true
-            @log.display "Created router '#{name}' with id '#{router.id}'."
-          else
-            @log.fatal router.cstatus
-          end
+          router.save
+          @log.display "Created router '#{name}' with id '#{router.id}'."
         }
       end
+
+      private
+
+      def parse_gateway(value)
+        networks = Networks.new
+        unless value.nil?
+          return { 'network_id' => networks.get(value).id }
+        end
+        networks.items.each{ |x|
+          if x.router_external == true
+            return { 'network_id' => x.id }
+          end
+        }
+        log.fatal "Cannot find external network to use as gateway"
+      end
+
     end
   end
 end

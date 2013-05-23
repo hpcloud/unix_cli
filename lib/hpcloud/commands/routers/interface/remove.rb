@@ -18,9 +18,6 @@ Aliases: routers:interface:rm, routers:interface:delete, routers:interface:del
       define_method "routers:interface:remove" do |name, subnet_or_port|
         cli_command(options) {
           router = Routers.new.get(name)
-          unless router.is_valid?
-            @log.fatal router.cstatus
-          end
           subnet_id = nil
           port_id = nil
           word = ""

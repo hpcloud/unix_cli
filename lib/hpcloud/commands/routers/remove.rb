@@ -19,15 +19,12 @@ Aliases: routers:rm, routers:delete, routers:del
       define_method "routers:remove" do |name_or_id, *name_or_ids|
         cli_command(options) {
           name_or_ids = [name_or_id] + name_or_ids
-          routers = Routers.new.get(name_or_ids, false)
-          routers.each { |router|
+          routers = Routers.new
+          name_or_ids.each{ |name|
             sub_command("removing router") {
-              if router.is_valid?
-                router.destroy
-                @log.display "Removed router '#{router.name}'."
-              else
-                @log.error router.cstatus
-              end
+              router = routers.get(name, false)
+              router.destroy
+              @log.display "Removed router '#{router.name}'."
             }
           }
         }

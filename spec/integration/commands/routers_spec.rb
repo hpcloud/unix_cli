@@ -2,17 +2,17 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe "Routers command" do
   def then_expected_table(response)
-    response.should match(",#{@router1.name},up,ACTIVE,#{@network.id}")
+    response.should match(",routerone,true,ACTIVE,{\"network_id\"=>\"#{@network.id}\"}\n")
   end
 
   before(:all) do
-    @router1 = RouterTestHelper.create("routerone")
+    cptr("routers:add routerone")
     @network = NetworkTestHelper.create("Ext-Net")
   end
 
   context "routers" do
     it "should report success" do
-      rsp = cptr("routers -d , #{@router1.name}")
+      rsp = cptr("routers -d , routerone")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -22,7 +22,7 @@ describe "Routers command" do
 
   context "routers:list" do
     it "should report success" do
-      rsp = cptr("routers:list -d , #{@router1.name}")
+      rsp = cptr("routers:list -d , routerone")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
@@ -32,7 +32,7 @@ describe "Routers command" do
 
   context "routers with valid avl" do
     it "should report success" do
-      rsp = cptr("routers -d , #{@router1.name} -z region-a.geo-1")
+      rsp = cptr("routers -d , routerone -z region-a.geo-1")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)

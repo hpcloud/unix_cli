@@ -4,14 +4,11 @@ module HP
 
       desc "routers:update <name>", "Update the specified router."
       long_desc <<-DESC
-  Update an existing router with new gateway or administrative state information.
+  Update an existing router with new administrative state information.
 
 Examples:
-  hpcloud routers:update subwoofer -g 10.0.0.1 -u # Update 'subwoofer' gateway and administrative state:
+  hpcloud routers:update trout -u # Update router 'trout' administrative state:
       DESC
-      method_option :gateway,
-                    :type => :string, :aliases => '-g',
-                    :desc => 'Gateway IP address.'
       method_option :adminstateup,
                     :type => :boolean, :aliases => '-u',
                     :desc => 'Administrative state.'
@@ -19,16 +16,15 @@ Examples:
       define_method "routers:update" do |name|
         cli_command(options) {
           router = Routers.new.get(name)
-          if router.is_valid? == false
-            @log.fatal router.cstatus
+          unless options[:adminstateup].nil?
+            if options[:adminstateup] == true
+              router.admin_state_up = true
+            else
+              router.admin_state_up = "false"
+            end
           end
-          router.set_gateway(options[:gateway]) unless options[:gateway].nil?
-          router.admin_state_up = options[:adminstateup] unless options[:adminstateup].nil?
-          if router.save == true
-            @log.display "Updated router '#{name}'."
-          else
-            @log.fatal router.cstatus
-          end
+          router.save
+          @log.display "Updated router '#{name}'."
         }
       end
     end

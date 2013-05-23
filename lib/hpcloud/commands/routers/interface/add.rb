@@ -14,9 +14,6 @@ Examples:
       define_method "routers:interface:add" do |name, subnet_or_port|
         cli_command(options) {
           router = Routers.new.get(name)
-          unless router.is_valid?
-            @log.fatal router.cstatus
-          end
           subnet_id = nil
           port_id = nil
           subby = Subnets.new.get(subnet_or_port)
