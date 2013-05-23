@@ -32,17 +32,7 @@ Aliases: rm, delete, destroy, del
           names = [name] + names
           names.each { |name|
             resource = ResourceFactory.create(Connection.instance.storage, name)
-            forceit = options.force
-            if resource.is_container?
-              unless options.force?
-                unless yes?("Are you sure you want to remove the container '#{name}'?")
-                  @log.display "Container '#{name}' not removed."
-                  next
-                end
-                forceit = true
-              end
-            end
-            if resource.remove(forceit, options[:at], options[:after])
+            if resource.remove(options.force, options[:at], options[:after])
               if options[:at].nil?
                 if options[:after].nil?
                   @log.display "Removed '#{name}'."

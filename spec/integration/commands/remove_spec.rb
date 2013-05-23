@@ -26,15 +26,6 @@ describe "Remove command" do
       end
     end
 
-    context "when container does not exist" do
-      it "should exit with container not found" do
-        rsp = cptr("remove :nonexistant_container", ['yes'])
-        rsp.stderr.should eql("Cannot find container ':nonexistant_container'.\n")
-        rsp.stdout.should eq("Are you sure you want to remove the container ':nonexistant_container'? ")
-        rsp.exit_status.should be_exit(:not_found)
-      end
-    end
-
     context "when removing an object that isn't controlled by the user" do
       #### Swift does not have acls, so it just cannot see the container
       it "should exit with access denied" do
@@ -129,29 +120,6 @@ describe "Remove command" do
   end
 
   context "removing a container" do
-    context "when user owns container and it exists" do
-      before(:all) do
-        @hp_svc.put_container('container_to_remove')
-        rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Medvedev.txt :container_to_remove")
-        rsp.stderr.should eq("")
-      end
-
-      it "should ask for confirmation to delete" do
-        rsp = cptr('remove :container_to_remove', ['y'])
-
-        rsp.stderr.should eq("")
-        rsp.stdout.should eq("Are you sure you want to remove the container ':container_to_remove'? Removed ':container_to_remove'.\n")
-        rsp.exit_status.should be_exit(:success)
-      end
-
-      it "should remove container" do
-        lambda{ @hp_svc.get_container('container_to_remove') }.should raise_error(Fog::Storage::HP::NotFound)
-      end
-
-      after(:all) { purge_container('container_to_remove') }
-
-    end
-
     context "when container is not empty" do
       before(:each) do
         create_container_with_files('non_empty_container', 'foo.txt')
@@ -159,20 +127,20 @@ describe "Remove command" do
 
       context "when negative answer" do
         it "should not remove container" do
-          rsp = cptr('remove :non_empty_container', ['n'])
+          rsp = cptr('remove :non_empty_container')
 
-          rsp.stderr.should eq("")
-          rsp.stdout.should eq("Are you sure you want to remove the container ':non_empty_container'? Container ':non_empty_container' not removed.\n")
-          rsp.exit_status.should be_exit(:success)
+          rsp.stderr.should eq("The container ':non_empty_container' is not empty. Please use -f option to force deleting a container with objects in it.\n")
+          rsp.stdout.should eq("")
+          rsp.exit_status.should be_exit(:conflicted)
         end
       end
 
       context "when force option is not used" do
         it "should not remove container" do
-          rsp = cptr('remove :non_empty_container', ['y'])
+          rsp = cptr('remove :non_empty_container --force')
 
           rsp.stderr.should eq("")
-          rsp.stdout.should eq("Are you sure you want to remove the container ':non_empty_container'? Removed ':non_empty_container'.\n")
+          rsp.stdout.should eq("Removed ':non_empty_container'.\n")
           rsp.exit_status.should be_exit(:success)
         end
       end
