@@ -40,7 +40,7 @@ _hpcloud()
       opts="--columns --separator --availability-zone --debug --account-name "
       ;;
     addresses:add)
-      opts="--availability-zone --debug --account-name "
+      opts="--network --port --fixed-ip --floating-ip --availability-zone --debug --account-name "
       ;;
     addresses:associate)
       opts="--availability-zone --debug --account-name "
@@ -85,7 +85,7 @@ _hpcloud()
       opts="--columns --separator --availability-zone --debug --account-name "
       ;;
     dns:add)
-      opts="--ttl # Default: 3600 --availability-zone --debug --account-name "
+      opts="--ttl --availability-zone --debug --account-name "
       ;;
     dns:records)
       opts="--columns --separator --availability-zone --debug --account-name "
@@ -180,6 +180,12 @@ _hpcloud()
     lb:update)
       opts="--availability-zone --debug --account-name "
       ;;
+    lb:versions)
+      opts="--columns --separator --availability-zone --debug --account-name "
+      ;;
+    lb:virtualips)
+      opts="--columns --separator --availability-zone --debug --account-name "
+      ;;
     list)
       opts="--long --sync --columns --separator --availability-zone --debug --account-name "
       ;;
@@ -192,8 +198,50 @@ _hpcloud()
     move)
       opts="--availability-zone --debug --account-name "
       ;;
+    networks)
+      opts="--columns --separator --availability-zone --debug --account-name "
+      ;;
+    networks:add)
+      opts="--adminstateup --shared --availability-zone --debug --account-name "
+      ;;
+    networks:remove)
+      opts="--availability-zone --debug --account-name "
+      ;;
+    networks:update)
+      opts="--adminstateup --shared --availability-zone --debug --account-name "
+      ;;
+    ports)
+      opts="--columns --separator --availability-zone --debug --account-name "
+      ;;
+    ports:add)
+      opts="--fixedips --macaddress --adminstate --deviceid --deviceowner --securitygroups --availability-zone --debug --account-name "
+      ;;
+    ports:remove)
+      opts="--availability-zone --debug --account-name "
+      ;;
+    ports:update)
+      opts="--fixedips --adminstate --deviceid --deviceowner --availability-zone --debug --account-name "
+      ;;
     remove)
       opts="--force --at --after --availability-zone --debug --account-name "
+      ;;
+    routers)
+      opts="--columns --separator --availability-zone --debug --account-name "
+      ;;
+    routers:add)
+      opts="--gateway --adminstateup --availability-zone --debug --account-name "
+      ;;
+    routers:interface:add)
+      opts="--availability-zone --debug --account-name "
+      ;;
+    routers:interface:remove)
+      opts="--availability-zone --debug --account-name "
+      ;;
+    routers:remove)
+      opts="--availability-zone --debug --account-name "
+      ;;
+    routers:update)
+      opts="--gateway --adminstateup --availability-zone --debug --account-name "
       ;;
     securitygroups)
       opts="--columns --separator --availability-zone --debug --account-name "
@@ -208,7 +256,7 @@ _hpcloud()
       opts="--columns --separator --availability-zone --debug --account-name "
       ;;
     securitygroups:rules:add)
-      opts="--port-range --cidr --source-group --availability-zone --debug --account-name "
+      opts="--port-range --cidr --source-group --direction --ethertype --availability-zone --debug --account-name "
       ;;
     securitygroups:rules:remove)
       opts="--availability-zone --debug --account-name "
@@ -244,7 +292,7 @@ _hpcloud()
       opts="--availability-zone --debug --account-name "
       ;;
     servers:ssh)
-      opts="--private-key-file --keypair --login --command # Default: ssh --availability-zone --debug --account-name "
+      opts="--private-key-file --keypair --login --command --availability-zone --debug --account-name "
       ;;
     snapshots)
       opts="--columns --separator --availability-zone --debug --account-name "
@@ -254,6 +302,18 @@ _hpcloud()
       ;;
     snapshots:remove)
       opts="--availability-zone --debug --account-name "
+      ;;
+    subnets)
+      opts="--columns --separator --availability-zone --debug --account-name "
+      ;;
+    subnets:add)
+      opts="--ipversion --gateway --dhcp --dnsnameservers --hostroutes --availability-zone --debug --account-name "
+      ;;
+    subnets:remove)
+      opts="--availability-zone --debug --account-name "
+      ;;
+    subnets:update)
+      opts="--ipversion --gateway --dhcp --dnsnameservers --hostroutes --availability-zone --debug --account-name "
       ;;
     tempurl)
       opts="--time-period --update --availability-zone --debug --account-name "
@@ -282,7 +342,7 @@ _hpcloud()
   fi
   if [ "${prev}" == "hpcloud" ]
   then
-    cmds="account account:catalog account:copy account:edit account:remove account:setup account:use account:verify acl acl:grant acl:revoke addresses addresses:add addresses:associate addresses:disassociate addresses:remove cdn:containers cdn:containers:add cdn:containers:get cdn:containers:location cdn:containers:remove cdn:containers:set complete config config:set containers:add containers:remove containers:sync copy dns dns:add dns:records dns:records:add dns:records:remove dns:records:update dns:remove dns:servers dns:update flavors get help images images:add images:metadata images:metadata:add images:metadata:remove images:remove info keypairs keypairs:add keypairs:import keypairs:private keypairs:private:add keypairs:private:location keypairs:private:remove keypairs:public_key keypairs:remove lb lb:add lb:algorithms lb:limits lb:nodes lb:nodes:add lb:nodes:remove lb:nodes:update lb:protocols lb:remove lb:update list location migrate move remove securitygroups securitygroups:add securitygroups:remove securitygroups:rules securitygroups:rules:add securitygroups:rules:remove servers servers:add servers:console servers:metadata servers:metadata:add servers:metadata:remove servers:password servers:reboot servers:rebuild servers:remove servers:ssh snapshots snapshots:add snapshots:remove tempurl volumes volumes:add volumes:attach volumes:detach volumes:remove volumes:server"
+    cmds="account account:catalog account:copy account:edit account:remove account:setup account:use account:verify acl acl:grant acl:revoke addresses addresses:add addresses:associate addresses:disassociate addresses:remove cdn:containers cdn:containers:add cdn:containers:get cdn:containers:location cdn:containers:remove cdn:containers:set complete config config:set containers:add containers:remove containers:sync copy dns dns:add dns:records dns:records:add dns:records:remove dns:records:update dns:remove dns:servers dns:update flavors get help images images:add images:metadata images:metadata:add images:metadata:remove images:remove info keypairs keypairs:add keypairs:import keypairs:private keypairs:private:add keypairs:private:location keypairs:private:remove keypairs:public_key keypairs:remove lb lb:add lb:algorithms lb:limits lb:nodes lb:nodes:add lb:nodes:remove lb:nodes:update lb:protocols lb:remove lb:update lb:versions lb:virtualips list location migrate move networks networks:add networks:remove networks:update ports ports:add ports:remove ports:update remove routers routers:add routers:interface:add routers:interface:remove routers:remove routers:update securitygroups securitygroups:add securitygroups:remove securitygroups:rules securitygroups:rules:add securitygroups:rules:remove servers servers:add servers:console servers:metadata servers:metadata:add servers:metadata:remove servers:password servers:reboot servers:rebuild servers:remove servers:ssh snapshots snapshots:add snapshots:remove subnets subnets:add subnets:remove subnets:update tempurl volumes volumes:add volumes:attach volumes:detach volumes:remove volumes:server"
     COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
     __ltrim_colon_completions "$cur"
     return 0
