@@ -4,7 +4,7 @@ module HP
 
       desc "routers:add <name>", "Add a router."
       long_desc <<-DESC
-  Add a new router to your network with the specified name.  If a gateway is not specified, the first network that has router_external set to true is used (typically 'Ext-Net'.
+  Add a new router to your network with the specified name.  If a gateway is not specified, the first network that has router_external set to true is used (typically 'Ext-Net'.  If you do not want to a external network, send the gateway option with an empty string.
 
 Examples:
   hpcloud routers:add routerone   # Create a new router named 'routerone'
@@ -21,28 +21,12 @@ Examples:
         cli_command(options) {
           router = Routers.new.unique(name)
           router.name = name
-          router.external_gateway_info = parse_gateway(options[:gateway])
+          router.external_gateway_info = Routers.parse_gateway(options[:gateway])
           router.admin_state_up = options[:adminstateup]
           router.save
           @log.display "Created router '#{name}' with id '#{router.id}'."
         }
       end
-
-      private
-
-      def parse_gateway(value)
-        networks = Networks.new
-        unless value.nil?
-          return { 'network_id' => networks.get(value).id }
-        end
-        networks.items.each{ |x|
-          if x.router_external == true
-            return { 'network_id' => x.id }
-          end
-        }
-        log.fatal "Cannot find external network to use as gateway"
-      end
-
     end
   end
 end
