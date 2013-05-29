@@ -45,7 +45,7 @@ module HP
             return false
           end
 
-          @id = server.create_image(@name , @meta.hsh)
+          @id = server.create_image(@name , @meta.hsh).id
           if @id.nil?
             set_error(server.cstatus)
             return false

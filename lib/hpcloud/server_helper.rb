@@ -156,7 +156,7 @@ module HP
           set_error("Error creating image '#{name}'")
           return nil
         end
-        return resp.headers["Location"].gsub(/.*\/images\//,'')
+        return resp
       end
 
       def save
