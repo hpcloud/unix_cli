@@ -2,7 +2,6 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "servers:add command" do
   before(:all) do
-    @hp_svc = compute_connection
     @sg_name = 'cli_test_sg1'
     @keypair_name = 'cli_test_key1'
     SecurityGroupTestHelper.create(@sg_name)
@@ -43,10 +42,8 @@ describe "servers:add command" do
       @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
       rsp.stdout.should eq("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
       rsp.exit_status.should be_exit(:success)
-      servers = @hp_svc.servers.map {|s| s.id}
-      servers.should include(@new_server_id.to_i)
-      servers = @hp_svc.servers.map {|s| s.name}
-      servers.should include(@server_name)
+      rsp = cptr("servers -c id,name -d X #{@server_name}")
+      rsp.stdout.should eq("#{@new_server_id}X#{@server_name}\n")
     end
 
     after(:each) do
@@ -64,14 +61,12 @@ describe "servers:add command" do
       @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
       rsp.stdout.should eq("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
       rsp.exit_status.should be_exit(:success)
-      servers = @hp_svc.servers.map {|s| s.id}
-      servers.should include(@new_server_id.to_i)
-      servers = @hp_svc.servers.map {|s| s.name}
-      servers.should include(@server_name)
-      servers = HP::Cloud::Servers.new.get([@new_server_id])
-      servers.length.should eq(1)
-      servers[0].meta.hsh['E'].should eq('mc2')
-      servers[0].meta.hsh['PV'].should eq('nRT')
+      rsp = cptr("servers -c id,name -d X #{@server_name}")
+      rsp.stdout.should eq("#{@new_server_id}X#{@server_name}\n")
+      srvr = HP::Cloud::Servers.new.get([@new_server_id])
+      srvr.length.should eq(1)
+      srvr[0].meta.hsh['E'].should eq('mc2')
+      srvr[0].meta.hsh['PV'].should eq('nRT')
     end
 
     after(:each) do
@@ -89,10 +84,8 @@ describe "servers:add command" do
       @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
       rsp.stdout.should eq("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
       rsp.exit_status.should be_exit(:success)
-      servers = @hp_svc.servers.map {|s| s.id}
-      servers.should include(@new_server_id.to_i)
-      servers = @hp_svc.servers.map {|s| s.name}
-      servers.should include(@server_name)
+      rsp = cptr("servers -c id,name -d X #{@server_name}")
+      rsp.stdout.should eq("#{@new_server_id}X#{@server_name}\n")
     end
 
     after(:each) do
@@ -113,10 +106,8 @@ describe "servers:add command" do
       # If this fails at this point, the password did not decode.
       # Try to remove the keypair, the keypair probably does not match
       rsp.exit_status.should be_exit(:success)
-      servers = @hp_svc.servers.map {|s| s.id}
-      servers.should include(@new_server_id.to_i)
-      servers = @hp_svc.servers.map {|s| s.name}
-      servers.should include(@server_name)
+      rsp = cptr("servers -c id,name -d X #{@server_name}")
+      rsp.stdout.should eq("#{@new_server_id}X#{@server_name}\n")
       @keyfile =KeypairHelper.private_filename("#{@new_server_id}")
       File.exists?(@keyfile).should be_true
     end
@@ -139,10 +130,8 @@ describe "servers:add command" do
       # If this fails at this point, the password did not decode.
       # Try to remove the keypair, the keypair probably does not match
       rsp.exit_status.should be_exit(:success)
-      servers = @hp_svc.servers.map {|s| s.id}
-      servers.should include(@new_server_id.to_i)
-      servers = @hp_svc.servers.map {|s| s.name}
-      servers.should include(@server_name)
+      rsp = cptr("servers -c id,name -d X #{@server_name}")
+      rsp.stdout.should eq("#{@new_server_id}X#{@server_name}\n")
     end
 
     after(:each) do
@@ -193,16 +182,17 @@ describe "servers:add command" do
     it "should report success" do
       @server_name = resource_name("add5")
 
+puts '**************************************************'
+puts "servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_image_id()} -k #{@keypair_name} -z az-1.region-a.geo-1"
+puts '**************************************************'
       rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_image_id()} -k #{@keypair_name} -z az-1.region-a.geo-1")
 
       rsp.stderr.should eq("")
       @server_id2 = rsp.stdout.scan(/'([^']+)/)[2][0]
       rsp.stdout.should eq("Created server '#{@server_name}' with id '#{@server_id2}'.\n")
       rsp.exit_status.should be_exit(:success)
-      servers = @hp_svc.servers.map {|s| s.id}
-      servers.should include(@server_id2.to_i)
-      servers = @hp_svc.servers.map {|s| s.name}
-      servers.should include(@server_name)
+      rsp = cptr("servers -c id,name -d X #{@server_name}")
+      rsp.stdout.should eq("#{@new_server_id}X#{@server_name}\n")
     end
 
     after(:each) do
@@ -223,10 +213,8 @@ describe "servers:add command" do
       @new_server_id = rsp.stdout.scan(/'([^']+)/)[2][0]
       rsp.stdout.should eq("Created server '#{@server_name}' with id '#{@new_server_id}'.\n")
       rsp.exit_status.should be_exit(:success)
-      servers = @hp_svc.servers.map {|s| s.id}
-      servers.should include(@new_server_id.to_i)
-      servers = @hp_svc.servers.map {|s| s.name}
-      servers.should include(@server_name)
+      rsp = cptr("servers -c id,name -d X #{@server_name}")
+      rsp.stdout.should eq("#{@new_server_id}X#{@server_name}\n")
     end
 
     after(:each) do
@@ -269,7 +257,7 @@ describe "servers:add command" do
 
       rsp.stderr.should eq("No value provided for required options '--key-name'\n")
       rsp.stdout.should eq("")
-      rsp.exit_status.should be_exit(:success)
+      rsp.exit_status.should be_exit(:general_error)
     end
   end
 
