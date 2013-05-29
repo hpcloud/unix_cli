@@ -18,6 +18,7 @@ Aliases: flavors:list
       CLI.add_report_options
       CLI.add_common_options
       def flavors(*arguments)
+        columns = [ "id", "name", "ram", "disk" ]
         cli_command(options) {
           flavors = Flavors.new
           if flavors.empty?
@@ -27,7 +28,7 @@ Aliases: flavors:list
             if ray.empty?
               @log.display "There are no flavors that match the provided arguments"
             else
-              Tableizer.new(options, FlavorHelper.get_keys(), ray).print
+              Tableizer.new(options, columns, ray).print
             end
           end
         }

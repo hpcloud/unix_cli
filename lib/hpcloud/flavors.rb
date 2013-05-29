@@ -8,13 +8,12 @@ module HP
         @items = @connection.compute.flavors
       end
 
-      def create(item = nil)
-        return FlavorHelper.new(@connection, item)
-      end
-
       def matches(arg, item)
-        return ((arg == item.id.to_s) || (arg == item.name.to_s) || (arg == item.fullname.to_s))
-      end
+        name = item.name.to_s
+        shortname = name.gsub(/standard\./,'')
+        return ((arg == item.id.to_s) || (arg == name) || (arg == shortname))
+      end 
+
     end
   end
 end

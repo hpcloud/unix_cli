@@ -99,6 +99,7 @@ module HP
         account = get_account()
         return @compute_connection[account] unless @compute_connection[account].nil?
         opts = create_options(account, :compute_availability_zone)
+        opts[:version] = :v2
         read_creds(account, opts, 'Compute')
         begin
           @compute_connection[account] = Fog::Compute.new(opts)
