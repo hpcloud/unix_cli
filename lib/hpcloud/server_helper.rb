@@ -36,10 +36,6 @@ module HP
 
       def set_flavor(value)
         flav = Flavors.new.get(value, false)
-        unless flav.is_valid?
-          set_error(flav.cstatus)
-          return false
-        end
         @flavor = flav.id
         return true
       end

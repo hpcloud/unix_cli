@@ -89,22 +89,6 @@ describe "Server class" do
     end
   end
 
-  context "when we call set_flavor with bogus flavor" do
-    it "it returns false and sets error" do
-      @connection = double("connection")
-      @connection.stub(:flavors).and_return([])
-      Connection.instance.stub(:compute).and_return(@connection)
-      srv = HP::Cloud::ServerHelper.new(@connection)
-
-      srv.set_flavor('bogus').should be_false
-
-      srv.cstatus.message.should eq("Cannot find a flavor matching 'bogus'.")
-      srv.cstatus.error_code.should eq(:not_found)
-      srv.is_windows?.should be_false
-      srv.image.should be_nil
-    end
-  end
-
   context "when we call set_flavor with good flavor" do
     it "it sets the flavor and returns true" do
       @connection = double("connection")
