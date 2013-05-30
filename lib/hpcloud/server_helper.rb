@@ -6,6 +6,7 @@ module HP
     class ServerHelper < BaseHelper
       attr_reader :private_key, :windows
       attr_accessor :id, :name, :flavor, :image, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state, :volume, :meta
+      attr_accessor :network_name, :networks
     
       def self.get_keys()
         return [ "id", "name", "flavor", "image", "public_ip", "private_ip", "keyname", "security_groups", "created", "state" ]
@@ -31,6 +32,8 @@ module HP
         end
         @created = foggy.created_at
         @state = foggy.state
+        @network_name = foggy.network_name
+        @networks = foggy.addresses.keys.to_s
         @meta = HP::Cloud::Metadata.new(foggy.metadata)
       end
 
@@ -125,6 +128,17 @@ module HP
         return true
       end
 
+      def set_network(value)
+        return true if value.nil?
+        network = Networks.new.get(value, false)
+        unless network.is_valid?
+          set_error(network.cstatus)
+          return false
+        end
+        @networks = [ network.id.to_s ]
+        return true
+      end
+
       def set_user_data(filename)
         return if filename.nil?
         @user_data = File.new(filename).read
@@ -178,6 +192,7 @@ module HP
              :security_groups => @security,
              :metadata => @meta.hsh}
           hsh[:image_id] = @image unless @image.nil?
+          hsh['networks'] = @networks unless @networks.nil?
           hsh['user_data'] = @user_data unless @user_data.nil?
           unless @volume.nil?
             hsh[:block_device_mapping] = [{
