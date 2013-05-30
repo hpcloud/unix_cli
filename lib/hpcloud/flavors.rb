@@ -5,7 +5,7 @@ module HP
     class Flavors < FogCollection
       def initialize()
         super("flavor")
-        @items = @connection.compute.flavors
+        @items = @connection.compute.flavors.all(:details=>true)
       end
 
       def matches(arg, item)

@@ -99,7 +99,9 @@ describe "Server class" do
       flavor.stub(:name).and_return('flavor_flav')
       flavor.stub(:ram).and_return(1024)
       flavor.stub(:disk).and_return(60)
-      @connection.stub(:flavors).and_return([flavor])
+      @flavors = double("flavors")
+      @flavors.stub(:all).and_return([flavor])
+      @connection.stub(:flavors).and_return(@flavors)
       Connection.instance.stub(:compute).and_return(@connection)
       srv = HP::Cloud::ServerHelper.new(@connection)
 
@@ -114,7 +116,9 @@ describe "Server class" do
   context "when we call set_image with bogus image" do
     it "it returns false and sets error" do
       @connection = double("connection")
-      @connection.stub(:images).and_return([])
+      images = double("images")
+      images.stub(:all).and_return([])
+      @connection.stub(:images).and_return(images)
       Connection.instance.stub(:compute).and_return(@connection)
       srv = HP::Cloud::ServerHelper.new(@connection)
 
@@ -139,7 +143,9 @@ describe "Server class" do
       image.stub(:created_at).and_return('now')
       image.stub(:status).and_return('g2g')
       image.stub(:metadata).and_return([meta])
-      @connection.stub(:images).and_return([image])
+      images = double("images")
+      images.stub(:all).and_return([image])
+      @connection.stub(:images).and_return(images)
       Connection.instance.stub(:compute).and_return(@connection)
       srv = HP::Cloud::ServerHelper.new(@connection)
 
@@ -311,7 +317,9 @@ describe "Server class" do
       image.stub(:created_at).and_return('now')
       image.stub(:status).and_return('g2g')
       image.stub(:metadata).and_return([meta])
-      @connection.stub(:images).and_return([image])
+      images = double("images")
+      images.stub(:all).and_return([image])
+      @connection.stub(:images).and_return(images)
       Connection.instance.stub(:compute).and_return(@connection)
       srv = HP::Cloud::ServerHelper.new(@connection)
       srv.set_image('good').should be_true

@@ -3,9 +3,11 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "Flavors" do
   before(:each) do
     @items = [ "1", "2", "3" ]
+    @flavors = double("flavors")
+    @flavors.stub(:all).and_return(@items)
     @service = double("service")
     @connection = double("connection")
-    @service.stub(:flavors).and_return(@items)
+    @service.stub(:flavors).and_return(@flavors)
     @connection.stub(:compute).and_return(@service)
     Connection.stub(:instance).and_return(@connection)
   end
