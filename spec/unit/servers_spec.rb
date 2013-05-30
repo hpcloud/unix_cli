@@ -21,7 +21,9 @@ describe "Server getter" do
   end
 
   before(:each) do
-    @servers = [ mock_server("Hal"), mock_server("Skynet"), mock_server("Matrix") ]
+    @all = [ mock_server("Hal"), mock_server("Skynet"), mock_server("Matrix") ]
+    @servers = double("servers")
+    @servers.stub(:all).and_return(@all)
     @compute = double("compute")
     @compute.stub(:servers).and_return(@servers)
     Connection.instance.stub(:compute).and_return(@compute)
