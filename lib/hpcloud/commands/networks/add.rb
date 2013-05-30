@@ -8,15 +8,12 @@ module HP
 
 Examples:
   hpcloud networks:add netty        # Create a new network named 'netty':
-  hpcloud networks:add netty -u -h  # Create a new network named 'netty' up and shared:
+  hpcloud networks:add netty -u     # Create a new network named 'netty' up and shared:
   hpcloud networks:add netty --no-adminstateup  # Create a new network named 'netty' admin state down:
       DESC
       method_option :adminstateup, :default => true,
                     :type => :boolean, :aliases => '-u',
                     :desc => 'Administrative state up.'
-      method_option :shared, :default => false,
-                    :type => :boolean, :aliases => '-h',
-                    :desc => 'Shared.'
       CLI.add_common_options
       define_method "networks:add" do |name|
         cli_command(options) {
