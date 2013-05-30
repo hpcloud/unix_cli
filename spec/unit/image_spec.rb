@@ -107,11 +107,13 @@ describe "Image class" do
 
   context "when we save a new one" do
     it "should call create" do
+      nooimage = double("nooimage")
+      nooimage.stub(:id).and_return("1337")
       img = HP::Cloud::ImageHelper.new()
       img.name = "bob"
       img.set_server("Hal")
       img.meta.set_metadata('luke=skywalker,han=solo')
-      @server.should_receive(:create_image).with("bob", {"luke"=>"skywalker","han"=>"solo"}).and_return("1337")
+      @server.should_receive(:create_image).with("bob", {"luke"=>"skywalker","han"=>"solo"}).and_return(nooimage)
 
       img.save.should be_true
 
@@ -133,23 +135,6 @@ describe "Image class" do
       img.id.should be_nil
       img.cstatus.message.should eq("bogus server")
       img.cstatus.error_code.should eq(:not_found)
-    end
-  end
-
-  context "when we save a new one and it fails" do
-    it "should call create and return false with the errors" do
-      img = HP::Cloud::ImageHelper.new()
-      img.name = "bob"
-      img.set_server("Hal")
-      img.meta.set_metadata('luke=skywalker,han=solo')
-      @server.should_receive(:create_image).with("bob", {"luke"=>"skywalker","han"=>"solo"}).and_return(nil)
-      @server.stub(:cstatus).and_return(CliStatus.new("Error creating image 'bob'", :general_error))
-
-      img.save.should be_false
-
-      img.id.should be_nil
-      img.cstatus.message.should eq("Error creating image 'bob'")
-      img.cstatus.error_code.should eq(:general_error)
     end
   end
 

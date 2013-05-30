@@ -14,6 +14,8 @@ describe "Server getter" do
     fog_server.stub(:security_groups).and_return(@security_groups)
     fog_server.stub(:created_at).and_return("today")
     fog_server.stub(:state).and_return("ACTIVE")
+    fog_server.stub(:network_name).and_return("netti")
+    fog_server.stub(:addresses).and_return(nil)
     fog_server.stub(:metadata).and_return([])
     return fog_server
   end

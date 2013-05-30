@@ -15,6 +15,8 @@ describe "Server class" do
     @fog_server.stub(:security_groups).and_return(@security_groups)
     @fog_server.stub(:created_at).and_return("today")
     @fog_server.stub(:state).and_return("ACTIVE")
+    @fog_server.stub(:network_name).and_return("hpcloud")
+    @fog_server.stub(:addresses).and_return({:k=>:v})
     @fog_server.stub(:metadata).and_return([])
   end
 
@@ -363,38 +365,6 @@ describe "Server class" do
       srv.set_security_groups('un","deux",trois').should be_false
       srv.cstatus.message.should eq("Invalid security group 'un\",\"deux\",trois' should be comma separated list")
       srv.cstatus.error_code.should eq(:incorrect_usage)
-    end
-  end
-
-  context "when we create image successfully" do
-    it "should return id" do
-      name = "snapshot"
-      hsh = {"a"=>"A","b"=>"B"}
-      resp = double("resp")
-      resp.stub(:headers).and_return({"Location"=>"http://127.0.0.1/images/21"})
-      fog_server = double("fog_server")
-      fog_server.stub(:id).and_return(222)
-      fog_server.stub(:name).and_return("Hal")
-      fog_server.stub(:flavor_id).and_return(201)
-      fog_server.stub(:image_id).and_return(101)
-      fog_server.stub(:public_ip_address).and_return("172.0.0.1")
-      fog_server.stub(:private_ip_address).and_return("10.0.0.1")
-      fog_server.stub(:key_name).and_return("key")
-      fog_server.stub(:security_groups).and_return(nil)
-      fog_server.stub(:created_at).and_return(nil)
-      fog_server.stub(:state).and_return(nil)
-      fog_server.stub(:metadata).and_return(nil)
-      fog_server.should_receive(:create_image).with(name, hsh).and_return(resp)
-      srv = HP::Cloud::ServerHelper.new(double("connection"), fog_server)
-
-      id = srv.create_image(name, hsh)
-
-      id.should eq("21")
-    end
-  end
-
-  context "when create image fails" do
-    it "should return set the error" do
     end
   end
 

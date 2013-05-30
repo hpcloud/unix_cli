@@ -33,7 +33,7 @@ module HP
         @created = foggy.created_at
         @state = foggy.state
         @network_name = foggy.network_name
-        @networks = foggy.addresses.keys.to_s
+        @networks = foggy.addresses.keys.to_s unless foggy.addresses.nil?
         @meta = HP::Cloud::Metadata.new(foggy.metadata)
       end
 
