@@ -17,13 +17,14 @@ module HP
         networks = Networks.new
         unless value.nil?
           unless value.empty?
-            return { 'network_id' => networks.get(value).id }
+            netty = networks.get(value)
+            return netty
           end
           return {}
         end
         networks.items.each{ |x|
           if x.router_external == true
-            return { 'network_id' => x.id }
+            return x
           end
         }
         raise HP::Cloud::Exceptions::General.new("Cannot find external network to use as gateway")

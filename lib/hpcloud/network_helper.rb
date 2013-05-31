@@ -24,7 +24,13 @@ module HP
         @admin_state_up = foggy.admin_state_up
         @admin_state = foggy.admin_state_up ? "up" : "down"
         @subnets_array = foggy.subnets
-        @subnets = foggy.subnets.join(",") unless foggy.subnets.nil?
+        @subnets = ''
+        unless foggy.subnets.nil?
+          foggy.subnets.each{ |x|
+            @subnets = ',' unless @subnets.empty?
+            @subnets = x.id.to_s
+          }
+        end
         @router_external = foggy.router_external
       end
 

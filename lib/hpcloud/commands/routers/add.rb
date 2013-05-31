@@ -21,9 +21,17 @@ Examples:
         cli_command(options) {
           router = Routers.new.unique(name)
           router.name = name
-          router.external_gateway_info = Routers.parse_gateway(options[:gateway])
+          netty = Routers.parse_gateway(options[:gateway])
+          router.external_gateway_info = { 'network_id' => netty.id }
           router.admin_state_up = options[:adminstateup]
           router.save
+          unless netty.subnets.nil?
+            unless netty.subnets.empty?
+              sub_command("add router interface for subnet") {
+                Connection.instance.network.add_router_interface(router.id, netty.subnets, nil)
+              }
+            end
+          end
           @log.display "Created router '#{name}' with id '#{router.id}'."
         }
       end
