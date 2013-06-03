@@ -28,13 +28,12 @@ describe "Server class" do
       keys[1].should eql("name")
       keys[2].should eql("flavor")
       keys[3].should eql("image")
-      keys[4].should eql("public_ip")
-      keys[5].should eql("private_ip")
-      keys[6].should eql("keyname")
-      keys[7].should eql("security_groups")
-      keys[8].should eql("created")
-      keys[9].should eql("state")
-      keys.length.should eql(10)
+      keys[4].should eql("ips")
+      keys[5].should eql("keyname")
+      keys[6].should eql("security_groups")
+      keys[7].should eql("created")
+      keys[8].should eql("state")
+      keys.length.should eql(9)
     end
   end
 

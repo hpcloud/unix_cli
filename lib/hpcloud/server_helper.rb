@@ -5,11 +5,11 @@ module HP
   module Cloud
     class ServerHelper < BaseHelper
       attr_reader :private_key, :windows
-      attr_accessor :id, :name, :flavor, :image, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state, :volume, :meta
+      attr_accessor :id, :name, :flavor, :image, :ips, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state, :volume, :meta
       attr_accessor :network_name, :networks
     
       def self.get_keys()
-        return [ "id", "name", "flavor", "image", "public_ip", "private_ip", "keyname", "security_groups", "created", "state" ]
+        return [ "id", "name", "flavor", "image", "ips", "keyname", "security_groups", "created", "state" ]
       end 
         
       def initialize(connection, foggy = nil)
@@ -33,7 +33,24 @@ module HP
         @created = foggy.created_at
         @state = foggy.state
         @network_name = foggy.network_name
-        @networks = foggy.addresses.keys.to_s unless foggy.addresses.nil?
+        @networks = ""
+        @ips = ""
+        unless foggy.addresses.nil?
+          begin
+            foggy.addresses.keys.each { |x|
+              @networks += "," unless @networks.empty?
+              @networks += x.to_s
+              foggy.addresses[x].each { |y|
+                unless y["addr"].nil?
+                  @ips += "," unless @ips.empty?
+                  @ips += y["addr"].to_s
+                end
+              }
+            }
+          rescue Exception => e
+            warn "Error parsing addresses: " + e.to_s
+          end
+        end
         @meta = HP::Cloud::Metadata.new(foggy.metadata)
       end
 
