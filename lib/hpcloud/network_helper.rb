@@ -1,7 +1,7 @@
 module HP
   module Cloud
     class NetworkHelper < BaseHelper
-      attr_accessor :id, :name, :tenant_id, :status, :subnets
+      attr_accessor :id, :name, :tenant_id, :status, :subnets, :subnets_array
       attr_accessor :shared, :admin_state_up, :router_external
       attr_accessor :admin_state
     
