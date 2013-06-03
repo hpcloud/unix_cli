@@ -44,6 +44,7 @@ module HP
                 unless y["addr"].nil?
                   @ips += "," unless @ips.empty?
                   @ips += y["addr"].to_s
+                  @public_ip = y["addr"].to_s
                 end
               }
             }
