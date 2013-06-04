@@ -118,7 +118,7 @@ module HP
         opts.delete(:provider)
         read_creds(account, opts, 'Block Storage')
         begin
-          @block_connection[account] = Fog::HP::BlockStorage.new(opts)
+          @block_connection[account] = Fog::HP::BlockStorageV2.new(opts)
           write_creds(account, @block_connection[account])
         rescue Exception => e
           @authcache.remove(account)
