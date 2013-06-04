@@ -6,7 +6,7 @@ module HP
 
       desc "routers:interface:remove <router_name_or_id> <subnet_or_port>", "Remove router interface."
       long_desc <<-DESC
-  Remove router port or subnet router interface from routuer.
+  Remove router port or subnet router interface from router.
 
 Examples:
   hpcloud routers:interface:remove trout puerto   # Delete port 'puerto' from 'trout'
@@ -18,9 +18,6 @@ Aliases: routers:interface:rm, routers:interface:delete, routers:interface:del
       define_method "routers:interface:remove" do |name, subnet_or_port|
         cli_command(options) {
           router = Routers.new.get(name)
-          unless router.is_valid?
-            @log.fatal router.cstatus
-          end
           subnet_id = nil
           port_id = nil
           word = ""

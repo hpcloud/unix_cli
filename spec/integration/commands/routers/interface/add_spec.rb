@@ -3,13 +3,16 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../../spec_helper')
 describe "routers:interface:add" do
   before(:each) do
     @routers_name = "routerone"
+    cptr("routers:add #{@routers_name}")
     @port_name = "cli_test_port1"
     @port = PortTestHelper.create(@port_name)
+    rsp = cptr("addresses -c id -d X")
+    addressid = rsp.stdout
   end
 
   context "when creating router" do
     it "should show success message" do
-      cptr("hpcloud ports:update -d '' #{@port.id}")
+      cptr("hpcloud ports:update -d '' #{@port_name}")
       cptr("routers:interface:remove #{@routers_name} #{@port_name}")
 
       rsp = cptr("routers:interface:add #{@routers_name} #{@port_name}")

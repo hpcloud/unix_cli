@@ -31,6 +31,9 @@ Examples:
       method_option :metadata,
                     :type => :string, :aliases => '-m',
                     :desc => 'Set the meta data.'
+      method_option :network,
+                    :type => :string, :aliases => '-n',
+                    :desc => 'Network to use for the server.'
       method_option :userdata,
                     :type => :string, :aliases => '-u',
                     :desc => 'File which contains user data.'
@@ -46,6 +49,7 @@ Examples:
           srv.set_security_groups(options[:security_group])
           srv.set_private_key(options[:private_key_file])
           srv.meta.set_metadata(options[:metadata])
+          srv.set_network(options[:network])
           srv.set_user_data(options[:userdata])
           if srv.save == true
             @log.display "Created server '#{name}' with id '#{srv.id}'."

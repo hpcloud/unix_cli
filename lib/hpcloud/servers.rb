@@ -6,7 +6,7 @@ module HP
     class Servers < FogCollection
       def initialize
         super("server")
-        @items = @connection.compute.servers
+        @items = @connection.compute.servers.all(:details=>true)
       end
 
       def create(item = nil)

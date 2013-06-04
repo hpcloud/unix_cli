@@ -25,7 +25,9 @@ describe "Network methods" do
     @fog_network.stub(:tenant_id).and_return(234)
     @fog_network.stub(:shared).and_return(false)
     @fog_network.stub(:admin_state_up).and_return("up")
-    @fog_network.stub(:subnets).and_return([4])
+    subnet = double("subnet")
+    subnet.stub(:id).and_return(4)
+    @fog_network.stub(:subnets).and_return([subnet])
     @fog_network.stub(:router_external).and_return(false)
   end
 

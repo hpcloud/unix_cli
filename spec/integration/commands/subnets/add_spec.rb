@@ -12,7 +12,7 @@ describe "subnets:add" do
     it "should show success message" do
       @subnets_name = resource_name("add1")
 
-      rsp = cptr("subnets:add #{@subnets_name} #{@network1.name} 127.0.1.0/32")
+      rsp = cptr("subnets:add #{@subnets_name} #{@network1.name} 127.0.1.0/32 -n 15.185.9.24")
 
       rsp.stderr.should eq("")
       @new_subnets_id = rsp.stdout.scan(/'([^']+)/)[2][0]
@@ -30,7 +30,7 @@ describe "subnets:add" do
     it "should show success message" do
       @subnets_name = resource_name("add2")
 
-      rsp = cptr("subnets:add #{@subnets_name} #{@network1.name} 127.0.1.0/32 -i 4 -g 127.1.1.1 -d -n 10.0.0.1,10.0.0.2 -h 127.0.1.0/32,10.2.2.2")
+      rsp = cptr("subnets:add #{@subnets_name} #{@network1.name} 127.0.1.0/32 -i 4 -n 15.185.9.24 -d -h 127.0.1.0/32,10.2.2.2")
 
       rsp.stderr.should eq("")
       @new_subnets_id = rsp.stdout.scan(/'([^']+)/)[2][0]

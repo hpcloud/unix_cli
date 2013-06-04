@@ -6,7 +6,7 @@ module HP
     class Images < FogCollection
       def initialize() 
         super("image")
-        @items = @connection.compute.images
+        @items = @connection.compute.images.all(:details=>true)
       end
       
       def create(item = nil)

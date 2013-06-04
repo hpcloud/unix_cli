@@ -180,9 +180,11 @@ module HP
       def rejigger_zones(zones)
         compute = zones[:compute_availability_zone]
         alternate = compute
-        alternate=compute.gsub(/^[^\.]*\./, '')
-        if alternate == compute
-          return
+        if compute.start_with?("az")
+          alternate=compute.gsub(/^[^\.]*\./, '')
+          if alternate == compute
+            return
+          end
         end
         zones[:storage_availability_zone] = alternate
         zones[:cdn_availability_zone] = alternate

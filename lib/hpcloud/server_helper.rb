@@ -5,10 +5,11 @@ module HP
   module Cloud
     class ServerHelper < BaseHelper
       attr_reader :private_key, :windows
-      attr_accessor :id, :name, :flavor, :image, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state, :volume, :meta
+      attr_accessor :id, :name, :flavor, :image, :ips, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state, :volume, :meta
+      attr_accessor :network_name, :networks
     
       def self.get_keys()
-        return [ "id", "name", "flavor", "image", "public_ip", "private_ip", "keyname", "security_groups", "created", "state" ]
+        return [ "id", "name", "flavor", "image", "ips", "keyname", "security_groups", "created", "state" ]
       end 
         
       def initialize(connection, foggy = nil)
@@ -31,15 +32,31 @@ module HP
         end
         @created = foggy.created_at
         @state = foggy.state
+        @network_name = foggy.network_name
+        @networks = ""
+        @ips = ""
+        unless foggy.addresses.nil?
+          begin
+            foggy.addresses.keys.each { |x|
+              @networks += "," unless @networks.empty?
+              @networks += x.to_s
+              foggy.addresses[x].each { |y|
+                unless y["addr"].nil?
+                  @ips += "," unless @ips.empty?
+                  @ips += y["addr"].to_s
+                  @public_ip = y["addr"].to_s
+                end
+              }
+            }
+          rescue Exception => e
+            warn "Error parsing addresses: " + e.to_s
+          end
+        end
         @meta = HP::Cloud::Metadata.new(foggy.metadata)
       end
 
       def set_flavor(value)
         flav = Flavors.new.get(value, false)
-        unless flav.is_valid?
-          set_error(flav.cstatus)
-          return false
-        end
         @flavor = flav.id
         return true
       end
@@ -129,6 +146,17 @@ module HP
         return true
       end
 
+      def set_network(value)
+        return true if value.nil?
+        network = Networks.new.get(value, false)
+        unless network.is_valid?
+          set_error(network.cstatus)
+          return false
+        end
+        @networks = [ network.id.to_s ]
+        return true
+      end
+
       def set_user_data(filename)
         return if filename.nil?
         @user_data = File.new(filename).read
@@ -160,7 +188,7 @@ module HP
           set_error("Error creating image '#{name}'")
           return nil
         end
-        return resp.headers["Location"].gsub(/.*\/images\//,'')
+        return resp
       end
 
       def save
@@ -182,6 +210,7 @@ module HP
              :security_groups => @security,
              :metadata => @meta.hsh}
           hsh[:image_id] = @image unless @image.nil?
+          hsh['networks'] = @networks unless @networks.nil?
           hsh['user_data'] = @user_data unless @user_data.nil?
           unless @volume.nil?
             hsh[:block_device_mapping] = [{

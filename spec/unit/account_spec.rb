@@ -251,7 +251,23 @@ describe "Accounts rejigger" do
       acct[:zones][:block_availability_zone].should eq("az-2.region-b.geo-1")
     end
   end
-  after(:all) {reset_all()}
+
+  context "when rejigger called v2" do
+    it "should have basic settings" do
+      accounts = Accounts.new()
+      acct = accounts.create('Walkmen')
+      acct[:zones][:compute_availability_zone] = "region-b.geo-1"
+
+      accounts.rejigger_zones(acct[:zones])
+
+      acct[:zones][:compute_availability_zone].should eq("region-b.geo-1")
+      acct[:zones][:storage_availability_zone].should eq("region-b.geo-1")
+      acct[:zones][:cdn_availability_zone].should eq("region-b.geo-1")
+      acct[:zones][:block_availability_zone].should eq("region-b.geo-1")
+    end
+  end
+
+  after(:each) {reset_all()}
 end
 
 describe "Accounts set" do

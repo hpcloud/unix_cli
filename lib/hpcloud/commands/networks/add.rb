@@ -4,19 +4,15 @@ module HP
 
       desc "networks:add <name>", "Add a network."
       long_desc <<-DESC
-  Add a new network in your account with the specified name.  Optionally, you can specify administrative state or shared.
+  Add a new network in your account with the specified name.  Optionally, you can specify administrative state.
 
 Examples:
   hpcloud networks:add netty        # Create a new network named 'netty':
-  hpcloud networks:add netty -u -h  # Create a new network named 'netty' up and shared:
   hpcloud networks:add netty --no-adminstateup  # Create a new network named 'netty' admin state down:
       DESC
       method_option :adminstateup, :default => true,
                     :type => :boolean, :aliases => '-u',
                     :desc => 'Administrative state up.'
-      method_option :shared, :default => false,
-                    :type => :boolean, :aliases => '-h',
-                    :desc => 'Shared.'
       CLI.add_common_options
       define_method "networks:add" do |name|
         cli_command(options) {
@@ -25,7 +21,6 @@ Examples:
           end
           network = HP::Cloud::NetworkHelper.new(Connection.instance)
           network.name = name
-          network.shared = options[:shared]
           network.admin_state_up = options[:adminstateup]
           if network.save == true
             @log.display "Created network '#{name}' with id '#{network.id}'."

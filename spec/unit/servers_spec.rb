@@ -14,12 +14,16 @@ describe "Server getter" do
     fog_server.stub(:security_groups).and_return(@security_groups)
     fog_server.stub(:created_at).and_return("today")
     fog_server.stub(:state).and_return("ACTIVE")
+    fog_server.stub(:network_name).and_return("netti")
+    fog_server.stub(:addresses).and_return(nil)
     fog_server.stub(:metadata).and_return([])
     return fog_server
   end
 
   before(:each) do
-    @servers = [ mock_server("Hal"), mock_server("Skynet"), mock_server("Matrix") ]
+    @all = [ mock_server("Hal"), mock_server("Skynet"), mock_server("Matrix") ]
+    @servers = double("servers")
+    @servers.stub(:all).and_return(@all)
     @compute = double("compute")
     @compute.stub(:servers).and_return(@servers)
     Connection.instance.stub(:compute).and_return(@compute)

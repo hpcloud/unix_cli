@@ -15,6 +15,8 @@ describe "Server class" do
     @fog_server.stub(:security_groups).and_return(@security_groups)
     @fog_server.stub(:created_at).and_return("today")
     @fog_server.stub(:state).and_return("ACTIVE")
+    @fog_server.stub(:network_name).and_return("hpcloud")
+    @fog_server.stub(:addresses).and_return({:k=>:v})
     @fog_server.stub(:metadata).and_return([])
   end
 
@@ -26,13 +28,12 @@ describe "Server class" do
       keys[1].should eql("name")
       keys[2].should eql("flavor")
       keys[3].should eql("image")
-      keys[4].should eql("public_ip")
-      keys[5].should eql("private_ip")
-      keys[6].should eql("keyname")
-      keys[7].should eql("security_groups")
-      keys[8].should eql("created")
-      keys[9].should eql("state")
-      keys.length.should eql(10)
+      keys[4].should eql("ips")
+      keys[5].should eql("keyname")
+      keys[6].should eql("security_groups")
+      keys[7].should eql("created")
+      keys[8].should eql("state")
+      keys.length.should eql(9)
     end
   end
 
@@ -89,22 +90,6 @@ describe "Server class" do
     end
   end
 
-  context "when we call set_flavor with bogus flavor" do
-    it "it returns false and sets error" do
-      @connection = double("connection")
-      @connection.stub(:flavors).and_return([])
-      Connection.instance.stub(:compute).and_return(@connection)
-      srv = HP::Cloud::ServerHelper.new(@connection)
-
-      srv.set_flavor('bogus').should be_false
-
-      srv.cstatus.message.should eq("Cannot find a flavor matching 'bogus'.")
-      srv.cstatus.error_code.should eq(:not_found)
-      srv.is_windows?.should be_false
-      srv.image.should be_nil
-    end
-  end
-
   context "when we call set_flavor with good flavor" do
     it "it sets the flavor and returns true" do
       @connection = double("connection")
@@ -113,7 +98,9 @@ describe "Server class" do
       flavor.stub(:name).and_return('flavor_flav')
       flavor.stub(:ram).and_return(1024)
       flavor.stub(:disk).and_return(60)
-      @connection.stub(:flavors).and_return([flavor])
+      @flavors = double("flavors")
+      @flavors.stub(:all).and_return([flavor])
+      @connection.stub(:flavors).and_return(@flavors)
       Connection.instance.stub(:compute).and_return(@connection)
       srv = HP::Cloud::ServerHelper.new(@connection)
 
@@ -128,7 +115,9 @@ describe "Server class" do
   context "when we call set_image with bogus image" do
     it "it returns false and sets error" do
       @connection = double("connection")
-      @connection.stub(:images).and_return([])
+      images = double("images")
+      images.stub(:all).and_return([])
+      @connection.stub(:images).and_return(images)
       Connection.instance.stub(:compute).and_return(@connection)
       srv = HP::Cloud::ServerHelper.new(@connection)
 
@@ -153,7 +142,9 @@ describe "Server class" do
       image.stub(:created_at).and_return('now')
       image.stub(:status).and_return('g2g')
       image.stub(:metadata).and_return([meta])
-      @connection.stub(:images).and_return([image])
+      images = double("images")
+      images.stub(:all).and_return([image])
+      @connection.stub(:images).and_return(images)
       Connection.instance.stub(:compute).and_return(@connection)
       srv = HP::Cloud::ServerHelper.new(@connection)
 
@@ -171,7 +162,9 @@ describe "Server class" do
       @block = double("connection")
       @block.stub(:volumes).and_return([])
       @connection = double("connection")
-      @connection.stub(:servers).and_return([])
+      servers = double("servers")
+      servers.stub(:all).and_return([])
+      @connection.stub(:servers).and_return(servers)
       Connection.instance.stub(:compute).and_return(@connection)
       Connection.instance.stub(:block).and_return(@block)
       srv = HP::Cloud::ServerHelper.new(@connection)
@@ -203,7 +196,9 @@ describe "Server class" do
       @block = double("block")
       @block.stub(:volumes).and_return([volume])
       @connection = double("connection")
-      @connection.stub(:servers).and_return([])
+      servers = double("servers")
+      servers.stub(:all).and_return([])
+      @connection.stub(:servers).and_return(servers)
       Connection.instance.stub(:block).and_return(@block)
       Connection.instance.stub(:compute).and_return(@connection)
       srv = HP::Cloud::ServerHelper.new(@connection)
@@ -321,7 +316,9 @@ describe "Server class" do
       image.stub(:created_at).and_return('now')
       image.stub(:status).and_return('g2g')
       image.stub(:metadata).and_return([meta])
-      @connection.stub(:images).and_return([image])
+      images = double("images")
+      images.stub(:all).and_return([image])
+      @connection.stub(:images).and_return(images)
       Connection.instance.stub(:compute).and_return(@connection)
       srv = HP::Cloud::ServerHelper.new(@connection)
       srv.set_image('good').should be_true
@@ -379,38 +376,6 @@ describe "Server class" do
       srv.set_security_groups('un","deux",trois').should be_false
       srv.cstatus.message.should eq("Invalid security group 'un\",\"deux\",trois' should be comma separated list")
       srv.cstatus.error_code.should eq(:incorrect_usage)
-    end
-  end
-
-  context "when we create image successfully" do
-    it "should return id" do
-      name = "snapshot"
-      hsh = {"a"=>"A","b"=>"B"}
-      resp = double("resp")
-      resp.stub(:headers).and_return({"Location"=>"http://127.0.0.1/images/21"})
-      fog_server = double("fog_server")
-      fog_server.stub(:id).and_return(222)
-      fog_server.stub(:name).and_return("Hal")
-      fog_server.stub(:flavor_id).and_return(201)
-      fog_server.stub(:image_id).and_return(101)
-      fog_server.stub(:public_ip_address).and_return("172.0.0.1")
-      fog_server.stub(:private_ip_address).and_return("10.0.0.1")
-      fog_server.stub(:key_name).and_return("key")
-      fog_server.stub(:security_groups).and_return(nil)
-      fog_server.stub(:created_at).and_return(nil)
-      fog_server.stub(:state).and_return(nil)
-      fog_server.stub(:metadata).and_return(nil)
-      fog_server.should_receive(:create_image).with(name, hsh).and_return(resp)
-      srv = HP::Cloud::ServerHelper.new(double("connection"), fog_server)
-
-      id = srv.create_image(name, hsh)
-
-      id.should eq("21")
-    end
-  end
-
-  context "when create image fails" do
-    it "should return set the error" do
     end
   end
 

@@ -4,13 +4,13 @@ module HP
 
       map %w(securitygroups:rules:rm securitygroups:rules:revoke securitygroups:rules:delete securitygroups:rules:del) => 'securitygroups:rules:remove'
 
-      desc "securitygroups:rules:remove <sec_group_name> <rule_id>", "Remove a rule from the security group."
+      desc "securitygroups:rules:remove rule_id [rule_id...]", "Remove security group rules."
       long_desc <<-DESC
-  Remove a rule from the security group, specifyied its ID. Optionally, you can specify an availability zone.
+  Remove the specified security group rules.  More than one rule may be specified on the command line.
 
 Examples:
-  hpcloud securitygroups:rules:remove mysecgroup 111  # Remove the rule `mysecgroup` from security group `111`:
-  hpcloud securitygroups:rules:remove mysecgroup 111 -z az-2.region-a.geo-1    # Remove the rule `mysecgroup` from security group `111` for availability zone `az-2.region-a.geo-1`:
+  hpcloud securitygroups:rules:remove 111     # Remove the rule `111`:
+  hpcloud securitygroups:rules:remove 111 222 # Remove the rule `111` and `222`:
 
 Aliases: securitygroups:rules:rm, securitygroups:rules:revoke, securitygroups:rules:delete, securitygroups:rules:del
       DESC

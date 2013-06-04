@@ -51,8 +51,11 @@ do
         echo "      ;;" >>${OFILE}
         STATE='stop'
       else
-        LINE=$(echo $LINE | sed -e 's/.*--/--/' -e 's/\].*//' -e 's/=.*//')
-        OPT="${OPT}${SEPER}${LINE}"
+        LINE=$(echo $LINE | sed -e 's/.*--/--/' -e 's/\].*//' -e 's/=.*//' -e 's/#.*//' )
+        if [ -n "${LINE}" ]
+        then
+          OPT="${OPT}${SEPER}${LINE}"
+        fi
         SEPER=' '
       fi
       ;;

@@ -25,6 +25,7 @@ Aliases: routers:list
       CLI.add_report_options
       CLI.add_common_options
       def routers(*arguments)
+        columns = [ "id", "name", "admin_state_up", "status", "external_gateway_info" ]
         cli_command(options) {
           routers = Routers.new
           if routers.empty?
@@ -34,7 +35,7 @@ Aliases: routers:list
             if ray.empty?
               @log.display "There are no routers that match the provided arguments"
             else
-              Tableizer.new(options, RouterHelper.get_keys(), ray).print
+              Tableizer.new(options, columns, ray).print
             end
           end
         }

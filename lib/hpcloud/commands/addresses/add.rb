@@ -4,13 +4,13 @@ module HP
 
       map %w(addresses:allocate) => 'addresses:add'
 
-      desc "addresses:add", "Add or allocate a new public IP address."
+      desc "addresses:add", "Allocate a new public IP address."
       long_desc <<-DESC
-  Add or allocate a new public IP address from the pool of available IP addresses.  Optionally, you can set an availability zone.
+  Add or allocate a new public IP address from the pool of available IP addresses.  If a network is not specified, the first external network found will be used.
 
 Examples:
-  hpcloud addresses:add netty # Add a new public IP address to network 'netty':
-  hpcloud addresses:add netty -z az-2.region-a.geo-1 # Add a new public IP address in availability zone `az-2.region-a.geo-1`:
+  hpcloud addresses:add # Add a new public IP address to external network:
+  hpcloud addresses:add -n netty -z az-2.region-a.geo-1 # Add a new IP address to `netty` in availability zone `az-2.region-a.geo-1`:
 
 Aliases: addresses:allocate
       DESC

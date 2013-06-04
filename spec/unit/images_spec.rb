@@ -12,7 +12,9 @@ describe "Image getter" do
   end
 
   before(:each) do
-    @images = [ mock_image("Fedora"), mock_image("Suse"), mock_image("Gentoo") ]
+    @all = [ mock_image("Fedora"), mock_image("Suse"), mock_image("Gentoo") ]
+    @images = double("images")
+    @images.stub(:all).and_return(@all)
     @compute = double("compute")
     @compute.stub(:images).and_return(@images)
     Connection.instance.stub(:compute).and_return(@compute)
