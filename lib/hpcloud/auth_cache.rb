@@ -86,8 +86,9 @@ module HP
         catalog = creds[:service_catalog]
         return nil if catalog.nil?
         return nil if catalog[service.to_sym].nil?
-        keys = catalog[service.to_sym].keys.map { |x| x.to_s }
-        return keys.sort.first
+        keys = []
+        catalog[service.to_sym].keys.each { |x| keys << x.to_s }
+        return keys.sort.first.to_s
       end
     end
   end
