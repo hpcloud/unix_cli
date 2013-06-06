@@ -14,11 +14,11 @@ describe "account:edit" do
         "****** Setup your HP Cloud Services hp account ******\n" +
         "Access Key Id: [] " +
         "Secret Key: [] " +
-        "Auth Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] " +
-        "Tenant Id: [] " +
+        "Identity (Auth) Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] " +
+        "Project (aka Tenant) Id: [] " +
         "Compute zone: [] " +
-        "Storage zone: [] " +
-        "Block zone: [] " +
+        "Storage zone: [A] " +
+        "Block zone: [A] " +
         "Account credentials for HP Cloud Services have been saved.\n")
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
@@ -31,8 +31,8 @@ describe "account:edit" do
         "****** Setup your HP Cloud Services hp account ******\n" +
         "Access Key Id: [foo] " +
         "Secret Key: [bar] " +
-        "Auth Uri: [https://127.0.0.1/] " +
-        "Tenant Id: [111111] " +
+        "Identity (Auth) Uri: [https://127.0.0.1/] " +
+        "Project (aka Tenant) Id: [111111] " +
         "Compute zone: [A] " +
         "Storage zone: [region-b.geo-1] " +
         "Block zone: [az-1.region-b.geo-1] " +

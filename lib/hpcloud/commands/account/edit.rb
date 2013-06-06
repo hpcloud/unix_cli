@@ -10,7 +10,7 @@ module HP
       long_desc <<-DESC
   Create or edit your account credentials. If you do not specify an account name on the command line, the default account is updated.  If you do not specify name value pairs, you are prompted to input the account values.
 
-  You  need your Access Key Id, Secret Key and Tenant Id from the HP Cloud web site to set up your account. Optionally, you can specify your own endpoint to access, but in most cases we recommend you use the default.
+  You  need your Access Key Id, Secret Key and Project (aka Tenant) Id from the HP Cloud web site to set up your account. Optionally, you can specify your own endpoint to authorize your identity, but in most cases we recommend you use the default.
   
   Availability zones typically have the format 'az-1.region-a.geo-1' or 'region-a.geo-1', depending on the service.  See your account API keys page to see your list of activated availability zones: https://console.hpcloud.com/account/api_keys
   
@@ -20,8 +20,8 @@ module HP
   
   * Access Key Id
   * Secret Key 
-  * Auth Uri
-  * Tenant Id
+  * Identify (Auth) Uri
+  * Project (aka Tenant) Id
   * Compute zone
   * Storage zone
   * Block zone
@@ -77,8 +77,8 @@ Aliases: account:add, account:setup, account:update
               @log.display "****** Setup your #{service_name} #{name} account ******"
               cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
               cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
-              cred[:auth_uri] = ask_with_default 'Auth Uri:', "#{cred[:auth_uri]}"
-              cred[:tenant_id] = ask_with_default 'Tenant Id:', "#{cred[:tenant_id]}"
+              cred[:auth_uri] = ask_with_default 'Identity (Auth) Uri:', "#{cred[:auth_uri]}"
+              cred[:tenant_id] = ask_with_default 'Project (aka Tenant) Id:', "#{cred[:tenant_id]}"
               zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
               accounts.rejigger_zones(zones)
               zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"

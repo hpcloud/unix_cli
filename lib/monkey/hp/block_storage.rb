@@ -38,6 +38,7 @@ module Fog
         def compute
           @compute ||= Fog::Compute.new(
             :provider       => 'HP',
+            :version => :v2,
             :hp_access_key  => @hp_access_key,
             :hp_secret_key  => @hp_secret_key,
             :hp_auth_uri    => @hp_auth_uri,

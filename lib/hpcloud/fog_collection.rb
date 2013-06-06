@@ -94,6 +94,7 @@ module HP
           raise HP::Cloud::Exceptions::General.new("A #{@name} with the name '#{name}' already exists")
         rescue HP::Cloud::Exceptions::NotFound => e
         end
+        return nil
       end
     end
   end

@@ -30,10 +30,10 @@ your account you will need the account details from the HP Cloud Services web si
         $ hpcloud account:setup
 
         ****** Setup your HP Cloud Services account ******
-        Account ID: <enter your account key>
-        Account Key: <enter your secret key>
-        Auth Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/]
-        Tenant Id: <enter your tenant id>
+        Access Key: <enter your account key>
+        Secret Key: <enter your secret key>
+        Identity Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/]
+        Project Id: <enter your project id>
         Verifying your HP Cloud Services account...
         Account credentials for HP Cloud Services have been set up.
 
