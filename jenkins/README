@@ -1,0 +1,36 @@
+= Unix Command Line Interface Jenkins Jobs
+
+There are several Jenkins jobs for continuous integration of the Unix Command Line Interface (CLI).  The jobs are bash shell scripts and an effort has been made to make most if not all of the intelligence of the job in the shell script checked into git.  In general, the code is the documentation because the code is always more accurate than wiki entries or other forms of documentation.  Keep the code up to date.  If you need to upderstand the process or run part of the process, use the code.
+
+== Setup
+
+The Jenkins slave must be configured to run the Unix CLI tests and CI jobs.  Several account files must be created including:
+
+hpcloud account:setup primary
+hpcloud account:setup secondary
+hpcloud account:setup deploy
+hpcloud config:update default_account=primary ssl_verify_peer=false
+
+Currently, the primary and secondary accounts used for testing are Rupak's ST1 accounts.  The deploy account is a Devex account where we have traditionally put downloadable gems for production that are linked to the docs.hpcloud.com site.
+
+The Jenkins machine should have RVM installed and the Jenkins jobs should use their own RVM gem set.
+
+== Build Job
+
+The build job is typically manually run off the develop branch of the CLI git repository.  The job prepares the code for a gem build, tags the build, builds the gem and copies the gem to the deploy area.
+
+== Documentation Job
+
+The documentation job is automatically triggered off the develop branch of the CLI git repository.  The documentation job automatically generates the release notes, generates the reference manual and then updates the documentation in the documentation git repository.
+
+== Release Job
+
+The release job updates the latest file in the deploy area.  This makes the release "live" to users.  When a user runs the CLI, it will periodically check the latest file and if a new release is available, it will print a message.
+
+== Test 1.9.2
+
+This job runs the 1.9.2 tests.  Not all the tests will run successfully with the tests jobs and it is up to the developer to manually run and verify the tests that are not run and the tests that fail when this job is run.
+
+== Test 1.8.7
+
+This job runs the 1.8.7 tests.
