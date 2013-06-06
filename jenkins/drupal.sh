@@ -38,7 +38,7 @@ cat >${REFERENCEMD} <<!
 ---
 layout: default
 title: "UNIX CLI: Command Line Reference"
-permalink: /cli/unix/reference/
+permalink: /cli/unix/2/reference/
 product: unix-cli
 
 ---
