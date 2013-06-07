@@ -4,7 +4,7 @@ module HP
 
       map %w(lb:rm lb:delete lb:del) => 'lb:remove'
 
-      desc "lb:remove name_or_id [name_or_id ...]", "Remove DNS domains (specified by name or ID)."
+      desc "lb:remove name_or_id [name_or_id ...]", "Remove load balancer (specified by name or ID)."
       long_desc <<-DESC
   Remove load balancers by specifying their names or ID. You may specify more than one load balacner name or ID on a command line.
 
