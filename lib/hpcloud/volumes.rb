@@ -4,13 +4,9 @@ require 'hpcloud/volume_helper'
 module HP
   module Cloud
     class Volumes < FogCollection
-      def initialize(bootable=false)
+      def initialize
         super("volume")
-        if bootable
-          @items = @connection.block.bootable_volumes
-        else
-          @items = @connection.block.volumes
-        end
+        @items = @connection.block.volumes
       end
 
       def create(item = nil)
