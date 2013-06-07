@@ -20,7 +20,7 @@ module HP
     
       desc 'lb [name_or_id ...]', "List the available load balancers."
       long_desc <<-DESC
-  Lists all the load balancers that are associated with the account. The list begins with identifier and contains name, size, type, create date, status, description and servers on which it is attached.  Optionally, you can filter the list by specifying name or ID.
+  Lists all the load balancers that are associated with the account. The list begins with identifier and contains name, algorithm, protocol, port and status.  Optionally, you can filter the list by specifying names or IDs.
 
 Examples:
   hpcloud lb          # List all load balancers:

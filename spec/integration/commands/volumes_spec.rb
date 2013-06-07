@@ -32,16 +32,6 @@ describe "Volumes command" do
     end
   end
 
-  context "volumes --bootable" do
-    it "should report success" do
-      rsp = cptr("volumes --bootable")
-
-      rsp.stderr.should eq("")
-      then_expected_table(rsp.stdout)
-      rsp.exit_status.should be_exit(:success)
-    end
-  end
-
   context "volumes with valid avl" do
     it "should report success" do
       rsp = cptr("volumes #{@vol1.name} #{@vol2.name} -z az-1.region-a.geo-1")

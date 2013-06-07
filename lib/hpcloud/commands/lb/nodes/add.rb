@@ -3,7 +3,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "lb:nodes:add <load_balancer_name_or_id> <address> <port>", "Add a node to the load balancer."
+      desc "lb:nodes:add <lb_name_or_id> <address> <port>", "Add a node to the load balancer."
       long_desc <<-DESC
   Add a node to the load balancer with the specified adddress and port.
 

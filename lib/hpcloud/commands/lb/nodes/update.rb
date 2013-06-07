@@ -3,7 +3,7 @@ module HP
   module Cloud
     class CLI < Thor
 
-      desc "lb:nodes:update <lb_name_or_id> <name_or_id> <condition>", "Update a node in a load balancer."
+      desc "lb:nodes:update <lb_name_or_id> <node_id> <condition>", "Update a node in a load balancer."
       long_desc <<-DESC
   Update a node in a load balancer with the specified condition.  The id of the node may be used or 'address:port'.
 
