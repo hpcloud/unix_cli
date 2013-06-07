@@ -4,12 +4,12 @@ module HP
 
       map %w(lb:nodes:rm lb:nodes:delete lb:nodes:del) => 'lb:nodes:remove'
 
-      desc "lb:nodes:remove name_or_id address port", "Remove the specified load balancer node."
+      desc "lb:nodes:remove lb_name_or_id node_id [node_id ...]", "Remove the specified load balancer nodes."
       long_desc <<-DESC
-  Remove load balancer node by specifying the name or id of the load balancer, the address and the port.
+  Remove load balancer node by specifying the name or id of the load balancer and the id of the nodes.
 
 Examples:
-  hpcloud lb:remove thing1 10.2.2.2 80   # Delete the load balancers `thing1` and `thing2`:
+  hpcloud lb:nodes:remove scale 1044952   # Delete the load balancers ndoe `1044952` from `scale`:
 
 Aliases: lb:nodes:rm, lb:nodes:delete, lb:nodes:del
       DESC
