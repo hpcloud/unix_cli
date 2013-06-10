@@ -27,7 +27,12 @@ Examples:
             end
           end
           unless options[:gateway].nil?
-            router.external_gateway_info = Routers.parse_gateway(options[:gateway])
+            netty = Routers.parse_gateway(options[:gateway])
+            if netty.nil?
+              router.external_gateway_info = {}
+            else
+              router.external_gateway_info = { 'network_id' => netty.id }
+            end
           end
           router.save
           @log.display "Updated router '#{name}'."
