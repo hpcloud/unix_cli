@@ -22,14 +22,20 @@ Examples:
           router = Routers.new.unique(name)
           router.name = name
           netty = Routers.parse_gateway(options[:gateway])
-          router.external_gateway_info = { 'network_id' => netty.id }
+          if netty.nil?
+            router.external_gateway_info = {}
+          else
+            router.external_gateway_info = { 'network_id' => netty.id }
+          end
           router.admin_state_up = options[:adminstateup]
           router.save
-          unless netty.subnets.nil?
-            unless netty.subnets.empty?
-              sub_command("add router interface for subnet") {
-                Connection.instance.network.add_router_interface(router.id, netty.subnets, nil)
-              }
+          unless netty.nil?
+            unless netty.subnets.nil?
+              unless netty.subnets.empty?
+                sub_command("add router interface for subnet") {
+                  Connection.instance.network.add_router_interface(router.id, netty.subnets, nil)
+                }
+              end
             end
           end
           @log.display "Created router '#{name}' with id '#{router.id}'."

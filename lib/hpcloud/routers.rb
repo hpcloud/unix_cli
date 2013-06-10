@@ -20,7 +20,7 @@ module HP
             netty = networks.get(value)
             return netty
           end
-          return {}
+          return nil
         end
         networks.items.each{ |x|
           if x.router_external == true

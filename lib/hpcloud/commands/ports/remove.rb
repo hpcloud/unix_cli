@@ -24,7 +24,7 @@ Aliases: ports:rm, ports:delete, ports:del
             sub_command("removing port") {
               if port.is_valid?
                 port.destroy
-                @log.display "Removed port '#{port.name}'."
+                @log.display "Removed port '#{port.id}'."
               else
                 @log.error port.cstatus
               end
