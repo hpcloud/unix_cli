@@ -24,7 +24,7 @@ cat >${NOTESMD} <<!
 ---
 layout: default
 title: "Release Notes for the HP Cloud Services UNIX CLI"
-permalink: /cli/unix/release-notes/
+permalink: /cli/unix/2/release-notes/
 product: unix-cli
 
 ---
