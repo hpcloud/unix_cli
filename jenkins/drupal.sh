@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 SRC=`pwd`
 TMP=/tmp/unix_cli_drupal
-NOTESMD='cli.unix.release-notes.md'
+NOTESMD='cli.unix.2.release-notes.md'
 REFERENCEMD='cli.unix.2.reference.md'
 NOTES=${SRC}/notes.txt
 REFERENCE=${SRC}/reference.txt
@@ -24,7 +24,7 @@ cat >${NOTESMD} <<!
 ---
 layout: default
 title: "Release Notes for the HP Cloud Services UNIX CLI"
-permalink: /cli/unix/release-notes/
+permalink: /cli/unix/2/release-notes/
 product: unix-cli
 
 ---
