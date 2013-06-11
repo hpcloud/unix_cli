@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 SRC=`pwd`
 TMP=/tmp/unix_cli_drupal
-NOTESMD='cli.unix.release-notes.md'
+NOTESMD='cli.unix.2.release-notes.md'
 REFERENCEMD='cli.unix.2.reference.md'
 NOTES=${SRC}/notes.txt
 REFERENCE=${SRC}/reference.txt
