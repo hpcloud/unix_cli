@@ -9,7 +9,7 @@ module HP
   Add metadata to a volume in your compute account.  You can specify the volume name or ID.  Optionally, you can specify an availability zone. The metadata must be a comma separated list of name value pairs.
 
 Examples:
-  hpcloud volumes:metadata:add my_volume 'r2=d2,c3=po'  # Add the specified metadata to the volume (f the metadata exists, it is updated):
+  hpcloud volumes:metadata:add my_volume 'r2=d2,c3=po'  # Add the specified metadata to the volume (f the metadata exists, it is updated)
 
 Aliases: volumes:metadata:update
       DESC

@@ -16,9 +16,9 @@ module HP
   Lists all the DNS domains that are associated with the account. The list begins with identifier and contains name, TTL, serial number, email and time created.  Optionally, you can filter the list by specifying name or ID.
 
 Examples:
-  hpcloud dns            # List all dns domains:
-  hpcloud dns 421e8cbf   # List dns domain with id `421e8cbf`:
-  hpcloud dns test.com.  # List dns domain `test.com.`:
+  hpcloud dns            # List all dns domains
+  hpcloud dns 421e8cbf   # List dns domain with id `421e8cbf`
+  hpcloud dns test.com.  # List dns domain `test.com.`
 
 Aliases: dns:list
       DESC

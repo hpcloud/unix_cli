@@ -9,7 +9,7 @@ module HP
   Remove metadata from a server in your compute account.  You can speciry the erver name or ID.  You can specify one or more metadata keys on the command line.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud servers:metadata:remove :my_server r2 c3  # Remove the the r2 and c3 metadata from the server:
+  hpcloud servers:metadata:remove :my_server r2 c3  # Remove the the r2 and c3 metadata from the server
 
 Aliases: servers:metadata:rm
       DESC

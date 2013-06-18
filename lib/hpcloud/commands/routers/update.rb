@@ -7,7 +7,7 @@ module HP
   Update an existing router with new administrative state or gateway infomration.  If you do not want an external network, use the gateway option with an empty string.
 
 Examples:
-  hpcloud routers:update trout -u # Update router 'trout' administrative state:
+  hpcloud routers:update trout -u # Update router 'trout' administrative state
       DESC
       method_option :gateway,
                     :type => :string, :aliases => '-g',

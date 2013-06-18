@@ -21,9 +21,9 @@ module HP
   List the servers in your compute account. You may filter the list by server name or ID.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud servers                         # List the servers:
-  hpcloud servers hal                     # List server `hal`:
-  hpcloud servers -z az-2.region-a.geo-1  # List the servers for availability zone `az-2.region-a.geo-1`:
+  hpcloud servers                         # List the servers
+  hpcloud servers hal                     # List server `hal`
+  hpcloud servers -z az-2.region-a.geo-1  # List the servers for availability zone `az-2.region-a.geo-1`
 
 Aliases: servers:list
       DESC

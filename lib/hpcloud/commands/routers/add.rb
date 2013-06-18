@@ -8,7 +8,7 @@ module HP
 
 Examples:
   hpcloud routers:add routerone   # Create a new router named 'routerone'
-  hpcloud routers:add routertwo -g Ext-Net   # Create a new router named 'routertwo' with the specified network as a gateway:
+  hpcloud routers:add routertwo -g Ext-Net   # Create a new router named 'routertwo' with the specified network as a gateway
       DESC
       method_option :gateway,
                     :type => :string, :aliases => '-g',

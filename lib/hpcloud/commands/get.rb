@@ -9,8 +9,8 @@ module HP
   Copy remote objects from a container to your current directory. Optionally, you can specify an availability zone.
 
 Examples: 
-  hpcloud get :my_container/file.txt :my_container/resume.txt  # Copy `file.txt` and `resume.txt` to your current directory:
-  hpcloud get :my_container/file.txt -z region-a.geo-1    # Copy `file.txt` to your current directory for availability zone `region-a.geo-1`:
+  hpcloud get :my_container/file.txt :my_container/resume.txt  # Copy `file.txt` and `resume.txt` to your current directory
+  hpcloud get :my_container/file.txt -z region-a.geo-1    # Copy `file.txt` to your current directory for availability zone `region-a.geo-1`
 
 Aliases: fetch
       DESC

@@ -9,9 +9,9 @@ module HP
   Remove DNS domains by specifying their names or ID. You may specify more than one DNS name or ID on a command line.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud dns:remove tome treatise   # Delete the DNS domains `tome` and `treatise`:
-  hpcloud dns:remove 998             # Delete the DNS domain with ID 998:
-  hpcloud dns:remove my-dns -z az-2.region-a.geo-1  # Delete the DNS domain `my-dns` for availability zone `az-2.region-a.geo-1`:
+  hpcloud dns:remove tome treatise   # Delete the DNS domains `tome` and `treatise`
+  hpcloud dns:remove 998             # Delete the DNS domain with ID 998
+  hpcloud dns:remove my-dns -z az-2.region-a.geo-1  # Delete the DNS domain `my-dns` for availability zone `az-2.region-a.geo-1`
 
 Aliases: dns:rm, dns:delete, dns:del
       DESC

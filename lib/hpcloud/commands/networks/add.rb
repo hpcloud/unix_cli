@@ -7,8 +7,8 @@ module HP
   Add a new network in your account with the specified name.  Optionally, you can specify administrative state.
 
 Examples:
-  hpcloud networks:add netty        # Create a new network named 'netty':
-  hpcloud networks:add netty --no-adminstateup  # Create a new network named 'netty' admin state down:
+  hpcloud networks:add netty        # Create a new network named 'netty'
+  hpcloud networks:add netty --no-adminstateup  # Create a new network named 'netty' admin state down
       DESC
       method_option :adminstateup, :default => true,
                     :type => :boolean, :aliases => '-u',

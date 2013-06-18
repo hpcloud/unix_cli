@@ -14,9 +14,9 @@ module HP
   Lists all the subnets that are associated with the account. The list begins with identifier and contains name, status, shared, admin state, and subnets.  Optionally, you can filter the list by specifying name or ID.
 
 Examples:
-  hpcloud subnets       # List all subnets:
-  hpcloud subnets 1     # List the details for subnets with id `1`:
-  hpcloud subnets testo # List the details for subnets named `testo`:
+  hpcloud subnets       # List all subnets
+  hpcloud subnets 1     # List the details for subnets with id `1`
+  hpcloud subnets testo # List the details for subnets named `testo`
 
 Aliases: subnets:list
       DESC

@@ -10,8 +10,8 @@ module HP
   Print the service catalog of the specified account.  Optionally, you may specify a particular service to print such as "Compute".
   
 Examples:
-  hpcloud account:catalog useast # Print the service catalog of `useast`:
-  hpcloud account:catalog useast Compute # Print the compute catalog of `useast`:
+  hpcloud account:catalog useast # Print the service catalog of `useast`
+  hpcloud account:catalog useast Compute # Print the compute catalog of `useast`
       DESC
       method_option :debug, :type => :string, :alias => '-x',
                     :desc => 'Debug logging 1,2,3,...'

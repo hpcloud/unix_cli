@@ -7,8 +7,8 @@ module HP
   Update a subnet IP version, gateway, DHCP, DNS name servers, or host routes.  The update command will do its best to guess the IP version from the CIDR, but you may override it.  The DNS name servers should be a command seperated list e.g.: 10.1.1.1,10.2.2.2.  The host routes should be a semicolon separated list of destination and nexthop pairs e.g.: 127.0.0.1/32,10.1.1.1;100.1.1.1/32,10.2.2.2
 
 Examples:
-  hpcloud subnets:update subwoofer -g 10.0.0.1     # Update 'subwoofer' gateway:
-  hpcloud subnets:update subwoofer -n 100.1.1.1 -d # Update 'subwoofer' with new DNS and DHCP:
+  hpcloud subnets:update subwoofer -g 10.0.0.1     # Update 'subwoofer' gateway
+  hpcloud subnets:update subwoofer -n 100.1.1.1 -d # Update 'subwoofer' with new DNS and DHCP
       DESC
       method_option :ipversion,
                     :type => :string, :aliases => '-i',

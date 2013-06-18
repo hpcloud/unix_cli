@@ -12,8 +12,8 @@ module HP
   Lists records associated with the DNS domain specified by name or ID.
 
 Examples:
-  hpcloud dns:records 421e8cbf   # List records for DNS domain with ID `421e8cbf`:
-  hpcloud dns:records test.com.  # List records for DNS domain `test.com`:
+  hpcloud dns:records 421e8cbf   # List records for DNS domain with ID `421e8cbf`
+  hpcloud dns:records test.com.  # List records for DNS domain `test.com`
       DESC
       CLI.add_report_options
       CLI.add_common_options

@@ -9,8 +9,8 @@ module HP
   Associate an existing and unassigned public IP address, to the specified port.  Optionally, you can specify an availability.
 
 Examples:
-  hpcloud addresses:associate 111.111.111.111 myport  # Associate the address `111.111.111.111` to port `myport`:
-  hpcloud addresses:associate 111.111.111.111 myport -z az-2.region-a.geo-1  # Associate the address `111.111.111.111` to port `myport` in availability zone `az-2.region-a.geo-1`:
+  hpcloud addresses:associate 111.111.111.111 myport  # Associate the address `111.111.111.111` to port `myport`
+  hpcloud addresses:associate 111.111.111.111 myport -z az-2.region-a.geo-1  # Associate the address `111.111.111.111` to port `myport` in availability zone `az-2.region-a.geo-1`
       DESC
       CLI.add_common_options
       define_method "addresses:associate" do |ip_or_id, port_name_or_id|

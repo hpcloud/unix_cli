@@ -7,8 +7,8 @@ module HP
   Update network in your account with the specified name.  The administrative state may be updated.
 
 Examples:
-  hpcloud networks:update netty -u # Updated 'netty' to up:
-  hpcloud networks:update netty --no-adminstateup  # Update 'netty' admin state down:
+  hpcloud networks:update netty -u # Updated 'netty' to up
+  hpcloud networks:update netty --no-adminstateup  # Update 'netty' admin state down
       DESC
       method_option :adminstateup, :default => true,
                     :type => :boolean, :aliases => '-u',

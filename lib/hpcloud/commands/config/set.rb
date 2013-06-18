@@ -13,8 +13,8 @@ module HP
 * write_timeout (in seconds)
 
 Examples:
-  hpcloud config:set read_timeout=120     # Set the read timeout to 120 seconds:
-  hpcloud config:set write_timeout=60 read_time=60    # Set the write timeout to 60 seconds and the read timeout to 60 seconds:
+  hpcloud config:set read_timeout=120     # Set the read timeout to 120 seconds
+  hpcloud config:set write_timeout=60 read_time=60    # Set the write timeout to 60 seconds and the read timeout to 60 seconds
 
 Aliases: config:add, config:update
       DESC

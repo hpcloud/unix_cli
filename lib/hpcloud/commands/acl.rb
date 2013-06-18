@@ -10,9 +10,9 @@ module HP
   View the access control list (ACL) for a container or object. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud acl :my_container/my_file.txt         # Display the ACL for the object 'my_file.txt':
-  hpcloud acl :my_container                     # Display the ACL for the container 'my_container':
-  hpcloud acl :my_container -z region-a.geo-1  # Display the ACL for the container 'my_container' for availability zone `region-a.geo-1`:
+  hpcloud acl :my_container/my_file.txt         # Display the ACL for the object 'my_file.txt'
+  hpcloud acl :my_container                     # Display the ACL for the container 'my_container'
+  hpcloud acl :my_container -z region-a.geo-1  # Display the ACL for the container 'my_container' for availability zone `region-a.geo-1`
       DESC
       CLI.add_report_options
       CLI.add_common_options

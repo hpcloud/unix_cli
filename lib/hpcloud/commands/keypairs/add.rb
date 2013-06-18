@@ -7,12 +7,12 @@ module HP
   Add a key pair by specifying the name. Optionally you can specify a fingerprint and private key data. You can use the `-o` option to save the key to a file. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud keypairs:add mykey                                           # Create the key 'mykey':
-  hpcloud keypairs:add mykey -f <fingerprint>                          # Create the key 'mykey' using the supplied fingerprint:
-  hpcloud keypairs:add mykey -p 'private key data'                     # Create the key 'mykey' using the supplied private key data:
-  hpcloud keypairs:add mykey -f <fingerprint> -p 'private key data'    # Create the key 'mykey' using the supplied fingerprint and private key data:
-  hpcloud keypairs:add mykey -o                                        # Create the key `mykey` and save it to file `mykey.pem`  in the current folder:
-  hpcloud keypairs:add mykey -z az-2.region-a.geo-1                    # Create the key `mykey` for availability zone `az-2.region-a.geo-1`:
+  hpcloud keypairs:add mykey                                           # Create the key 'mykey'
+  hpcloud keypairs:add mykey -f <fingerprint>                          # Create the key 'mykey' using the supplied fingerprint
+  hpcloud keypairs:add mykey -p 'private key data'                     # Create the key 'mykey' using the supplied private key data
+  hpcloud keypairs:add mykey -f <fingerprint> -p 'private key data'    # Create the key 'mykey' using the supplied fingerprint and private key data
+  hpcloud keypairs:add mykey -o                                        # Create the key `mykey` and save it to file `mykey.pem`  in the current folder
+  hpcloud keypairs:add mykey -z az-2.region-a.geo-1                    # Create the key `mykey` for availability zone `az-2.region-a.geo-1`
       DESC
       method_option :fingerprint,
                     :type => :string, :aliases => '-f',

@@ -14,9 +14,9 @@ module HP
   Lists all the networks that are associated with the account. The list begins with identifier and contains name, status, shared, admin state, and subnets.  Optionally, you can filter the list by specifying name or ID.
 
 Examples:
-  hpcloud networks       # List all networks:
-  hpcloud networks 1     # List the details for networks with id `1`:
-  hpcloud networks testo # List the details for networks named `testo`:
+  hpcloud networks       # List all networks
+  hpcloud networks 1     # List the details for networks with id `1`
+  hpcloud networks testo # List the details for networks named `testo`
 
 Aliases: networks:list
       DESC

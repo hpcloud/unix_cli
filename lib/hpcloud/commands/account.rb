@@ -18,9 +18,9 @@ module HP
   List your accounts and your account settings.
   
 Examples:
-  hpcloud account # List your accounts and account settings:
-  hpcloud account:list # List your accounts and account settings:
-  hpcloud account:list useast # List your accounts and account settings for domain `useast`:
+  hpcloud account # List your accounts and account settings
+  hpcloud account:list # List your accounts and account settings
+  hpcloud account:list useast # List your accounts and account settings for domain `useast`
 
 Aliases: account:list
       DESC

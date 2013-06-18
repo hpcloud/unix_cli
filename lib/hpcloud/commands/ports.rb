@@ -14,9 +14,9 @@ module HP
   Lists all the ports that are associated with the account. The list begins with identifier and contains name, network identifier, fixed IPs, MAC address, status, admin state, device identifier, and device owner.  Optionally, you can filter the list by specifying name or ID.
 
 Examples:
-  hpcloud ports       # List all ports:
-  hpcloud ports 1     # List the details for ports with id `1`:
-  hpcloud ports testo # List the details for ports named `testo`:
+  hpcloud ports       # List all ports
+  hpcloud ports 1     # List the details for ports with id `1`
+  hpcloud ports testo # List the details for ports named `testo`
 
 Aliases: ports:list
       DESC

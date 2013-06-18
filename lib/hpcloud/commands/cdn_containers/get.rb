@@ -13,9 +13,9 @@ module HP
   Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud cdn:containers:get :my_cdn_container "X-Ttl"                    # Get the value of the attribute 'X-Ttl':
-  hpcloud cdn:containers:get :my_cdn_container "X-Cdn-Uri"                # Get the value of the attribute 'X-Cdn-Uri':
-  hpcloud cdn:containers:get :my_cdn_container "X-Ttl" -z region-a.geo-1  # Get the value of the attribute `X-Ttl` for availability zone `regioni-a.geo`:
+  hpcloud cdn:containers:get :my_cdn_container "X-Ttl"                    # Get the value of the attribute 'X-Ttl'
+  hpcloud cdn:containers:get :my_cdn_container "X-Cdn-Uri"                # Get the value of the attribute 'X-Cdn-Uri'
+  hpcloud cdn:containers:get :my_cdn_container "X-Ttl" -z region-a.geo-1  # Get the value of the attribute `X-Ttl` for availability zone `regioni-a.geo`
       DESC
       CLI.add_common_options
       define_method "cdn:containers:get" do |name, attribute|

@@ -7,8 +7,8 @@ module HP
   Add an interface to your router with the specified subnet or port.
 
 Examples:
-  hpcloud routers:interface:add trout subnetty # Add an interface to the subnet 'subnetty':
-  hpcloud routers:interface:add trout proto    # Add an interface to the port 'porto':
+  hpcloud routers:interface:add trout subnetty # Add an interface to the subnet 'subnetty'
+  hpcloud routers:interface:add trout proto    # Add an interface to the port 'porto'
       DESC
       CLI.add_common_options
       define_method "routers:interface:add" do |name, subnet_or_port|

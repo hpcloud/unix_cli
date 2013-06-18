@@ -7,8 +7,8 @@ module HP
   Update a DNS domain with the specified name.  Optionally, you can specify an email or a time to live (TTL) to adjust DNS caching for your entry.  The default TTL is 3600 (one hour).
 
 Examples:
-  hpcloud dns:update mydomain.com. email@example.com        # Update DNS domain `mydomain.com` with email address `email@example.com`:
-  hpcloud dns:update mydomain.com. email@xample.com -t 7200 # Update DNS domain `mydomain.com` with email address `email@example.com` and TTL 7200:
+  hpcloud dns:update mydomain.com. email@example.com        # Update DNS domain `mydomain.com` with email address `email@example.com`
+  hpcloud dns:update mydomain.com. email@xample.com -t 7200 # Update DNS domain `mydomain.com` with email address `email@example.com` and TTL 7200
       DESC
       method_option :email,
                     :type => :string, :aliases => '-e',

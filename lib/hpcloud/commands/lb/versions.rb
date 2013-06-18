@@ -8,7 +8,7 @@ module HP
   Lists all the available load balancers versions.
 
 Examples:
-  hpcloud lb:versions          # List all versions:
+  hpcloud lb:versions          # List all versions
       DESC
       CLI.add_report_options
       CLI.add_common_options

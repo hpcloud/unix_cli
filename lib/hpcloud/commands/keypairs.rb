@@ -15,9 +15,9 @@ module HP
   List the key pairs in your compute account. You may filter the output of keys displayed by specifying the key pairs you want displayed on the command line.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud keypairs                           # List the key pairs:
-  hpcloud keypairs brat                      # List the key pair 'brat':
-  hpcloud keypairs -z az-2.region-a.geo-1    # List the key pairs for availability zone `az-2.region-a.geo-1`:
+  hpcloud keypairs                           # List the key pairs
+  hpcloud keypairs brat                      # List the key pair 'brat'
+  hpcloud keypairs -z az-2.region-a.geo-1    # List the key pairs for availability zone `az-2.region-a.geo-1`
 
 Aliases: keypairs:list
       DESC

@@ -7,7 +7,7 @@ module HP
   Update fixed IPs, administrative state, device identifier, or device owner on a port in your network.
 
 Examples:
-  hpcloud ports:update porto -u -d trump # Update 'porto' administrative status and device owner:
+  hpcloud ports:update porto -u -d trump # Update 'porto' administrative status and device owner
       DESC
       method_option :fixedips,
                     :type => :string, :aliases => '-f',

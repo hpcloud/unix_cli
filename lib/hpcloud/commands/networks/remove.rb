@@ -9,9 +9,9 @@ module HP
   Remove network by specifying their names or ID. You may specify more than one network name or ID on a command line.
 
 Examples:
-  hpcloud networks:remove arpa darpa   # Delete the network 'arpa' and 'darpa':
-  hpcloud networks:remove 998          # Delete the network with ID 998:
-  hpcloud networks:remove netty -z region-a.geo-1  # Delete the network `netty` for availability zone `region-a.geo-1`:
+  hpcloud networks:remove arpa darpa   # Delete the network 'arpa' and 'darpa'
+  hpcloud networks:remove 998          # Delete the network with ID 998
+  hpcloud networks:remove netty -z region-a.geo-1  # Delete the network `netty` for availability zone `region-a.geo-1`
 
 Aliases: networks:rm, networks:delete, networks:del
       DESC

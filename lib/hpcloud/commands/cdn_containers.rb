@@ -15,9 +15,9 @@ module HP
   List the available containers on the content delivery network (CDN). Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud cdn:containers                    # List only the CDN-enabled containers:
-  hpcloud cdn:containers -l                 # List all the container on the CDN:
-  hpcloud cdn:containers -z region-a.geo-1  # List only the CDN-enabled containers for availability zone `region-a.geo-1`:
+  hpcloud cdn:containers                    # List only the CDN-enabled containers
+  hpcloud cdn:containers -l                 # List all the container on the CDN
+  hpcloud cdn:containers -z region-a.geo-1  # List only the CDN-enabled containers for availability zone `region-a.geo-1`
 
 Aliases: cdn:containers:list
       DESC

@@ -13,9 +13,9 @@ module HP
   Lists all block snapshots associated with the account on the server. The list starts with identifier and contains name, size, type, create date, status, description and servers to which it is attached.  Optionally, you can filter the list by name or ID.
 
 Examples:
-  hpcloud snapshots           # List all snapshots:
-  hpcloud snapshots 1         # List the detail information for snapshot `1`:
-  hpcloud snapshots testsnap  # List the detail information about snapshot `testsnap`:
+  hpcloud snapshots           # List all snapshots
+  hpcloud snapshots 1         # List the detail information for snapshot `1`
+  hpcloud snapshots testsnap  # List the detail information about snapshot `testsnap`
 
 Aliases: snapshots:list
       DESC

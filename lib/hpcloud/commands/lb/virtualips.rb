@@ -8,7 +8,7 @@ module HP
   Lists the virtual IPs for the specified load balancer.
 
 Examples:
-  hpcloud lb:virtualips loader   # List the virtual IPs for 'loader':
+  hpcloud lb:virtualips loader   # List the virtual IPs for 'loader'
       DESC
       CLI.add_report_options
       CLI.add_common_options

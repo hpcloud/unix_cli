@@ -7,8 +7,8 @@ module HP
   Add existing containers from your storage account to the CDN. Container names can be specified with or without the preceding colon: 'my_container' or ':my_container'. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud cdn:containers:add :tainer1 :tainer2                    # Add the containers`tainer1` and `tainer2` to the CDN:
-  hpcloud cdn:containers:add :my_cdn_container -z region-a.geo-1  # Add the container `my_cdn_container` to the CDN in the  availability zone `region-a.geo`:
+  hpcloud cdn:containers:add :tainer1 :tainer2                    # Add the containers`tainer1` and `tainer2` to the CDN
+  hpcloud cdn:containers:add :my_cdn_container -z region-a.geo-1  # Add the container `my_cdn_container` to the CDN in the  availability zone `region-a.geo`
       DESC
       CLI.add_common_options
       define_method "cdn:containers:add" do |name, *names|

@@ -17,9 +17,9 @@ module HP
   List the images in your compute account. You may filter the images displayed by specifying one ore more image names or IDs on the command line.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud images                         # List the images:
-  hpcloud images 1239                    # List image '1239':
-  hpcloud images -z az-2.region-a.geo-1  # List images for availability zone `az-2.region-a.geo-1`:
+  hpcloud images                         # List the images
+  hpcloud images 1239                    # List image '1239'
+  hpcloud images -z az-2.region-a.geo-1  # List images for availability zone `az-2.region-a.geo-1`
 
 Aliases: images:list
       DESC

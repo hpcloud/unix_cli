@@ -7,9 +7,9 @@ module HP
   Import a key pair by specifying the public key data. Alternately, you may specify the name of the import file on the command line.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud keypairs:import mykey ~/.ssh/id_rsa.pub    # Import a key from file `~/.ssh/id_rs.pub`:
-  hpcloud keypairs:import mykey 'public_key_data'    # Import a key from public key data:
-  hpcloud keypairs:import mykey 'public_key_data' -z az-2.region-a.geo-1   # Import a key from public key data for availability zone `az-2.region-a.geo-1`:
+  hpcloud keypairs:import mykey ~/.ssh/id_rsa.pub    # Import a key from file `~/.ssh/id_rs.pub`
+  hpcloud keypairs:import mykey 'public_key_data'    # Import a key from public key data
+  hpcloud keypairs:import mykey 'public_key_data' -z az-2.region-a.geo-1   # Import a key from public key data for availability zone `az-2.region-a.geo-1`
       DESC
       CLI.add_common_options
       define_method "keypairs:import" do |key_name, public_key_data|
