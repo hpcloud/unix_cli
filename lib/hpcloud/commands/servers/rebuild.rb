@@ -9,7 +9,6 @@ module HP
 Examples:
   hpcloud servers:rebuild Hal9000    # Rebuild server 'Hal9000'
   hpcloud servers:rebuild 1003 222   # Rebuild server 1003 with image 222
-  hpcloud servers:rebuild DeepThought -z az-2.region-a.geo-1    # Rebuild server `DeepThought` for availability zone `az-2.region-a.geo-1`
       DESC
       CLI.add_common_options
       define_method "servers:rebuild" do |name_or_id, *image_name_or_id|

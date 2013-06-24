@@ -10,7 +10,6 @@ module HP
 
 Examples:
   hpcloud servers:password my-server my-password         # Change the password for server 'my-server'
-  hpcloud servers:password my-server my-password -z az-2.region-a.geo-1   # Change the password for server 'my-server` for availability zone `az-2.region-a.geo-1`
 
 Aliases: servers:passwd
       DESC

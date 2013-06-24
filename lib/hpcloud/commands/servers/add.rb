@@ -11,7 +11,6 @@ Examples:
   hpcloud servers:add winserv large -i 100006567 -k winpair -s allowsRDP -p ./winpair.pem # Create a windows server with the specified key, security group, and private key to decrypt the password
   hpcloud servers:add my_server large -v natty -k key1 -s sg1   # Create a new large server named 'my_server' using volume `natty`, key `key1`, and the `sg1` security group
   hpcloud servers:add my_server small -i 20634 -k key1 -m this=that     # Create a new small server named 'my_server' using the specified image, flavor, key and metadata this=that
-  hpcloud servers:add my_server xlarge -i 7 -k key1 -z az-2.region-a.geo-1  # Create a new server named 'my_server' using the key `key1` for availability zone `az-2.region-a.geo-1`
       DESC
       method_option :key_name, :required => true,
                     :type => :string, :aliases => '-k',

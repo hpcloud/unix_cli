@@ -9,7 +9,6 @@ module HP
 Examples:
   hpcloud servers:reboot Hal9000    # Reboot server 'Hal9000'
   hpcloud servers:reboot 1003 222   # Reboot the servers with the IDs 1003 and 222
-  hpcloud servers:reboot DeepThought -z az-2.region-a.geo-1    # Reboot the server `DeepThought` for availability zone `az-2.region-a.geo-1`
       DESC
       method_option :hard, :default => false,
                     :type => :boolean, :aliases => '-h',

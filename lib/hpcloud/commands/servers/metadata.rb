@@ -13,7 +13,6 @@ module HP
 
 Examples:
   hpcloud servers:metadata Skynet                        # List server metadata
-  hpcloud servers:metadata -z az-2.region-a.geo-1 565394 # List server metadata for availability zone `az-2region-a.geo-1`
 
 Aliases: servers:metadata:list
       DESC
