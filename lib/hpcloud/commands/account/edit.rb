@@ -134,6 +134,7 @@ Aliases: account:add, account:setup, account:update
             unless acct[:provider] == "hp"
               @log.display "Accounts for providers other than HP are only supported for migration"
             end
+            AuthCache.new.remove(name)
           else
             acct = accounts.read(name, true)
             updated = ""
@@ -148,6 +149,7 @@ Aliases: account:add, account:setup, account:update
             if updated.empty? == false
               accounts.write(name)
               @log.display "Account '#{name}' set " + updated
+              AuthCache.new.remove(name)
             end
           end
         }
