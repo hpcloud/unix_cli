@@ -9,9 +9,9 @@ module HP
   Remove subnet by specifying their names or ID. You may specify more than one subnet name or ID on a command line.
 
 Examples:
-  hpcloud subnets:remove blue red   # Delete the subnet 'blue' and 'red':
-  hpcloud subnets:remove 998          # Delete the subnet with ID 998:
-  hpcloud subnets:remove netty -z region-a.geo-1  # Delete the subnet `netty` for availability zone `region-a.geo-1`:
+  hpcloud subnets:remove blue red   # Delete the subnet 'blue' and 'red'
+  hpcloud subnets:remove 998          # Delete the subnet with ID 998
+  hpcloud subnets:remove netty -z region-a.geo-1  # Delete the subnet `netty` for availability zone `region-a.geo-1`
 
 Aliases: subnets:rm, subnets:delete, subnets:del
       DESC

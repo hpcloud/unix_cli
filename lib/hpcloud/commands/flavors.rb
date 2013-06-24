@@ -9,9 +9,9 @@ module HP
   List the flavors in your compute account. You may filter the output by specifying the names or IDs of the flavors you wish to see.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud flavors                         # List the flavors:
-  hpcloud flavors xsmall small            # List the flavors `xsmall` and `small`:
-  hpcloud flavors -z az-2.region-a.geo-1  # List the flavors for  availability zone `az-2.region-a.geo-1`:
+  hpcloud flavors                         # List the flavors
+  hpcloud flavors xsmall small            # List the flavors `xsmall` and `small`
+  hpcloud flavors -z az-2.region-a.geo-1  # List the flavors for  availability zone `az-2.region-a.geo-1`
 
 Aliases: flavors:list
       DESC

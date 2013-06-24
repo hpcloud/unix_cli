@@ -9,9 +9,9 @@ module HP
   Detach volumes from all servers.  You may specify the volume by name or ID.  You can detach one more more volumes in a command line.
 
 Examples:
-  hpcloud volumes:detach myVolume     # Detach the volume 'myVolume':
-  hpcloud volumes:detach 1159         # Detach the volume with ID 1159:
-  hpcloud volumes:detach myVolume -z az-2.region-a.geo-1 # Detach the volume 'myVolume' for availability zone `az-2.region-a.geo-1`:
+  hpcloud volumes:detach myVolume     # Detach the volume 'myVolume'
+  hpcloud volumes:detach 1159         # Detach the volume with ID 1159
+  hpcloud volumes:detach myVolume -z az-2.region-a.geo-1 # Detach the volume 'myVolume' for availability zone `az-2.region-a.geo-1`
 
       DESC
       CLI.add_common_options

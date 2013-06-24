@@ -16,9 +16,9 @@ module HP
   Lists all the block volumes that are associated with the account on the server. The list begins with identifier and contains name, size, type, create date, status, description and servers on which it is attached.  Optionally, you can filter the list by specifying name or ID.
 
 Examples:
-  hpcloud volumes          # List all volumes:
-  hpcloud volumes 1        # List the details for volume `1`:
-  hpcloud volumes testvol  # List the details for volume `testvol`:
+  hpcloud volumes          # List all volumes
+  hpcloud volumes 1        # List the details for volume `1`
+  hpcloud volumes testvol  # List the details for volume `testvol`
 
 Aliases: volumes:list
       DESC

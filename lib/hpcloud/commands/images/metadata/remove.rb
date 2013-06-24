@@ -9,7 +9,7 @@ module HP
   Remove metadata from an image in your compute account.  You may specify an image name or ID.  Optionally, you may specify an availability zone.
 
 Examples:
-  hpcloud images:metadata:remove my_image r2 c3  # Remove the specified metadata from the image:
+  hpcloud images:metadata:remove my_image r2 c3  # Remove the specified metadata from the image
 
 Aliases: images:metadata:rm
       DESC

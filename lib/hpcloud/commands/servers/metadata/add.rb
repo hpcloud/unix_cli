@@ -9,7 +9,7 @@ module HP
   Add metadata to a server in your compute account.  You can specify the erver name or ID.  Optionally, you can an availability zone. The metadata should be a comma separated list of name value pairs.
 
 Examples:
-  hpcloud servers:metadata:add my_server 'r2=d2,c3=po'  # Add the specified metadata to the server (if the metadata exists, it is updated):
+  hpcloud servers:metadata:add my_server 'r2=d2,c3=po'  # Add the specified metadata to the server (if the metadata exists, it is updated)
 
 Aliases: servers:metadata:update
       DESC

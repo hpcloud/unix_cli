@@ -11,7 +11,7 @@ module HP
   Lists all the nodes associated with the specified load balancer. The list begins with identifier and address, port, condition and status.
 
 Examples:
-  hpcloud lb:nodes balancer   # List all nodes for load balancer 'balancer':
+  hpcloud lb:nodes balancer   # List all nodes for load balancer 'balancer'
 
 Aliases: lb:nodes:list
       DESC

@@ -9,8 +9,8 @@ module HP
   Get the location of an existing container on the CDN. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud cdn:containers:location :my_cdn_container                     # Get the location of the container 'my_cdn_container':
-  hpcloud cdn:containers:location :my_cdn_container -z region-a.geo-1   # Get the location of the container `my_cdn_container` for availability zone `region-a.geo-1`:
+  hpcloud cdn:containers:location :my_cdn_container                     # Get the location of the container 'my_cdn_container'
+  hpcloud cdn:containers:location :my_cdn_container -z region-a.geo-1   # Get the location of the container `my_cdn_container` for availability zone `region-a.geo-1`
 
 Aliases: cdn:containers:loc
       DESC

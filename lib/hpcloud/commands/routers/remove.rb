@@ -9,9 +9,9 @@ module HP
   Remove router by specifying their names or ID. You may specify more than one router name or ID on a command line.
 
 Examples:
-  hpcloud routers:remove blue red   # Delete the router 'blue' and 'red':
-  hpcloud routers:remove 998          # Delete the router with ID 998:
-  hpcloud routers:remove netty -z region-a.geo-1  # Delete the router `netty` for availability zone `region-a.geo-1`:
+  hpcloud routers:remove blue red   # Delete the router 'blue' and 'red'
+  hpcloud routers:remove 998          # Delete the router with ID 998
+  hpcloud routers:remove netty -z region-a.geo-1  # Delete the router `netty` for availability zone `region-a.geo-1`
 
 Aliases: routers:rm, routers:delete, routers:del
       DESC

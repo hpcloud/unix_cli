@@ -7,11 +7,11 @@ module HP
   Add a new volume to your compute account with the specified name and size.  Optionally, you can specify a description, metadata or availability zone.  If you do not specify a size, it is taken from the specified snapshot or image.  If no image or snapshot is specified, the size defaults to 1 gigabyte.
 
 Examples:
-  hpcloud volumes:add my_volume 10               # Create a new volume named 'my_volume' of size 10:
-  hpcloud volumes:add my_volume 10 -d 'test vol' # Create a new volume named 'my_volume' of size 10 with a description:
-  hpcloud volumes:add my_volume -s 'snappy'      # Create a new volume named 'my_volume' based on the snapshot 'snappy':
-  hpcloud volumes:add my_volume -i 20103         # Create a new bootable volume named 'my_volume' based on the image '20103':
-  hpcloud volumes:add my_volume 1 -z az-2.region-a.geo-1 # Creates volume `my_volume` in availability zone `az-2.region-a.geo-1`:
+  hpcloud volumes:add my_volume 10               # Create a new volume named 'my_volume' of size 10
+  hpcloud volumes:add my_volume 10 -d 'test vol' # Create a new volume named 'my_volume' of size 10 with a description
+  hpcloud volumes:add my_volume -s 'snappy'      # Create a new volume named 'my_volume' based on the snapshot 'snappy'
+  hpcloud volumes:add my_volume -i 20103         # Create a new bootable volume named 'my_volume' based on the image '20103'
+  hpcloud volumes:add my_volume 1 -z az-2.region-a.geo-1 # Creates volume `my_volume` in availability zone `az-2.region-a.geo-1`
       DESC
       method_option :description,
                     :type => :string, :aliases => '-d',

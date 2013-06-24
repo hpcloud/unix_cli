@@ -11,7 +11,7 @@ module HP
   List the current configuration settings.
 
 Examples:
-  hpcloud config  # List the current configuration settings:
+  hpcloud config  # List the current configuration settings
 
 Aliases: config:list
       DESC

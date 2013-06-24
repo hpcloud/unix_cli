@@ -12,8 +12,7 @@ module HP
   List the metadata for a server in your compute account. You can specify either the name or the ID of the server.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud servers:metadata Skynet                        # List server metadata:
-  hpcloud servers:metadata -z az-2.region-a.geo-1 565394 # List server metadata for availability zone `az-2region-a.geo-1`:
+  hpcloud servers:metadata Skynet                        # List server metadata
 
 Aliases: servers:metadata:list
       DESC

@@ -1,3 +1,5 @@
 require 'hpcloud/commands/containers/add'
+require 'hpcloud/commands/containers/get'
+require 'hpcloud/commands/containers/set'
 require 'hpcloud/commands/containers/remove'
 require 'hpcloud/commands/containers/sync'

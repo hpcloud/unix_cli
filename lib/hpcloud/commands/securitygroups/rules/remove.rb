@@ -9,8 +9,8 @@ module HP
   Remove the specified security group rules.  More than one rule may be specified on the command line.
 
 Examples:
-  hpcloud securitygroups:rules:remove 111     # Remove the rule `111`:
-  hpcloud securitygroups:rules:remove 111 222 # Remove the rule `111` and `222`:
+  hpcloud securitygroups:rules:remove 111     # Remove the rule `111`
+  hpcloud securitygroups:rules:remove 111 222 # Remove the rule `111` and `222`
 
 Aliases: securitygroups:rules:rm, securitygroups:rules:revoke, securitygroups:rules:delete, securitygroups:rules:del
       DESC

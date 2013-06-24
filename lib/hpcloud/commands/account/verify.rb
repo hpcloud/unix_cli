@@ -9,7 +9,7 @@ module HP
   Verify the credentials of an account.
   
 Examples:
-  hpcloud account:verify useast # Verify the `useast` account credentials:
+  hpcloud account:verify useast # Verify the `useast` account credentials
       DESC
       method_option :debug, :type => :string, :alias => '-x',
                     :desc => 'Debug logging 1,2,3,...'

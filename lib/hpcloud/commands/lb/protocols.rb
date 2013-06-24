@@ -8,7 +8,7 @@ module HP
   Lists all the available load balancers protocols.
 
 Examples:
-  hpcloud lb:protocols          # List all protocols:
+  hpcloud lb:protocols          # List all protocols
       DESC
       CLI.add_report_options
       CLI.add_common_options

@@ -11,8 +11,8 @@ module HP
   List the private keys stored on this machine.  These private keys are *not* available on other systems unless you copy them to that system.
 
 Examples:
-  hpcloud keypairs:private         # Create the key 'mykey':
-  hpcloud keypairs:private mykey   # Create the key 'mykey':
+  hpcloud keypairs:private         # Create the key 'mykey'
+  hpcloud keypairs:private mykey   # Create the key 'mykey'
       DESC
       define_method "keypairs:private" do
         cli_command(options) {

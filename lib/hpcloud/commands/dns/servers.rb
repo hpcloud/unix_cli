@@ -12,8 +12,8 @@ module HP
   Lists servers associated with the DNS domain specified by name or ID.
 
 Examples:
-  hpcloud dns:servers 421e8cbf   # List servers for the DNS domain with ID `421e8cbf`:
-  hpcloud dns:servers test.com.  # List servers for the DNS domain `test.com.`:
+  hpcloud dns:servers 421e8cbf   # List servers for the DNS domain with ID `421e8cbf`
+  hpcloud dns:servers test.com.  # List servers for the DNS domain `test.com.`
       DESC
       CLI.add_report_options
       CLI.add_common_options

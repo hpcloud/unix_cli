@@ -30,9 +30,9 @@ module HP
 #{Accounts.get_known}
   
 Examples:
-  hpcloud account:setup # Create or edit the default account interactively:
-  hpcloud account:edit  # Edit the default account settings interactively:
-  hpcloud account:edit pro auth_uri='https://127.0.0.1/' block_availability_zone='az-2.region-a.geo-1' # Set the account credential authorization URI to `https://127.0.0.1\` and the block availability zone to `az-2.region-a.geo-1`:
+  hpcloud account:setup # Create or edit the default account interactively
+  hpcloud account:edit  # Edit the default account settings interactively
+  hpcloud account:edit pro auth_uri='https://127.0.0.1/' block_availability_zone='az-2.region-a.geo-1' # Set the account credential authorization URI to `https://127.0.0.1\` and the block availability zone to `az-2.region-a.geo-1`
   hpcloud account:setup rackspace -p rackspace # Create a Rackspace account for migration
 
 Aliases: account:add, account:setup, account:update
@@ -134,6 +134,7 @@ Aliases: account:add, account:setup, account:update
             unless acct[:provider] == "hp"
               @log.display "Accounts for providers other than HP are only supported for migration"
             end
+            AuthCache.new.remove(name)
           else
             acct = accounts.read(name, true)
             updated = ""
@@ -148,6 +149,7 @@ Aliases: account:add, account:setup, account:update
             if updated.empty? == false
               accounts.write(name)
               @log.display "Account '#{name}' set " + updated
+              AuthCache.new.remove(name)
             end
           end
         }

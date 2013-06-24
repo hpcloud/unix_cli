@@ -9,8 +9,8 @@ module HP
   Add or allocate a new public IP address from the pool of available IP addresses.  If a network is not specified, the first external network found will be used.
 
 Examples:
-  hpcloud addresses:add # Add a new public IP address to external network:
-  hpcloud addresses:add -n netty -z az-2.region-a.geo-1 # Add a new IP address to `netty` in availability zone `az-2.region-a.geo-1`:
+  hpcloud addresses:add # Add a new public IP address to external network
+  hpcloud addresses:add -n netty -z az-2.region-a.geo-1 # Add a new IP address to `netty` in availability zone `az-2.region-a.geo-1`
 
 Aliases: addresses:allocate
       DESC

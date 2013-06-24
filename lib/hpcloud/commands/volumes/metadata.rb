@@ -11,9 +11,9 @@ module HP
   List the metadata for a volume in your compute account. You may specify the volume by either the name or the ID.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud volumes:metadata Skynet   # List the metadata for volume 'Skynet':
-  hpcloud volumes:metadata 2929     # List metadata for the volume with the ID 2929:
-  hpcloud volumes:metadata -z az-2.region-a.geo-1 565394 # List the metadata for the volume with the ID 565394 for availability zone `az-2.region-a.geo-1`:
+  hpcloud volumes:metadata Skynet   # List the metadata for volume 'Skynet'
+  hpcloud volumes:metadata 2929     # List metadata for the volume with the ID 2929
+  hpcloud volumes:metadata -z az-2.region-a.geo-1 565394 # List the metadata for the volume with the ID 565394 for availability zone `az-2.region-a.geo-1`
 
 Aliases: volumes:metadata:list
       DESC

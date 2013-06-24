@@ -23,9 +23,9 @@ module HP
   Lists all the load balancers that are associated with the account. The list begins with identifier and contains name, algorithm, protocol, port and status.  Optionally, you can filter the list by specifying names or IDs.
 
 Examples:
-  hpcloud lb          # List all load balancers:
-  hpcloud lb 1        # List the details for load balancers `1`:
-  hpcloud lb testvol  # List the details for load balancers `testvol`:
+  hpcloud lb          # List all load balancers
+  hpcloud lb 1        # List the details for load balancers `1`
+  hpcloud lb testvol  # List the details for load balancers `testvol`
 
 Aliases: lb:list
       DESC

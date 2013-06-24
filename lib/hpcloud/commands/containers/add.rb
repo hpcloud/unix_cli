@@ -7,9 +7,9 @@ module HP
   Add a new container to your storage account. You may creeate multiple containers by specifying more than one container name on the command line.  You can specify the ontainer name  with or without the preceding colon: 'my_container' or ':my_container'. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud containers:add :my_container                    # Create a new container called 'my_container':
-  hpcloud containers:add :con :tainer                     # Create two new containers called 'con' and 'tainer':
-  hpcloud containers:add :my_container -z region-a.geo-1  # Create the container `my_container` for the availability zone `region-a.geo-1`:
+  hpcloud containers:add :my_container                    # Create a new container called 'my_container'
+  hpcloud containers:add :con :tainer                     # Create two new containers called 'con' and 'tainer'
+  hpcloud containers:add :my_container -z region-a.geo-1  # Create the container `my_container` for the availability zone `region-a.geo-1`
       DESC
       method_option :force, :default => false,
                     :type => :boolean, :aliases => '-f',

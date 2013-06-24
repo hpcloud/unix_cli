@@ -110,12 +110,13 @@ do
         if [ "${LINE}" != "" ]
         then
           COMMENT=$(echo "${LINE}" | sed -e 's/.*# \(.*\)$/\1/')
+          COMMENT=$(echo "${COMMENT}" | sed -e 's/:$//')
           EXAMPLE=$(echo "${LINE}" | sed -e 's/\(.*\) *# .*$/\1/' -e 's/ *$//g')
           if [ "${COMMENT}" == "${EXAMPLE}" ]
           then
             echo -ne "    ${EXAMPLE}\n"
           else
-            echo "${COMMENT}"
+            echo "${COMMENT}:"
             echo -ne "\n    ${EXAMPLE}\n\n"
           fi
         fi
@@ -127,8 +128,3 @@ do
     esac
   done
 done >>${REFERENCE}
-
-CONTAINER="documentation-downloads"
-DEST=":${CONTAINER}/unixcli/"
-hpcloud copy -a deploy ${REFERENCE} $DEST
-hpcloud location -a deploy ${DEST}${REFERENCE}

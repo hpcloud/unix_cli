@@ -9,8 +9,8 @@ module HP
   Remove load balancers by specifying their names or ID. You may specify more than one load balacner name or ID on a command line.
 
 Examples:
-  hpcloud lb:remove thing1 thing2   # Delete the load balancers `thing1` and `thing2`:
-  hpcloud lb:remove 998             # Delete the load balancer with ID 998:
+  hpcloud lb:remove thing1 thing2   # Delete the load balancers `thing1` and `thing2`
+  hpcloud lb:remove 998             # Delete the load balancer with ID 998
 
 Aliases: lb:rm, lb:delete, lb:del
       DESC

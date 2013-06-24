@@ -10,11 +10,11 @@ module HP
   List containers or the contents of the specified containers. Optionally, an availability zone can be passed.
 
 Examples:
-  hpcloud list :tain1/sub/ :tain2/sub/          # List the contents of the subdirectory `/sub/` in `tain1` and `tain2`:
-  hpcloud list :tain1/.*png                     # List the PNG files in `tain1`:
-  hpcloud list :tainer                          # List all the objects in container `tainer`:
-  hpcloud list                                  # List all containers:
-  hpcloud list :my_container -z region-a.geo-1  # List all the objects in container `my_container` for availability zone `region-a.geo-1`:
+  hpcloud list :tain1/sub/ :tain2/sub/          # List the contents of the subdirectory `/sub/` in `tain1` and `tain2`
+  hpcloud list :tain1/.*png                     # List the PNG files in `tain1`
+  hpcloud list :tainer                          # List all the objects in container `tainer`
+  hpcloud list                                  # List all containers
+  hpcloud list :my_container -z region-a.geo-1  # List all the objects in container `my_container` for availability zone `region-a.geo-1`
 
 Aliases: ls
       DESC

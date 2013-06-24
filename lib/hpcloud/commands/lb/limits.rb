@@ -8,7 +8,7 @@ module HP
   Lists all the available load balancers limits.
 
 Examples:
-  hpcloud lb:limits          # List all limits:
+  hpcloud lb:limits          # List all limits
       DESC
       CLI.add_report_options
       CLI.add_common_options

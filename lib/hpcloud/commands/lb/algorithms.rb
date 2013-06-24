@@ -8,7 +8,7 @@ module HP
   Lists all the available load balancers algorithms.
 
 Examples:
-  hpcloud lb:algorithms          # List all algorithms:
+  hpcloud lb:algorithms          # List all algorithms
       DESC
       CLI.add_report_options
       CLI.add_common_options

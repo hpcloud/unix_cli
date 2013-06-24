@@ -9,8 +9,8 @@ module HP
   Remove containers from the CDN. Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud cdn:containers:remove :tainer1 :tainer2                    # Delete the containers `:tainer1` and `:tainer2` from the CDN:
-  hpcloud cdn:containers:remove :my_cdn_container -z region-a.geo-1  # Delete the container `my_cdn_container for the availability zone `region-a.geo-1` from the CDN:
+  hpcloud cdn:containers:remove :tainer1 :tainer2                    # Delete the containers `:tainer1` and `:tainer2` from the CDN
+  hpcloud cdn:containers:remove :my_cdn_container -z region-a.geo-1  # Delete the container `my_cdn_container for the availability zone `region-a.geo-1` from the CDN
 
 Aliases: cdn:containers:rm, cdn:containers:delete, cdn:containers:del
       DESC

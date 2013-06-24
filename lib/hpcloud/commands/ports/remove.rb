@@ -9,9 +9,9 @@ module HP
   Remove port by specifying their names or ID. You may specify more than one port name or ID on a command line.
 
 Examples:
-  hpcloud ports:remove blue red   # Delete the port 'blue' and 'red':
-  hpcloud ports:remove 998        # Delete the port with ID 998:
-  hpcloud ports:remove netty -z region-a.geo-1  # Delete the port `netty` for availability zone `region-a.geo-1`:
+  hpcloud ports:remove blue red   # Delete the port 'blue' and 'red'
+  hpcloud ports:remove 998        # Delete the port with ID 998
+  hpcloud ports:remove netty -z region-a.geo-1  # Delete the port `netty` for availability zone `region-a.geo-1`
 
 Aliases: ports:rm, ports:delete, ports:del
       DESC

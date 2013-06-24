@@ -9,7 +9,7 @@ module HP
   Remove load balancer node by specifying the name or id of the load balancer and the id of the nodes.
 
 Examples:
-  hpcloud lb:nodes:remove scale 1044952   # Delete the load balancers ndoe `1044952` from `scale`:
+  hpcloud lb:nodes:remove scale 1044952   # Delete the load balancers ndoe `1044952` from `scale`
 
 Aliases: lb:nodes:rm, lb:nodes:delete, lb:nodes:del
       DESC

@@ -5,7 +5,7 @@ module HP
   module Cloud
     class FloatingIps < FogCollection
       def initialize
-        super("ip address" "an")
+        super("ip address", "an")
         @items = @connection.network.floating_ips
       end
 

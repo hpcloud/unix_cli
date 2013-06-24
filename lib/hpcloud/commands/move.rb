@@ -9,10 +9,10 @@ module HP
   Move objects to a new location inside a container or between containers. The source file is removed after a successful transfer. If you specify more than one source, the destination must be a container, or a directory ending in `/`.  Optionally, you can specify an availability zone.  For copying files to and from your local filesystem see `copy`.
 
 Examples:
-  hpcloud move :my_container/file.txt :my_container/old/backup.txt # Move file `file.txt` to new name and location `old/backup.txt` in container `my_container`:
-  hpcloud move :my_container/file.txt :other_container/file.txt #  Move file `file.txt` from container `my_container` to container `other_container`:
-  hpcloud move :tain/f1.txt :tain/f2.txt :othertain/directory/  # Move files `f1.txt` and f2.txt` from container `tain` to directory `/directory` in container `othertain`:
-  hpcloud move :my_container/file.txt :my_container/old/backup.txt -z region-a.geo-1  # Move file `file.txt` to new name and location `old/backup.txt` in container `my_container` for availability zone `region-a.geo-1`:
+  hpcloud move :my_container/file.txt :my_container/old/backup.txt # Move file `file.txt` to new name and location `old/backup.txt` in container `my_container`
+  hpcloud move :my_container/file.txt :other_container/file.txt #  Move file `file.txt` from container `my_container` to container `other_container`
+  hpcloud move :tain/f1.txt :tain/f2.txt :othertain/directory/  # Move files `f1.txt` and f2.txt` from container `tain` to directory `/directory` in container `othertain`
+  hpcloud move :my_container/file.txt :my_container/old/backup.txt -z region-a.geo-1  # Move file `file.txt` to new name and location `old/backup.txt` in container `my_container` for availability zone `region-a.geo-1`
 
 Aliases: mv
       DESC

@@ -11,8 +11,8 @@ module HP
   Display the public key of the specified keypair.  Optionally, you can specify an availability zone.
 
 Examples:
-  hpcloud keypairs:public_key keyno                # Remove the public key `keyno`:
-  hpcloud keypairs:public_key keyno -z az-2.region-a.geo-1    # Remove the public key `keyno` for availability zone `az-2.region-a.geo-1`:
+  hpcloud keypairs:public_key keyno                # Remove the public key `keyno`
+  hpcloud keypairs:public_key keyno -z az-2.region-a.geo-1    # Remove the public key `keyno` for availability zone `az-2.region-a.geo-1`
       DESC
       CLI.add_common_options
       define_method "keypairs:public_key" do |key_name|

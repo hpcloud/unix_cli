@@ -10,10 +10,10 @@ module HP
 
 Examples:
   hpcloud securitygroups:rules:add mysggroup icmp                                   # Set the default port range to -1..-1
-  hpcloud securitygroups:rules:add mysggroup tcp -p 22..22                          # Set the default cidr to `0.0.0.0/0`:
-  hpcloud securitygroups:rules:add mysggroup tcp -p 80..80 -c "111.111.111.111/1"   # Set the cidr to `111.111.111.111/1`:
-  hpcloud securitygroups:rules:add mysggroup tcp -p 80..80 -g "mysourcegroup"       # Set the source group to `mysourcegroup`:
-  hpcloud securitygroups:rules:add mysggroup icmp -z az-2.region-a.geo-1            # Set the availability zone to `az-2.region-a.geo-1`:
+  hpcloud securitygroups:rules:add mysggroup tcp -p 22..22                          # Set the default cidr to `0.0.0.0/0`
+  hpcloud securitygroups:rules:add mysggroup tcp -p 80..80 -c "111.111.111.111/1"   # Set the cidr to `111.111.111.111/1`
+  hpcloud securitygroups:rules:add mysggroup tcp -p 80..80 -g "mysourcegroup"       # Set the source group to `mysourcegroup`
+  hpcloud securitygroups:rules:add mysggroup icmp -z az-2.region-a.geo-1            # Set the availability zone to `az-2.region-a.geo-1`
 
 Aliases: securitygroups:rules:authorize
       DESC

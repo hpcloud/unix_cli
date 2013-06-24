@@ -49,7 +49,9 @@ module HP
             if item.nil?
               raise HP::Cloud::Exceptions::NotFound.new("Cannot find #{@article} #{@name} matching '#{arg}'.")
             end
-            item.name = arg
+            if item.respond_to?(:name)
+              item.name = arg
+            end
             item.set_error("Cannot find #{@article} #{@name} matching '#{arg}'.", :not_found)
             retray << item
           else
