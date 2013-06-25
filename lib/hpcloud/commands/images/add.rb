@@ -9,7 +9,6 @@ module HP
 Examples:
   hpcloud images:add my_image my_server                           # Create the new image 'my_image' from the existing server named 'my_server'
   hpcloud images:add my_image my_server -m this=that              # Create the new image 'my_image' from the existing server 'my_server' with metadata
-  hpcloud images:add my_image my_server -z az-2.region-a.geo-1    # Create the new image `my_image` from the existing server `my_server` in  availability zone `az-2.region-a.geo-1`
       DESC
       CLI.add_common_options
       method_option :metadata,

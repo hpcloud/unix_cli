@@ -1,5 +1,3 @@
-require 'monkey/hp'
-require 'monkey/hp/block_storage'
 require 'monkey/hp/cdn'
 require 'monkey/hp/compute'
 require 'monkey/hp/dns'

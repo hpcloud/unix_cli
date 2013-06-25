@@ -10,8 +10,7 @@ module HP
 
 Examples:
   hpcloud addresses:disassociate 111.111.111.111 127.0.0.1 # Disassociate IP addresses `111.111.111.111` and `127.0.0.1` from their ports
-  hpcloud addresses:disassociate 9709 # Disassociate the address with the ID  '9709'
-  hpcloud addresses:disassociate 111.111.111.111 -z az-2.region-a.geo-1  # Disassociate the address `111.111.111.111` for availability zone `az-2.region-a.geo-1`
+  hpcloud addresses:disassociate f01b27f3 # Disassociate the address with the ID  '9709'
       DESC
       CLI.add_common_options
       define_method "addresses:disassociate" do |ip_or_id, *ip_or_ids|

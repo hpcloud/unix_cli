@@ -10,8 +10,7 @@ module HP
 
 Examples:
   hpcloud volumes:remove tome treatise   # Delete the volumes 'tome' and 'treatise'
-  hpcloud volumes:remove 998             # Delete the volume with ID 998
-  hpcloud volumes:remove my-volume -z az-2.region-a.geo-1  # Delete the volume `my-volume` for availability zone `az-2.region-a.geo-1`
+  hpcloud volumes:remove 038d0e77        # Delete the volume with ID 038d0e77
 
 Aliases: volumes:rm, volumes:delete, volumes:del
       DESC

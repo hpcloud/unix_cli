@@ -10,8 +10,7 @@ module HP
 
 Examples:
   hpcloud networks:remove arpa darpa   # Delete the network 'arpa' and 'darpa'
-  hpcloud networks:remove 998          # Delete the network with ID 998
-  hpcloud networks:remove netty -z region-a.geo-1  # Delete the network `netty` for availability zone `region-a.geo-1`
+  hpcloud networks:remove 0b78d0cd     # Delete the network with ID 998
 
 Aliases: networks:rm, networks:delete, networks:del
       DESC

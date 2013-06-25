@@ -10,7 +10,7 @@ module HP
 
 Examples:
   hpcloud addresses:add # Add a new public IP address to external network
-  hpcloud addresses:add -n netty -z az-2.region-a.geo-1 # Add a new IP address to `netty` in availability zone `az-2.region-a.geo-1`
+  hpcloud addresses:add -n netty # Add a new IP address to `netty`
 
 Aliases: addresses:allocate
       DESC
