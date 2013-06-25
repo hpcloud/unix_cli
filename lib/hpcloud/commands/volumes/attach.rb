@@ -9,7 +9,6 @@ module HP
 Examples:
   hpcloud volumes:attach myVolume myServer /dev/vdc                         # Attach volume `myVolume` to server `myServer` on device `/dev/vdc`
   hpcloud volumes:attach myVolume myServer 4                                # Attach volume `myVolume` to server `myServer` on device `/dev/vdb`
-  hpcloud volumes:attach my-volume myServer /dev/vdg -z az-2.region-a.geo-1 # Attach volume `my-volume` to server `myServer` on device `/dev/vdg` for availability zone `az-2.region-a.geo-1`
 
       DESC
       CLI.add_common_options

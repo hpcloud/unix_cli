@@ -11,7 +11,6 @@ module HP
 Examples:
   hpcloud volumes:server                                 # List all the attached volumes
   hpcloud volumes:server myServer                        # List the volumes on server `myServer`
-  hpcloud volumes:server myServer -z az-2.region-a.geo-1 # List the volumes on server `myServer` for availability zone `az-2.region-a.geo-1`
       DESC
       CLI.add_report_options
       CLI.add_common_options

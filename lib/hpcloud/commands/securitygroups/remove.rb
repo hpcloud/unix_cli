@@ -10,8 +10,7 @@ module HP
 
 Examples:
   hpcloud securitygroups:remove group1 group2 # Remove the security groups `group1` and `group2`
-  hpcloud securitygroups:remove 30725         # Remove the security group with the ID `30725`
-  hpcloud securitygroups:remove mysecgroup -z az-2.region-a.geo-1   # Remove the security group `mysecgroup` for availability zone `az-2.region-a.geo-1`
+  hpcloud securitygroups:remove 41fb5504      # Remove the security group with the ID `41fb5504`
 
 Aliases: securitygroups:rm, securitygroups:delete, securitygroups:del
       DESC

@@ -10,8 +10,7 @@ module HP
 
 Examples:
   hpcloud addresses:remove 111.111.111.111 # Remove IP address '111.111.111.111'
-  hpcloud addresses:remove 1078 3709   # Remove addresses with the IDs '1078' and '3709'
-  hpcloud addresses:remove 111.111.111.111 -z az-2.region-a.geo-1   # Remove IP address '111.111.111.111' for availability zone `az-2.region-a.geo-1`: 
+  hpcloud addresses:remove a5bd6680 c80dfe05 # Remove addresses with the IDs 'a5bd6680' and 'c80dfe05'
 
 Aliases: addresses:rm, addresses:delete, addresses:release, addresses:del
       DESC

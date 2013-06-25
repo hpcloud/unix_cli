@@ -12,8 +12,7 @@ module HP
 
 Examples:
   hpcloud volumes:metadata Skynet   # List the metadata for volume 'Skynet'
-  hpcloud volumes:metadata 2929     # List metadata for the volume with the ID 2929
-  hpcloud volumes:metadata -z az-2.region-a.geo-1 565394 # List the metadata for the volume with the ID 565394 for availability zone `az-2.region-a.geo-1`
+  hpcloud volumes:metadata d6a89a5d     # List metadata for the volume with the ID d6a89a5d
 
 Aliases: volumes:metadata:list
       DESC
