@@ -10,7 +10,7 @@ Examples:
   hpcloud volumes:add my_volume 10               # Create a new volume named 'my_volume' of size 10
   hpcloud volumes:add my_volume 10 -d 'test vol' # Create a new volume named 'my_volume' of size 10 with a description
   hpcloud volumes:add my_volume -s 'snappy'      # Create a new volume named 'my_volume' based on the snapshot 'snappy'
-  hpcloud volumes:add my_volume -i 20103         # Create a new bootable volume named 'my_volume' based on the image '20103'
+  hpcloud volumes:add my_volume -i 53e78869      # Create a new bootable volume named 'my_volume' based on the image '53e78869'
       DESC
       method_option :description,
                     :type => :string, :aliases => '-d',

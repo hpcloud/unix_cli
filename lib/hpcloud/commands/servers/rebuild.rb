@@ -8,7 +8,7 @@ module HP
 
 Examples:
   hpcloud servers:rebuild Hal9000    # Rebuild server 'Hal9000'
-  hpcloud servers:rebuild 1003 222   # Rebuild server 1003 with image 222
+  hpcloud servers:rebuild 53e78869 c80dfe05   # Rebuild server 53e78869 with image c80dfe05
       DESC
       CLI.add_common_options
       define_method "servers:rebuild" do |name_or_id, *image_name_or_id|

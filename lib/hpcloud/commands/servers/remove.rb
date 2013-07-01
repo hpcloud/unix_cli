@@ -11,7 +11,7 @@ module HP
 Examples:
   hpcloud servers:remove my-server          # Delete 'my-server'
   hpcloud servers:remove DeepThought Blaine # Delete the servers 'DeepThought' and 'Blaine'
-  hpcloud servers:remove 369765             # Delete the server with the ID 369765
+  hpcloud servers:remove 53e78869           # Delete the server with the ID 53e78869
 
 Aliases: servers:rm, servers:delete, servers:del
       DESC

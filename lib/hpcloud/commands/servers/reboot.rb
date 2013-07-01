@@ -8,7 +8,7 @@ module HP
 
 Examples:
   hpcloud servers:reboot Hal9000    # Reboot server 'Hal9000'
-  hpcloud servers:reboot 1003 222   # Reboot the servers with the IDs 1003 and 222
+  hpcloud servers:reboot 53e78869 c80dfe05   # Reboot the servers with the IDs 53e78869 and c80dfe05
       DESC
       method_option :hard, :default => false,
                     :type => :boolean, :aliases => '-h',

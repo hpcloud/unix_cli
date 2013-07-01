@@ -7,10 +7,10 @@ module HP
   Add a new server to your compute account. You must specify:  Server name, a flavor, an image or volume to use, and a key pair.  If you are creating a windows server, the flavor must be at least a large and you must specify a security group that has the RDP port open.  Optionally, you can specify a security group, key name, metadata and availability zone.
 
 Examples:
-  hpcloud servers:add my_server small -i 7 -k key1          # Create a new small server named 'my_server' with image 7 and key1
-  hpcloud servers:add winserv large -i 100006567 -k winpair -s allowsRDP -p ./winpair.pem # Create a windows server with the specified key, security group, and private key to decrypt the password
+  hpcloud servers:add my_server small -i 90ea5676 -k key1          # Create a new small server named 'my_server' with image 90ea5676 and key1
+  hpcloud servers:add winserv large -i c80dfe05 -k winpair -s allowsRDP -p ./winpair.pem # Create a windows server with the specified key, security group, and private key to decrypt the password
   hpcloud servers:add my_server large -v natty -k key1 -s sg1   # Create a new large server named 'my_server' using volume `natty`, key `key1`, and the `sg1` security group
-  hpcloud servers:add my_server small -i 20634 -k key1 -m this=that     # Create a new small server named 'my_server' using the specified image, flavor, key and metadata this=that
+  hpcloud servers:add my_server small -i 53e78869 -k key1 -m this=that     # Create a new small server named 'my_server' using the specified image, flavor, key and metadata this=that
       DESC
       method_option :key_name, :required => true,
                     :type => :string, :aliases => '-k',
