@@ -13,7 +13,8 @@ describe "Volume keys" do
       keys[5].should eql("status")
       keys[6].should eql("description")
       keys[7].should eql("servers")
-      keys.length.should eql(8)
+      keys[8].should eql("availability_zone")
+      keys.length.should eql(9)
     end
   end
 end
@@ -30,6 +31,7 @@ describe "Volume methods" do
     @fog_volume.stub(:status).and_return("available")
     @fog_volume.stub(:description).and_return("My cool disk")
     @fog_volume.stub(:attachments).and_return([{"serverId"=>123},{"serverId"=>345}])
+    @fog_volume.stub(:availability_zone).and_return("az3")
     @sv1 = double("sv1")
     @sv1.stub(:name).and_return("srv1")
     @sv1.stub(:is_valid?).and_return(true)

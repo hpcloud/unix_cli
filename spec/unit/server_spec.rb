@@ -193,6 +193,7 @@ describe "Server class" do
       volume.stub(:description).and_return('volley')
       volume.stub(:metadata).and_return([meta])
       volume.stub(:attachments).and_return([])
+      volume.stub(:availability_zone).and_return("az2")
       @block = double("block")
       @block.stub(:volumes).and_return([volume])
       @connection = double("connection")

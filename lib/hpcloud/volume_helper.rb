@@ -2,11 +2,11 @@ module HP
   module Cloud
     class VolumeHelper < BaseHelper
       @@serverous = nil
-      attr_accessor :id, :name, :size, :type, :created, :status, :description, :servers, :snapshot_id, :imageref
+      attr_accessor :id, :name, :size, :type, :created, :status, :description, :servers, :snapshot_id, :imageref, :availability_zone
       attr_accessor :meta
     
       def self.get_keys()
-        return [ "id", "name", "size", "type", "created", "status", "description", "servers" ]
+        return [ "id", "name", "size", "type", "created", "status", "description", "servers", "availability_zone" ]
       end
 
       def initialize(connection, foggy = nil)
@@ -21,6 +21,7 @@ module HP
         @created = foggy.created_at
         @status = foggy.status
         @description = foggy.description
+        @availability_zone = foggy.availability_zone
         @servers = ''
         @@serverous = Servers.new if @@serverous.nil?
         foggy.attachments.each { |x|
@@ -43,6 +44,7 @@ module HP
              :size => @size}
           hsh[:snapshot_id] = @snapshot_id unless @snapshot_id.nil?
           hsh[:image_id] = @imageref unless @imageref.nil?
+          hsh[:availability_zone] = @availability_zone unless @availability_zone.nil?
           volume = @connection.block.volumes.create(hsh)
           if volume.nil?
             set_error("Error creating volume '#{@name}'")

@@ -7,8 +7,7 @@ module HP
   Add a new volume to your compute account with the specified name and size.  Optionally, you can specify a description, metadata or availability zone.  If you do not specify a size, it is taken from the specified snapshot or image.  If no image or snapshot is specified, the size defaults to 1 gigabyte.
 
 Examples:
-  hpcloud volumes:add my_volume 10               # Create a new volume named 'my_volume' of size 10
-  hpcloud volumes:add my_volume 10 -d 'test vol' # Create a new volume named 'my_volume' of size 10 with a description
+  hpcloud volumes:add my_volume 10 --zone az3    # Create a new volume named 'my_volume' of size 10 in zone az3
   hpcloud volumes:add my_volume -s 'snappy'      # Create a new volume named 'my_volume' based on the snapshot 'snappy'
   hpcloud volumes:add my_volume -i 53e78869      # Create a new bootable volume named 'my_volume' based on the image '53e78869'
       DESC
@@ -24,6 +23,9 @@ Examples:
       method_option :image,
                     :type => :string, :aliases => '-i',
                     :desc => 'Create a volume from the specified image.'
+      method_option :zone,
+                    :type => :string,
+                    :desc => 'Create a volume in the specified zone.'
       CLI.add_common_options
       define_method "volumes:add" do |name, *volume_size|
         cli_command(options) {
@@ -52,6 +54,7 @@ Examples:
           end
           vol.size = 1 if vol.size.nil?
           vol.description = options[:description]
+          vol.availability_zone = options[:zone]
           if vol.save == true
             @log.display "Created volume '#{name}' with id '#{vol.id}'."
           else

@@ -13,6 +13,7 @@ describe "Volumes getter" do
     fog_volume.stub(:status).and_return("available")
     fog_volume.stub(:description).and_return("My cool disk")
     fog_volume.stub(:attachments).and_return([])
+    fog_volume.stub(:availability_zone).and_return("az4")
     return fog_volume
   end
 
