@@ -4,7 +4,7 @@ module HP
 
       desc 'migrate <source_account> <source> [source ...] <destination>', "Migrate files from a provider described by the source account."
       long_desc <<-DESC
-  Migrates files from the deisgnated provider to the HP Cloud destination. This command works similarly to `copy` except the first argument is the source account (for example, `AWS`).  The source objects may be containers, objects, or regular expressions.
+  Migrates files from the designated provider to the HP Cloud destination. This command works similarly to `copy` except the first argument is the source account (for example, `AWS`).  The source objects may be containers, objects, or regular expressions.
 
 Examples:
   hpcloud migrate aws :aws_tainer :hp_tainer # Migrate objects from the AWS `:aws_tainer` container to the `:hp_tainer` container
