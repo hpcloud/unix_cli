@@ -4,7 +4,7 @@ require "base64"
 module HP
   module Cloud
     class ServerHelper < BaseHelper
-      attr_reader :private_key, :windows
+      attr_reader :private_key, :windows, :personality
       attr_accessor :id, :name, :flavor, :image, :ips, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state, :volume, :meta
       attr_accessor :network_name, :networks
     
@@ -162,6 +162,19 @@ module HP
         @user_data = File.new(filename).read
       end
 
+      def set_personality(directory)
+        return if directory.nil?
+        @personality = []
+        Dir.glob("#{directory}/**/*").each { |file|
+          unless File.directory?(file)
+            rfile = file.gsub(directory, '')
+            hsh = { "path" => rfile,
+                    "contents" => Base64.encode64(File.read(file)) }
+            @personality << hsh
+          end
+        }
+      end
+
       def windows_password(retries=10)
         begin
           (0..retries).each { |x|
@@ -212,6 +225,7 @@ module HP
           hsh[:image_id] = @image unless @image.nil?
           hsh['networks'] = @networks unless @networks.nil?
           hsh['user_data'] = @user_data unless @user_data.nil?
+          hsh['personality'] = @personality unless @personality.nil?
           unless @volume.nil?
             hsh[:block_device_mapping] = [{
                      'volume_size' => '',

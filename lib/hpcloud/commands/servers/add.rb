@@ -36,6 +36,9 @@ Examples:
       method_option :userdata,
                     :type => :string, :aliases => '-u',
                     :desc => 'File which contains user data.'
+      method_option :personality,
+                    :type => :string,
+                    :desc => 'Directory containing personality for server.'
       CLI.add_common_options
       define_method "servers:add" do |name, *flavor|
         cli_command(options) {
@@ -50,6 +53,7 @@ Examples:
           srv.meta.set_metadata(options[:metadata])
           srv.set_network(options[:network])
           srv.set_user_data(options[:userdata])
+          srv.set_personality(options[:personality])
           if srv.save == true
             @log.display "Created server '#{name}' with id '#{srv.id}'."
             if srv.is_windows?

@@ -16,7 +16,7 @@ describe "Server class" do
     @fog_server.stub(:created_at).and_return("today")
     @fog_server.stub(:state).and_return("ACTIVE")
     @fog_server.stub(:network_name).and_return("hpcloud")
-    @fog_server.stub(:addresses).and_return({:k=>:v})
+    @fog_server.stub(:addresses).and_return({:k=>[{"addr"=>"127.0.0.8"}]})
     @fog_server.stub(:metadata).and_return([])
   end
 
@@ -45,7 +45,7 @@ describe "Server class" do
       srv.name.should eql("Hal")
       srv.flavor.should eql("chocolate")
       srv.image.should eql("122")
-      srv.public_ip.should eql("10.0.0.1")
+      srv.public_ip.should eql("127.0.0.8")
       srv.private_ip.should eql("172.1.1.1")
       srv.keyname.should eql("key")
       srv.security_groups.should eql("one, two")
@@ -81,7 +81,7 @@ describe "Server class" do
       hash["name"].should eql("Hal")
       hash["flavor"].should eql("chocolate")
       hash["image"].should eql("122")
-      hash["public_ip"].should eql("10.0.0.1")
+      hash["public_ip"].should eql("127.0.0.8")
       hash["private_ip"].should eql("172.1.1.1")
       hash["keyname"].should eql("key")
       hash["security_groups"].should eql("one, two")
@@ -461,6 +461,32 @@ describe "Server class" do
       srv.id.should be_nil
       srv.cstatus.message.should include("Error reading private key file 'bogus'")
       srv.cstatus.error_code.should eq(:incorrect_usage)
+    end
+  end
+
+  context "set_personality" do
+    it "should work" do
+      srv = HP::Cloud::ServerHelper.new(double("connection"))
+
+      srv.set_personality("spec/fixtures/files/Matryoshka/")
+
+      srv.personality.should eq(
+        [{"contents"=>"MjAwMC0yMDA4IGJhbGQK\n",
+          "path"=>"/Putin/Vladimir.txt"},
+         {"contents"=>"MjAwOC0yMDEyIGhhaXJ5Cg==\n",
+          "path"=>"/Putin/Medvedev.txt"},
+         {"contents"=>"MTk5MS0xOTk5IGhhaXJ5Cg==\n",
+          "path"=>"/Putin/Yeltsin/Boris.txt"},
+         {"contents"=>"MTk4NS0xOTkxIGJhbGQK\n",
+          "path"=>
+           "/Putin/Yeltsin/Gorbachev/Mikhail.txt"},
+         {"contents"=>"MTk4Mi0xOTg0IGJhbGQK\n",
+          "path"=>
+           "/Putin/Yeltsin/Gorbachev/Andropov.txt"},
+         {"contents"=>"Cg==\n",
+          "path"=>
+           "/Putin/Yeltsin/Gorbachev/Chernenko.txt"
+       }])
     end
   end
 end
