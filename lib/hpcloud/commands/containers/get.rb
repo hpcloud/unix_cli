@@ -21,7 +21,7 @@ Examples:
       define_method "containers:get" do |name, *attributes|
         cli_command(options) {
           response = Connection.instance.storage.head_container(name)
-          allowed_attributes = ['X-Container-Bytes-Used','X-Timestamp','X-Container-Object-Count','X-Container-Read', 'X-Container-Meta-Web-Index', 'X-Container-Meta-Web-Error', 'X-Container-Meta-Web-Listings', 'X-Container-Meta-Web-Listings-CSS']
+          allowed_attributes = ['X-Container-Bytes-Used','X-Timestamp','X-Container-Object-Count','X-Container-Read', 'X-Container-Meta-Web-Index', 'X-Container-Meta-Web-Error', 'X-Container-Meta-Web-Listings', 'X-Container-Meta-Web-Listings-CSS', 'X-Container-Sync-Key', 'X-Container-Sync-To']
           if attributes.empty?
             attributes = allowed_attributes
           end

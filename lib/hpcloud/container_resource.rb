@@ -104,7 +104,17 @@ module HP
       def sync(synckey, syncto)
         return false unless container_head()
         @synckey = synckey
-        @syncto = syncto
+        if syncto.start_with?("https://") || syncto.start_with?("http://")
+          @syncto = syncto
+        else
+          resource = ResourceFactory.create(Connection.instance.storage, syncto)
+          if resource.head
+            @syncto = resource.public_url
+          else
+            @cstatus = resource.cstatus
+            return false
+          end
+        end
         return save
       end
 
