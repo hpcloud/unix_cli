@@ -2,6 +2,7 @@ module HP
   module Cloud
     class RemoteResource < Resource
       attr_accessor :size, :type, :etag, :modified, :synckey, :syncto
+      attr_reader :headers
 
       DEFAULT_STORAGE_MAX_SIZE = 5368709120
       DEFAULT_STORAGE_SEGMENT_SIZE = 1073741824
@@ -99,6 +100,7 @@ module HP
       end
 
       def parse_object_headers(headers)
+        @headers = headers
         @size = headers['Content-Length'].to_i
         @size = 0 if @size.nil?
         @modified = headers['Last-Modified']
