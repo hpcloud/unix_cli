@@ -16,9 +16,6 @@ Examples:
             :method  => 'GET',
             :path    => 'limits'
           )
-puts '***********************************************************'
-puts rsp.body['limits'].to_s
-puts '***********************************************************'
           hsh = { "limits" => rsp.body['limits']['rate'] }
           @log.display hsh.to_yaml
         }
