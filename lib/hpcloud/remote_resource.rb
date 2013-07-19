@@ -39,12 +39,12 @@ module HP
       end
 
       def parse_container_headers(headers)
+        @headers = headers
         @size = headers['X-Container-Bytes-Used']
         @size = 0 if @size.nil?
         @count = headers['X-Container-Object-Count']
         @synckey = headers['X-Container-Sync-Key']
         @syncto = headers['X-Container-Sync-To']
-        #@timestamp = Time.at(headers['X-Timestamp'].to_f)
         @writeacl = AclWriter.new(headers)
         @readacl = AclReader.new(headers)
         @public = @readacl.public
@@ -139,6 +139,60 @@ module HP
           @cstatus = CliStatus.new("Error oh reading '#{@fname}': " + error.to_s, :general_error)
           return false
         end
+      end
+
+      def printable_headers
+        printable_object_headers
+      end
+
+      def printable_object_headers
+        hsh = @headers.dup
+        hsh.delete('Accept-Ranges')
+        hsh.delete('Content-Length')
+        hsh.delete('Date')
+        hsh.delete('Etag')
+        hsh.delete('Last-Modified')
+        hsh.delete('X-Timestamp')
+        hsh.delete('X-Trans-Id')
+        hsh
+      end
+      
+      def printable_container_headers
+        hsh = @headers.dup
+        hsh.delete('Accept-Ranges')
+        hsh.delete('Content-Length')
+        hsh.delete('Content-Type')
+        hsh.delete('Date')
+        hsh.delete('X-Timestamp')
+        hsh.delete('X-Trans-Id')
+        hsh
+      end
+
+      CONTAINER_META = [ 'Authorization', 'X-Auth-Token', 'X-Container-Read', 'X-Container-Write', 'X-Container-Sync-To', 'X-Container-Sync-Key', 'X-Container-Meta-Web-Index', 'X-Container-Meta-Web-Error', 'X-Container-Meta-Web-Listings', 'X-Container-Meta-Web-Listings-CSS', 'X-Versions-Location' ]
+      OBJECT_META = [ 'Content-Type', 'Content-Disposition', 'X-Delete-At', 'X-Delete-After', 'X-Object-Manifest' ]
+
+      def valid_metadata_key?(key)
+        return true if key.start_with?("X-Object-Meta-")
+        return true unless OBJECT_META.index(key).nil?
+        return false
+      end
+
+      def set_metadata(key, value)
+        hsh = printable_headers()
+        hsh[key] = value
+        @storage.post_object(@container, @path, hsh)
+      end
+
+      def self.VALID_OBJECT_META
+        "  * " + OBJECT_META.join("\n  * ") + "\n"
+      end
+
+      def self.VALID_CONTAINER_META
+        "  * " + CONTAINER_META.join("\n  * ") + "\n"
+      end
+
+      def self.VALID_OBJECT_META
+        "  * " + OBJECT_META.join("\n  * ") + "\n"
       end
 
       def open(output=false, siz=0)

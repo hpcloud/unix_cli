@@ -602,4 +602,39 @@ describe "Remote resource revoke" do
       res.cstatus.is_success?.should be_true
     end
   end
+
+  context "object valid_meta_key" do
+    it "returns right thing" do
+      res = ResourceFactory.create_any(@storage, ":container/foo.txt")
+
+      res.valid_metadata_key?('X-Object-Meta-Foo').should be_true
+      res.valid_metadata_key?('Content-Type').should be_true
+      res.valid_metadata_key?('Content-Disposition').should be_true
+      res.valid_metadata_key?('X-Delete-At').should be_true
+      res.valid_metadata_key?('X-Delete-After').should be_true
+      res.valid_metadata_key?('X-Object-Manifest').should be_true
+      res.valid_metadata_key?('Bogus').should be_false
+    end
+  end
+
+  context "container valid_meta_key" do
+    it "returns right thing" do
+      res = ResourceFactory.create_any(@storage, ":container")
+
+      res.valid_metadata_key?('X-Container-Meta-Foo').should be_true
+      res.valid_metadata_key?('Content-Type').should be_false
+      res.valid_metadata_key?('Authorization').should be_true
+      res.valid_metadata_key?('X-Auth-Token').should be_true
+      res.valid_metadata_key?('X-Container-Read').should be_true
+      res.valid_metadata_key?('X-Container-Write').should be_true
+      res.valid_metadata_key?('X-Container-Sync-To').should be_true
+      res.valid_metadata_key?('X-Container-Sync-Key').should be_true
+      res.valid_metadata_key?('X-Container-Meta-Web-Index').should be_true
+      res.valid_metadata_key?('X-Container-Meta-Web-Error').should be_true
+      res.valid_metadata_key?('X-Container-Meta-Web-Listings').should be_true
+      res.valid_metadata_key?('X-Container-Meta-Web-Listings-CSS').should be_true
+      res.valid_metadata_key?('X-Versions-Location').should be_true
+      res.valid_metadata_key?('Bogus').should be_false
+    end
+  end
 end

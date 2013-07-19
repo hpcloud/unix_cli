@@ -31,6 +31,22 @@ module HP
         return container_head()
       end
 
+      def printable_headers
+        printable_container_headers
+      end
+
+      def valid_metadata_key?(key)
+        return true if key.start_with?("X-Container-Meta-")
+        return true unless CONTAINER_META.index(key).nil?
+        return false
+      end
+
+      def set_metadata(key, value)
+        hsh = printable_headers()
+        hsh[key] = value
+        @storage.post_container(@container, hsh)
+      end
+
       def cdn_public_url
         @storage.directories.head(@container).cdn_public_url
       end
