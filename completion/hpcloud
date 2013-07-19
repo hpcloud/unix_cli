@@ -28,313 +28,325 @@ _hpcloud()
       opts="--debug"
       ;;
     acl)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     acl:grant)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     acl:revoke)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     addresses)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     addresses:add)
-      opts="--network --port --fixed-ip --floating-ip --availability-zone --debug --account-name"
+      opts="--floating-ip --fixed-ip --account-name --debug --port --availability-zone --network"
       ;;
     addresses:associate)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     addresses:disassociate)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     addresses:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     cdn:containers)
-      opts="--all --availability-zone --debug --account-name"
+      opts="--account-name --all --debug --availability-zone"
       ;;
     cdn:containers:add)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     cdn:containers:get)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     cdn:containers:location)
-      opts="--ssl --availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone --ssl"
       ;;
     cdn:containers:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     cdn:containers:set)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     containers:add)
-      opts="--force --availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone --force"
       ;;
     containers:remove)
-      opts="--force --availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone --force"
       ;;
     containers:sync)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     copy)
-      opts="--mime --source-account --restart --availability-zone --debug --account-name"
+      opts="--mime --account-name --debug --restart --availability-zone --source-account"
       ;;
     dns)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     dns:add)
-      opts="--ttl --availability-zone --debug --account-name"
+      opts="--account-name --ttl --debug --availability-zone"
       ;;
     dns:records)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     dns:records:add)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     dns:records:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     dns:records:update)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     dns:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     dns:servers)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     dns:update)
-      opts="--email --ttl --availability-zone --debug --account-name"
+      opts="--account-name --ttl --debug --email --availability-zone"
       ;;
     flavors)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     get)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     images)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     images:add)
-      opts="--availability-zone --debug --account-name --metadata"
+      opts="--account-name --debug --availability-zone --metadata"
       ;;
     images:metadata)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     images:metadata:add)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     images:metadata:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     images:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     keypairs)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     keypairs:add)
-      opts="--fingerprint --private-key --output --availability-zone --debug --account-name"
+      opts="--private-key --account-name --debug --fingerprint --availability-zone --output"
       ;;
     keypairs:import)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     keypairs:public_key)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     keypairs:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     lb)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     lb:add)
-      opts="--nodes --ips --availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone --nodes --ips"
       ;;
     lb:algorithms)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     lb:limits)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     lb:nodes)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     lb:nodes:add)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     lb:nodes:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     lb:nodes:update)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     lb:protocols)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     lb:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     lb:update)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     lb:versions)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     lb:virtualips)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     list)
-      opts="--long --sync --columns --separator --availability-zone --debug --account-name"
+      opts="--separator --sync --long --account-name --debug --availability-zone --columns"
       ;;
     location)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
+      ;;
+    metadata)
+      opts="--account-name --debug --availability-zone"
+      ;;
+    metadata:set)
+      opts="--account-name --debug --availability-zone"
       ;;
     migrate)
-      opts="--mime --availability-zone --debug --account-name"
+      opts="--mime --account-name --debug --availability-zone"
       ;;
     move)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     networks)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     networks:add)
-      opts="--adminstateup --shared --availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone --adminstateup"
       ;;
     networks:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     networks:update)
-      opts="--adminstateup --shared --availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone --adminstateup"
       ;;
     ports)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     ports:add)
-      opts="--fixedips --macaddress --adminstate --deviceid --deviceowner --securitygroups --availability-zone --debug --account-name"
+      opts="--fixedips --macaddress --account-name --debug --adminstate --availability-zone --deviceid --deviceowner --securitygroups"
       ;;
     ports:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     ports:update)
-      opts="--fixedips --adminstate --deviceid --deviceowner --availability-zone --debug --account-name"
+      opts="--fixedips --account-name --debug --adminstate --availability-zone --deviceid --deviceowner"
       ;;
     remove)
-      opts="--force --at --after --availability-zone --debug --account-name"
+      opts="--account-name --at --debug --after --availability-zone --force"
       ;;
     routers)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     routers:add)
-      opts="--gateway --adminstateup --availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone --gateway --adminstateup"
       ;;
     routers:interface:add)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     routers:interface:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     routers:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     routers:update)
-      opts="--gateway --adminstateup --availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone --gateway --adminstateup"
       ;;
     securitygroups)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     securitygroups:add)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     securitygroups:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     securitygroups:rules)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     securitygroups:rules:add)
-      opts="--port-range --cidr --source-group --direction --ethertype --availability-zone --debug --account-name"
+      opts="--direction --cidr --account-name --port-range --debug --source-group --availability-zone --ethertype"
       ;;
     securitygroups:rules:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     servers)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     servers:add)
-      opts="--key-name --image --volume --security-group --private-key-file --metadata --userdata --availability-zone --debug --account-name"
+      opts="--personality --security-group --account-name --volume --debug --private-key-file --image --availability-zone --userdata --metadata --network --key-name"
       ;;
     servers:console)
-      opts="--private-key-file --dump-password --availability-zone --debug --account-name"
+      opts="--dump-password --account-name --debug --private-key-file --availability-zone"
+      ;;
+    servers:limits)
+      opts="--account-name --debug --availability-zone"
       ;;
     servers:metadata)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     servers:metadata:add)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     servers:metadata:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     servers:password)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
+      ;;
+    servers:ratelimits)
+      opts="--account-name --debug --availability-zone"
       ;;
     servers:reboot)
-      opts="--hard --availability-zone --debug --account-name"
+      opts="--account-name --hard --debug --availability-zone"
       ;;
     servers:rebuild)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     servers:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     servers:ssh)
-      opts="--private-key-file --keypair --login --command --availability-zone --debug --account-name"
+      opts="--command --account-name --debug --keypair --private-key-file --availability-zone --login"
       ;;
     snapshots)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     snapshots:add)
-      opts="--description --metadata --availability-zone --debug --account-name"
+      opts="--account-name --description --debug --availability-zone --metadata"
       ;;
     snapshots:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     subnets)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     subnets:add)
-      opts="--ipversion --gateway --dhcp --dnsnameservers --hostroutes --availability-zone --debug --account-name"
+      opts="--hostroutes --account-name --dhcp --debug --availability-zone --gateway --ipversion --dnsnameservers"
       ;;
     subnets:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     subnets:update)
-      opts="--ipversion --gateway --dhcp --dnsnameservers --hostroutes --availability-zone --debug --account-name"
+      opts="--hostroutes --account-name --dhcp --debug --availability-zone --gateway --ipversion --dnsnameservers"
       ;;
     tempurl)
-      opts="--time-period --update --availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone --time-period --update"
       ;;
     volumes)
-      opts="--bootable --columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     volumes:add)
-      opts="--description --metadata --snapshot --image --availability-zone --debug --account-name"
+      opts="--zone --account-name --description --debug --image --availability-zone --metadata --snapshot"
       ;;
     volumes:attach)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     volumes:detach)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     volumes:remove)
-      opts="--availability-zone --debug --account-name"
+      opts="--account-name --debug --availability-zone"
       ;;
     volumes:server)
-      opts="--columns --separator --availability-zone --debug --account-name"
+      opts="--separator --account-name --debug --availability-zone --columns"
       ;;
     esac
     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
@@ -342,7 +354,7 @@ _hpcloud()
   fi
   if [ "${prev}" == "hpcloud" ]
   then
-    cmds="account account:catalog account:copy account:edit account:remove account:setup account:use account:verify acl acl:grant acl:revoke addresses addresses:add addresses:associate addresses:disassociate addresses:remove cdn:containers cdn:containers:add cdn:containers:get cdn:containers:location cdn:containers:remove cdn:containers:set complete config config:set containers:add containers:remove containers:sync copy dns dns:add dns:records dns:records:add dns:records:remove dns:records:update dns:remove dns:servers dns:update flavors get help images images:add images:metadata images:metadata:add images:metadata:remove images:remove info keypairs keypairs:add keypairs:import keypairs:private keypairs:private:add keypairs:private:location keypairs:private:remove keypairs:public_key keypairs:remove lb lb:add lb:algorithms lb:limits lb:nodes lb:nodes:add lb:nodes:remove lb:nodes:update lb:protocols lb:remove lb:update lb:versions lb:virtualips list location migrate move networks networks:add networks:remove networks:update ports ports:add ports:remove ports:update remove routers routers:add routers:interface:add routers:interface:remove routers:remove routers:update securitygroups securitygroups:add securitygroups:remove securitygroups:rules securitygroups:rules:add securitygroups:rules:remove servers servers:add servers:console servers:metadata servers:metadata:add servers:metadata:remove servers:password servers:reboot servers:rebuild servers:remove servers:ssh snapshots snapshots:add snapshots:remove subnets subnets:add subnets:remove subnets:update tempurl volumes volumes:add volumes:attach volumes:detach volumes:remove volumes:server"
+    cmds="account account:catalog account:copy account:edit account:remove account:setup account:use account:verify acl acl:grant acl:revoke addresses addresses:add addresses:associate addresses:disassociate addresses:remove cdn:containers cdn:containers:add cdn:containers:get cdn:containers:location cdn:containers:remove cdn:containers:set complete config config:set containers:add containers:remove containers:sync copy dns dns:add dns:records dns:records:add dns:records:remove dns:records:update dns:remove dns:servers dns:update flavors get help images images:add images:metadata images:metadata:add images:metadata:remove images:remove info keypairs keypairs:add keypairs:import keypairs:private keypairs:private:add keypairs:private:location keypairs:private:remove keypairs:public_key keypairs:remove lb lb:add lb:algorithms lb:limits lb:nodes lb:nodes:add lb:nodes:remove lb:nodes:update lb:protocols lb:remove lb:update lb:versions lb:virtualips list location metadata metadata:set migrate move networks networks:add networks:remove networks:update ports ports:add ports:remove ports:update remove routers routers:add routers:interface:add routers:interface:remove routers:remove routers:update securitygroups securitygroups:add securitygroups:remove securitygroups:rules securitygroups:rules:add securitygroups:rules:remove servers servers:add servers:console servers:limits servers:metadata servers:metadata:add servers:metadata:remove servers:password servers:ratelimits servers:reboot servers:rebuild servers:remove servers:ssh snapshots snapshots:add snapshots:remove subnets subnets:add subnets:remove subnets:update tempurl volumes volumes:add volumes:attach volumes:detach volumes:remove volumes:server"
     COMPREPLY=( $(compgen -W "${cmds}" -- ${cur}) )
     __ltrim_colon_completions "$cur"
     return 0
