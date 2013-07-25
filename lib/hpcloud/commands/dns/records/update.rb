@@ -7,7 +7,7 @@ module HP
   Update a DNS record to the specified domain with the given name, type and data.
 
 Examples:
-  hpcloud dns:records:update mydomain.com. www.mydomain.com A 10.0.0.1 # Update a DNS domain `mydomain.com` record `A` for `www.mydomain.com` pointing to address 10.0.0.1
+  hpcloud dns:records:update mydomain.com. www.mydomain.com. A 10.0.0.1 # Update a DNS domain `mydomain.com` record `A` for `www.mydomain.com` pointing to address 10.0.0.1
       DESC
       CLI.add_common_options
       define_method "dns:records:update" do |domain, name, type, data|
