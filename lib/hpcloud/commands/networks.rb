@@ -15,7 +15,7 @@ module HP
 
 Examples:
   hpcloud networks       # List all networks
-  hpcloud networks 1     # List the details for networks with id `1`
+  hpcloud networks 12857174     # List the details for networks with id `12857174`
   hpcloud networks testo # List the details for networks named `testo`
 
 Aliases: networks:list
