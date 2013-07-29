@@ -221,6 +221,10 @@ module HP
 
       def write(account)
         config = @accts[account]
+        config[:zones].delete(:compute_availability_zone) if config[:zones][:compute_availability_zone].nil?
+        config[:zones].delete(:storage_availability_zone) if config[:zones][:storage_availability_zone].nil?
+        config[:zones].delete(:cdn_availability_zone) if config[:zones][:cdn_availability_zone].nil?
+        config[:zones].delete(:block_availability_zone) if config[:zones][:block_availability_zone].nil?
         if config.nil?
           raise Exception.new("Cannot find account information for #{account}")
         end

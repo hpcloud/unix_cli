@@ -470,8 +470,8 @@ describe "Server class" do
 
       srv.set_personality("spec/fixtures/files/Matryoshka/")
 
-      srv.personality.should eq(
-        [{"contents"=>"MjAwMC0yMDA4IGJhbGQK\n",
+      ray = srv.personality.sort{|a,b| a["path"] <=> b["path"]}
+      expected = [{"contents"=>"MjAwMC0yMDA4IGJhbGQK\n",
           "path"=>"/Putin/Vladimir.txt"},
          {"contents"=>"MjAwOC0yMDEyIGhhaXJ5Cg==\n",
           "path"=>"/Putin/Medvedev.txt"},
@@ -486,7 +486,9 @@ describe "Server class" do
          {"contents"=>"Cg==\n",
           "path"=>
            "/Putin/Yeltsin/Gorbachev/Chernenko.txt"
-       }])
+       }]
+      expected = expected.sort{|a,b| a["path"] <=> b["path"]}
+      ray.should eq(expected)
     end
   end
 end
