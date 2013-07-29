@@ -37,6 +37,8 @@ Examples:
 
 Aliases: account:add, account:setup, account:update
       DESC
+      method_option 'userpass', :type => :boolean,
+                    :desc => "Use username/password authentication instead of authentication keys"
       method_option 'no-validate', :type => :boolean, :aliases => '-n',
                     :default => false,
                     :desc => "Don't verify account settings during edit"
@@ -75,8 +77,20 @@ Aliases: account:add, account:setup, account:update
             when "hp"
               service_name = "HP Cloud Services"
               @log.display "****** Setup your #{service_name} #{name} account ******"
-              cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
-              cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
+              unless options[:userpass].nil?
+                if options[:userpass] == true
+                  cred[:userpass] = options[:userpass]
+                else
+                  cred[:userpass] = nil
+                end
+              end
+              if cred[:userpass] == true
+                cred[:account_id] = ask_with_default 'User name:', "#{cred[:account_id]}"
+                cred[:secret_key] = ask_with_default 'Password:', "#{cred[:secret_key]}"
+              else
+                cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
+                cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
+              end
               cred[:auth_uri] = ask_with_default 'Identity (Auth) Uri:', "#{cred[:auth_uri]}"
               cred[:tenant_id] = ask_with_default 'Project (aka Tenant) Id:', "#{cred[:tenant_id]}"
               zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
