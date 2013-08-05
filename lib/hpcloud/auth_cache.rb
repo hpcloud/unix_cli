@@ -18,16 +18,22 @@ module HP
         @@home = dir
       end
 
-      def get_file_name(account)
-        "#{@directory}#{account.to_s.downcase.gsub(' ', '_')}"
+      def get_name(opts)
+        "#{opts[:hp_access_key]}:#{opts[:hp_tenant_id]}"
       end
 
-      def remove(account = nil)
-        if account.nil?
+      def get_file_name(opts)
+        return "#{@directory}" if opts.nil?
+        "#{@directory}#{get_name(opts)}"
+      end
+
+      def remove(opts = nil)
+        if opts.nil?
           begin
-            dir = Dir.new(get_file_name("."))
+            dirname = get_file_name(nil)
+            dir = Dir.new(dirname)
             dir.entries.each { |x|
-              file_name = get_file_name(x)
+              file_name = dirname + x
               begin
                 unless (x == "." || x == "..")
                   File.delete(file_name)
@@ -39,7 +45,7 @@ module HP
           rescue
           end
         else
-          file_name = get_file_name(account)
+          file_name = get_file_name(opts)
           begin
             File.delete(file_name)
           rescue
@@ -49,9 +55,10 @@ module HP
         return true
       end
 
-      def read(account)
+      def read(opts)
+        account = get_name(opts)
         return @aucas[account] if @aucas[account].nil? == false
-        file_name = get_file_name(account)
+        file_name = get_file_name(opts)
         if File.exists?(file_name)
           begin
             @aucas[account] = YAML::load(File.open(file_name))
@@ -62,14 +69,15 @@ module HP
         return @aucas[account]
       end
 
-      def write(account, creds)
+      def write(opts, creds)
+        account = get_name(opts)
         @aucas[account] = creds;
         config = @aucas[account]
         if config.nil?
-          remove(account)
+          remove(opts)
           return
         end
-        file_name = get_file_name(account)
+        file_name = get_file_name(opts)
         begin
           FileUtils.mkpath(@directory)
           File.open(file_name, 'w') do |file|
@@ -80,8 +88,8 @@ module HP
         end
       end
 
-      def default_zone(account, service)
-        creds = read(account)
+      def default_zone(opts, service)
+        creds = read(opts)
         return nil if creds.nil?
         catalog = creds[:service_catalog]
         return nil if catalog.nil?

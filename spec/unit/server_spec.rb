@@ -15,6 +15,7 @@ describe "Server class" do
     @fog_server.stub(:security_groups).and_return(@security_groups)
     @fog_server.stub(:created_at).and_return("today")
     @fog_server.stub(:state).and_return("ACTIVE")
+    @fog_server.stub(:tenant_id).and_return("10ants")
     @fog_server.stub(:network_name).and_return("hpcloud")
     @fog_server.stub(:addresses).and_return({:k=>[{"addr"=>"127.0.0.8"}]})
     @fog_server.stub(:metadata).and_return([])

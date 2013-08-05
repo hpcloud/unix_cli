@@ -6,7 +6,7 @@ module HP
     class ServerHelper < BaseHelper
       attr_reader :private_key, :windows, :personality
       attr_accessor :id, :name, :flavor, :image, :ips, :public_ip, :private_ip, :keyname, :security_groups, :security, :created, :state, :volume, :meta
-      attr_accessor :network_name, :networks
+      attr_accessor :network_name, :networks, :tenantid, :region
     
       def self.get_keys()
         return [ "id", "name", "flavor", "image", "ips", "keyname", "security_groups", "created", "state" ]
@@ -32,6 +32,7 @@ module HP
         end
         @created = foggy.created_at
         @state = foggy.state
+        @tenantid = foggy.tenant_id
         @network_name = foggy.network_name
         @networks = ""
         @ips = ""
@@ -128,6 +129,26 @@ module HP
         end
         set_error("Invalid security group '#{value}' should be comma separated list", :incorrect_usage)
         return false
+      end
+
+      def add_security_groups(value)
+        @connection.request(
+          :body     => Fog::JSON.encode({ 'addSecurityGroup' => { 'name' => value}}),
+          :expects  => 202,
+          :method   => 'POST',
+          :path     => "servers/#{@id}/action"
+        )
+        return true
+      end
+
+      def remove_security_groups(value)
+        @connection.request(
+          :body     => Fog::JSON.encode({ 'removeSecurityGroup' => { 'name' => value}}),
+          :expects  => 202,
+          :method   => 'POST',
+          :path     => "servers/#{@id}/action"
+        )
+        return true
       end
 
       def set_private_key(value)

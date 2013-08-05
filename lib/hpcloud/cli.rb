@@ -12,6 +12,8 @@ module HP
                                       :desc => 'Set the availability zone.'},
                :debug => {:type => :string, :aliases => '-x',
                                  :desc => 'Debug logging 1,2,3,...'},
+               :tenantid => {:type => :string,
+                                 :desc => 'Tenant id for account.'},
                :account_name => {:type => :string, :aliases => '-a',
                                  :desc => 'Select account.'}}
 
