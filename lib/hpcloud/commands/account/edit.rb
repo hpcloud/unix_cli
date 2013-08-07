@@ -138,16 +138,20 @@ Aliases: account:add, account:setup, account:update
                   cata.keys.each { |x| services << x.to_s }
                   services.sort!
                   services.each { |service|
-                    zone = "#{service.downcase}_region".to_sym
+                    zone = "#{service.downcase}".to_sym
                     regs = []
                     cata[service.to_sym].keys.each { |x| regs << x.to_s }
                     regs.sort!
-                    default_region = regs.first.to_s
+                    default_region = regions[zone] || regs.first.to_s
                     az = regs.join(',')
-                    regions[zone] = ask_with_default "#{service} zone (#{az}):", "#{regions[zone]}"
+                    unless service == "Image Management"
+                      regions[zone] = ask_with_default "#{service} region (#{az}):", "#{default_region}"
+                    end
                   }
                 end
                 acct[:regions] = regions
+                accounts.set_regions(name, regions)
+                accounts.write(name)
               rescue Exception => e
                 e = ErrorResponse.new(e).to_s
                 @log.error "Account verification failed. Error connecting to the service endpoint at: '#{identifier}'. Please verify your account credentials. \n Exception: #{e}"

@@ -145,6 +145,13 @@ module HP
         end
       end
 
+      def set_regions(account, regions)
+        if @accts[account].nil?
+          @accts[account] = {:credentials=>{}, :regions=>{}, :options=>{}}
+        end
+        @accts[account][:regions] = regions
+      end
+
       def set(account, key, value)
         hsh = @accts[account]
         return false if hsh.nil?
