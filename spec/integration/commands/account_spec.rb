@@ -27,8 +27,8 @@ describe "Account list" do
       rsp.stderr.should eq("")
       rsp.stdout.should include("credentials:")
       rsp.stdout.should include("  auth_uri: one\n")
-      rsp.stdout.should include("zones:")
       rsp.stdout.should include("options: {}")
+      rsp.stdout.should include("regions: {}")
       rsp.exit_status.should be_exit(:success)
     end
   end

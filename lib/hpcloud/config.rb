@@ -6,10 +6,6 @@ module HP
       @@home = nil
       attr_reader :directory, :file, :settings
       KNOWN = [ :default_auth_uri,
-                :block_availability_zone,
-                :storage_availability_zone,
-                :compute_availability_zone,
-                :cdn_availability_zone,
                 :connect_timeout,
                 :read_timeout,
                 :write_timeout,
@@ -101,10 +97,7 @@ module HP
           begin
             @file_settings = YAML::load(File.open(@file))
             @settings = @file_settings.clone
-            @settings[:block_availability_zone] ||= cfg[:block_availability_zone]
-            @settings[:compute_availability_zone] ||= cfg[:compute_availability_zone]
-            @settings[:cdn_availability_zone] ||= cfg[:cdn_availability_zone]
-            @settings[:storage_availability_zone] ||= cfg[:storage_availability_zone]
+            raise Exception.new("File parse error") unless @settings.kind_of?(Hash)
           rescue Exception => e
             @settings = cfg
             raise Exception.new("Error reading configuration file: #{@file}\n" + e.to_s)
@@ -158,9 +151,6 @@ module HP
         end
         value = value.to_s
         if value.empty?
-          if key.to_s.include?('availability_zone')
-            raise Exception.new("The value of '#{key.to_s}' may not be empty")
-          end
           @file_settings.delete(key)
           @settings.delete(key)
         else

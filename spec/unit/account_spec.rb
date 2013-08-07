@@ -126,12 +126,7 @@ describe "Account write" do
                :auth_uri => 'http://Daredevil/',
                :tenant_id => '328'
              }
-      zones = { :compute_availability_zone => 'az-1.region-a.geo-1',
-                :storage_availability_zone => 'region-b.geo-1',
-                :block_availability_zone => 'az-1.region-d.geo-1'
-              }
       accounts.set_cred('nub', cred)
-      accounts.set_zones('nub', zones)
 
       accounts.write('nub')
 
@@ -141,10 +136,6 @@ describe "Account write" do
       acct[:credentials][:secret_key].should eq('IdlerWheel')
       acct[:credentials][:auth_uri].should eq('http://Daredevil/')
       acct[:credentials][:tenant_id].should eq('328')
-      acct[:zones][:compute_availability_zone].should eq('az-1.region-a.geo-1')
-      acct[:zones][:storage_availability_zone].should eq('region-b.geo-1')
-      acct[:zones][:cdn_availability_zone].should be_nil
-      acct[:zones][:block_availability_zone].should eq('az-1.region-d.geo-1')
     end
   end
 
@@ -197,10 +188,10 @@ describe "Account get" do
       acct[:credentials][:secret_key].should eq('bar')
       acct[:credentials][:auth_uri].should eq('http://192.168.1.1:8888/v2.0')
       acct[:credentials][:tenant_id].should eq('111111')
-      acct[:zones][:compute_availability_zone].should be_nil
-      acct[:zones][:storage_availability_zone].should be_nil
-      acct[:zones][:cdn_availability_zone].should be_nil
-      acct[:zones][:block_availability_zone].should be_nil
+      acct[:regions][:compute].should be_nil
+      acct[:regions][:"object storage"].should be_nil
+      acct[:regions][:cdn].should be_nil
+      acct[:regions][:"block storage"].should be_nil
       acct[:options][:connect_timeout].should eq(30)
       acct[:options][:read_timeout].should eq(240)
       acct[:options][:write_timeout].should eq(240)
@@ -224,50 +215,11 @@ describe "Accounts create" do
       uri = HP::Cloud::Config.new.get(:default_auth_uri)
 
       acct[:credentials].should eq({:auth_uri=>uri})
-      zones = {:compute_availability_zone=>nil, :storage_availability_zone=>nil, :cdn_availability_zone=>nil, :block_availability_zone=>nil}
-      acct[:zones].should eq(zones)
+      acct[:regions].should eq({})
       acct[:options].should eq({})
     end
   end
   after(:all) {reset_all()}
-end
-
-describe "Accounts rejigger" do
-  before(:each) do
-    AccountsHelper.use_tmp()
-  end
-
-  context "when rejigger called" do
-    it "should have basic settings" do
-      accounts = Accounts.new()
-      acct = accounts.create('Walkmen')
-      acct[:zones][:compute_availability_zone] = "az-2.region-b.geo-1"
-
-      accounts.rejigger_zones(acct[:zones])
-
-      acct[:zones][:compute_availability_zone].should eq("az-2.region-b.geo-1")
-      acct[:zones][:storage_availability_zone].should eq("region-b.geo-1")
-      acct[:zones][:cdn_availability_zone].should eq("region-b.geo-1")
-      acct[:zones][:block_availability_zone].should eq("az-2.region-b.geo-1")
-    end
-  end
-
-  context "when rejigger called v2" do
-    it "should have basic settings" do
-      accounts = Accounts.new()
-      acct = accounts.create('Walkmen')
-      acct[:zones][:compute_availability_zone] = "region-b.geo-1"
-
-      accounts.rejigger_zones(acct[:zones])
-
-      acct[:zones][:compute_availability_zone].should eq("region-b.geo-1")
-      acct[:zones][:storage_availability_zone].should eq("region-b.geo-1")
-      acct[:zones][:cdn_availability_zone].should eq("region-b.geo-1")
-      acct[:zones][:block_availability_zone].should eq("region-b.geo-1")
-    end
-  end
-
-  after(:each) {reset_all()}
 end
 
 describe "Accounts set" do
@@ -283,10 +235,10 @@ describe "Accounts set" do
       accounts.set('Hives', :secret_key, "C2").should be_true
       accounts.set('Hives', :auth_uri, "C3").should be_true
       accounts.set('Hives', :tenant_id, "C4").should be_true
-      accounts.set('Hives', :compute_availability_zone, "Z1").should be_true
-      accounts.set('Hives', :storage_availability_zone, "Z2").should be_true
-      accounts.set('Hives', :cdn_availability_zone, "Z3").should be_true
-      accounts.set('Hives', :block_availability_zone, "Z4").should be_true
+      accounts.set('Hives', :compute, "Z1").should be_true
+      accounts.set('Hives', :"object storage", "Z2").should be_true
+      accounts.set('Hives', :cdn, "Z3").should be_true
+      accounts.set('Hives', :"block storage", "Z4").should be_true
       accounts.set('Hives', :connect_timeout, "1").should be_true
       accounts.set('Hives', :read_timeout, "2").should be_true
       accounts.set('Hives', :write_timeout, "3").should be_true
@@ -303,10 +255,10 @@ describe "Accounts set" do
       acct[:credentials][:secret_key].should eq("C2")
       acct[:credentials][:auth_uri].should eq("C3")
       acct[:credentials][:tenant_id].should eq("C4")
-      acct[:zones][:compute_availability_zone].should eq("Z1")
-      acct[:zones][:storage_availability_zone].should eq("Z2")
-      acct[:zones][:cdn_availability_zone].should eq("Z3")
-      acct[:zones][:block_availability_zone].should eq("Z4")
+      acct[:regions][:compute].should eq("Z1")
+      acct[:regions][:"object storage"].should eq("Z2")
+      acct[:regions][:cdn].should eq("Z3")
+      acct[:regions][:"block storage"].should eq("Z4")
       acct[:options][:connect_timeout].should eq(1)
       acct[:options][:read_timeout].should eq(2)
       acct[:options][:write_timeout].should eq(3)
@@ -393,7 +345,7 @@ describe "Connection options" do
     end
 
     it "should have expected values with avail zone" do
-      options = Accounts.new.create_options('hp', :storage_availability_zone, 'somethingelse')
+      options = Accounts.new.create_options('hp', 'Object Storage', 'somethingelse')
 
       options[:provider].should eq('hp')
       options[:connection_options].should eq(expected_options)
@@ -406,7 +358,7 @@ describe "Connection options" do
     end
 
     it "should have expected values" do
-      options = Accounts.new.create_options('hp', :compute_availability_zone)
+      options = Accounts.new.create_options('hp', 'Compute')
 
       options[:provider].should eq('hp')
       options[:connection_options].should eq(expected_options())
@@ -419,7 +371,7 @@ describe "Connection options" do
     end
 
     it "should have expected values" do
-      options = Accounts.new.create_options('hp', :storage_availability_zone)
+      options = Accounts.new.create_options('hp', 'Object Storage')
 
       options[:provider].should eq('hp')
       options[:connection_options].should eq(expected_options())
@@ -432,7 +384,7 @@ describe "Connection options" do
     end
 
     it "should have expected values" do
-      options = Accounts.new.create_options('hp', :cdn_availability_zone)
+      options = Accounts.new.create_options('hp', 'CDN')
 
       options[:provider].should eq('hp')
       options[:connection_options].should eq(expected_options())
@@ -445,7 +397,7 @@ describe "Connection options" do
     end
 
     it "should have expected values" do
-      options = Accounts.new.create_options('hp', :block_availability_zone)
+      options = Accounts.new.create_options('hp', 'Block Storage')
 
       options[:provider].should eq('hp')
       options[:connection_options].should eq(expected_options())
@@ -460,7 +412,7 @@ describe "Connection options" do
     it "should throw exception" do
       directory = Accounts.new.directory
       lambda {
-        Accounts.new.create_options('bogus', :storage_availability_zone)
+        Accounts.new.create_options('bogus', 'Object Storage')
       }.should raise_error(Exception, "Could not find account file: #{directory}bogus")
     end
   end

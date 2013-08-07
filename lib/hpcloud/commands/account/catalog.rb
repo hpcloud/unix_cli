@@ -20,7 +20,8 @@ Examples:
           @log.display "Service catalog '#{name}':"
           HP::Cloud::Accounts.new().read(name)
           begin
-            @log.display Connection.instance.catalog(name, service)
+            cata = Connection.instance.catalog(name, service)
+            @log.display cata.to_yaml.gsub(/--- \n/,'').gsub(/\{\}/,'').gsub(/\n\n/, "\n")
           rescue Exception => e
             unless options[:debug].nil?
               puts e.backtrace

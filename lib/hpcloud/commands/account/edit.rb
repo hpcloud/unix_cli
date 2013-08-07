@@ -66,11 +66,10 @@ Aliases: account:add, account:setup, account:update
                 acct[:provider] = provider
                 acct[:options] = {}
                 acct[:credentials] = {}
-                acct[:zones] = {}
+                acct[:regions] = {}
               end
             end
             cred = acct[:credentials]
-            zones = acct[:zones]
 
             # ask for credentials
             case acct[:provider]
@@ -93,31 +92,27 @@ Aliases: account:add, account:setup, account:update
               end
               cred[:auth_uri] = ask_with_default 'Identity (Auth) Uri:', "#{cred[:auth_uri]}"
               cred[:tenant_id] = ask_with_default 'Project (aka Tenant) Id:', "#{cred[:tenant_id]}"
-              zones[:compute_availability_zone] = ask_with_default 'Compute zone:', "#{zones[:compute_availability_zone]}"
-              accounts.rejigger_zones(zones)
-              zones[:storage_availability_zone] = ask_with_default 'Storage zone:', "#{zones[:storage_availability_zone]}"
-              zones[:block_availability_zone] = ask_with_default 'Block zone:', "#{zones[:block_availability_zone]}"
             when "aws"
               service_name = "AWS"
               @log.display "****** Setup your #{service_name} #{name} account ******"
               cred[:aws_access_key_id] = ask_with_default 'Access Key ID:', "#{cred[:aws_access_key_id]}"
               cred[:aws_secret_access_key] = ask_with_default 'Secret Access Key:', "#{cred[:aws_secret_access_key]}"
               acct[:options] = {}
-              acct[:zones] = {}
+              acct[:regions] = {}
             when "rackspace"
               service_name = "Rackspace"
               @log.display "****** Setup your #{service_name} #{name} account ******"
               cred[:rackspace_username] = ask_with_default 'Username:', "#{cred[:rackspace_username]}"
               cred[:rackspace_api_key] = ask_with_default 'API Key:', "#{cred[:rackspace_api_key]}"
               acct[:options] = {}
-              acct[:zones] = {}
+              acct[:regions] = {}
             when "google"
               service_name = "Google"
               @log.display "****** Setup your #{service_name} #{name} account ******"
               cred[:google_storage_access_key_id] = ask_with_default 'Storage access key id:', "#{cred[:google_storage_access_key_id]}"
               cred[:google_storage_secret_access_key] = ask_with_default 'Storage secret access key:', "#{cred[:google_storage_secret_access_key]}"
               acct[:options] = {}
-              acct[:zones] = {}
+              acct[:regions] = {}
             else
               @log.error "Provider '#{acct[:provider]}' not recognized.  Supported providers include hp, aws and rackspace."
               @log.fatal "If your provider is not supported, you may manually create an account configuration file in the ~/.hpcloud/accounts directory."
@@ -125,7 +120,6 @@ Aliases: account:add, account:setup, account:update
 
             # update credentials and stash in config directory
             accounts.set_cred(name, cred)
-            accounts.set_zones(name, zones)
             accounts.write(name)
 
             unless options['no-validate']
@@ -137,7 +131,23 @@ Aliases: account:add, account:setup, account:update
               end
 
               begin
-                Connection.instance.validate_account(name)
+                cata = Connection.instance.catalog(name, [])
+                regions = acct[:regions]
+                if acct[:provider] == "hp"
+                  services = []
+                  cata.keys.each { |x| services << x.to_s }
+                  services.sort!
+                  services.each { |service|
+                    zone = "#{service.downcase}_region".to_sym
+                    regs = []
+                    cata[service.to_sym].keys.each { |x| regs << x.to_s }
+                    regs.sort!
+                    default_region = regs.first.to_s
+                    az = regs.join(',')
+                    regions[zone] = ask_with_default "#{service} zone (#{az}):", "#{regions[zone]}"
+                  }
+                end
+                acct[:regions] = regions
               rescue Exception => e
                 e = ErrorResponse.new(e).to_s
                 @log.error "Account verification failed. Error connecting to the service endpoint at: '#{identifier}'. Please verify your account credentials. \n Exception: #{e}"

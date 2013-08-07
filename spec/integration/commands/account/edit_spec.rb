@@ -8,7 +8,7 @@ describe "account:edit" do
 
   context "without existing account" do
     it "without validation" do
-      input = ['foo','bar','https://127.0.0.1/','111111','A','B','C']
+      input = ['foo','bar','https://127.0.0.1/','111111']
       rsp = cptr('account:setup --no-validate', input)
       rsp.stdout.should eq(
         "****** Setup your HP Cloud Services hp account ******\n" +
@@ -16,16 +16,13 @@ describe "account:edit" do
         "Secret Key: [] " +
         "Identity (Auth) Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] " +
         "Project (aka Tenant) Id: [] " +
-        "Compute zone: [] " +
-        "Storage zone: [A] " +
-        "Block zone: [A] " +
         "Account credentials for HP Cloud Services have been saved.\n")
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
     end
 
     it "with validation" do
-      input = ['oof','rab','https://bogus.hp.com/','222222','az-1.region-b.geo-1','region-b.geo-1','az-1.region-b.geo-1']
+      input = ['oof','rab','https://bogus.hp.com/','222222']
       rsp = cptr('account:setup', input)
       rsp.stdout.should eq(
         "****** Setup your HP Cloud Services hp account ******\n" +
@@ -33,9 +30,6 @@ describe "account:edit" do
         "Secret Key: [bar] " +
         "Identity (Auth) Uri: [https://127.0.0.1/] " +
         "Project (aka Tenant) Id: [111111] " +
-        "Compute zone: [A] " +
-        "Storage zone: [region-b.geo-1] " +
-        "Block zone: [az-1.region-b.geo-1] " +
         "Verifying your HP Cloud Services account...\n" +
         "Account credentials for HP Cloud Services have been saved.\n")
       rsp.stderr.should match("Account verification failed. Error connecting to the service endpoint at: 'https://bogus.hp.com/'. Please verify your account credentials. \n Exception:.*")
@@ -43,7 +37,7 @@ describe "account:edit" do
     end
 
     it "with account name" do
-      input = ['mumford','sons','https://timshel/','322','A','B','C']
+      input = ['mumford','sons','https://timshel/','322']
       rsp = cptr('account:setup --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
@@ -54,15 +48,12 @@ describe "account:edit" do
       contents.should include("  :secret_key: sons")
       contents.should include("  :auth_uri: https://timshel/")
       contents.should include("  :tenant_id: '322'")
-      contents.should include(":zones:")
-      contents.should include("  :compute_availability_zone: A")
-      contents.should include("  :storage_availability_zone: B")
-      contents.should include("  :block_availability_zone: C")
+      contents.should include(":regions: {}")
       contents.should include(":options: {}")
     end
 
     it "over existing" do
-      input = ['LaSera','SeesTheLight','https://please/','227','E','F','G']
+      input = ['LaSera','SeesTheLight','https://please/','227']
       rsp = cptr('account:setup --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
@@ -73,15 +64,12 @@ describe "account:edit" do
       contents.should include("  :secret_key: SeesTheLight")
       contents.should include("  :auth_uri: https://please/")
       contents.should include("  :tenant_id: '227'")
-      contents.should include(":zones:")
-      contents.should include("  :compute_availability_zone: E")
-      contents.should include("  :storage_availability_zone: F")
-      contents.should include("  :block_availability_zone: G")
+      contents.should include(":regions: {}")
       contents.should include(":options: {}")
     end
 
     it "over existing" do
-      input = ['LaSera','SeesTheLight','https://please/','227','1','2','3']
+      input = ['LaSera','SeesTheLight','https://please/','227']
       rsp = cptr('account:edit --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
@@ -92,10 +80,7 @@ describe "account:edit" do
       contents.should include("  :secret_key: SeesTheLight")
       contents.should include("  :auth_uri: https://please/")
       contents.should include("  :tenant_id: '227'")
-      contents.should include(":zones:")
-      contents.should include("  :compute_availability_zone: '1'")
-      contents.should include("  :storage_availability_zone: '2'")
-      contents.should include("  :block_availability_zone: '3'")
+      contents.should include(":regions: {}")
       contents.should include(":options: {}")
     end
   end
@@ -111,26 +96,26 @@ describe "account:edit" do
 
   context "account:add with good data" do
     it "should report success" do
-      rsp = cptr("account:add foo auth_uri=one block_availability_zone=2 read_timeout=3")
+      rsp = cptr("account:add foo auth_uri=one network=2 read_timeout=3")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Account 'foo' set auth_uri=one block_availability_zone=2 read_timeout=3\n")
+      rsp.stdout.should eq("Account 'foo' set auth_uri=one network=2 read_timeout=3\n")
       rsp.exit_status.should be_exit(:success)
       AccountsHelper.value('foo', :credentials, :auth_uri).should eq("one")
-      AccountsHelper.value('foo', :zones, :block_availability_zone).should eq("2")
+      AccountsHelper.value('foo', :regions, :network).should eq("2")
       AccountsHelper.value('foo', :options, :read_timeout).should eq("3")
     end
   end
 
   context "account:update with good data" do
     it "should report success" do
-      rsp = cptr("account:update foo auth_uri=one block_availability_zone=2 read_timeout=3")
+      rsp = cptr("account:update foo auth_uri=one network=2 read_timeout=3")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Account 'foo' set auth_uri=one block_availability_zone=2 read_timeout=3\n")
+      rsp.stdout.should eq("Account 'foo' set auth_uri=one network=2 read_timeout=3\n")
       rsp.exit_status.should be_exit(:success)
       AccountsHelper.value('foo', :credentials, :auth_uri).should eq("one")
-      AccountsHelper.value('foo', :zones, :block_availability_zone).should eq("2")
+      AccountsHelper.value('foo', :regions, :network).should eq("2")
       AccountsHelper.value('foo', :options, :read_timeout).should eq("3")
     end
   end
@@ -149,16 +134,16 @@ describe "account:edit" do
     end
   end
 
-  context "account:add with zones" do
+  context "account:add with regions" do
     it "should report success" do
-      rsp = cptr("account:add foo compute_availability_zone=1 storage_availability_zone=2 block_availability_zone=4")
+      rsp = cptr("account:add foo compute=1 cdn=2 lbaas=4")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Account 'foo' set compute_availability_zone=1 storage_availability_zone=2 block_availability_zone=4\n")
+      rsp.stdout.should eq("Account 'foo' set compute=1 cdn=2 lbaas=4\n")
       rsp.exit_status.should be_exit(:success)
-      AccountsHelper.value('foo', :zones, :compute_availability_zone).should eq("1")
-      AccountsHelper.value('foo', :zones, :storage_availability_zone).should eq("2")
-      AccountsHelper.value('foo', :zones, :block_availability_zone).should eq("4")
+      AccountsHelper.value('foo', :regions, :compute).should eq("1")
+      AccountsHelper.value('foo', :regions, :cdn).should eq("2")
+      AccountsHelper.value('foo', :regions, :lbaas).should eq("4")
     end
   end
 

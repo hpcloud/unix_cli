@@ -82,7 +82,7 @@ module HP
       def storage(account_name=nil)
         account = get_account(account_name)
         return @storage_connection[account] unless @storage_connection[account].nil?
-        opts = create_options(account, :storage_availability_zone)
+        opts = create_options(account, 'Object Storage')
         read_creds(account, opts, 'Object Storage')
         begin
           @storage_connection[account] = Fog::Storage.new(opts)
@@ -98,7 +98,7 @@ module HP
       def compute
         account = get_account()
         return @compute_connection[account] unless @compute_connection[account].nil?
-        opts = create_options(account, :compute_availability_zone)
+        opts = create_options(account, 'Compute')
         opts[:version] = :v2
         read_creds(account, opts, 'Compute')
         begin
@@ -114,7 +114,7 @@ module HP
       def block
         account = get_account()
         return @block_connection[account] unless @block_connection[account].nil?
-        opts = create_options(account, :block_availability_zone)
+        opts = create_options(account, 'Block Storage')
         opts.delete(:provider)
         read_creds(account, opts, 'Block Storage')
         begin
@@ -130,7 +130,7 @@ module HP
       def cdn
         account = get_account()
         return @cdn_connection[account] unless @cdn_connection[account].nil?
-        opts = create_options(account, :cdn_availability_zone)
+        opts = create_options(account, 'CDN')
         read_creds(account, opts, 'CDN')
         begin
           @cdn_connection[account] = Fog::CDN.new(opts)
@@ -145,7 +145,7 @@ module HP
       def network
         account = get_account()
         return @network_connection[account] unless @network_connection[account].nil?
-        opts = create_options(account, :network_availability_zone)
+        opts = create_options(account, 'Networking')
         read_creds(account, opts, 'Networking')
         begin
           opts.delete(:provider)
@@ -161,7 +161,7 @@ module HP
       def dns
         account = get_account()
         return @dns_connection[account] unless @dns_connection[account].nil?
-        opts = create_options(account, :dns_availability_zone)
+        opts = create_options(account, 'DNS')
         read_creds(account, opts, 'DNS')
         begin
           opts.delete(:provider)
@@ -177,7 +177,7 @@ module HP
       def lb
         account = get_account()
         return @lb_connection[account] unless @lb_connection[account].nil?
-        opts = create_options(account, :lb_availability_zone)
+        opts = create_options(account, 'Load Balancer')
         read_creds(account, opts, 'Load Balancer')
         begin
           opts.delete(:provider)
@@ -209,20 +209,16 @@ module HP
       end
 
       def catalog(name, service)
-        begin
-          rsp = validate_account(name)
-          cata = rsp[:service_catalog]
-          unless service.empty?
-            hsh = {}
-            service.each{ |x|
-              hsh[x.to_sym] = cata[x.to_sym]
-            }
-            cata = hsh
-          end
-          return cata.to_yaml.gsub(/--- \n/,'').gsub(/\{\}/,'').gsub(/\n\n/, "\n")
-        rescue
+        rsp = validate_account(name)
+        cata = rsp[:service_catalog]
+        unless service.empty?
+          hsh = {}
+          service.each{ |x|
+            hsh[x.to_sym] = cata[x.to_sym]
+          }
+          cata = hsh
         end
-        return ""
+        return cata
       end
 
       def validate_account(account_name)
