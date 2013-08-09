@@ -25,7 +25,7 @@ module HP
         @servers = ''
         @@serverous = Servers.new if @@serverous.nil?
         foggy.attachments.each { |x|
-          srv = @@serverous.get(x["serverId"].to_s)
+          srv = @@serverous.get(x["server_id"].to_s)
           if srv.is_valid? == false
             next
           end

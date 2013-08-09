@@ -59,7 +59,8 @@ Examples:
             end
             command = options[:command]
             @log.display "Connecting to '#{name_or_id}'..."
-            system("#{command} #{loginid}@#{server.public_ip} -i #{filename}")
+            cmd = "#{command} #{loginid}@#{server.public_ip} -i #{filename}"
+            system(cmd)
           else
             @log.fatal server.cstatus
           end
