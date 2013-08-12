@@ -12,7 +12,7 @@ module HP
 
   You  need your Access Key Id, Secret Key and Project (aka Tenant) Id from the HP Cloud web site to set up your account. Optionally, you can specify your own endpoint to authorize your identity, but in most cases we recommend you use the default.
   
-  Availability zones typically have the format 'az-1.region-a.geo-1' or 'region-a.geo-1', depending on the service.  See your account API keys page to see your list of activated availability zones: https://console.hpcloud.com/account/api_keys
+  Availability zones typically have the format 'az-1.region-a.geo-1' or 'region-a.geo-1', depending on the service.  See your account API keys page to see your list of activated availability zones: https://console.hpcloud.com/account/api_keys or use the `account:catalog` command to print out your service catalog.
   
   You can re-run this command at any time to modify your settings.
 
@@ -20,11 +20,9 @@ module HP
   
   * Access Key Id
   * Secret Key 
-  * Identify (Auth) Uri
   * Project (aka Tenant) Id
-  * Compute zone
-  * Storage zone
-  * Block zone
+  * Identify (Auth) Uri
+  * Various zones and regions you have activated
 
   The command line mode allows you to set the following values:
 #{Accounts.get_known}

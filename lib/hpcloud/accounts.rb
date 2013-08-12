@@ -11,7 +11,8 @@ module HP
       CREDENTIALS = [:account_id,
                      :secret_key,
                      :auth_uri,
-                     :tenant_id]
+                     :tenant_id,
+                     :userpass]
       ZONES = [:compute,
                :"object storage",
                :cdn,
