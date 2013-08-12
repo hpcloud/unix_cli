@@ -88,8 +88,8 @@ Aliases: account:add, account:setup, account:update
                 cred[:account_id] = ask_with_default 'Access Key Id:', "#{cred[:account_id]}"
                 cred[:secret_key] = ask_with_default 'Secret Key:', "#{cred[:secret_key]}"
               end
-              cred[:auth_uri] = ask_with_default 'Identity (Auth) Uri:', "#{cred[:auth_uri]}"
               cred[:tenant_id] = ask_with_default 'Project (aka Tenant) Id:', "#{cred[:tenant_id]}"
+              cred[:auth_uri] = ask_with_default 'Identity (Auth) Uri:', "#{cred[:auth_uri]}"
             when "aws"
               service_name = "AWS"
               @log.display "****** Setup your #{service_name} #{name} account ******"
