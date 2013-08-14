@@ -14,8 +14,12 @@ module HP
       end
 
       def external
-        ray = @items.keep_if{|v| v.router_external == true}
-        create(ray.first)
+        @items.each{ |n|
+          if n.router_external == true
+            return create(n)
+          end
+        }
+        return nil
       end
     end
   end
