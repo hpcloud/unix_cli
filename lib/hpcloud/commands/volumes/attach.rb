@@ -8,7 +8,7 @@ module HP
 
 Examples:
   hpcloud volumes:attach myVolume myServer /dev/vdc                         # Attach volume `myVolume` to server `myServer` on device `/dev/vdc`
-  hpcloud volumes:attach myVolume myServer 4                                # Attach volume `myVolume` to server `myServer` on device `/dev/vdb`
+  hpcloud volumes:attach f9520651 b8e90a48 4                                # Attach volume `f9520651` to server `b8e90a48` on device `/dev/vdb`
 
       DESC
       CLI.add_common_options

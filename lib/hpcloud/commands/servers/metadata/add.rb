@@ -10,6 +10,7 @@ module HP
 
 Examples:
   hpcloud servers:metadata:add my_server 'r2=d2,c3=po'  # Add the specified metadata to the server (if the metadata exists, it is updated)
+  hpcloud servers:metadata:add c14411d7 'chew=bacca,han=solo'  # Add the specified metadata to the server (if the metadata exists, it is updated)
 
 Aliases: servers:metadata:update
       DESC

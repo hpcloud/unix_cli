@@ -8,7 +8,7 @@ module HP
 
 Examples:
   hpcloud ports:add porto netty        # Create a new port named 'porto'
-  hpcloud ports:add porto netty -d devvy -o ohnur -u # Create a new port named 'porto' associated with 'devvy' and 'ohnur' administratively up
+  hpcloud ports:add porto 701be39b -d devvy -o ohnur -u # Create a new port named 'porto' associated with 'devvy' and 'ohnur' administratively up
       DESC
       method_option :fixedips,
                     :type => :string, :aliases => '-f',

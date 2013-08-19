@@ -10,6 +10,7 @@ module HP
 
 Examples:
   hpcloud servers:metadata:remove :my_server r2 c3  # Remove the the r2 and c3 metadata from the server
+  hpcloud servers:metadata:remove b8e90a48 r2 c3  # Remove the the r2 and c3 metadata from the server
 
 Aliases: servers:metadata:rm
       DESC

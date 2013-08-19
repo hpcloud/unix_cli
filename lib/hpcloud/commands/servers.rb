@@ -27,6 +27,7 @@ module HP
 Examples:
   hpcloud servers                         # List the servers
   hpcloud servers hal                     # List server `hal`
+  hpcloud servers c14411d7                # List server `c14411d7`
   hpcloud servers -z az-2.region-a.geo-1  # List the servers for availability zone `az-2.region-a.geo-1`
 
 Aliases: servers:list

@@ -18,7 +18,7 @@ module HP
 
 Examples:
   hpcloud images                         # List the images
-  hpcloud images 1239                    # List image '1239'
+  hpcloud images 701be39b                # List image '701be39b'
   hpcloud images -z az-2.region-a.geo-1  # List images for availability zone `az-2.region-a.geo-1`
 
 Aliases: images:list

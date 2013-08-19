@@ -8,6 +8,7 @@ module HP
 
 Examples:
   hpcloud routers:update trout -u # Update router 'trout' administrative state
+  hpcloud routers:update c14411d7 -u # Update router 'c14411d7' administrative state
       DESC
       method_option :gateway,
                     :type => :string, :aliases => '-g',

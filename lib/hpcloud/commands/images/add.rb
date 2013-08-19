@@ -8,7 +8,7 @@ module HP
 
 Examples:
   hpcloud images:add my_image my_server                           # Create the new image 'my_image' from the existing server named 'my_server'
-  hpcloud images:add my_image my_server -m this=that              # Create the new image 'my_image' from the existing server 'my_server' with metadata
+  hpcloud images:add my_image 701be39b -m this=that              # Create the new image 'my_image' from the existing server '701be39b' with metadata
       DESC
       CLI.add_common_options
       method_option :metadata,

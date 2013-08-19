@@ -13,6 +13,7 @@ module HP
 
 Examples:
   hpcloud securitygroups:rules mysecgroup  # List the rules for security group `mysecgroup`
+  hpcloud securitygroups:rules c14411d7  # List the rules for security group `c14411d7`
 
 Aliases: securitygroups:rules:list
       DESC

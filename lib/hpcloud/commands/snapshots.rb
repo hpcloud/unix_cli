@@ -14,7 +14,7 @@ module HP
 
 Examples:
   hpcloud snapshots           # List all snapshots
-  hpcloud snapshots 1         # List the detail information for snapshot `1`
+  hpcloud snapshots b8e90a48  # List the detail information for snapshot `b8e90a48`
   hpcloud snapshots testsnap  # List the detail information about snapshot `testsnap`
 
 Aliases: snapshots:list

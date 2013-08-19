@@ -8,6 +8,7 @@ module HP
 
 Examples:
   hpcloud ports:update porto -u -d trump # Update 'porto' administrative status and device owner
+  hpcloud ports:update c14411d7 -u -d trump # Update 'c14411d7' administrative status and device owner
       DESC
       method_option :fixedips,
                     :type => :string, :aliases => '-f',

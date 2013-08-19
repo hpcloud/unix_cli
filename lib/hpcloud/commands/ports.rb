@@ -15,7 +15,7 @@ module HP
 
 Examples:
   hpcloud ports       # List all ports
-  hpcloud ports 1     # List the details for ports with id `1`
+  hpcloud ports 701be39b     # List the details for ports with id `701be39b`
   hpcloud ports testo # List the details for ports named `testo`
 
 Aliases: ports:list

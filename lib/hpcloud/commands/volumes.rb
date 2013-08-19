@@ -17,7 +17,7 @@ module HP
 
 Examples:
   hpcloud volumes          # List all volumes
-  hpcloud volumes 1        # List the details for volume `1`
+  hpcloud volumes b8e90a48 # List the details for volume `b8e90a48`
   hpcloud volumes testvol  # List the details for volume `testvol`
 
 Aliases: volumes:list

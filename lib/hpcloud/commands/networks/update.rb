@@ -8,7 +8,7 @@ module HP
 
 Examples:
   hpcloud networks:update netty -u # Updated 'netty' to up
-  hpcloud networks:update netty --no-adminstateup  # Update 'netty' admin state down
+  hpcloud networks:update 701be39b --no-adminstateup  # Update network '701be39b' admin state down
       DESC
       method_option :adminstateup, :default => true,
                     :type => :boolean, :aliases => '-u',

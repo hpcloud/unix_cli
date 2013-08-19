@@ -11,6 +11,7 @@ module HP
 Examples:
   hpcloud volumes:server                                 # List all the attached volumes
   hpcloud volumes:server myServer                        # List the volumes on server `myServer`
+  hpcloud volumes:server f9520651                        # List the volumes on server `f9520651`
       DESC
       CLI.add_report_options
       CLI.add_common_options

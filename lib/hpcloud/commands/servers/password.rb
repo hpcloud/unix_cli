@@ -10,6 +10,7 @@ module HP
 
 Examples:
   hpcloud servers:password my-server my-password         # Change the password for server 'my-server'
+  hpcloud servers:password b8e90a48 'pA$3word'         # Change the password for server 'b8e90a48'
 
 Aliases: servers:passwd
       DESC

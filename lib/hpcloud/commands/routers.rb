@@ -17,7 +17,7 @@ module HP
 
 Examples:
   hpcloud routers       # List all routers
-  hpcloud routers 1     # List the details for routers with id `1`
+  hpcloud routers c14411d7     # List the details for routers with id `c14411d7`
   hpcloud routers testo # List the details for routers named `testo`
 
 Aliases: routers:list

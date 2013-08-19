@@ -15,7 +15,7 @@ module HP
 
 Examples:
   hpcloud subnets       # List all subnets
-  hpcloud subnets 1     # List the details for subnets with id `1`
+  hpcloud subnets b8e90a48     # List the details for subnets with id `b8e90a48`
   hpcloud subnets testo # List the details for subnets named `testo`
 
 Aliases: subnets:list
