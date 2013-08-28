@@ -2,13 +2,14 @@ module Fog
   module HP
     class DNS
       class Real
-        def create_record(domain_id, name, type, data)
+        def create_record(domain_id, name, type, data, priority)
 
           data = {
               :name=> name,
               :type=> type,
               :data=> data
           }
+          data[:priority] = priority.to_i unless priority.nil?
 
           request(
               :body    => Fog::JSON.encode(data),

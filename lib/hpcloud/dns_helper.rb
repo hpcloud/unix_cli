@@ -69,8 +69,8 @@ module HP
         hash[:records]
       end
 
-      def create_record(name, type, data)
-        rsp = @connection.dns.create_record(@id, name, type, data)
+      def create_record(name, type, data, priority)
+        rsp = @connection.dns.create_record(@id, name, type, data, priority)
         hash = rsp.body
         hash = Hash[hash.map{ |k, v| [k.to_sym, v] }]
         return hash
