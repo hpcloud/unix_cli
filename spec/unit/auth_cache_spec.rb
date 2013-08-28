@@ -19,7 +19,7 @@ describe "AuthCaches getting credentials" do
   context "when nothing exists" do
     it "should provide have nothing" do
       authcaches = AuthCache.new()
-      authcaches.read('nothing').should be_nil
+      authcaches.read({}).should be_nil
     end
   end
 
