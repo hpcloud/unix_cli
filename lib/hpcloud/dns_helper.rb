@@ -76,26 +76,26 @@ module HP
         return hash
       end
 
-      def get_record(name)
+      def get_record(target)
         rsp = @connection.dns.list_records_in_a_domain(@id)
         ray = rsp.body['records']
-        hash = ray.select { |x| x['name'] == name || x['id'] == name }.first
+        hash = ray.select { |x| x['id'] == target }.first
         return nil if hash.nil?
         Hash[hash.map{ |k, v| [k.to_sym, v] }]
       end
 
-      def update_record(name, type, data)
-        record = get_record(name)
+      def update_record(target, type, data)
+        record = get_record(target)
         return nil if record.nil?
-        options = { :name => name, :type => type, :data => data}
+        options = { :type => type, :data => data}
         rsp = @connection.dns.update_record(@id, record[:id], options)
         hash = rsp.body
         hash = Hash[hash.map{ |k, v| [k.to_sym, v] }]
         return hash
       end
 
-      def delete_record(name)
-        record = get_record(name)
+      def delete_record(target)
+        record = get_record(target)
         return false if record.nil?
         @connection.dns.delete_record(@id, record[:id])
         return true
