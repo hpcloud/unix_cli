@@ -142,7 +142,7 @@ Aliases: account:add, account:setup, account:update
                     regs.sort!
                     default_region = regions[zone] || regs.first.to_s
                     az = regs.join(',')
-                    unless service == "Image Management"
+                    unless service == "Image Management" || service == "Identity"
                       regions[zone] = ask_with_default "#{service} region (#{az}):", "#{default_region}"
                     end
                   }
@@ -160,7 +160,6 @@ Aliases: account:add, account:setup, account:update
             unless acct[:provider] == "hp"
               @log.display "Accounts for providers other than HP are only supported for migration"
             end
-            AuthCache.new.remove(name)
           else
             acct = accounts.read(name, true)
             updated = ""
@@ -175,7 +174,6 @@ Aliases: account:add, account:setup, account:update
             if updated.empty? == false
               accounts.write(name)
               @log.display "Account '#{name}' set " + updated
-              AuthCache.new.remove(name)
             end
           end
         }

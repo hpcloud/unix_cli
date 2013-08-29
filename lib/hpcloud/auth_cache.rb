@@ -19,7 +19,11 @@ module HP
       end
 
       def get_name(opts)
-        "#{opts[:hp_access_key]}:#{opts[:hp_tenant_id]}"
+        begin
+          "#{opts[:hp_access_key]}:#{opts[:hp_tenant_id]}"
+        rescue
+          "default"
+        end
       end
 
       def get_file_name(opts)
