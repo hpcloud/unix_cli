@@ -10,12 +10,13 @@ Examples:
   hpcloud dns:records:add mydomain.com. www.mydomain.com. A 10.0.0.1 # Create a DNS record for domain `mydomain.com` and `A` record for `www.mydomain.com` pointing to address 10.0.0.1
       DESC
       CLI.add_common_options
-      define_method "dns:records:add" do |domain, name, type, data, priority=nil|
+      define_method "dns:records:add" do |domain, name, type, data, *priority|
         cli_command(options) {
           dns = Dnss.new.get(domain)
           unless dns.is_valid?
             @log.fatal dns.cstatus
           end
+          priority = priority[0]
           record = dns.create_record(name, type, data, priority)
           if record.nil?
             @log.fatal dns.cstatus
