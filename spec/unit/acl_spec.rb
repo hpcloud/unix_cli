@@ -28,7 +28,7 @@ describe "Acl class" do
       acl = AclReader.new(nil)
 
       acl.is_valid?.should be_true
-      acl.to_hash.should eq({"X-Container-Read"=>""})
+      acl.to_hash.should eq({})
       acl.cstatus.message.should be_nil
       acl.cstatus.error_code.should eq(:success)
     end
@@ -82,7 +82,7 @@ describe "Acl class" do
 
       acl.revoke(["ginny","percy"]).should be_false
 
-      acl.to_hash.should eq({"X-Container-Read"=>""})
+      acl.to_hash.should eq({})
       acl.is_valid?.should be_false
       acl.cstatus.message.should eq("Revoke failed invalid user: ginny,percy")
       acl.cstatus.error_code.should eq(:not_found)
@@ -130,7 +130,7 @@ describe "Acl class" do
 
       acl.grant([]).should be_true
 
-      acl.to_hash.should eq(BIG_ONE)
+      acl.to_hash.should eq({KEY=>'.r:*,.rlistings'})
       acl.is_valid?.should be_true
     end
   end
@@ -141,7 +141,7 @@ describe "Acl class" do
 
       acl.grant(["percy"]).should be_true
 
-      acl.to_hash.should eq({KEY=>"*:ginny,*:ron,*:percy"})
+      acl.to_hash.should eq({KEY=>"*:percy"})
       acl.is_valid?.should be_true
     end
   end
@@ -152,7 +152,7 @@ describe "Acl class" do
 
       acl.grant(["percy","charlie", "bill"]).should be_true
 
-      acl.to_hash.should eq({KEY=>"*:ginny,*:ron,*:percy,*:charlie,*:bill"})
+      acl.to_hash.should eq({KEY=>"*:percy,*:charlie,*:bill"})
       acl.is_valid?.should be_true
     end
   end
@@ -163,7 +163,7 @@ describe "Acl class" do
 
       acl.grant(["percy","ron", "ginny"]).should be_true
 
-      acl.to_hash.should eq({KEY=>"*:ginny,*:ron,*:percy"})
+      acl.to_hash.should eq({KEY=>"*:percy,*:ron,*:ginny"})
       acl.is_valid?.should be_true
     end
   end
@@ -174,7 +174,18 @@ describe "Acl class" do
 
       acl.grant(["percy","ron", "ginny"]).should be_true
 
-      acl.to_hash.should eq({WRITER_KEY=>"*:ginny,*:ron,*:percy"})
+      acl.to_hash.should eq({WRITER_KEY=>"*:percy,*:ron,*:ginny"})
+      acl.is_valid?.should be_true
+    end
+  end
+
+  context "grant nil" do
+    it "permissions and users are set correctly" do
+      acl = AclWriter.new({WRITER_KEY=>"*:ginny,*:ron"})
+
+      acl.grant(nil).should be_true
+
+      acl.to_hash.should eq({WRITER_KEY=>"*:ginny,*:ron"})
       acl.is_valid?.should be_true
     end
   end

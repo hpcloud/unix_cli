@@ -53,6 +53,8 @@ describe "AclCmd construction" do
       acl.is_valid?.should be_false
       acl.is_public?.should be_false
       acl.permissions.should eq("private")
+      acl.readers.should be_nil
+      acl.writers.should be_nil
       acl.users.should eq(["elliott@newmoon.com"])
       acl.to_s.should eq("private for elliott@newmoon.com")
       acl.cstatus.message.should eq("Use the acl:revoke command to revoke public read permissions")
@@ -66,6 +68,8 @@ describe "AclCmd construction" do
       acl.is_valid?.should be_true
       acl.is_public?.should be_false
       acl.permissions.should eq("r")
+      acl.readers.should eq(["elliott@newmoon.com"])
+      acl.writers.should be_nil
       acl.users.should eq(["elliott@newmoon.com"])
       acl.to_s.should eq("r for elliott@newmoon.com")
       acl.cstatus.message.should be_nil
@@ -79,6 +83,8 @@ describe "AclCmd construction" do
       acl.is_valid?.should be_true
       acl.is_public?.should be_false
       acl.permissions.should eq("rw")
+      acl.readers.should eq(["elliott@newmoon.com"])
+      acl.writers.should eq(["elliott@newmoon.com"])
       acl.users.should eq(["elliott@newmoon.com"])
       acl.to_s.should eq("rw for elliott@newmoon.com")
       acl.cstatus.message.should be_nil
@@ -92,6 +98,8 @@ describe "AclCmd construction" do
       acl.is_valid?.should be_false
       acl.is_public?.should be_false
       acl.permissions.should eq("bogus")
+      acl.readers.should be_nil
+      acl.writers.should be_nil
       acl.users.should eq(["elliott@newmoon.com","edward@sharpe.com"])
       acl.to_s.should eq("bogus for elliott@newmoon.com,edward@sharpe.com")
       acl.cstatus.message.should eq("Your permissions 'bogus' are not valid.\nValid settings are: r, rw, w")
@@ -100,25 +108,14 @@ describe "AclCmd construction" do
   end
   context "r for public" do
     it "error set" do
-      acl = AclCmd.new("r", nil)
+      acl = AclCmd.new("r", [])
 
       acl.is_valid?.should be_true
       acl.is_public?.should be_true
       acl.permissions.should eq("pr")
-      acl.users.should be_nil
-      acl.to_s.should eq("public-read")
-      acl.cstatus.message.should be_nil
-      acl.cstatus.error_code.should eq(:success)
-    end
-  end
-  context "r for public" do
-    it "error set" do
-      acl = AclCmd.new("r", [""])
-
-      acl.is_valid?.should be_true
-      acl.is_public?.should be_true
-      acl.permissions.should eq("pr")
-      acl.users.should be_nil
+      acl.readers.should eq([])
+      acl.writers.should be_nil
+      acl.users.should eq([])
       acl.to_s.should eq("public-read")
       acl.cstatus.message.should be_nil
       acl.cstatus.error_code.should eq(:success)
@@ -126,26 +123,28 @@ describe "AclCmd construction" do
   end
   context "rw for public" do
     it "error set" do
-      acl = AclCmd.new("rw", [""])
+      acl = AclCmd.new("rw", [])
 
       acl.is_valid?.should be_false
       acl.is_public?.should be_true
       acl.permissions.should eq("rw")
-      acl.users.should be_nil
-      acl.to_s.should eq("rw")
+      acl.readers.should eq([])
+      acl.writers.should eq([])
+      acl.users.should eq([])
       acl.cstatus.message.should eq("You may not make an object writable by everyone")
       acl.cstatus.error_code.should eq(:not_supported)
     end
   end
   context "w for public" do
     it "error set" do
-      acl = AclCmd.new("w", [""])
+      acl = AclCmd.new("w", [])
 
       acl.is_valid?.should be_false
       acl.is_public?.should be_true
       acl.permissions.should eq("w")
-      acl.users.should be_nil
-      acl.to_s.should eq("w")
+      acl.readers.should be_nil
+      acl.writers.should eq([])
+      acl.users.should eq([])
       acl.cstatus.message.should eq("You may not make an object writable by everyone")
       acl.cstatus.error_code.should eq(:not_supported)
     end

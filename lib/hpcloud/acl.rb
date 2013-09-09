@@ -39,21 +39,14 @@ module HP
       end
 
       def to_hash
-        return { @key => '' } if @users.nil?
+        return { } if @users.nil?
         return { @key => ALL } if @users.empty?
         return { @key => "*:" + @users.join(",*:") }
       end
 
       def grant(ray)
-        if ray.nil?
-          @users = []
-          return true
-        end
-        return true if ray.empty?
-        @users = [] if @users.nil?
-        ray.each{ |x|
-          @users << x unless @users.index(x)
-        }
+        return true if ray.nil?
+        @users = ray
         return true
       end
 

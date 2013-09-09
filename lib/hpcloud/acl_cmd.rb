@@ -10,12 +10,7 @@ module HP
         @cstatus = CliStatus.new
         @permissions = permissions.downcase
         @permissions = "r" if @permissions == "public-read"
-        if users.nil? || users.empty?
-          @users = nil
-        else
-          @users = users
-          @users = nil if users[0].empty?
-        end
+        @users = users
 
         if @permissions == "private"
           @cstatus = CliStatus.new("Use the acl:revoke command to revoke public read permissions", :incorrect_usage)
@@ -33,7 +28,9 @@ module HP
       end
 
       def is_public?
-        return @users.nil?
+        return false if @users.nil?
+        return true if @users.empty?
+        return false
       end
 
       def is_valid?
@@ -41,6 +38,7 @@ module HP
       end
 
       def readers
+        return [] if @permissions == "pr"
         return @users if @permissions == "r"
         return @users if @permissions == "rw"
         return nil
