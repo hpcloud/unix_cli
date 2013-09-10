@@ -169,13 +169,8 @@ describe "Acl command (viewing acls)" do
     before(:all) do
       @default_username = AccountsHelper.get_username()
       @username = AccountsHelper.get_username('secondary')
-      @dir = @hp_svc.directories.get('acl_container')
-      @dir.public = false
-      @dir.revoke("r", @dir.read_acl)
-      @dir.revoke("w", @dir.write_acl)
-      @dir.grant("r", [@default_username])
-      @dir.grant("w", [@username])
-      @dir.save
+      cptr("acl:grant :acl_container r #{@default_username}")
+      cptr("acl:grant :acl_container w #{@username}")
     end
 
     context "container" do
