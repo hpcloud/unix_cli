@@ -3,7 +3,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe "lb" do
   before(:all) do
     rsp = cptr("lb:add cli_test_lb1 ROUND_ROBIN HTTP 80 -n 10.3.2.1:81")
+    rsp.stderr.should eq("")
     rsp = cptr("lb:add cli_test_lb2 LEAST_CONNECTIONS TCP 443 -n 10.3.2.2:444")
+    rsp.stderr.should eq("")
   end
 
   context "lb" do

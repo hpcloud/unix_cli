@@ -39,7 +39,7 @@ describe "Security Groups command" do
   context "securitygroups with invalid avl" do
     it "should report error" do
       rsp = cptr('securitygroups -z blah')
-      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end

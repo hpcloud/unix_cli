@@ -83,7 +83,7 @@ describe "Copy shared resources" do
     it "not allowed for now" do
       rsp = cptr("copy #{@container}/Yeltsin/Gorbachev/Andropov.txt #{@container}/spare/ -a secondary")
 
-      rsp.stderr.should eq("403 Forbidden\n\nAccess was denied to this resource.\n\n   \n")
+      rsp.stderr.should eq("<html><h1>Forbidden</h1><p>Access was denied to this resource.</p></html>")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end
@@ -103,7 +103,7 @@ describe "Copy shared resources" do
     it "should fail" do
       rsp = cptr("copy spec/fixtures/files/Matryoshka/Putin/Yeltsin/Gorbachev/Andropov.txt #{@readtainer}/ -a secondary")
 
-      rsp.stderr.should eq("403 Forbidden\n\nAccess was denied to this resource.\n\n   \n")
+      rsp.stderr.should eq("<html><h1>Forbidden</h1><p>Access was denied to this resource.</p></html>\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end

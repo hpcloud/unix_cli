@@ -17,13 +17,7 @@ Aliases: servers:passwd
       CLI.add_common_options
       define_method "servers:password" do |name, password|
         cli_command(options) {
-          server = Servers.new.get(name)
-          if server.is_valid?
-              server.fog.change_password(password)
-              @log.display "Password changed for server '#{name}'."
-          else
-            @log.fatal server.cstatus
-          end
+          @log.fatal "Password change is no longer supported.  Support may be added back in the future"
         }
       end
 

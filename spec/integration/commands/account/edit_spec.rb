@@ -14,8 +14,8 @@ describe "account:edit" do
         "****** Setup your HP Cloud Services hp account ******\n" +
         "Access Key Id: [] " +
         "Secret Key: [] " +
-        "Identity (Auth) Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] " +
         "Project (aka Tenant) Id: [] " +
+        "Identity (Auth) Uri: [https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/] " +
         "Account credentials for HP Cloud Services have been saved.\n")
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
@@ -28,8 +28,8 @@ describe "account:edit" do
         "****** Setup your HP Cloud Services hp account ******\n" +
         "Access Key Id: [foo] " +
         "Secret Key: [bar] " +
-        "Identity (Auth) Uri: [https://127.0.0.1/] " +
         "Project (aka Tenant) Id: [111111] " +
+        "Identity (Auth) Uri: [https://127.0.0.1/] " +
         "Verifying your HP Cloud Services account...\n" +
         "Account credentials for HP Cloud Services have been saved.\n")
       rsp.stderr.should match("Account verification failed. Error connecting to the service endpoint at: 'https://bogus.hp.com/'. Please verify your account credentials. \n Exception:.*")
@@ -37,7 +37,7 @@ describe "account:edit" do
     end
 
     it "with account name" do
-      input = ['mumford','sons','https://timshel/','322']
+      input = ['mumford','sons','322','https://timshel/']
       rsp = cptr('account:setup --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
@@ -53,7 +53,7 @@ describe "account:edit" do
     end
 
     it "over existing" do
-      input = ['LaSera','SeesTheLight','https://please/','227']
+      input = ['LaSera','SeesTheLight','227','https://please/']
       rsp = cptr('account:setup --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)

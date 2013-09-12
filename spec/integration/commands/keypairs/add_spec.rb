@@ -15,7 +15,7 @@ describe "keypairs:add command" do
       rsp = cptr("keypairs:add #{@key_name}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Created key pair '#{@key_name}'.")
+      rsp.stdout.should include("Created key pair '#{@key_name}'")
       rsp.exit_status.should be_exit(:success)
       keypairs = @hp_svc.key_pairs.map {|kp| kp.name}
       keypairs.should include(@key_name)
@@ -132,7 +132,7 @@ describe "keypairs:add command" do
       rsp = cptr("keypairs:add #{@key_name} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("Created key pair '#{@key_name}'.")
+      rsp.stdout.should include("Created key pair '#{@key_name}'")
       rsp.exit_status.should be_exit(:success)
     end
     after(:each) do

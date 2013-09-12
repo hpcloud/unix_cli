@@ -20,7 +20,7 @@ describe "ports:remove command" do
       rsp = cptr("ports:remove #{@port.name}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Removed port '#{@port.name}'.\n")
+      rsp.stdout.should eq("Removed port '#{@port.id}'.\n")
       rsp.exit_status.should be_exit(:success)
       wait_for_gone(@port.id)
     end
@@ -30,10 +30,10 @@ describe "ports:remove command" do
     it "should be successful" do
       @port = PortTestHelper.create(resource_name("del2"))
 
-      rsp = cptr("ports:remove #{@port.id} -z region-a.geo-1")
+      rsp = cptr("ports:remove #{@port.id} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("Removed port '#{@port.name}'.\n")
+      rsp.stdout.should eq("Removed port '#{@port.id}'.\n")
       rsp.exit_status.should be_exit(:success)
       wait_for_gone(@port.id)
     end

@@ -2,8 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "addresses:disassociate command" do
   before(:all) do
-    @hp_svc = compute_connection
-    @srv = ServerTestHelper.create('cli_test_srv1')
+    @port = PortTestHelper.create("ipaddy")
 
     rsp = cptr('addresses:add')
     rsp.stderr.should eq("")
@@ -31,14 +30,15 @@ describe "addresses:disassociate command" do
       rsp = cptr("addresses:disassociate #{@public_ip}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("You don't have any server associated with address '#{@public_ip}'.\n")
+      rsp.stdout.should eq("You don't have any port associated with address '#{@public_ip}'.\n")
       rsp.exit_status.should be_exit(:success)
     end
   end
 
   context "when specifying a good IP address" do
     it "should show success message" do
-      cptr("addresses:associate #{@public_ip} #{@srv.name}")
+      rsp = cptr("addresses:associate #{@public_ip} #{@port.id}")
+      rsp.stderr.should eq("")
 
       rsp = cptr("addresses:disassociate #{@public_ip}")
 
@@ -50,7 +50,9 @@ describe "addresses:disassociate command" do
 
   context "disassociate ip with valid avl" do
     it "should report success" do
-      cptr("addresses:associate #{@second_ip} #{@srv.name}")
+      puts("addresses:associate #{@public_ip} #{@port.id}")
+      rsp = cptr("addresses:associate #{@public_ip} #{@port.id}")
+      rsp.stderr.should eq("")
 
       rsp = cptr("addresses:disassociate #{@second_ip} -z region-b.geo-1")
 
@@ -64,7 +66,7 @@ describe "addresses:disassociate command" do
     it "should report error" do
       rsp = cptr("addresses:disassociate #{@second_ip} -z blah")
 
-      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n")
+      rsp.stderr.should include("Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end

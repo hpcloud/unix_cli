@@ -7,13 +7,13 @@ describe "dns:records command" do
 
   context "dns:records" do
     it "should report success" do
-      rsp = cptr("dns:records:add #{@dns1.name} list.clitest1.com. A 10.2.2.2")
+      rsp = cptr("dns:records:add #{@dns1.name} list.clitest1.com. A 10.3.3.3")
       rsp.stderr.should eq("")
 
       rsp = cptr("dns:records -c name,type,data -d X #{@dns1.name}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should match("list.clitest1.com.XAX10.2.2.2")
+      rsp.stdout.should match("list.clitest1.com.XAX10.3.3.3")
       rsp.exit_status.should be_exit(:success)
     end
   end
