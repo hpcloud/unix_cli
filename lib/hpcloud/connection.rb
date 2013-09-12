@@ -256,7 +256,6 @@ module HP
             :headers => {
                 'X-Auth-Token' => auth_token
             },
-            'X-Auth-Token' => auth_token,
             :host => host,
             :port => port,
             :method => 'GET',
