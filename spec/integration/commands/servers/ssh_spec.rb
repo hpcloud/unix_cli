@@ -57,7 +57,7 @@ describe "servers:ssh" do
 
   context "servers:ssh with valid avl" do
     it "should succeed" do
-      rsp = cptr("servers:ssh cli_test_srv1 -z az-1.region-a.geo-1 -c echo")
+      rsp = cptr("servers:ssh cli_test_srv1 -z region-b.geo-1 -c echo")
 
       rsp.stderr.should eq("")
       rsp.stdout.should include("Connecting to 'cli_test_srv1'...\n")

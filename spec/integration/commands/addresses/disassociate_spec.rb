@@ -52,7 +52,7 @@ describe "addresses:disassociate command" do
     it "should report success" do
       cptr("addresses:associate #{@second_ip} #{@srv.name}")
 
-      rsp = cptr("addresses:disassociate #{@second_ip} -z az-1.region-a.geo-1")
+      rsp = cptr("addresses:disassociate #{@second_ip} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Disassociated address '#{@second_ip}' from any server instance.\n")

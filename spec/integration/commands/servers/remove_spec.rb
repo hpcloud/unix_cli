@@ -31,7 +31,7 @@ describe "servers:remove command" do
       server.wait_for { ready? }
       @server = @hp_svc.servers.get(server.id)
 
-      rsp = cptr("servers:remove #{@server_name} -z az-1.region-a.geo-1")
+      rsp = cptr("servers:remove #{@server_name} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed server '#{@server_name}'.\n")

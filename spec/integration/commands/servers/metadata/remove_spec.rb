@@ -54,7 +54,7 @@ describe "Servers metadata remove command" do
 
   context "servers with valid avl" do
     it "should report success" do
-      rsp = cptr("servers:metadata:remove -z az-1.region-a.geo-1 #{@server_id} three six")
+      rsp = cptr("servers:metadata:remove -z region-b.geo-1 #{@server_id} three six")
 
       rsp.stderr.should eq("")
       rsp.stdout.should include("Removed metadata 'three' from server")

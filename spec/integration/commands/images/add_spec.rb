@@ -34,7 +34,7 @@ describe "images:add command" do
       @image_name2 = resource_name("add2")
       @server = ServerTestHelper.create('cli_test_srv2')
 
-      rsp = cptr("images:add #{@image_name2} #{@server.name} -z az-1.region-a.geo-1")
+      rsp = cptr("images:add #{@image_name2} #{@server.name} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should include("Created image '#{@image_name2}'")

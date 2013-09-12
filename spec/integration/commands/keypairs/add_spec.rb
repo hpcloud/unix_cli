@@ -129,7 +129,7 @@ describe "keypairs:add command" do
     it "should report success" do
       @key_name = resource_name('cli_test_add6')
 
-      rsp = cptr("keypairs:add #{@key_name} -z az-1.region-a.geo-1")
+      rsp = cptr("keypairs:add #{@key_name} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should include("Created key pair '#{@key_name}'.")

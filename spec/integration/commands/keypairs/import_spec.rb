@@ -55,7 +55,7 @@ describe "keypairs:import" do
     end
 
     it "should report success" do
-      rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}", '-z', 'az-1.region-a.geo-1'])
+      rsp = cptr(["keypairs:import", "#{@key_name}", "#{@fake_public_key}", '-z', 'region-b.geo-1'])
       rsp.stderr.should eq("")
       rsp.stdout.should include("Imported key pair '#{@key_name}'.\n")
       rsp.exit_status.should be_exit(:success)

@@ -50,7 +50,7 @@ describe "Images metadata add command" do
 
   context "images with valid avl" do
     it "should report success" do
-      rsp = cptr("images:metadata:add -z az-1.region-a.geo-1 #{@img.id} avl1=1,avl2=2")
+      rsp = cptr("images:metadata:add -z region-b.geo-1 #{@img.id} avl1=1,avl2=2")
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)

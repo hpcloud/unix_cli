@@ -31,7 +31,7 @@ describe "volumes:server command" do
 
   context "volumes:server with valid avl" do
     it "should be successful" do
-      rsp = cptr("volumes:server #{@srv1.name} -z az-1.region-a.geo-1")
+      rsp = cptr("volumes:server #{@srv1.name} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should match(".*name.*\\|.*server.*\\|.*device")

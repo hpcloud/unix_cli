@@ -46,7 +46,7 @@ describe "Servers metadata update command" do
 
   context "servers with valid avl" do
     it "should report success" do
-      rsp = cptr("servers:metadata:update -z az-1.region-a.geo-1 #{@server_id} luke=l000003,han=h000003")
+      rsp = cptr("servers:metadata:update -z region-b.geo-1 #{@server_id} luke=l000003,han=h000003")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Server '#{@server_id}' set metadata 'luke=l000003,han=h000003'.\n")

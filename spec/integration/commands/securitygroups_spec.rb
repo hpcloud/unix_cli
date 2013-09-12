@@ -28,7 +28,7 @@ describe "Security Groups command" do
 
   context "securitygroups with valid avl" do
     it "should report success" do
-      rsp = cptr('securitygroups -z az-1.region-a.geo-1')
+      rsp = cptr('securitygroups -z region-b.geo-1')
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
     end

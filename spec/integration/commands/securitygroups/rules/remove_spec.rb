@@ -46,7 +46,7 @@ describe "securitygroups:rules:remove command" do
       end
 
       it "should report success" do
-        rsp = cptr("securitygroups:rules:remove delsecgroup #{@rule_id} -z az-1.region-a.geo-1")
+        rsp = cptr("securitygroups:rules:remove delsecgroup #{@rule_id} -z region-b.geo-1")
 
         rsp.stderr.should eq("")
         rsp.stdout.should eq("Removed rule '#{@rule_id}' for security group 'delsecgroup'.\n")

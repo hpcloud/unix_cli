@@ -22,7 +22,7 @@ describe "Keypairs command" do
   describe "with avl settings passed in" do
     context "keypairs with valid avl" do
       it "should report success" do
-        rsp = cptr("keypairs -z az-1.region-a.geo-1")
+        rsp = cptr("keypairs -z region-b.geo-1")
         rsp.stderr.should eq("")
         rsp.exit_status.should be_exit(:success)
       end

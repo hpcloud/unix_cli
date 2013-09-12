@@ -53,7 +53,7 @@ describe "Servers metadata add command" do
 
   context "servers with valid avl" do
     it "should report success" do
-      rsp = cptr("servers:metadata:add -z az-1.region-a.geo-1 #{@server_id} avl1=1,avl2=2")
+      rsp = cptr("servers:metadata:add -z region-b.geo-1 #{@server_id} avl1=1,avl2=2")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Server '#{@server_id}' set metadata 'avl1=1,avl2=2'.\n")

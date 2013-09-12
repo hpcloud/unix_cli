@@ -25,7 +25,7 @@ describe "servers:password command" do
     it "should report success" do
       ServerTestHelper.create("cli_test_srv1")
 
-      rsp = cptr("servers:password cli_test_srv1 Passw0rd2 -z az-1.region-a.geo-1")
+      rsp = cptr("servers:password cli_test_srv1 Passw0rd2 -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Password changed for server 'cli_test_srv1'.\n")

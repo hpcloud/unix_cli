@@ -29,7 +29,7 @@ describe "volumes:detach command" do
       @vol2.attach(@server, '/dev/vdc').should be_true
       @vol2.fog.wait_for { in_use? }
 
-      rsp = cptr("volumes:detach #{@vol2.name} -z az-1.region-a.geo-1")
+      rsp = cptr("volumes:detach #{@vol2.name} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Detached volume '#{@vol2.name}' from '#{@server.name}'.\n")

@@ -30,7 +30,7 @@ describe "volumes:remove command" do
     it "should be successful" do
       @volume = VolumeTestHelper.create(resource_name("del2"))
 
-      rsp = cptr("volumes:remove #{@volume.name} -z az-1.region-a.geo-1")
+      rsp = cptr("volumes:remove #{@volume.name} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed volume '#{@volume.name}'.\n")

@@ -44,7 +44,7 @@ describe "Security Groups Rules command" do
 
   context "securitygroups:rules with valid avl" do
     it "should report success" do
-      rsp = cptr('securitygroups:rules mysggroup -z az-1.region-a.geo-1')
+      rsp = cptr('securitygroups:rules mysggroup -z region-b.geo-1')
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)

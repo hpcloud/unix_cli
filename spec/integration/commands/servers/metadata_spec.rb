@@ -55,7 +55,7 @@ describe "Servers command" do
 
   context "servers with valid avl" do
     it "should report success" do
-      rsp = cptr("servers:metadata:list -z az-1.region-a.geo-1 #{@server_id}")
+      rsp = cptr("servers:metadata:list -z region-b.geo-1 #{@server_id}")
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)

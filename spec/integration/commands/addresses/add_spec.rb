@@ -27,7 +27,7 @@ describe "addresses:add command" do
 
   context "addresses:add with valid avl" do
     it "should report success" do
-      rsp = cptr('addresses:add -z az-1.region-a.geo-1')
+      rsp = cptr('addresses:add -z region-b.geo-1')
 
       rsp.stderr.should eq("")
       @public_ip = rsp.stdout.scan(/Created a public IP address '([^']+)'.\n/)[0][0]

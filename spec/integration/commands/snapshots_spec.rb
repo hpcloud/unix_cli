@@ -36,7 +36,7 @@ describe "Snapshots command" do
 
   context "snapshots with valid avl" do
     it "should report success" do
-      rsp = cptr("snapshots #{@snap1.name} #{@snap2.name} -z az-1.region-a.geo-1")
+      rsp = cptr("snapshots #{@snap1.name} #{@snap2.name} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)

@@ -52,7 +52,7 @@ describe "volumes:attach command" do
 
   context "volumes:attach with valid avl" do
     it "should be successful" do
-      rsp = cptr("volumes:attach #{@vol2.name} -z az-1.region-a.geo-1 #{@server.name} /dev/vdg")
+      rsp = cptr("volumes:attach #{@vol2.name} -z region-b.geo-1 #{@server.name} /dev/vdg")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Attached volume '#{@vol2.name}' to '#{@server.name}' on '/dev/vdg'.\n")
