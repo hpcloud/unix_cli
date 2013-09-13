@@ -5,16 +5,10 @@ describe "servers:remove command" do
     @cli ||= HP::Cloud::CLI.new
   end
 
-  before(:all) do
-    @hp_svc = compute_connection
-  end
-
   context "when deleting server with name" do
     it "should show success message" do
       @server_name = resource_name("del1")
-      server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
-      server.wait_for { ready? }
-      @server = @hp_svc.servers.get(server.id)
+      @server = ServerTestHelper.create(@server_name)
 
       rsp = cptr("servers:remove #{@server_name}")
 
@@ -27,9 +21,7 @@ describe "servers:remove command" do
   context "servers:remove with valid avl" do
     it "should report success" do
       @server_name = resource_name("del2")
-      server = @hp_svc.servers.create(:flavor_id => AccountsHelper.get_flavor_id(), :image_id => AccountsHelper.get_image_id(), :name => @server_name )
-      server.wait_for { ready? }
-      @server = @hp_svc.servers.get(server.id)
+      @server = ServerTestHelper.create(@server_name)
 
       rsp = cptr("servers:remove #{@server_name} -z region-b.geo-1")
 

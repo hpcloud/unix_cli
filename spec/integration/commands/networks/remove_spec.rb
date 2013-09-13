@@ -30,7 +30,7 @@ describe "networks:remove command" do
     it "should be successful" do
       @network = NetworkTestHelper.create(resource_name("del2"))
 
-      rsp = cptr("networks:remove #{@network.id} -z region-a.geo-1")
+      rsp = cptr("networks:remove #{@network.id} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed network '#{@network.name}'.\n")

@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "addresses:disassociate command" do
   before(:all) do
-    @port = PortTestHelper.create("ipaddy")
+    @port = PortTestHelper.create("cli_test_disasso")
 
     rsp = cptr('addresses:add')
     rsp.stderr.should eq("")

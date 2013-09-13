@@ -83,7 +83,7 @@ describe "Copy shared resources" do
     it "not allowed for now" do
       rsp = cptr("copy #{@container}/Yeltsin/Gorbachev/Andropov.txt #{@container}/spare/ -a secondary")
 
-      rsp.stderr.should eq("<html><h1>Forbidden</h1><p>Access was denied to this resource.</p></html>")
+      rsp.stderr.should eq("<html><h1>Forbidden</h1><p>Access was denied to this resource.</p></html>\n")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:general_error)
     end

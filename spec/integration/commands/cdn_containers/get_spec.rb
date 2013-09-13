@@ -24,7 +24,7 @@ describe "cdn:containers:get command" do
         rsp = cptr('cdn:containers:get my-added-container X-Ttl')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should eq("900\n")
+        rsp.stdout.should eq("X-Ttl 900\n")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -65,7 +65,7 @@ describe "cdn:containers:get command" do
       rsp = cptr('cdn:containers:get my-added-container2 X-Ttl -z region-a.geo-1')
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("900\n")
+      rsp.stdout.should eq("X-Ttl 900\n")
       rsp.exit_status.should be_exit(:success)
     end
 

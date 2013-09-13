@@ -8,7 +8,7 @@ describe "account:edit" do
 
   context "without existing account" do
     it "without validation" do
-      input = ['foo','bar','https://127.0.0.1/','111111']
+      input = ['foo','bar','111111','https://127.0.0.1/']
       rsp = cptr('account:setup --no-validate', input)
       rsp.stdout.should eq(
         "****** Setup your HP Cloud Services hp account ******\n" +
@@ -22,7 +22,7 @@ describe "account:edit" do
     end
 
     it "with validation" do
-      input = ['oof','rab','https://bogus.hp.com/','222222']
+      input = ['oof','rab','222222','https://bogus.hp.com/']
       rsp = cptr('account:setup', input)
       rsp.stdout.should eq(
         "****** Setup your HP Cloud Services hp account ******\n" +
@@ -69,7 +69,7 @@ describe "account:edit" do
     end
 
     it "over existing" do
-      input = ['LaSera','SeesTheLight','https://please/','227']
+      input = ['LaSera','SeesTheLight','227','https://please/']
       rsp = cptr('account:edit --no-validate deluxe', input)
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)

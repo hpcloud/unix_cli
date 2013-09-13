@@ -49,7 +49,7 @@ describe "Acl command (viewing acls)" do
 
     context "acl for container with valid avl" do
       it "should report success" do
-        rsp = cptr('acl :acl_container -z region-a.geo-1')
+        rsp = cptr('acl :acl_container -z region-b.geo-1')
 
         rsp.stderr.should eq("")
         rsp.stdout.should match("public.*readers.*writers.*public_url")
@@ -60,7 +60,7 @@ describe "Acl command (viewing acls)" do
 
     context "acl for object with valid avl" do
       it "should report success" do
-        rsp = cptr('acl :acl_container/foo.txt -z region-a.geo-1')
+        rsp = cptr('acl :acl_container/foo.txt -z region-b.geo-1')
 
         rsp.stderr.should eq("")
         rsp.stdout.should match("public.*readers.*writers.*public_url")
@@ -122,7 +122,7 @@ describe "Acl command (viewing acls)" do
 
     context "acl for container with valid avl" do
       it "should report success" do
-        rsp = cptr('acl :acl_container -z region-a.geo-1')
+        rsp = cptr('acl :acl_container -z region-b.geo-1')
 
         rsp.stderr.should eq("")
         rsp.stdout.should match("public.*readers.*writers.*public_url")
@@ -133,7 +133,7 @@ describe "Acl command (viewing acls)" do
 
     context "acl for object with valid avl" do
       it "should report success" do
-        rsp = cptr('acl :acl_container/foo.txt -z region-a.geo-1')
+        rsp = cptr('acl :acl_container/foo.txt -z region-b.geo-1')
 
         rsp.stderr.should eq("")
         rsp.stdout.should match("public.*readers.*writers.*public_url")

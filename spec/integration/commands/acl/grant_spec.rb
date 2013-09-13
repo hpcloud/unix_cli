@@ -101,7 +101,7 @@ describe "acl:grant command" do
 
   context "acl:grant with valid avl" do
     it "should report success" do
-      rsp = cptr('acl:grant :acl_container public-read -z region-a.geo-1')
+      rsp = cptr('acl:grant :acl_container public-read -z region-b.geo-1')
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("ACL for :acl_container updated to public-read.\n")

@@ -2,7 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../../spec_helper')
 
 describe "routers:interface:add" do
   before(:each) do
-    @routers_name = "routerone"
+    username = AccountsHelper.get_username('primary')
+    @routers_name = "#{username}-router"
     cptr("routers:add #{@routers_name}")
     @port_name = "cli_test_port1"
     @port = PortTestHelper.create(@port_name)

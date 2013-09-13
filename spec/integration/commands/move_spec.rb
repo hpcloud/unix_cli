@@ -113,7 +113,7 @@ describe "Move command" do
   
   context "with avl settings passed in" do
     it "should report success" do
-      rsp = cptr("move :move_source_container/Putin/Yeltsin/Gorbachev/Chernenko.txt :move_target_container/new/foo.txt -z region-a.geo-1")
+      rsp = cptr("move :move_source_container/Putin/Yeltsin/Gorbachev/Chernenko.txt :move_target_container/new/foo.txt -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Moved :move_source_container/Putin/Yeltsin/Gorbachev/Chernenko.txt => :move_target_container/new/foo.txt\n")

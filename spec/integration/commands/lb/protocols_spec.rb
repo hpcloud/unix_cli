@@ -6,7 +6,7 @@ describe "lb:protocols" do
       rsp = cptr("lb:protocols -c name,port -d X")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should match("HTTPX80\nTCPX443\n")
+      rsp.stdout.should match("HTTPX80\nHTTPSX443\n")
       rsp.exit_status.should be_exit(:success)
     end
   end

@@ -10,6 +10,7 @@ describe "Servers metadata remove command" do
     @srv.name = resource_name("meta_srv")
     @srv.flavor = @flavor_id
     @srv.image = @image_id
+    @srv.set_network('cli_test_network1')
     @srv.meta.set_metadata('one=1,two=2,three=3,four=4,five=5,six=6,seven=7,luke=skywalker,han=solo,aardvark=a,kangaroo=b')
     @srv.save.should be_true
     @srv.fog.wait_for { ready? }

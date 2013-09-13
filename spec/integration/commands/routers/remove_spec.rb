@@ -2,7 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 describe "routers:remove command" do
   before(:each) do
-    @router_name = "routerone"
+    username = AccountsHelper.get_username('primary')
+    @routers_name = "#{username}-router"
   end
 
   def wait_for_gone(name)

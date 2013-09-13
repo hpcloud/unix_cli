@@ -10,6 +10,7 @@ describe "Servers metadata update command" do
     @srv.name = resource_name("meta_srv")
     @srv.flavor = @flavor_id
     @srv.image = @image_id
+    @srv.set_network('cli_test_network1')
     @srv.meta.set_metadata('luke=skywalker,han=solo')
     @srv.save.should be_true
     @srv.fog.wait_for { ready? }

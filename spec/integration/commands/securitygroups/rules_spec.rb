@@ -3,8 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "Security Groups Rules command" do
   before(:all) do
     @hp_svc = compute_connection
-    del_securitygroup(@hp_svc, 'emptysg')
-    del_securitygroup(@hp_svc, 'mysggroup')
+    cptr('securitygroups:remove mysggroup emptysg')
 
     @hp_svc.security_groups.create(:name => 'emptysg', :description => 'empty sg')
     @security_group = @hp_svc.security_groups.create(:name => 'mysggroup', :description => 'sec group desc')

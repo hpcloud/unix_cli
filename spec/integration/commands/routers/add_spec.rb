@@ -3,7 +3,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "routers:add" do
   before(:each) do
     @network = NetworkTestHelper.create("Ext-Net")
-    @routers_name = "routerone"
+    username = AccountsHelper.get_username('primary')
+    @routers_name = "#{username}-router"
   end
 
   context "when creating router" do

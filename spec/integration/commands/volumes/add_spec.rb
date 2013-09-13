@@ -17,7 +17,7 @@ describe "volumes:add command" do
       rsp.stdout.should eq("Created volume '#{@volume_name}' with id '#{@new_volume_id}'.\n")
       rsp.exit_status.should be_exit(:success)
       volumes = @hp_svc.volumes.map {|s| s.id}
-      volumes.should include(@new_volume_id.to_i)
+      volumes.should include(@new_volume_id)
       volumes = @hp_svc.volumes.map {|s| s.name}
       volumes.should include(@volume_name)
       volumes = @hp_svc.volumes.map {|s| s.description}
@@ -40,7 +40,7 @@ describe "volumes:add command" do
       rsp.stdout.should eq("Created volume '#{@volume_name}' with id '#{@new_volume_id}'.\n")
       rsp.exit_status.should be_exit(:success)
       volumes = @hp_svc.volumes.map {|s| s.id}
-      volumes.should include(@new_volume_id.to_i)
+      volumes.should include(@new_volume_id)
       volumes = @hp_svc.volumes.map {|s| s.name}
       volumes.should include(@volume_name)
     end
@@ -63,7 +63,7 @@ describe "volumes:add command" do
       rsp.stdout.should eq("Created volume '#{@volume_name}' with id '#{@new_volume_id}'.\n")
       rsp.exit_status.should be_exit(:success)
       volumes = @hp_svc.volumes.map {|s| s.id}
-      volumes.should include(@new_volume_id.to_i)
+      volumes.should include(@new_volume_id)
       volumes = @hp_svc.volumes.map {|s| s.name}
       volumes.should include(@volume_name)
     end
@@ -85,7 +85,7 @@ describe "volumes:add command" do
       rsp.stdout.should eq("Created volume '#{@volume_name}' with id '#{@new_volume_id}'.\n")
       rsp.exit_status.should be_exit(:success)
       volumes = @hp_svc.volumes.map {|s| s.id}
-      volumes.should include(@new_volume_id.to_i)
+      volumes.should include(@new_volume_id)
       volumes = @hp_svc.volumes.map {|s| s.name}
       volumes.should include(@volume_name)
     end

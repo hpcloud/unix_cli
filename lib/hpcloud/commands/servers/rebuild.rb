@@ -26,7 +26,7 @@ Examples:
                 end
               end
             end
-            server.fog.rebuild(image_id, nil)
+            server.fog.rebuild(image_id, server.name)
             @log.display "Server '#{server.name}' being rebuilt."
           else
             @log.fatal server.cstatus

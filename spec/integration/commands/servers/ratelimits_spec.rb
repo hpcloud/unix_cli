@@ -6,9 +6,7 @@ describe "servers:ratelimits" do
       rsp = cptr("servers:ratelimits")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should include("POST")
-      rsp.stdout.should include("PUT")
-      rsp.stdout.should include("DELETE")
+      rsp.stdout.should include("limits:")
       rsp.exit_status.should be_exit(:success)
     end
   end

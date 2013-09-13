@@ -6,7 +6,7 @@ describe "securitygroups:rules:remove command" do
   end
   context "when removing rules" do
     before(:all) do
-      @security_group = @hp_svc.security_groups.create(:name => 'delsecgroup', :description => 'sec group desc')
+      cptr('securitygroups:add delsecgroup delsecgroup')
     end
 
     context "tcp with port range" do

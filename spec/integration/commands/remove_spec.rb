@@ -93,7 +93,7 @@ describe "Remove command" do
       it "should report success" do
         given_foo
 
-        rsp = cptr("remove :my_container/foo.txt -z region-a.geo-1")
+        rsp = cptr("remove :my_container/foo.txt -z region-b.geo-1")
 
         rsp.stderr.should eq("")
         rsp.stdout.should eq("Removed ':my_container/foo.txt'.\n")

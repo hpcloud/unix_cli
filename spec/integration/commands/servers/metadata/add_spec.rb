@@ -11,6 +11,7 @@ describe "Servers metadata add command" do
     @srv.flavor = @flavor_id
     @srv.image = @image_id
     @srv.meta.set_metadata('luke=skywalker,han=solo')
+    @srv.set_network('cli_test_network1')
     @srv.save.should be_true
     @srv.fog.wait_for { ready? }
 

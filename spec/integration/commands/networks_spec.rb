@@ -33,7 +33,7 @@ describe "Networks command" do
 
   context "networks with valid avl" do
     it "should report success" do
-      rsp = cptr("networks -d , #{@network1.name} #{@network2.name} -z region-a.geo-1")
+      rsp = cptr("networks -d , #{@network1.name} #{@network2.name} -z region-b.geo-1")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)
