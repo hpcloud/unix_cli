@@ -27,6 +27,7 @@ Examples:
               router.admin_state_up = "false"
             end
           end
+          router.external_gateway_info = nil
           unless options[:gateway].nil?
             netty = Routers.parse_gateway(options[:gateway])
             if netty.nil?
