@@ -9,8 +9,6 @@ bundle update
 set -x
 TOP=$(pwd)
 export `grep VERSION lib/hpcloud/version.rb | sed -e 's/ //g' -e "s/'//g"`
-CONTAINER="documentation-downloads"
-DEST=":${CONTAINER}/unixcli/v${VERSION}/"
 FOG_GEM=${FOG_GEM:="hpfog.gem"}
 BUILD=
 if [ -n "${BUILD_NUMBER}" ]
@@ -69,12 +67,11 @@ gem install hpcloud-${VERSION}.gem
 #
 # Copy it up
 #
-if ! hpcloud containers | grep ${CONTAINER} >/dev/null
-then
-  hpcloud containers:add :${CONTAINER}
-fi
-hpcloud copy -a deploy hpcloud-${VERSION}.gem ":${CONTAINER}/unixcli/hpcloud-test.gem"
-hpcloud copy -a deploy hpcloud-${VERSION}.gem $DEST
-hpcloud location -a deploy ${DEST}hpcloud-${VERSION}.gem
+rm -rf docs.hpcloud.com; git clone git@git.hpcloud.net:DevExDocs/docs.hpcloud.com.git
+cp hpcloud-${VERSION}.gem docs.hpcloud.com/file/
+cd docs.hpcloud.com/file
+git add hpcloud-${VERSION}.gem
+git commit -m "add/update new hpcloud-${VERSION}.gem" -a
+git push origin master
 
 rm -f ${REFERENCE} hpcloud-${VERSION}.gem ucssh.sh
