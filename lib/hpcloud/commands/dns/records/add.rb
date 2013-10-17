@@ -17,7 +17,7 @@ Examples:
             @log.fatal dns.cstatus
           end
           priority = priority[0]
-          record = dns.create_record(name, type, data, priority)
+          record = dns.create_record(name, type, data, { 'priority' => priority.to_i })
           if record.nil?
             @log.fatal dns.cstatus
           end

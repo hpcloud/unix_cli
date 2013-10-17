@@ -24,9 +24,8 @@ module HP
       def save
         return false if is_valid? == false
         if @fog.nil?
-          hsh = {:ttl => @ttl.to_i,
-                 :email => @email}
-          dns = @connection.dns.create_domain(name, hsh)
+          hsh = {:ttl => @ttl.to_i}
+          dns = @connection.dns.create_domain(name, email, hsh)
           if dns.nil?
             set_error("Error creating dns '#{@name}'")
             return false

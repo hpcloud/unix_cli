@@ -144,7 +144,6 @@ module Fog
                                                                  'Content-Type' => 'application/json',
                                                                  'X-Auth-Token' => @auth_token
                                                              }.merge!(params[:headers] || {}),
-                                                             :host    => @host,
                                                              :path    => "#{@path}/#{params[:path]}",
                                                          }), &block)
           rescue Excon::Errors::HTTPStatusError => error

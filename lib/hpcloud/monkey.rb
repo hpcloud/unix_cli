@@ -1,7 +1,1 @@
-require 'monkey/hp/cdn'
-require 'monkey/hp/compute'
-require 'monkey/hp/dns'
 require 'monkey/hp/lb'
-require 'monkey/hp/storage'
-require 'monkey/hp/requests/storage/post_object'
-require 'monkey/hp/requests/storage/post_container'
