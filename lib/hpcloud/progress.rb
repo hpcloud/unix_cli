@@ -6,17 +6,26 @@ module HP
       def initialize(name, siz)
         siz = 1 if siz <= 0
         args = { :title => File.basename(name), :total => siz}
-        @pbar = ProgressBar.create(args)
+        begin
+          @pbar = ProgressBar.create(args)
+        rescue
+        end
       end
 
       def increment(siz)
         return if siz.nil?
         return if siz == 0
-        @pbar.progress += siz
+        begin
+          @pbar.progress += siz
+        rescue
+        end
       end
 
       def finish
-        @pbar.finish if @pbar.progress < @pbar.total
+        begin
+          @pbar.finish if @pbar.progress < @pbar.total
+        rescue
+        end
       end
     end
   end
