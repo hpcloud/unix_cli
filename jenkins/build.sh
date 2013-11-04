@@ -44,10 +44,6 @@ SHA1=$(git log -1 | head -1 | sed -e 's/commit //')
 #
 grep -v '# Comment out for delivery' lib/hpcloud.rb >out$$
 mv out$$ lib/hpcloud.rb
-sed -e 's/# Comment in for delivery//g' hpcloud.gemspec >out$$
-mv out$$ hpcloud.gemspec
-grep -v '# Comment out for delivery' Gemfile >out$$
-mv out$$ Gemfile
 sed -i -e "s/SHA1.*/SHA1 = '${SHA1}'/" lib/hpcloud/version.rb
 
 #
