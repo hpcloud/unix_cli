@@ -9,19 +9,11 @@ bundle update
 set -x
 TOP=$(pwd)
 export `grep VERSION lib/hpcloud/version.rb | sed -e 's/ //g' -e "s/'//g"`
-FOG_GEM=${FOG_GEM:="hpfog.gem"}
 BUILD=
 if [ -n "${BUILD_NUMBER}" ]
 then
   BUILD=.${BUILD_NUMBER}
 fi
-
-#
-# Install fog
-#
-curl -sL https://docs.hpcloud.com/file/${FOG_GEM} >${FOG_GEM}
-gem install ${FOG_GEM}
-rm -f ${FOG_GEM}
 
 #
 # Move to the release branch
