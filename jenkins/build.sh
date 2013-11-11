@@ -27,10 +27,6 @@ rm -f ${FOG_GEM}
 # Move to the release branch
 #
 BRANCH="release/v${VERSION}"
-#GIT_SCRIPT=${TOP}/ucssh.sh
-#echo 'ssh -i ~/.ssh/id_rsa_unixcli $*' >${GIT_SCRIPT}
-#chmod 755 ${GIT_SCRIPT}
-#export GIT_SSH=${GIT_SCRIPT}
 git checkout develop || true
 git pull || true
 git remote prune origin || true
@@ -63,11 +59,5 @@ gem install hpcloud-${VERSION}.gem
 #
 # Copy it up
 #
-rm -rf docs.hpcloud.com; git clone git@git.hpcloud.net:DevExDocs/docs.hpcloud.com.git
-cp hpcloud-${VERSION}.gem docs.hpcloud.com/file/
-cd docs.hpcloud.com/file
-git add hpcloud-${VERSION}.gem
-git commit -m "add/update new hpcloud-${VERSION}.gem" -a
-git push origin master
-
-rm -f ${REFERENCE} hpcloud-${VERSION}.gem ucssh.sh
+gem push hpcloud-${VERSION}.gem
+rm -f ${REFERENCE} hpcloud-${VERSION}.gem
