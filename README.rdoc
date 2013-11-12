@@ -8,17 +8,7 @@ The current version of the CLI requires Ruby 1.9.2 or 1.8.7 and a recent version
 
 == Installation
 
-1) Start by installing the software, HP Cloud Unix CLI depends on:
-
-- HP Cloud Ruby Fog Binding[http://docs.hpcloud.com/bindings/fog]
-
-2) Download the HP Cloud Services Unix CLI gem[http://docs.hpcloud.com/cli/unix] and unpack it into a local directory.
-
-3) 'cd' into the directory, you downloaded the gem into during Step 2) and type:
-
-  gem install hpcloud-<version>.gem
-
-where <version> is the version number of the downloaded and unpacked gem file, for example 0.0.8
+  gem install hpcloud
 
 You should see the gem and its dependencies being installed on your system. To verify installation, simply type:
 

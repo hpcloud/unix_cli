@@ -406,10 +406,3 @@ To remove or release an existing address:
         $ hpcloud addresses:remove "11.11.11.11"
         # => Removed address '11.11.11.11'.
 
-### Configuration
-
-To set availability zone and save it to the configuration file:
-
-        $ hpcloud config:set -z az2                # sets availability zone to az2
-        # => Configuration setting have been saved to the config file.
-

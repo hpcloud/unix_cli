@@ -23,10 +23,6 @@ The build job is typically manually run off the develop branch of the CLI git re
 
 The documentation job is automatically triggered off the develop branch of the CLI git repository.  The documentation job automatically generates the release notes, generates the reference manual and then updates the documentation in the documentation git repository.
 
-== Release Job
-
-The release job updates the latest file in the deploy area.  This makes the release "live" to users.  When a user runs the CLI, it will periodically check the latest file and if a new release is available, it will print a message.
-
 == Test 1.9.2
 
 This job runs the 1.9.2 tests.  Not all the tests will run successfully with the tests jobs and it is up to the developer to manually run and verify the tests that are not run and the tests that fail when this job is run.
