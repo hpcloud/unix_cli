@@ -38,7 +38,12 @@ Examples:
             @log.fatal dns.cstatus
           end
           priority = priority[0]
-          record = dns.create_record(name, type, data, { :priority => priority.to_i })
+          if priority.nil?
+             priority = {}
+          else
+             priority = { :priority => priority.to_i }
+          end
+          record = dns.create_record(name, type, data, priority)
           if record.nil?
             @log.fatal dns.cstatus
           end
