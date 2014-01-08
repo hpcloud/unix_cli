@@ -79,7 +79,7 @@ module HP
       end
 
       def record_keys
-        ["id", "name", "type", "data", "created_at"]
+        ["id", "name", "type", "data", "priority", "created_at"]
       end
 
       def records
