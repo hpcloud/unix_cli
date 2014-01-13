@@ -43,6 +43,11 @@ git tag -a v${VERSION}${BUILD} -m "v${VERSION}${BUILD}"
 git push --tags
 
 #
+# Tests
+#
+rspec spec/unit
+
+#
 # Build the gem
 #
 gem build hpcloud.gemspec
