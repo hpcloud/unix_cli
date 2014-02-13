@@ -115,7 +115,7 @@ module HP
           @cstatus = CliStatus.new("Permission denied trying to access '#{@fname}'.", :permission_denied)
           return false
         rescue Exception => error
-          @cstatus = CliStatus.new("Error ch reading '#{@fname}': " + error.to_s, :general_error)
+          @cstatus = CliStatus.new("Error reading '#{@fname}': " + error.to_s, :general_error)
           return false
         end
       end
@@ -439,8 +439,8 @@ module HP
               res.size = x['bytes']
               res.type = x['content_type']
               yield res
-              marker = name
             end
+            marker = name
           }
           break if lode < @@limit
         end until count >= total
