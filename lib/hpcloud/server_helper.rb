@@ -206,11 +206,15 @@ module HP
       def set_personality(directory)
         return if directory.nil?
         @personality = []
+        unless File.exists?(directory)
+          set_error("Directory does not exists '#{directory}'")
+          return false
+        end
         Dir.glob("#{directory}/**/*").each { |file|
           unless File.directory?(file)
             rfile = file.gsub(directory, '')
             hsh = { "path" => rfile,
-                    "contents" => Base64.encode64(File.read(file)) }
+                    "contents" => File.read(file) }
             @personality << hsh
           end
         }

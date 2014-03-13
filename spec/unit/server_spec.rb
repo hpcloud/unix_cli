@@ -493,22 +493,18 @@ describe "Server class" do
       srv.set_personality("spec/fixtures/files/Matryoshka/")
 
       ray = srv.personality.sort{|a,b| a["path"] <=> b["path"]}
-      expected = [{"contents"=>"MjAwMC0yMDA4IGJhbGQK\n",
-          "path"=>"/Putin/Vladimir.txt"},
-         {"contents"=>"MjAwOC0yMDEyIGhhaXJ5Cg==\n",
-          "path"=>"/Putin/Medvedev.txt"},
-         {"contents"=>"MTk5MS0xOTk5IGhhaXJ5Cg==\n",
-          "path"=>"/Putin/Yeltsin/Boris.txt"},
-         {"contents"=>"MTk4NS0xOTkxIGJhbGQK\n",
-          "path"=>
-           "/Putin/Yeltsin/Gorbachev/Mikhail.txt"},
-         {"contents"=>"MTk4Mi0xOTg0IGJhbGQK\n",
-          "path"=>
-           "/Putin/Yeltsin/Gorbachev/Andropov.txt"},
-         {"contents"=>"Cg==\n",
-          "path"=>
-           "/Putin/Yeltsin/Gorbachev/Chernenko.txt"
-       }]
+      expected = [{"path"=>"/Putin/Medvedev.txt",
+                   "contents"=>"2008-2012 hairy\n"},
+                  {"path"=>"/Putin/Vladimir.txt",
+                   "contents"=>"2000-2008 bald\n"},
+                  {"path"=>"/Putin/Yeltsin/Boris.txt",
+                   "contents"=>"1991-1999 hairy\n"},
+                  {"path"=>"/Putin/Yeltsin/Gorbachev/Andropov.txt",
+                  "contents"=>"1982-1984 bald\n"},
+                  {"path"=>"/Putin/Yeltsin/Gorbachev/Chernenko.txt",
+                   "contents"=>"\n"},
+                  {"path"=>"/Putin/Yeltsin/Gorbachev/Mikhail.txt",
+                   "contents"=>"1985-1991 bald\n"}]
       expected = expected.sort{|a,b| a["path"] <=> b["path"]}
       ray.should eq(expected)
     end
