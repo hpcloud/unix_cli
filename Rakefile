@@ -140,21 +140,27 @@ end
 
 desc "Setup package for release"
 namespace :release do
-  task :preflight do
-    unless `git branch` =~ /^\* master$/
-      puts "You must be on the master branch to release!"
-      exit!
-    end
-    if `git tag` =~ /^\* v#{version}$/
-      puts "Tag v#{version} already exists!"
-      exit!
-    end
-  end
 
-  task :prepare => :preflight do
+  desc "build a release version of the gem"
+  task :build => :preflight do
+    puts "Running release build"
     Rake::Task[:build].invoke
     sh "gem install pkg/#{name}-#{version}.gem"
+    puts "installed gem #{name}-#{version}"
     Rake::Task[:git_mark_release].invoke
+  end
+
+  desc "preflight the build and check for existing tags"
+  task :preflight do
+    puts "checking preflight"
+    # unless `git branch` =~ /^\* master$/
+    #   puts "You must be on the master branch to release!"
+    #   exit!
+    # end
+    # if `git tag` =~ /^\* v#{version}$/
+    #   puts "Tag v#{version} already exists!"
+    #   exit!
+    # end
   end
 end
 
@@ -166,7 +172,7 @@ end
 # Create gem file
 desc "Build hpcloud-#{version}.gem"
 task :build => :gemspec do
-  sh "mkdir -p pkg"
+  sh "mkdir pkg" if ! Dir.exist?(File.join(File.dirname(__FILE__ ), 'pkg'))
   sh "gem build #{gemspec_file}"
   sh "mv #{gem_file} pkg"
 end
