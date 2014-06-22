@@ -42,6 +42,14 @@ module HP
                :db,
                :network,
                :"block storage"]
+      # we only list whats available in connection.rb
+      CATALOG = [:catalog_compute,
+                 :catalog_object_storage,
+                 :catalog_block_storage,
+                 :catalog_cdn,
+                 :catalog_dns,
+                 :catalog_load_balancer,
+                 :catalog_networking]
       OPTIONS = [:connect_timeout,
                  :read_timeout,
                  :write_timeout,
@@ -68,6 +76,7 @@ module HP
         ret = ""
         CREDENTIALS.each{|key| ret += "\n * " + key.to_s }
         ZONES.each{|key| ret += "\n * " + key.to_s }
+        CATALOG.each{|key| ret += "\n * " + key.to_s }
         OPTIONS.each{|key| ret += "\n * " + key.to_s }
         return ret
       end
@@ -131,6 +140,7 @@ module HP
               hsh[:regions] = regions
             end
             hsh[:regions] = {} if hsh[:regions].nil?
+            hsh[:catalog] = {} if hsh[:catalog].nil?
             hsh[:options] = {} if hsh[:options].nil?
             @accts[account] = hsh
           rescue Exception => e
@@ -150,6 +160,7 @@ module HP
           uri = Config.new.get(:default_auth_uri)
           @accts[account] = {:credentials=>{:auth_uri=>uri},
                              :regions=>{},
+                             :catalog=>{},
                              :options=>{}}
         end
         return @accts[account]
@@ -157,7 +168,7 @@ module HP
 
       def set_cred(account, cred)
         if @accts[account].nil?
-          @accts[account] = {:credentials=>{}, :regions=>{}, :options=>{}}
+          @accts[account] = {:credentials=>{}, :regions=>{}, :catalog=>{}, :options=>{}}
         end
         @accts[account][:credentials] = cred
         unless cred[:hp_auth_uri].nil?
@@ -169,7 +180,7 @@ module HP
 
       def set_regions(account, regions)
         if @accts[account].nil?
-          @accts[account] = {:credentials=>{}, :regions=>{}, :options=>{}}
+          @accts[account] = {:credentials=>{}, :regions=>{}, :catalog=>{}, :options=>{}}
         end
         @accts[account][:regions] = regions
       end
@@ -182,6 +193,9 @@ module HP
           hsh[:credentials][key] = value
         elsif ZONES.include?(key)
           hsh[:regions][key] = value
+        elsif CATALOG.include?(key)
+          cat_key = key.to_s.gsub(/^catalog_/,'').to_sym
+          hsh[:catalog][cat_key] = value
         elsif OPTIONS.include?(key)
           hsh[:options][key] = value
         elsif TOP_LEVEL.include?(key)
@@ -235,12 +249,24 @@ module HP
         end
       end
 
+      def get_acct_catalog_map(account_name)
+        hsh = get(account_name)
+        provider = hsh[:provider] || 'hp'
+        provider = provider.downcase
+        catalog = hsh[:catalog] || {}
+        options = {}
+        options[:catalog] = catalog
+        options[:provider] = provider
+        return options
+      end
+
       def create_options(account_name, zone, avl_zone = nil)
         hsh = get(account_name)
         provider = hsh[:provider] || 'hp'
         provider = provider.downcase
         creds = hsh[:credentials]
         regions = hsh[:regions] || {}
+        catalog = hsh[:catalog] || {}
         opts = hsh[:options]
         opts.delete(:preferred_flavor)
         opts.delete(:preferred_image)
@@ -261,6 +287,7 @@ module HP
           options[:hp_avl_zone] = avl_zone
           options[:connection_options] = opts
           options[:user_agent] = "HPCloud-UnixCLI/#{HP::Cloud::VERSION}"
+          options[:hp_service_type] = zone if zone != nil
         else
           options = creds
         end
