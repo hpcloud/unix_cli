@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
 
   s.name      = 'hpcloud'
   s.version   = HP::Cloud::VERSION
-  s.date      = '2014-06-22'
+  s.date      = '2014-06-23'
 
   s.summary       = 'HP Cloud CLI'
   s.description   = 'Useful command-line tools for managing your HP Cloud services'
