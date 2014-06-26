@@ -29,10 +29,16 @@ module HP
       desc 'account:catalog <account_to_catalog> [service]', "Print the service catalog of the specified account."
       long_desc <<-DESC
   Print the service catalog of the specified account.  Optionally, you may specify a particular service to print such as `Compute`.
-  
+
+  You can then configure the catalog for your account with hpcloud account:edit catalog_<service>=<name> so that
+   the cli knows how to talk with your particular cloud implementation. For example:
+   hpcloud account:edit useast catalog_compute=nova
+   See hpcloud help account:edit for more details.
+
 Examples:
   hpcloud account:catalog useast # Print the service catalog of `useast`:
   hpcloud account:catalog useast Compute # Print the compute catalog of `useast`:
+
       DESC
       method_option :debug, :type => :string, :alias => '-x',
                     :desc => 'Debug logging 1,2,3,...'

@@ -89,7 +89,7 @@ module HP
           @authcache.write(opts, creds)
         end
         if opts[:hp_avl_zone].nil?
-          opts[:hp_avl_zone] = @authcache.default_zone(opts, service)
+          opts[:hp_avl_zone] = @authcache.default_zone(opts, service_type_name(account, service))
         end
         opts[:credentials] = creds
       end
@@ -217,9 +217,14 @@ module HP
       end
 
       def create_options(account_name, zone)
-        opts = Accounts.new.create_options(account_name, zone, @options[:availability_zone])
+        real_zone_name = (zone != nil) ? service_type_name(account_name, zone): zone
+        opts = Accounts.new.create_options(account_name, real_zone_name, @options[:availability_zone])
         opts[:hp_tenant_id] = @options[:tenantid] unless @options[:tenantid].nil?
         return opts
+      end
+
+      def get_acct_catalog_map(account_name)
+        return Accounts.new.get_acct_catalog_map(account_name)
       end
 
       def zones(service)
@@ -253,6 +258,27 @@ module HP
         else
           Fog::Storage.new(options).directories
           return true
+        end
+      end
+
+      # lets identify the real service type name
+      # create support for account config to have a section called :service_catalog
+      # This section will identify mappings for keys like : object_storage, compute,  block_storage, cdn
+      #      networking, dns, and load_balancer
+      # The values can be the real names of the offerings.   This enables private cloud implementations to
+      # have service catalog names that make more sense for there implementation.
+      def service_type_name(account_name, name)
+        map_opts = get_acct_catalog_map(account_name)
+        case map_opts[:provider]
+          when "hp"
+            service_name = name
+            unless map_opts[:catalog].nil?
+              service_catalog_key = name.to_s.downcase.gsub(' ','_').to_sym
+              service_name = map_opts[:catalog][service_catalog_key] if map_opts[:catalog].has_key?(service_catalog_key)
+            end
+            return service_name
+          else
+            return name
         end
       end
 
