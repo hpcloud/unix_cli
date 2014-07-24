@@ -382,7 +382,7 @@ describe "Copy command" do
     end
     context "copy with valid avl" do
       it "should report success" do
-        rsp = cptr('copy spec/fixtures/files/foo.txt :my_avl_container -z region-b.geo-1')
+        rsp = cptr("copy spec/fixtures/files/foo.txt :my_avl_container -z #{REGION}")
 
         rsp.stderr.should eq("")
         rsp.stdout.should eq("Copied spec/fixtures/files/foo.txt => :my_avl_container\n")

@@ -103,7 +103,7 @@ describe "cdn:containers:set command" do
       @hp_svc.put_container('my-added-container2')
       @hp_cdn.put_container('my-added-container2')
 
-      rsp = cptr('cdn:containers:set my-added-container2 X-Ttl 900 -z region-a.geo-1')
+      rsp = cptr("cdn:containers:set my-added-container2 X-Ttl 900 -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("The attribute 'X-Ttl' with value '900' was set on CDN container 'my-added-container2'.\n")

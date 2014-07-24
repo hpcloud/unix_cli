@@ -75,7 +75,7 @@ describe "cdn:containers:location command" do
 
   context "cdn:containers:location with valid avl" do
     it "should report success" do
-      rsp = cptr('cdn:containers:location my-added-container2 -z region-a.geo-1')
+      rsp = cptr("cdn:containers:location my-added-container2 -z #{REGION}")
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
     end

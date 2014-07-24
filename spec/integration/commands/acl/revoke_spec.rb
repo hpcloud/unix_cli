@@ -131,10 +131,10 @@ describe "acl:revoke command" do
 
   context "acl:revoke with valid avl" do
     it "should report success" do
-      rsp = cptr("acl:grant :revoker r -z region-b.geo-1")
+      rsp = cptr("acl:grant :revoker r -z #{REGION}")
       rsp.stderr.should eq("")
 
-      rsp = cptr('acl:revoke :revoker r -z region-b.geo-1')
+      rsp = cptr("acl:revoke :revoker r -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Revoked public-read from :revoker\n")

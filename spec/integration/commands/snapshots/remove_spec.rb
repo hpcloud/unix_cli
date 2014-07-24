@@ -55,7 +55,7 @@ describe "snapshots:remove command" do
     it "should be successful" do
       @snapshot = SnapshotTestHelper.create(resource_name("del2"), @vol)
 
-      rsp = cptr("snapshots:remove #{@snapshot.name} -z region-b.geo-1")
+      rsp = cptr("snapshots:remove #{@snapshot.name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed snapshot '#{@snapshot.name}'.\n")

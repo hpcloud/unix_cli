@@ -51,7 +51,7 @@ describe "dns:remove command" do
     it "should be successful" do
       @dns = DnsTestHelper.create("everett2.com.")
 
-      rsp = cptr("dns:remove #{@dns.name} -z region-a.geo-1")
+      rsp = cptr("dns:remove #{@dns.name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed dns '#{@dns.name}'.\n")

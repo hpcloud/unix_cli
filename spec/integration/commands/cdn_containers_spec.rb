@@ -48,7 +48,7 @@ describe "CDN Containers command" do
 
   context "cdn:containers with valid avl" do
     it "should report success" do
-      rsp = cptr('cdn:containers -z region-a.geo-1')
+      rsp = cptr("cdn:containers -z #{REGION}")
       rsp.stderr.should eq('')
       rsp.exit_status.should be_exit(:success)
     end

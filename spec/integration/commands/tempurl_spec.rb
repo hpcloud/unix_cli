@@ -102,7 +102,7 @@ describe 'tempurl command' do
 
   context "tempurl for file with valid avl" do
     it "should report success" do
-      rsp = cptr('tempurl :tempcontainer/foo.txt -z region-b.geo-1')
+      rsp = cptr("tempurl :tempcontainer/foo.txt -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should include("#{@hp_svc.url}")

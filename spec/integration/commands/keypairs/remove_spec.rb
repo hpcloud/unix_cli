@@ -55,7 +55,7 @@ describe "keypairs:remove command" do
       @key_name = 'cli-del-201'
       @keypair = @hp_svc.key_pairs.create(:name => @key_name)
 
-      rsp = cptr("keypairs:remove #{@key_name} -z region-b.geo-1")
+      rsp = cptr("keypairs:remove #{@key_name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed key pair '#{@key_name}'.\n")

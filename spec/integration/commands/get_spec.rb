@@ -132,7 +132,7 @@ describe "Get command" do
 
   context "get with valid avl" do
     it "should report success" do
-      rsp = cptr('get :get_container/highly_unusual_file_name.txt -z region-a.geo-1')
+      rsp = cptr("get :get_container/highly_unusual_file_name.txt -z #{REGION}")
 
       rsp.stderr.should eql("")
       rsp.stdout.should eql("Copied :get_container/highly_unusual_file_name.txt => .\n")

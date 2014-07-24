@@ -109,7 +109,7 @@ describe "containers:remove command" do
     end
     context "remove with valid avl" do
       it "should report success" do
-        rsp = cptr('containers:remove my-added-container2 -z region-a.geo-1')
+        rsp = cptr("containers:remove my-added-container2 -z #{REGION}")
 
         rsp.stderr.should eq("")
         rsp.stdout.should eq("Removed container 'my-added-container2'.\n")

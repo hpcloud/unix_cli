@@ -64,7 +64,7 @@ describe "Images command" do
   describe "with avl settings passed in" do
     context "images with valid avl" do
       it "should report success" do
-        rsp = cptr("images:metadata:list -z region-b.geo-1 #{@img.name}")
+        rsp = cptr("images:metadata:list -z #{REGION} #{@img.name}")
         rsp.stderr.should eq("")
         rsp.exit_status.should be_exit(:success)
       end

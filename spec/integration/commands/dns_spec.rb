@@ -51,7 +51,7 @@ describe "Dnss command" do
 
   context "dns with valid avl" do
     it "should report success" do
-      rsp = cptr("dns -c name,ttl,email -d X #{@dns1.name} #{@dns2.name} -z region-a.geo-1")
+      rsp = cptr("dns -c name,ttl,email -d X #{@dns1.name} #{@dns2.name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("clitest1.com.X7200Xclitest@example.com\nclitest2.com.X7200Xclitest@example.com\n")

@@ -51,7 +51,7 @@ describe "lb" do
 
   context "lb with valid avl" do
     it "should report success" do
-      rsp = cptr("lb -c name,algorithm,protocol,port -d X cli_test_lb1 cli_test_lb2 -z region-a.geo-1")
+      rsp = cptr("lb -c name,algorithm,protocol,port -d X cli_test_lb1 cli_test_lb2 -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("cli_test_lb1XROUND_ROBINXHTTPX80\ncli_test_lb2XLEAST_CONNECTIONSXTCPX443\n")

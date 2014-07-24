@@ -203,7 +203,7 @@ describe "servers:add command" do
     it "should report success" do
       @server_name = resource_name("add5")
 
-      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_image_id()} -k #{@keypair_name} -z region-b.geo-1")
+      rsp = cptr("servers:add #{@server_name} #{AccountsHelper.get_flavor_id()} -i #{AccountsHelper.get_image_id()} -k #{@keypair_name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       @server_id2 = rsp.stdout.scan(/'([^']+)/)[2][0]

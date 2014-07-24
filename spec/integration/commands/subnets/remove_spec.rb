@@ -51,7 +51,7 @@ describe "subnets:remove command" do
     it "should be successful" do
       @subnet = SubnetTestHelper.create("127.0.2.1")
 
-      rsp = cptr("subnets:remove #{@subnet.id} -z region-a.geo-1")
+      rsp = cptr("subnets:remove #{@subnet.id} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed subnet '#{@subnet.name}'.\n")

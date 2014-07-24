@@ -62,7 +62,7 @@ describe "servers:console" do
     it "should report success" do
       ServerTestHelper.create("cli_test_srv1")
 
-      rsp = cptr("servers:console cli_test_srv1 10 -z region-b.geo-1")
+      rsp = cptr("servers:console cli_test_srv1 10 -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should include("Console output for cli_test_srv1:\n")

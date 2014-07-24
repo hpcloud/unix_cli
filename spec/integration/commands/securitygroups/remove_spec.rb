@@ -72,7 +72,7 @@ describe "securitygroups:remove command" do
       securitygroup = @hp_svc.security_groups.new(:name => 'mysggroup2', :description => 'sec group desc')
       securitygroup.save
 
-      rsp = cptr('securitygroups:remove mysggroup2 -z region-b.geo-1')
+      rsp = cptr("securitygroups:remove mysggroup2 -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)

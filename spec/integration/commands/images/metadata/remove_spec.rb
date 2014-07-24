@@ -68,7 +68,7 @@ describe "Images metadata remove command" do
 
   context "images with valid avl" do
     it "should report success" do
-      rsp = cptr("images:metadata:remove -z region-b.geo-1 #{@img.id} aardvark kangaroo")
+      rsp = cptr("images:metadata:remove -z #{REGION} #{@img.id} aardvark kangaroo")
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)

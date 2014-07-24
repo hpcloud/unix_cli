@@ -83,7 +83,7 @@ describe "cdn:containers:get command" do
       rsp = cptr('cdn:containers:set my-added-container2 X-Ttl 900')
       rsp.stderr.should eq("")
 
-      rsp = cptr('cdn:containers:get my-added-container2 X-Ttl -z region-a.geo-1')
+      rsp = cptr("cdn:containers:get my-added-container2 X-Ttl -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("X-Ttl 900\n")

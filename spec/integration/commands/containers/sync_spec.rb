@@ -28,7 +28,7 @@ describe "list command" do
     cptr("remove -f syncb")
     cptr("containers:add syncfrom")
     cptr("containers:add syncto")
-    cptr("containers:add syncb -z region-b.geo-1")
+    cptr("containers:add syncb -z #{REGION}")
     cptr("copy spec/fixtures/files/Matryoshka/Putin/Yeltsin :syncfrom")
   end
 
@@ -57,12 +57,12 @@ describe "list command" do
     end
   end
 
-  context "containers:sync -z region-b.geo-1" do
+  context "containers:sync -z #{REGION}" do
     it "should report success" do
-      rsp = cptr("location :syncb -z region-b.geo-1")
+      rsp = cptr("location :syncb -z #{REGION}")
       location = rsp.stdout.strip
 
-      rsp = cptr("containers:sync :syncb keyo -z region-b.geo-1")
+      rsp = cptr("containers:sync :syncb keyo -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Container :syncb using key 'keyo'\n")
@@ -86,9 +86,9 @@ describe "list command" do
     end
   end
 
-  context "containers:sync :syncto keyo -z region-a.geo-1" do
+  context "containers:sync :syncto keyo -z #{REGION}" do
     it "should report success" do
-      rsp = cptr("containers:sync :syncto keyo -z region-a.geo-1")
+      rsp = cptr("containers:sync :syncto keyo -z #{REGION}")
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Container :syncto using key 'keyo'\n")
       rsp.exit_status.should be_exit(:success)

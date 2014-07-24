@@ -101,7 +101,7 @@ describe 'location command' do
 
   context "location for file with valid avl" do
     it "should report success" do
-      rsp = cptr('location :location/tiny.txt -z region-b.geo-1')
+      rsp = cptr("location :location/tiny.txt -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("#{@hp_svc.url}/location/tiny.txt\n")

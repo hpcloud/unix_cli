@@ -44,7 +44,7 @@ describe "servers:remove command" do
       @server_name = resource_name("del2")
       @server = ServerTestHelper.create(@server_name)
 
-      rsp = cptr("servers:remove #{@server_name} -z region-b.geo-1")
+      rsp = cptr("servers:remove #{@server_name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed server '#{@server_name}'.\n")

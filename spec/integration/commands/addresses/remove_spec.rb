@@ -50,7 +50,7 @@ describe "addresses:remove command" do
 
   context "remove ip with valid avl" do
     it "should report success" do
-      rsp = cptr("addresses:remove #{@second_ip} -z region-b.geo-1")
+      rsp = cptr("addresses:remove #{@second_ip} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed address '#{@second_ip}'.\n")

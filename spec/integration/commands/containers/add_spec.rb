@@ -82,7 +82,7 @@ describe "containers:add command" do
 
   context "add with valid avl" do
     it "should report success" do
-      rsp = cptr('containers:add my-added-container2 -z region-b.geo-1')
+      rsp = cptr("containers:add my-added-container2 -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Created container 'my-added-container2'.\n")

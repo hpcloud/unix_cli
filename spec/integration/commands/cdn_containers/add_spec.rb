@@ -95,7 +95,7 @@ describe "cdn:containers:add command" do
       rsp = cptr('cdn:containers:add my-added-container2')
       rsp.stderr.should eq("")
 
-      rsp = cptr('cdn:containers:add my-added-container2 -z region-a.geo-1')
+      rsp = cptr("cdn:containers:add my-added-container2 -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eql("Added container 'my-added-container2' to the CDN.\n")

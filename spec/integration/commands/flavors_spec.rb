@@ -42,7 +42,7 @@ describe "Flavors command" do
 
   context "flavors with valid avl" do
     it "should report success" do
-      rsp = cptr("flavors -z region-b.geo-1")
+      rsp = cptr("flavors -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)

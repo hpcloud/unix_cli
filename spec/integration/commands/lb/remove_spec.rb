@@ -55,7 +55,7 @@ describe "lb:remove" do
       @lb_name = "clidel2"
       cptr("lb:add #{@lb_name} ROUND_ROBIN HTTP 80 -n 10.10.2.2:80")
 
-      rsp = cptr("lb:remove #{@lb_name} -z region-a.geo-1")
+      rsp = cptr("lb:remove #{@lb_name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed load balancer '#{@lb_name}'.\n")

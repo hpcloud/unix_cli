@@ -54,7 +54,7 @@ describe "Subnets command" do
 
   context "subnets with valid avl" do
     it "should report success" do
-      rsp = cptr("subnets -d , #{@subnet1.name} #{@subnet2.name} -z region-a.geo-1")
+      rsp = cptr("subnets -d , #{@subnet1.name} #{@subnet2.name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)

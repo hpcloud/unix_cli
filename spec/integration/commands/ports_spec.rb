@@ -54,7 +54,7 @@ describe "Ports command" do
 
   context "ports with valid avl" do
     it "should report success" do
-      rsp = cptr("ports -d , #{@port1.name} #{@port2.name} -z region-a.geo-1")
+      rsp = cptr("ports -d , #{@port1.name} #{@port2.name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)

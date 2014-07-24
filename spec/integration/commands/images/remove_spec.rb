@@ -59,7 +59,7 @@ describe "images:remove command" do
       @image_id2 = @server2.create_image(@image_name2, {})
       sleep(10)
 
-      rsp = cptr("images:remove #{@image_id2} -z region-b.geo-1")
+      rsp = cptr("images:remove #{@image_id2} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed image '#{@image_name2}'.\n")

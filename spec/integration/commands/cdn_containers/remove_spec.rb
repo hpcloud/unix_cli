@@ -97,7 +97,7 @@ describe "cdn:containers:remove command" do
       @hp_svc.put_container('my-added-container2')
       @hp_cdn.put_container('my-added-container2')
 
-      rsp = cptr('cdn:containers:remove my-added-container2 -z region-a.geo-1')
+      rsp = cptr("cdn:containers:remove my-added-container2 -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed container 'my-added-container2' from the CDN.\n")

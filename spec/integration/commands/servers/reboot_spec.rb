@@ -53,7 +53,7 @@ describe "servers:reboot command" do
       @server_name = "cli_test_srv6"
       server = ServerTestHelper.create(@server_name)
 
-      rsp = cptr("servers:reboot #{@server_name} -z region-b.geo-1")
+      rsp = cptr("servers:reboot #{@server_name} -z #{REGION}")
 
       rsp.stderr.should eql("")
       rsp.stdout.should eql("Soft rebooting server '#{@server_name}'.\n")

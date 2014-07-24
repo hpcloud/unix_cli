@@ -51,7 +51,7 @@ describe "ports:remove command" do
     it "should be successful" do
       @port = PortTestHelper.create(resource_name("del2"))
 
-      rsp = cptr("ports:remove #{@port.id} -z region-b.geo-1")
+      rsp = cptr("ports:remove #{@port.id} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed port '#{@port.id}'.\n")

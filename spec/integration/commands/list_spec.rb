@@ -99,7 +99,7 @@ describe "list command" do
 
   context "list container with valid avl" do
     it "should report success" do
-      rsp = cptr("list :mycontainer -z region-a.geo-1")
+      rsp = cptr("list :mycontainer -z #{REGION}")
       rsp.stderr.should eq("")
       rsp.stdout.should eq("")
       rsp.exit_status.should be_exit(:success)

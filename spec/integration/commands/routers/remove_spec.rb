@@ -56,9 +56,9 @@ describe "routers:remove command" do
 
   context "routers:remove with valid avl" do
     it "should be successful" do
-      cptr("routers:add #{@router_name} -z region-a.geo-1")
+      cptr("routers:add #{@router_name} -z #{REGION}")
 
-      rsp = cptr("routers:remove #{@router_name} -z region-a.geo-1")
+      rsp = cptr("routers:remove #{@router_name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Removed router '#{@router_name}'.\n")

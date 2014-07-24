@@ -64,6 +64,8 @@ require 'helpers/snapshot_test_helper'
 require 'helpers/volume_test_helper'
 require 'helpers/volume_attachment_helper'
 
+REGION='regionOne'
+
 RSpec.configure do |config|
   
   HOSTNAME                    = `hostname`.chomp

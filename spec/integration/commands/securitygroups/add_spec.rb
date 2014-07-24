@@ -52,7 +52,7 @@ describe "securitygroups:add command" do
 
   context "securitygroups:add with valid avl" do
     it "should report success" do
-      rsp = cptr('securitygroups:add mysecgroup2 secdesc -z region-b.geo-1')
+      rsp = cptr("securitygroups:add mysecgroup2 secdesc -z #{REGION}")
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
     end

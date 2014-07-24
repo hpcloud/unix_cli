@@ -38,7 +38,7 @@ describe "metadata" do
       rsp = cptr("metadata #{tainer}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("X-Container-Bytes-Used 16\nX-Container-Object-Count 1\n")
+      rsp.stdout.should eq("X-Container-Bytes-Used 16\nX-Container-Object-Count 1\nX-Storage-Policy Policy-0\n")
       rsp.exit_status.should be_exit(:success)
 
       rsp = cptr("metadata:set #{tainer}/Medvedev.txt X-Object-Meta-Foo valuu")
@@ -60,7 +60,7 @@ describe "metadata" do
       rsp = cptr("metadata #{tainer}")
 
       rsp.stderr.should eq("")
-      rsp.stdout.should eq("X-Container-Bytes-Used 16\nX-Container-Meta-Foo valtoo\nX-Container-Object-Count 1\n")
+      rsp.stdout.should eq("X-Container-Bytes-Used 16\nX-Container-Meta-Foo valtoo\nX-Container-Object-Count 1\nX-Storage-Policy Policy-0\n")
       rsp.exit_status.should be_exit(:success)
     end
   end

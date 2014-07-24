@@ -40,7 +40,7 @@ describe "Addresses command" do
 
   context "addresses with valid avl" do
     it "should report success" do
-      rsp = cptr("addresses -z region-b.geo-1")
+      rsp = cptr("addresses -z #{REGION}")
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)
     end

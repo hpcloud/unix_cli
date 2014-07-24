@@ -90,7 +90,7 @@ describe "addresses:associate command" do
 
   context "associate ip with valid avl" do
     it "should report success" do
-      rsp = cptr("addresses:associate #{@second_ip} #{@port1.name} -z region-b.geo-1")
+      rsp = cptr("addresses:associate #{@second_ip} #{@port1.name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eql("Associated address '#{@second_ip}' to server '#{@port1.name}'.\n")

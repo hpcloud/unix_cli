@@ -55,7 +55,7 @@ describe "Routers command" do
 
   context "routers with valid avl" do
     it "should report success" do
-      rsp = cptr("routers -d , #{@routers_name} -z region-a.geo-1")
+      rsp = cptr("routers -d , #{@routers_name} -z #{REGION}")
 
       rsp.stderr.should eq("")
       then_expected_table(rsp.stdout)

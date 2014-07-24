@@ -48,44 +48,40 @@ describe "Acl command (viewing acls)" do
 
     context "container" do
       it "should have 'private' permissions" do
-        rsp = cptr('acl :acl_container')
+        rsp = cptr('acl -d , :acl_container')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should match("public.*readers.*writers.*public_url")
-        rsp.stdout.should match("no.*https.*acl_container")
+        rsp.stdout.should match("no,,,http://.*acl_container")
         rsp.exit_status.should be_exit(:success)
       end
     end
 
     context "object" do
       it "should have 'private' permissions" do
-        rsp = cptr('acl :acl_container/foo.txt')
+        rsp = cptr('acl -d , :acl_container/foo.txt')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should match("public.*readers.*writers.*public_url")
-        rsp.stdout.should match("no.*https.*acl_container/foo.txt")
+        rsp.stdout.should match("no,,,http.*acl_container/foo.txt")
         rsp.exit_status.should be_exit(:success)
       end
     end
 
     context "acl for container with valid avl" do
       it "should report success" do
-        rsp = cptr('acl :acl_container -z region-b.geo-1')
+        rsp = cptr("acl -d , :acl_container -z #{REGION}")
 
         rsp.stderr.should eq("")
-        rsp.stdout.should match("public.*readers.*writers.*public_url")
-        rsp.stdout.should match("no.*https.*acl_container")
+        rsp.stdout.should match("no,,,http.*acl_container")
         rsp.exit_status.should be_exit(:success)
       end
     end
 
     context "acl for object with valid avl" do
       it "should report success" do
-        rsp = cptr('acl :acl_container/foo.txt -z region-b.geo-1')
+        rsp = cptr("acl -d , :acl_container/foo.txt -z #{REGION}")
 
         rsp.stderr.should eq("")
-        rsp.stdout.should match("public.*readers.*writers.*public_url")
-        rsp.stdout.should match("no.*https.*acl_container/foo.txt")
+        rsp.stdout.should match("no,,,http.*acl_container/foo.txt")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -121,44 +117,40 @@ describe "Acl command (viewing acls)" do
 
     context "container" do
       it "should have 'public' permissions" do
-        rsp = cptr('acl :acl_container')
+        rsp = cptr('acl -d , :acl_container')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should match("public.*readers.*writers.*public_url")
-        rsp.stdout.should match("yes.*https.*acl_container")
+        rsp.stdout.should match("yes,,,http.*acl_container")
         rsp.exit_status.should be_exit(:success)
       end
     end
 
     context "object" do
       it "should have 'public' permissions" do
-        rsp = cptr('acl :acl_container/foo.txt')
+        rsp = cptr('acl -d , :acl_container/foo.txt')
 
         rsp.stderr.should eq("")
-        rsp.stdout.should match("public.*readers.*writers.*public_url")
-        rsp.stdout.should match("yes.*https.*acl_container/foo.txt")
+        rsp.stdout.should match("yes,,,http.*acl_container/foo.txt")
         rsp.exit_status.should be_exit(:success)
       end
     end
 
     context "acl for container with valid avl" do
       it "should report success" do
-        rsp = cptr('acl :acl_container -z region-b.geo-1')
+        rsp = cptr("acl -d , :acl_container -z #{REGION}")
 
         rsp.stderr.should eq("")
-        rsp.stdout.should match("public.*readers.*writers.*public_url")
-        rsp.stdout.should match("yes.*https.*acl_container")
+        rsp.stdout.should match("yes,,,http.*acl_container")
         rsp.exit_status.should be_exit(:success)
       end
     end
 
     context "acl for object with valid avl" do
       it "should report success" do
-        rsp = cptr('acl :acl_container/foo.txt -z region-b.geo-1')
+        rsp = cptr("acl -d , :acl_container/foo.txt -z #{REGION}")
 
         rsp.stderr.should eq("")
-        rsp.stdout.should match("public.*readers.*writers.*public_url")
-        rsp.stdout.should match("yes.*https.*acl_container")
+        rsp.stdout.should match("yes,,,http.*acl_container")
         rsp.exit_status.should be_exit(:success)
       end
     end
@@ -199,7 +191,7 @@ describe "Acl command (viewing acls)" do
         rsp = cptr("acl -d X :acl_container")
 
         rsp.stderr.should eq("")
-        rsp.stdout.should match("noX#{@default_username}X#{@username}Xhttps://.*object.*/acl_container\n$")
+        rsp.stdout.should match("noX#{@default_username}X#{@username}Xhttp.*/acl_container\n$")
         rsp.exit_status.should be_exit(:success)
       end
     end

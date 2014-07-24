@@ -199,7 +199,7 @@ describe "securitygroups:rules:add command" do
 
   context "securitygroups:rules:add with valid avl" do
     it "should report success" do
-      rsp = cptr('securitygroups:rules:add mysecgroup icmp -z region-b.geo-1')
+      rsp = cptr("securitygroups:rules:add mysecgroup icmp -z #{REGION}")
 
       rsp.stderr.should eq("")
       @rule_id = rsp.stdout.scan(/Created rule '([^']+)' for security group 'mysecgroup'./)[0][0]

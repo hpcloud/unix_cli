@@ -57,7 +57,7 @@ describe "Images metadata update command" do
 
   context "images with valid avl" do
     it "should report success" do
-      rsp = cptr("images:metadata:update -z region-b.geo-1 #{@img.id} luke=l000003,han=h000003")
+      rsp = cptr("images:metadata:update -z #{REGION} #{@img.id} luke=l000003,han=h000003")
 
       rsp.stderr.should eq("")
       rsp.exit_status.should be_exit(:success)

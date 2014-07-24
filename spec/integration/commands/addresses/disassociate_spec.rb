@@ -75,7 +75,7 @@ describe "addresses:disassociate command" do
       rsp = cptr("addresses:associate #{@public_ip} #{@port.id}")
       rsp.stderr.should eq("")
 
-      rsp = cptr("addresses:disassociate #{@second_ip} -z region-b.geo-1")
+      rsp = cptr("addresses:disassociate #{@second_ip} -z #{REGION}")
 
       rsp.stderr.should eq("")
       rsp.stdout.should eq("Disassociated address '#{@second_ip}' from any server instance.\n")
