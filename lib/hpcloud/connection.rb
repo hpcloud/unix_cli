@@ -22,6 +22,18 @@
 require 'fog/hp'
 require 'hpcloud/auth_cache'
 
+module Fog
+  module Compute
+    class HPV2 < Fog::Service
+      class Real
+        def set_path(value)
+          @path = value
+        end
+      end
+    end
+  end
+end
+
 module HP
   module Cloud
     class Connection
@@ -128,6 +140,11 @@ module HP
         rescue Exception => e
           @authcache.remove(opts)
           raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
+        end
+        begin
+          @compute_connection[account].set_path('/v2/' + opts[:hp_tenant_id])
+        rescue Exception => e
+          warn "Unable to enfoce v2 compute"
         end
         return @compute_connection[account]
       end
