@@ -40,6 +40,31 @@ If you want to check which version of the tool you have installed:
 
   hpcloud info
 
+= Configuring with Helion/OpenStack/DevStack
+
+Your configuration for Helion etc should look similar to this:
+
+---
+:credentials:
+  :auth_uri: http://xx.xx.xx.xx:5000/v2.0/
+  :userpass: true
+  :account_id: UserName
+  :secret_key: SuperSecret!
+  :tenant_id: 3xxxxxxxxxxxxa0b9e073b99bec868fd
+:regions: {}
+:catalog:
+  :compute: nova
+  :object_storage: swift
+  :block_storage: cinder
+  :networking: neutron
+:options: {}
+:provider: hp
+
+There are command line ways to configure your account, but it may be easier to
+manually edit the file in ~/.hpcloud/account .  Use v2.0 authentication as
+right now Fog does not support v3.
+
+
 = Documentation and Usage
 
 Detailed documentation and usage examples can be found at HP Cloud Unix CLI[http://docs.hpcloud.com/cli/unix] page.
