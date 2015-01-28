@@ -289,6 +289,9 @@ module HP
         case map_opts[:provider]
           when "hp"
             service_name = name
+            if name == "Object Storage"
+              service_name = "object-store"
+            end
             unless map_opts[:catalog].nil?
               service_catalog_key = name.to_s.downcase.gsub(' ','_').to_sym
               service_name = map_opts[:catalog][service_catalog_key] if map_opts[:catalog].has_key?(service_catalog_key)

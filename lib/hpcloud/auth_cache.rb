@@ -121,6 +121,7 @@ module HP
         return nil if catalog[service.to_sym].nil?
         keys = []
         catalog[service.to_sym].keys.each { |x| keys << x.to_s }
+        keys.delete("name")
         return keys.sort.first.to_s
       end
     end
