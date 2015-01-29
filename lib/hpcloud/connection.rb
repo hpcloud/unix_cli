@@ -115,8 +115,8 @@ module HP
       def storage(account_name=nil)
         account = get_account(account_name)
         return @storage_connection[account] unless @storage_connection[account].nil?
-        opts = create_options(account, 'Object Storage')
-        read_creds(account, opts, 'Object Storage')
+        opts = create_options(account, 'object-store')
+        read_creds(account, opts, 'object-store')
         begin
           @storage_connection[account] = Fog::Storage.new(opts)
           write_creds(opts, @storage_connection[account])
@@ -131,15 +131,15 @@ module HP
       def compute
         account = get_account()
         return @compute_connection[account] unless @compute_connection[account].nil?
-        opts = create_options(account, 'Compute')
+        opts = create_options(account, 'compute')
         opts[:version] = :v2
-        read_creds(account, opts, 'Compute')
+        read_creds(account, opts, 'compute')
         begin
           @compute_connection[account] = Fog::Compute.new(opts)
           write_creds(opts, @compute_connection[account])
         rescue Exception => e
           @authcache.remove(opts)
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Compute' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'compute' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         begin
           @compute_connection[account].set_path('/v2/' + opts[:hp_tenant_id])
@@ -152,15 +152,15 @@ module HP
       def block
         account = get_account()
         return @block_connection[account] unless @block_connection[account].nil?
-        opts = create_options(account, 'Block Storage')
+        opts = create_options(account, 'volume')
         opts.delete(:provider)
-        read_creds(account, opts, 'Block Storage')
+        read_creds(account, opts, 'volume')
         begin
           @block_connection[account] = Fog::HP::BlockStorageV2.new(opts)
           write_creds(opts, @block_connection[account])
         rescue Exception => e
           @authcache.remove(opts)
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'BlockStorage' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'volume' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @block_connection[account]
       end
@@ -168,14 +168,14 @@ module HP
       def cdn
         account = get_account()
         return @cdn_connection[account] unless @cdn_connection[account].nil?
-        opts = create_options(account, 'CDN')
-        read_creds(account, opts, 'CDN')
+        opts = create_options(account, 'hpext:cdn')
+        read_creds(account, opts, 'hpext:cdn')
         begin
           @cdn_connection[account] = Fog::CDN.new(opts)
           write_creds(opts, @cdn_connection[account])
         rescue Exception => e
           @authcache.remove(opts)
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'CDN' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'hpext:cdn' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @cdn_connection[account]
       end
@@ -183,15 +183,15 @@ module HP
       def network
         account = get_account()
         return @network_connection[account] unless @network_connection[account].nil?
-        opts = create_options(account, 'Networking')
-        read_creds(account, opts, 'Networking')
+        opts = create_options(account, 'network')
+        read_creds(account, opts, 'network')
         begin
           opts.delete(:provider)
           @network_connection[account] = Fog::HP::Network.new(opts)
           write_creds(opts, @network_connection[account])
         rescue Exception => e
           @authcache.remove(opts)
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Network' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'network' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @network_connection[account]
       end
@@ -199,15 +199,15 @@ module HP
       def dns
         account = get_account()
         return @dns_connection[account] unless @dns_connection[account].nil?
-        opts = create_options(account, 'DNS')
-        read_creds(account, opts, 'DNS')
+        opts = create_options(account, 'hpext:dns')
+        read_creds(account, opts, 'hpext:dns')
         begin
           opts.delete(:provider)
           @dns_connection[account] = Fog::HP::DNS.new(opts)
           write_creds(opts, @dns_connection[account])
         rescue Exception => e
           @authcache.remove(opts)
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'DNS' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'hpext:dns' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @dns_connection[account]
       end
@@ -215,15 +215,15 @@ module HP
       def lb
         account = get_account()
         return @lb_connection[account] unless @lb_connection[account].nil?
-        opts = create_options(account, 'Load Balancer')
-        read_creds(account, opts, 'Load Balancer')
+        opts = create_options(account, 'hpext:lbaas')
+        read_creds(account, opts, 'hpext:lbaas')
         begin
           opts.delete(:provider)
           @lb_connection[account] = Fog::HP::LB.new(opts)
           write_creds(opts, @lb_connection[account])
         rescue Exception => e
           @authcache.remove(opts)
-          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'Load Balancer' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
+          raise Fog::HP::Errors::ServiceError, "Please check your HP Cloud Services account to make sure the 'hpext:lbaas' service is activated for the appropriate availability zone.\n Exception: #{e}\n Print the service catalog: hpcloud account:catalog #{account}"
         end
         return @lb_connection[account]
       end
@@ -289,9 +289,6 @@ module HP
         case map_opts[:provider]
           when "hp"
             service_name = name
-            if name == "Object Storage"
-              service_name = "object-store"
-            end
             unless map_opts[:catalog].nil?
               service_catalog_key = name.to_s.downcase.gsub(' ','_').to_sym
               service_name = map_opts[:catalog][service_catalog_key] if map_opts[:catalog].has_key?(service_catalog_key)
