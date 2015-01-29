@@ -1,6 +1,6 @@
-= Unix Command Line Interface
+= Unix Command Line Interface (Deprecated)
 
-The Unix Command Line Interface is a tool which allows Unix or Mac users to manage their HP Cloud Services from the command line.
+The Unix Command Line Interface has been **deprecated** since late in 2013.  It may or may not work for you.  Fixes may be pushed and they might be merged.  The Unix Command Line Interface is a tool which allows Unix or Mac users to manage their HP Cloud Services from the command line.
 
 == System Requirements
 
