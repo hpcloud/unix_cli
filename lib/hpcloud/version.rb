@@ -22,6 +22,6 @@
 module HP
   module Cloud
     VERSION = '2.0.10'
-    SHA1 = '822a9667ab3d347565a688052aad5d0d122e2ece'
+    SHA1 = 'b6e7cf28f0e37e64c5da4451d5fe67ca132523db'
   end
 end
